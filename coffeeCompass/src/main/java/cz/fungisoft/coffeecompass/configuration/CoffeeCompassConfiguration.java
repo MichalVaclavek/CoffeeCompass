@@ -12,7 +12,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 
 /**
- * Místo pro defaultní Configuration Beans apod. ...
+ * Místo pro defaultní Configuration Beans Springu.
  * 
  * @author Michal Václavek
  */

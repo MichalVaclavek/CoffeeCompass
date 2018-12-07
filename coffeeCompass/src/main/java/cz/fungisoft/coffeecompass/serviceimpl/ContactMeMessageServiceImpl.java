@@ -5,9 +5,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
 import cz.fungisoft.coffeecompass.dto.ContactMeMessageDto;
 import cz.fungisoft.coffeecompass.entity.ContactMeMessage;
 import cz.fungisoft.coffeecompass.repository.ContactMeMessageRepository;
@@ -24,6 +26,9 @@ public class ContactMeMessageServiceImpl implements IContactMeMessageService
     private MapperFacade mapperFacade;
     
     private ISendMeEmailService sendMeEmailService;
+    
+    @Autowired
+    private ConfigProperties config;
     
     @Autowired
     public ContactMeMessageServiceImpl(ContactMeMessageRepository contactMeMessageRepo, MapperFacade mapperFacade, ISendMeEmailService sendMeEmailService) {
@@ -66,7 +71,8 @@ public class ContactMeMessageServiceImpl implements IContactMeMessageService
 
     @Override
     public ContactMeMessage saveContactMeMessage(ContactMeMessage message) {
-        sendMeEmailService.sendMeSimpleEmail(message.getAuthorName(), message.getEmail(), message.getTextOfMessage());
+        sendMeEmailService.sendMeSimpleEmail(message.getAuthorName(), message.getEmail(), config.getContactMeEmailTo(), message.getTextOfMessage());
+//        sendMeEmailService.sendMeSimpleEmail(message.getAuthorName(), message.getEmail(), "sadlokan@email.cz", message.getTextOfMessage());
         return contactMeMessageRepo.save(message);
     }
 

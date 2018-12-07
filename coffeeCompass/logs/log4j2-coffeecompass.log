@@ -9965,3 +9965,686 @@ Caused by: java.lang.NullPointerException
 05-12-2018 21:48:37.455  INFO MichalV-ntb - [on(2)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 05-12-2018 21:48:37.456  INFO MichalV-ntb - [on(2)-127.0.0.1] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown initiated...
 05-12-2018 21:48:37.462  INFO MichalV-ntb - [on(2)-127.0.0.1] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown completed.
+07-12-2018 10:55:22.880  INFO MichalV-ntb - [      main] ConfigServletWebServerApplicationContext : Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@52102734: startup date [Fri Dec 07 10:55:22 CET 2018]; root of context hierarchy
+07-12-2018 10:55:24.962  INFO MichalV-ntb - [      main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$7891a4a7] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+07-12-2018 10:55:25.440  INFO MichalV-ntb - [      main] o.s.b.w.e.t.TomcatWebServer              : Tomcat initialized with port(s): 8080 (http)
+07-12-2018 10:55:25.454  INFO MichalV-ntb - [      main] o.a.c.h.Http11NioProtocol                : Initializing ProtocolHandler ["http-nio-8080"]
+07-12-2018 10:55:25.466  INFO MichalV-ntb - [      main] o.a.c.c.StandardService                  : Starting service [Tomcat]
+07-12-2018 10:55:25.466  INFO MichalV-ntb - [      main] o.a.c.c.StandardEngine                   : Starting Servlet Engine: Apache Tomcat/8.5.34
+07-12-2018 10:55:25.472  INFO MichalV-ntb - [ost-startStop-1] o.a.c.c.AprLifecycleListener             : The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [C:\Program Files\Java\jre1.8.0_171\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:/Program Files/Java/jre1.8.0_171/bin/server;C:/Program Files/Java/jre1.8.0_171/bin;C:/Program Files/Java/jre1.8.0_171/lib/amd64;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\iCLS\;C:\Program Files\Intel\Intel(R) Management Engine Components\iCLS\;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\ProgramData\Oracle\Java\javapath;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\PuTTY\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\Java\jdk1.8.0_161\bin;C:\Program Files\Git\cmd;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Users\Michal\AppData\Local\Microsoft\WindowsApps;C:\Program Files\apache-maven-3.5.4\bin;;C:\Users\Michal\Desktop;;.]
+07-12-2018 10:55:25.635  INFO MichalV-ntb - [ost-startStop-1] o.a.c.c.C.[.[.[/]                        : Initializing Spring embedded WebApplicationContext
+07-12-2018 10:55:25.636  INFO MichalV-ntb - [ost-startStop-1] o.s.w.c.ContextLoader                    : Root WebApplicationContext: initialization completed in 2764 ms
+07-12-2018 10:55:25.748  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.FilterRegistrationBean         : Mapping filter: 'characterEncodingFilter' to: [/*]
+07-12-2018 10:55:25.749  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.FilterRegistrationBean         : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+07-12-2018 10:55:25.750  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.FilterRegistrationBean         : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+07-12-2018 10:55:25.750  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.FilterRegistrationBean         : Mapping filter: 'requestContextFilter' to: [/*]
+07-12-2018 10:55:25.751  INFO MichalV-ntb - [ost-startStop-1] .s.DelegatingFilterProxyRegistrationBean : Mapping filter: 'springSecurityFilterChain' to: [/*]
+07-12-2018 10:55:25.751  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.ServletRegistrationBean        : Servlet dispatcherServlet mapped to [/]
+07-12-2018 10:55:26.012  INFO MichalV-ntb - [      main] c.z.h.HikariDataSource                   : HikariPool-1 - Starting...
+07-12-2018 10:55:26.164  INFO MichalV-ntb - [      main] c.z.h.HikariDataSource                   : HikariPool-1 - Start completed.
+07-12-2018 10:55:26.250  INFO MichalV-ntb - [      main] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+07-12-2018 10:55:26.262  INFO MichalV-ntb - [      main] o.h.j.i.u.LogHelper                      : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+07-12-2018 10:55:26.379  INFO MichalV-ntb - [      main] o.h.Version                              : HHH000412: Hibernate Core {5.2.17.Final}
+07-12-2018 10:55:26.382  INFO MichalV-ntb - [      main] o.h.c.Environment                        : HHH000206: hibernate.properties not found
+07-12-2018 10:55:26.453  INFO MichalV-ntb - [      main] o.h.a.c.Version                          : HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+07-12-2018 10:55:26.787  INFO MichalV-ntb - [      main] o.h.d.Dialect                            : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL95Dialect
+07-12-2018 10:55:27.122  INFO MichalV-ntb - [      main] o.h.e.j.e.i.LobCreatorBuilderImpl        : HHH000424: Disabling contextual LOB creation as createClob() method threw error : java.lang.reflect.InvocationTargetException
+07-12-2018 10:55:27.127  INFO MichalV-ntb - [      main] o.h.t.BasicTypeRegistry                  : HHH000270: Type registration [java.util.UUID] overrides previous : org.hibernate.type.UUIDBinaryType@67332b1e
+07-12-2018 10:55:28.172  INFO MichalV-ntb - [      main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+07-12-2018 10:55:28.572  INFO MichalV-ntb - [      main] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
+07-12-2018 10:55:30.206  WARN MichalV-ntb - [      main] aWebConfiguration$JpaWebMvcConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+07-12-2018 10:55:30.274  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/home],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.home()
+07-12-2018 10:55:30.275  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/logout],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.logout()
+07-12-2018 10:55:30.275  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/403],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.error403()
+07-12-2018 10:55:30.276  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.home1()
+07-12-2018 10:55:30.277  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/about],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.about()
+07-12-2018 10:55:30.277  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/login],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.login()
+07-12-2018 10:55:30.287  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/allSites],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.sites(java.lang.String,java.lang.String)
+07-12-2018 10:55:30.287  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/mySites],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.showMySites()
+07-12-2018 10:55:30.288  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/site/],methods=[GET]}" onto public cz.fungisoft.coffeecompass.dto.CoffeeSiteDto cz.fungisoft.coffeecompass.controller.CoffeeSiteController.siteByName(java.lang.String)
+07-12-2018 10:55:30.288  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/dist/],methods=[GET]}" onto public double cz.fungisoft.coffeecompass.controller.CoffeeSiteController.distance(double,double,double,double)
+07-12-2018 10:55:30.289  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/showSite/{id}],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.showSite(int)
+07-12-2018 10:55:30.289  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/cancelStatusSite/{id}],methods=[PUT]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteController.cancelStatusSite(java.lang.Integer)
+07-12-2018 10:55:30.290  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/finalDeleteSite/{id}],methods=[DELETE]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteController.finalDelete(int)
+07-12-2018 10:55:30.290  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/saveStarsAndComment/{id}],methods=[POST]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.saveCommentAndStarsForSite(cz.fungisoft.coffeecompass.controller.StarsAndCommentModel,int)
+07-12-2018 10:55:30.291  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/createSite],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.siteToCreateAndModify(cz.fungisoft.coffeecompass.dto.CoffeeSiteDto)
+07-12-2018 10:55:30.291  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/modifySite/{id}],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.showSiteUpdatePage(java.lang.Integer)
+07-12-2018 10:55:30.292  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/activateSite/{id}],methods=[PUT]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteController.activateCoffeeSite(java.lang.Integer)
+07-12-2018 10:55:30.292  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/deactivateSite/{id}],methods=[PUT]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteController.deactivateCoffeeSite(java.lang.Integer)
+07-12-2018 10:55:30.293  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/createModifySite],methods=[POST]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteController.createOrUpdateCoffeeSite(cz.fungisoft.coffeecompass.dto.CoffeeSiteDto,org.springframework.validation.BindingResult)
+07-12-2018 10:55:30.295  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/searchSites],methods=[POST]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteSearchController.searchSitesWithStatusAndCoffeeSort(cz.fungisoft.coffeecompass.controller.CoffeeSiteSearchCriteria,org.springframework.validation.BindingResult)
+07-12-2018 10:55:30.296  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/searchSites],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteSearchController.getSitesWithStatusAndCoffeeSort(org.springframework.ui.Model)
+07-12-2018 10:55:30.297  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/contactMe],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.ContactMeMessageController.getForm(cz.fungisoft.coffeecompass.dto.ContactMeMessageDto)
+07-12-2018 10:55:30.297  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/contactMe],methods=[POST]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.ContactMeMessageController.createOrUpdateCoffeeSite(cz.fungisoft.coffeecompass.dto.ContactMeMessageDto,org.springframework.validation.BindingResult)
+07-12-2018 10:55:30.303  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/delete/{id}],methods=[DELETE]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.UserController.deleteUser(java.lang.Integer)
+07-12-2018 10:55:30.303  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/all],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.UserController.listAllUsers()
+07-12-2018 10:55:30.303  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/edit-put],methods=[PUT]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.UserController.editUserAccount(cz.fungisoft.coffeecompass.dto.UserDataDto,org.springframework.validation.BindingResult,org.springframework.ui.ModelMap,org.springframework.web.servlet.mvc.support.RedirectAttributes,java.util.Locale)
+07-12-2018 10:55:30.304  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/edit/{userName}],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.UserController.editUser(java.lang.String,org.springframework.ui.ModelMap)
+07-12-2018 10:55:30.304  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/show/{id}],methods=[GET]}" onto public org.springframework.http.ResponseEntity<cz.fungisoft.coffeecompass.dto.UserDataDto> cz.fungisoft.coffeecompass.controller.UserController.getUser(java.lang.Integer)
+07-12-2018 10:55:30.304  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/register-post],methods=[POST]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.UserController.registerUserAccount(cz.fungisoft.coffeecompass.dto.UserDataDto,org.springframework.validation.BindingResult,org.springframework.ui.ModelMap,java.util.Locale)
+07-12-2018 10:55:30.305  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/register],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.UserController.showRegistrationForm(cz.fungisoft.coffeecompass.dto.UserDataDto,org.springframework.ui.Model)
+07-12-2018 10:55:30.315  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/swagger-resources/configuration/security]}" onto public org.springframework.http.ResponseEntity<springfox.documentation.swagger.web.SecurityConfiguration> springfox.documentation.swagger.web.ApiResourceController.securityConfiguration()
+07-12-2018 10:55:30.317  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/swagger-resources/configuration/ui]}" onto public org.springframework.http.ResponseEntity<springfox.documentation.swagger.web.UiConfiguration> springfox.documentation.swagger.web.ApiResourceController.uiConfiguration()
+07-12-2018 10:55:30.318  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/swagger-resources]}" onto public org.springframework.http.ResponseEntity<java.util.List<springfox.documentation.swagger.web.SwaggerResource>> springfox.documentation.swagger.web.ApiResourceController.swaggerResources()
+07-12-2018 10:55:30.326  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+07-12-2018 10:55:30.327  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+07-12-2018 10:55:30.505  INFO MichalV-ntb - [      main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+07-12-2018 10:55:30.766  INFO MichalV-ntb - [      main] o.s.s.w.DefaultSecurityFilterChain       : Creating filter chain: org.springframework.security.web.util.matcher.AnyRequestMatcher@1, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7ef60c02, org.springframework.security.web.context.SecurityContextPersistenceFilter@3a8640f7, org.springframework.security.web.header.HeaderWriterFilter@2a531637, org.springframework.security.web.csrf.CsrfFilter@398694a6, org.springframework.security.web.authentication.logout.LogoutFilter@2f61de04, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@69a76b74, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@45e69324, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@54a6ef6, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5d9d8e46, org.springframework.security.web.session.SessionManagementFilter@1aa59698, org.springframework.security.web.access.ExceptionTranslationFilter@178dc733, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@5f67181f]
+07-12-2018 10:55:30.894  INFO MichalV-ntb - [      main] o.s.w.s.h.SimpleUrlHandlerMapping        : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+07-12-2018 10:55:31.213  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@52102734: startup date [Fri Dec 07 10:55:22 CET 2018]; root of context hierarchy
+07-12-2018 10:55:31.227  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Detected @ModelAttribute methods in userAdvice
+07-12-2018 10:55:31.306  INFO MichalV-ntb - [      main] o.s.w.s.h.SimpleUrlHandlerMapping        : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+07-12-2018 10:55:31.306  INFO MichalV-ntb - [      main] o.s.w.s.h.SimpleUrlHandlerMapping        : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+07-12-2018 10:55:31.338  INFO MichalV-ntb - [      main] .m.m.a.ExceptionHandlerExceptionResolver : Detected @ExceptionHandler methods in exceptionsControllerAdvice
+07-12-2018 10:55:32.081  INFO MichalV-ntb - [      main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+07-12-2018 10:55:32.084  INFO MichalV-ntb - [      main] o.s.j.e.a.AnnotationMBeanExporter        : Bean with name 'dataSource' has been autodetected for JMX exposure
+07-12-2018 10:55:32.091  INFO MichalV-ntb - [      main] o.s.j.e.a.AnnotationMBeanExporter        : Located MBean 'dataSource': registering with JMX server as MBean [com.zaxxer.hikari:name=dataSource,type=HikariDataSource]
+07-12-2018 10:55:32.096  INFO MichalV-ntb - [      main] o.s.c.s.DefaultLifecycleProcessor        : Starting beans in phase 2147483647
+07-12-2018 10:55:32.096  INFO MichalV-ntb - [      main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+07-12-2018 10:55:32.113  INFO MichalV-ntb - [      main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+07-12-2018 10:55:32.150  INFO MichalV-ntb - [      main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+07-12-2018 10:55:32.446  WARN MichalV-ntb - [      main] s.d.s.w.r.p.ParameterDataTypeReader      : Trying to infer dataType org.springframework.ui.ModelMap
+07-12-2018 10:55:32.454  WARN MichalV-ntb - [      main] s.d.s.w.r.p.ParameterDataTypeReader      : Trying to infer dataType org.springframework.ui.ModelMap
+07-12-2018 10:55:32.478  WARN MichalV-ntb - [      main] s.d.s.w.r.p.ParameterDataTypeReader      : Trying to infer dataType org.springframework.ui.ModelMap
+07-12-2018 10:55:32.507  INFO MichalV-ntb - [      main] o.a.c.h.Http11NioProtocol                : Starting ProtocolHandler ["http-nio-8080"]
+07-12-2018 10:55:32.521  INFO MichalV-ntb - [      main] o.a.t.u.n.NioSelectorPool                : Using a shared selector for servlet write/read
+07-12-2018 10:55:32.535  INFO MichalV-ntb - [      main] o.s.b.w.e.t.TomcatWebServer              : Tomcat started on port(s): 8080 (http) with context path ''
+07-12-2018 10:58:18.613  INFO MichalV-ntb - [nio-8080-exec-1] o.a.c.c.C.[.[.[/]                        : Initializing Spring FrameworkServlet 'dispatcherServlet'
+07-12-2018 10:58:18.614  INFO MichalV-ntb - [nio-8080-exec-1] o.s.w.s.DispatcherServlet                : FrameworkServlet 'dispatcherServlet': initialization started
+07-12-2018 10:58:18.684  INFO MichalV-ntb - [nio-8080-exec-1] o.s.w.s.DispatcherServlet                : FrameworkServlet 'dispatcherServlet': initialization completed in 70 ms
+07-12-2018 11:00:32.850  INFO MichalV-ntb - [on(2)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
+07-12-2018 11:00:32.851  INFO MichalV-ntb - [on(2)-127.0.0.1] ConfigServletWebServerApplicationContext : Closing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@52102734: startup date [Fri Dec 07 10:55:22 CET 2018]; root of context hierarchy
+07-12-2018 11:00:32.855  INFO MichalV-ntb - [on(2)-127.0.0.1] o.s.c.s.DefaultLifecycleProcessor        : Stopping beans in phase 2147483647
+07-12-2018 11:00:32.856  INFO MichalV-ntb - [on(2)-127.0.0.1] o.s.j.e.a.AnnotationMBeanExporter        : Unregistering JMX-exposed beans on shutdown
+07-12-2018 11:00:32.857  INFO MichalV-ntb - [on(2)-127.0.0.1] o.s.j.e.a.AnnotationMBeanExporter        : Unregistering JMX-exposed beans
+07-12-2018 11:00:32.869  INFO MichalV-ntb - [on(2)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+07-12-2018 11:00:32.870  INFO MichalV-ntb - [on(2)-127.0.0.1] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown initiated...
+07-12-2018 11:00:32.880  INFO MichalV-ntb - [on(2)-127.0.0.1] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown completed.
+07-12-2018 15:21:30.041  INFO MichalV-ntb - [      main] ConfigServletWebServerApplicationContext : Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@366647c2: startup date [Fri Dec 07 15:21:30 CET 2018]; root of context hierarchy
+07-12-2018 15:21:32.453  INFO MichalV-ntb - [      main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$40591e27] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+07-12-2018 15:21:33.011  INFO MichalV-ntb - [      main] o.s.b.w.e.t.TomcatWebServer              : Tomcat initialized with port(s): 8080 (http)
+07-12-2018 15:21:33.033  INFO MichalV-ntb - [      main] o.a.c.h.Http11NioProtocol                : Initializing ProtocolHandler ["http-nio-8080"]
+07-12-2018 15:21:33.047  INFO MichalV-ntb - [      main] o.a.c.c.StandardService                  : Starting service [Tomcat]
+07-12-2018 15:21:33.048  INFO MichalV-ntb - [      main] o.a.c.c.StandardEngine                   : Starting Servlet Engine: Apache Tomcat/8.5.34
+07-12-2018 15:21:33.055  INFO MichalV-ntb - [ost-startStop-1] o.a.c.c.AprLifecycleListener             : The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [C:\Program Files\Java\jre1.8.0_171\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:/Program Files/Java/jre1.8.0_171/bin/server;C:/Program Files/Java/jre1.8.0_171/bin;C:/Program Files/Java/jre1.8.0_171/lib/amd64;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\iCLS\;C:\Program Files\Intel\Intel(R) Management Engine Components\iCLS\;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\ProgramData\Oracle\Java\javapath;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\PuTTY\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\Java\jdk1.8.0_161\bin;C:\Program Files\Git\cmd;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Users\Michal\AppData\Local\Microsoft\WindowsApps;C:\Program Files\apache-maven-3.5.4\bin;;C:\Users\Michal\Desktop;;.]
+07-12-2018 15:21:33.237  INFO MichalV-ntb - [ost-startStop-1] o.a.c.c.C.[.[.[/]                        : Initializing Spring embedded WebApplicationContext
+07-12-2018 15:21:33.239  INFO MichalV-ntb - [ost-startStop-1] o.s.w.c.ContextLoader                    : Root WebApplicationContext: initialization completed in 3202 ms
+07-12-2018 15:21:33.353  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.FilterRegistrationBean         : Mapping filter: 'characterEncodingFilter' to: [/*]
+07-12-2018 15:21:33.354  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.FilterRegistrationBean         : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+07-12-2018 15:21:33.354  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.FilterRegistrationBean         : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+07-12-2018 15:21:33.354  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.FilterRegistrationBean         : Mapping filter: 'requestContextFilter' to: [/*]
+07-12-2018 15:21:33.355  INFO MichalV-ntb - [ost-startStop-1] .s.DelegatingFilterProxyRegistrationBean : Mapping filter: 'springSecurityFilterChain' to: [/*]
+07-12-2018 15:21:33.355  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.ServletRegistrationBean        : Servlet dispatcherServlet mapped to [/]
+07-12-2018 15:21:33.600  INFO MichalV-ntb - [      main] c.z.h.HikariDataSource                   : HikariPool-1 - Starting...
+07-12-2018 15:21:34.856 ERROR MichalV-ntb - [      main] c.z.h.p.HikariPool                       : HikariPool-1 - Exception during pool initialization.
+org.postgresql.util.PSQLException: FATAL: password authentication failed for user "postgres"
+	at org.postgresql.core.v3.ConnectionFactoryImpl.doAuthentication(ConnectionFactoryImpl.java:514)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:141)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:192)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:49)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:195)
+	at org.postgresql.Driver.makeConnection(Driver.java:454)
+	at org.postgresql.Driver.connect(Driver.java:256)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:117)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:123)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:365)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:194)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:460)
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:534)
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:115)
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:112)
+	at org.springframework.jdbc.datasource.DataSourceUtils.fetchConnection(DataSourceUtils.java:151)
+	at org.springframework.jdbc.datasource.DataSourceUtils.doGetConnection(DataSourceUtils.java:115)
+	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:78)
+	at org.springframework.jdbc.support.JdbcUtils.extractDatabaseMetaData(JdbcUtils.java:319)
+	at org.springframework.jdbc.support.JdbcUtils.extractDatabaseMetaData(JdbcUtils.java:356)
+	at org.springframework.boot.autoconfigure.orm.jpa.DatabaseLookup.getDatabase(DatabaseLookup.java:72)
+	at org.springframework.boot.autoconfigure.orm.jpa.JpaProperties.determineDatabase(JpaProperties.java:166)
+	at org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration.jpaVendorAdapter(JpaBaseConfiguration.java:111)
+	at org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaConfiguration$$EnhancerBySpringCGLIB$$5f2fe096.CGLIB$jpaVendorAdapter$6(<generated>)
+	at org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaConfiguration$$EnhancerBySpringCGLIB$$5f2fe096$$FastClassBySpringCGLIB$$6ed74cfc.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:228)
+	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:365)
+	at org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaConfiguration$$EnhancerBySpringCGLIB$$5f2fe096.jpaVendorAdapter(<generated>)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:154)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:582)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1247)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1096)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:535)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:495)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:317)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:315)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:251)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1135)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1062)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:818)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:724)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:474)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1247)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1096)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:535)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:495)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:317)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:315)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:251)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1135)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1062)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:818)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:724)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:474)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1247)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1096)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:535)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:495)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:317)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:315)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199)
+	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1089)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:859)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:550)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:140)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:780)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:412)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:333)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1277)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1265)
+	at cz.fungisoft.coffeecompass.CoffeeCompassApplication.main(CoffeeCompassApplication.java:55)
+07-12-2018 15:21:34.867  WARN MichalV-ntb - [      main] o.s.b.a.o.j.DatabaseLookup               : Unable to determine jdbc url from datasource
+org.springframework.jdbc.support.MetaDataAccessException: Could not get Connection for extracting meta-data; nested exception is org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is org.postgresql.util.PSQLException: FATAL: password authentication failed for user "postgres"
+	at org.springframework.jdbc.support.JdbcUtils.extractDatabaseMetaData(JdbcUtils.java:328)
+	at org.springframework.jdbc.support.JdbcUtils.extractDatabaseMetaData(JdbcUtils.java:356)
+	at org.springframework.boot.autoconfigure.orm.jpa.DatabaseLookup.getDatabase(DatabaseLookup.java:72)
+	at org.springframework.boot.autoconfigure.orm.jpa.JpaProperties.determineDatabase(JpaProperties.java:166)
+	at org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration.jpaVendorAdapter(JpaBaseConfiguration.java:111)
+	at org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaConfiguration$$EnhancerBySpringCGLIB$$5f2fe096.CGLIB$jpaVendorAdapter$6(<generated>)
+	at org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaConfiguration$$EnhancerBySpringCGLIB$$5f2fe096$$FastClassBySpringCGLIB$$6ed74cfc.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:228)
+	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:365)
+	at org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaConfiguration$$EnhancerBySpringCGLIB$$5f2fe096.jpaVendorAdapter(<generated>)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:154)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:582)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1247)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1096)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:535)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:495)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:317)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:315)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:251)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1135)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1062)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:818)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:724)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:474)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1247)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1096)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:535)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:495)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:317)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:315)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:251)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1135)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1062)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:818)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:724)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:474)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1247)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1096)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:535)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:495)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:317)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:315)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199)
+	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1089)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:859)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:550)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:140)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:780)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:412)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:333)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1277)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1265)
+	at cz.fungisoft.coffeecompass.CoffeeCompassApplication.main(CoffeeCompassApplication.java:55)
+Caused by: org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is org.postgresql.util.PSQLException: FATAL: password authentication failed for user "postgres"
+	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:81)
+	at org.springframework.jdbc.support.JdbcUtils.extractDatabaseMetaData(JdbcUtils.java:319)
+	... 61 more
+Caused by: org.postgresql.util.PSQLException: FATAL: password authentication failed for user "postgres"
+	at org.postgresql.core.v3.ConnectionFactoryImpl.doAuthentication(ConnectionFactoryImpl.java:514)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:141)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:192)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:49)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:195)
+	at org.postgresql.Driver.makeConnection(Driver.java:454)
+	at org.postgresql.Driver.connect(Driver.java:256)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:117)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:123)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:365)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:194)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:460)
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:534)
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:115)
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:112)
+	at org.springframework.jdbc.datasource.DataSourceUtils.fetchConnection(DataSourceUtils.java:151)
+	at org.springframework.jdbc.datasource.DataSourceUtils.doGetConnection(DataSourceUtils.java:115)
+	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:78)
+	... 62 more
+07-12-2018 15:21:34.988  INFO MichalV-ntb - [      main] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+07-12-2018 15:21:35.012  INFO MichalV-ntb - [      main] o.h.j.i.u.LogHelper                      : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+07-12-2018 15:21:35.185  INFO MichalV-ntb - [      main] o.h.Version                              : HHH000412: Hibernate Core {5.2.17.Final}
+07-12-2018 15:21:35.188  INFO MichalV-ntb - [      main] o.h.c.Environment                        : HHH000206: hibernate.properties not found
+07-12-2018 15:21:35.276  INFO MichalV-ntb - [      main] o.h.a.c.Version                          : HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+07-12-2018 15:21:35.567  INFO MichalV-ntb - [      main] c.z.h.HikariDataSource                   : HikariPool-1 - Starting...
+07-12-2018 15:21:36.629 ERROR MichalV-ntb - [      main] c.z.h.p.HikariPool                       : HikariPool-1 - Exception during pool initialization.
+org.postgresql.util.PSQLException: FATAL: password authentication failed for user "postgres"
+	at org.postgresql.core.v3.ConnectionFactoryImpl.doAuthentication(ConnectionFactoryImpl.java:514)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:141)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:192)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:49)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:195)
+	at org.postgresql.Driver.makeConnection(Driver.java:454)
+	at org.postgresql.Driver.connect(Driver.java:256)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:117)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:123)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:365)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:194)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:460)
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:534)
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:115)
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:112)
+	at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.getConnection(DatasourceConnectionProviderImpl.java:122)
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess.obtainConnection(JdbcEnvironmentInitiator.java:180)
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:68)
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:35)
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:88)
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:259)
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:233)
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:210)
+	at org.hibernate.engine.jdbc.internal.JdbcServicesImpl.configure(JdbcServicesImpl.java:51)
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.configureService(StandardServiceRegistryImpl.java:94)
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:242)
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:210)
+	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.handleTypes(MetadataBuildingProcess.java:352)
+	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:111)
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:861)
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:888)
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:57)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:365)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:390)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:377)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:341)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1758)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1695)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:573)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:495)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:317)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:315)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199)
+	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1089)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:859)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:550)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:140)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:780)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:412)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:333)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1277)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1265)
+	at cz.fungisoft.coffeecompass.CoffeeCompassApplication.main(CoffeeCompassApplication.java:55)
+07-12-2018 15:21:36.632  WARN MichalV-ntb - [      main] o.h.e.j.e.i.JdbcEnvironmentInitiator     : HHH000342: Could not obtain connection to query metadata : FATAL: password authentication failed for user "postgres"
+07-12-2018 15:21:36.639  WARN MichalV-ntb - [      main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Invocation of init method failed; nested exception is org.hibernate.service.spi.ServiceException: Unable to create requested service [org.hibernate.engine.jdbc.env.spi.JdbcEnvironment]
+07-12-2018 15:21:36.643  INFO MichalV-ntb - [      main] o.a.c.c.StandardService                  : Stopping service [Tomcat]
+07-12-2018 15:21:36.668  INFO MichalV-ntb - [      main] ConditionEvaluationReportLoggingListener : 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+07-12-2018 15:21:36.680 ERROR MichalV-ntb - [      main] o.s.b.SpringApplication                  : Application run failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Invocation of init method failed; nested exception is org.hibernate.service.spi.ServiceException: Unable to create requested service [org.hibernate.engine.jdbc.env.spi.JdbcEnvironment]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1699)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:573)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:495)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:317)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:315)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199)
+	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1089)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:859)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:550)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:140)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:780)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:412)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:333)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1277)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1265)
+	at cz.fungisoft.coffeecompass.CoffeeCompassApplication.main(CoffeeCompassApplication.java:55)
+Caused by: org.hibernate.service.spi.ServiceException: Unable to create requested service [org.hibernate.engine.jdbc.env.spi.JdbcEnvironment]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:271)
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:233)
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:210)
+	at org.hibernate.engine.jdbc.internal.JdbcServicesImpl.configure(JdbcServicesImpl.java:51)
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.configureService(StandardServiceRegistryImpl.java:94)
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:242)
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:210)
+	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.handleTypes(MetadataBuildingProcess.java:352)
+	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:111)
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:861)
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:888)
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:57)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:365)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:390)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:377)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:341)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1758)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1695)
+	... 16 more
+Caused by: org.hibernate.HibernateException: Access to DialectResolutionInfo cannot be null when 'hibernate.dialect' not set
+	at org.hibernate.engine.jdbc.dialect.internal.DialectFactoryImpl.determineDialect(DialectFactoryImpl.java:100)
+	at org.hibernate.engine.jdbc.dialect.internal.DialectFactoryImpl.buildDialect(DialectFactoryImpl.java:54)
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:137)
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:35)
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:88)
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:259)
+	... 33 more
+07-12-2018 15:21:56.254  INFO MichalV-ntb - [      main] ConfigServletWebServerApplicationContext : Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@61d6015a: startup date [Fri Dec 07 15:21:56 CET 2018]; root of context hierarchy
+07-12-2018 15:21:58.299  INFO MichalV-ntb - [      main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$623fab18] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+07-12-2018 15:21:58.765  INFO MichalV-ntb - [      main] o.s.b.w.e.t.TomcatWebServer              : Tomcat initialized with port(s): 8080 (http)
+07-12-2018 15:21:58.780  INFO MichalV-ntb - [      main] o.a.c.h.Http11NioProtocol                : Initializing ProtocolHandler ["http-nio-8080"]
+07-12-2018 15:21:58.791  INFO MichalV-ntb - [      main] o.a.c.c.StandardService                  : Starting service [Tomcat]
+07-12-2018 15:21:58.791  INFO MichalV-ntb - [      main] o.a.c.c.StandardEngine                   : Starting Servlet Engine: Apache Tomcat/8.5.34
+07-12-2018 15:21:58.797  INFO MichalV-ntb - [ost-startStop-1] o.a.c.c.AprLifecycleListener             : The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [C:\Program Files\Java\jre1.8.0_171\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:/Program Files/Java/jre1.8.0_171/bin/server;C:/Program Files/Java/jre1.8.0_171/bin;C:/Program Files/Java/jre1.8.0_171/lib/amd64;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\iCLS\;C:\Program Files\Intel\Intel(R) Management Engine Components\iCLS\;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\ProgramData\Oracle\Java\javapath;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\PuTTY\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\Java\jdk1.8.0_161\bin;C:\Program Files\Git\cmd;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Users\Michal\AppData\Local\Microsoft\WindowsApps;C:\Program Files\apache-maven-3.5.4\bin;;C:\Users\Michal\Desktop;;.]
+07-12-2018 15:21:58.971  INFO MichalV-ntb - [ost-startStop-1] o.a.c.c.C.[.[.[/]                        : Initializing Spring embedded WebApplicationContext
+07-12-2018 15:21:58.971  INFO MichalV-ntb - [ost-startStop-1] o.s.w.c.ContextLoader                    : Root WebApplicationContext: initialization completed in 2724 ms
+07-12-2018 15:21:59.092  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.FilterRegistrationBean         : Mapping filter: 'characterEncodingFilter' to: [/*]
+07-12-2018 15:21:59.093  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.FilterRegistrationBean         : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+07-12-2018 15:21:59.093  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.FilterRegistrationBean         : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+07-12-2018 15:21:59.093  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.FilterRegistrationBean         : Mapping filter: 'requestContextFilter' to: [/*]
+07-12-2018 15:21:59.095  INFO MichalV-ntb - [ost-startStop-1] .s.DelegatingFilterProxyRegistrationBean : Mapping filter: 'springSecurityFilterChain' to: [/*]
+07-12-2018 15:21:59.096  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.ServletRegistrationBean        : Servlet dispatcherServlet mapped to [/]
+07-12-2018 15:21:59.393  INFO MichalV-ntb - [      main] c.z.h.HikariDataSource                   : HikariPool-1 - Starting...
+07-12-2018 15:21:59.623  INFO MichalV-ntb - [      main] c.z.h.HikariDataSource                   : HikariPool-1 - Start completed.
+07-12-2018 15:21:59.700  INFO MichalV-ntb - [      main] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+07-12-2018 15:21:59.712  INFO MichalV-ntb - [      main] o.h.j.i.u.LogHelper                      : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+07-12-2018 15:21:59.820  INFO MichalV-ntb - [      main] o.h.Version                              : HHH000412: Hibernate Core {5.2.17.Final}
+07-12-2018 15:21:59.822  INFO MichalV-ntb - [      main] o.h.c.Environment                        : HHH000206: hibernate.properties not found
+07-12-2018 15:21:59.884  INFO MichalV-ntb - [      main] o.h.a.c.Version                          : HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+07-12-2018 15:22:00.224  INFO MichalV-ntb - [      main] o.h.d.Dialect                            : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL95Dialect
+07-12-2018 15:22:00.673  INFO MichalV-ntb - [      main] o.h.e.j.e.i.LobCreatorBuilderImpl        : HHH000424: Disabling contextual LOB creation as createClob() method threw error : java.lang.reflect.InvocationTargetException
+07-12-2018 15:22:00.675  INFO MichalV-ntb - [      main] o.h.t.BasicTypeRegistry                  : HHH000270: Type registration [java.util.UUID] overrides previous : org.hibernate.type.UUIDBinaryType@1ca3d25b
+07-12-2018 15:22:01.804  INFO MichalV-ntb - [      main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+07-12-2018 15:22:02.320  INFO MichalV-ntb - [      main] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
+07-12-2018 15:22:04.195  WARN MichalV-ntb - [      main] aWebConfiguration$JpaWebMvcConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+07-12-2018 15:22:04.284  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/home],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.home()
+07-12-2018 15:22:04.286  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/logout],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.logout()
+07-12-2018 15:22:04.286  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/403],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.error403()
+07-12-2018 15:22:04.287  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/about],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.about()
+07-12-2018 15:22:04.287  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.home1()
+07-12-2018 15:22:04.287  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/login],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.login()
+07-12-2018 15:22:04.297  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/createModifySite],methods=[POST]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteController.createOrUpdateCoffeeSite(cz.fungisoft.coffeecompass.dto.CoffeeSiteDto,org.springframework.validation.BindingResult)
+07-12-2018 15:22:04.298  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/createSite],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.siteToCreateAndModify(cz.fungisoft.coffeecompass.dto.CoffeeSiteDto)
+07-12-2018 15:22:04.299  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/modifySite/{id}],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.showSiteUpdatePage(java.lang.Integer)
+07-12-2018 15:22:04.299  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/saveStarsAndComment/{id}],methods=[POST]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.saveCommentAndStarsForSite(cz.fungisoft.coffeecompass.controller.StarsAndCommentModel,int)
+07-12-2018 15:22:04.300  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/deactivateSite/{id}],methods=[PUT]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteController.deactivateCoffeeSite(java.lang.Integer)
+07-12-2018 15:22:04.301  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/activateSite/{id}],methods=[PUT]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteController.activateCoffeeSite(java.lang.Integer)
+07-12-2018 15:22:04.301  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/allSites],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.sites(java.lang.String,java.lang.String)
+07-12-2018 15:22:04.302  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/mySites],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.showMySites()
+07-12-2018 15:22:04.302  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/site/],methods=[GET]}" onto public cz.fungisoft.coffeecompass.dto.CoffeeSiteDto cz.fungisoft.coffeecompass.controller.CoffeeSiteController.siteByName(java.lang.String)
+07-12-2018 15:22:04.303  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/dist/],methods=[GET]}" onto public double cz.fungisoft.coffeecompass.controller.CoffeeSiteController.distance(double,double,double,double)
+07-12-2018 15:22:04.303  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/showSite/{id}],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.showSite(int)
+07-12-2018 15:22:04.304  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/cancelStatusSite/{id}],methods=[PUT]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteController.cancelStatusSite(java.lang.Integer)
+07-12-2018 15:22:04.304  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/finalDeleteSite/{id}],methods=[DELETE]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteController.finalDelete(int)
+07-12-2018 15:22:04.305  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/searchSites],methods=[POST]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteSearchController.searchSitesWithStatusAndCoffeeSort(cz.fungisoft.coffeecompass.controller.CoffeeSiteSearchCriteria,org.springframework.validation.BindingResult)
+07-12-2018 15:22:04.306  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/searchSites],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteSearchController.getSitesWithStatusAndCoffeeSort(org.springframework.ui.Model)
+07-12-2018 15:22:04.308  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/contactMe],methods=[POST]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.ContactMeMessageController.createOrUpdateCoffeeSite(cz.fungisoft.coffeecompass.dto.ContactMeMessageDto,org.springframework.validation.BindingResult)
+07-12-2018 15:22:04.308  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/contactMe],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.ContactMeMessageController.getForm(cz.fungisoft.coffeecompass.dto.ContactMeMessageDto)
+07-12-2018 15:22:04.315  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/register],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.UserController.showRegistrationForm(cz.fungisoft.coffeecompass.dto.UserDataDto,org.springframework.ui.Model)
+07-12-2018 15:22:04.316  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/register-post],methods=[POST]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.UserController.registerUserAccount(cz.fungisoft.coffeecompass.dto.UserDataDto,org.springframework.validation.BindingResult,org.springframework.ui.ModelMap,java.util.Locale)
+07-12-2018 15:22:04.316  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/all],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.UserController.listAllUsers()
+07-12-2018 15:22:04.317  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/show/{id}],methods=[GET]}" onto public org.springframework.http.ResponseEntity<cz.fungisoft.coffeecompass.dto.UserDataDto> cz.fungisoft.coffeecompass.controller.UserController.getUser(java.lang.Integer)
+07-12-2018 15:22:04.317  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/delete/{id}],methods=[DELETE]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.UserController.deleteUser(java.lang.Integer)
+07-12-2018 15:22:04.317  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/edit/{userName}],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.UserController.editUser(java.lang.String,org.springframework.ui.ModelMap)
+07-12-2018 15:22:04.318  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/edit-put],methods=[PUT]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.UserController.editUserAccount(cz.fungisoft.coffeecompass.dto.UserDataDto,org.springframework.validation.BindingResult,org.springframework.ui.ModelMap,org.springframework.web.servlet.mvc.support.RedirectAttributes,java.util.Locale)
+07-12-2018 15:22:04.324  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/swagger-resources/configuration/ui]}" onto public org.springframework.http.ResponseEntity<springfox.documentation.swagger.web.UiConfiguration> springfox.documentation.swagger.web.ApiResourceController.uiConfiguration()
+07-12-2018 15:22:04.325  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/swagger-resources]}" onto public org.springframework.http.ResponseEntity<java.util.List<springfox.documentation.swagger.web.SwaggerResource>> springfox.documentation.swagger.web.ApiResourceController.swaggerResources()
+07-12-2018 15:22:04.326  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/swagger-resources/configuration/security]}" onto public org.springframework.http.ResponseEntity<springfox.documentation.swagger.web.SecurityConfiguration> springfox.documentation.swagger.web.ApiResourceController.securityConfiguration()
+07-12-2018 15:22:04.332  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+07-12-2018 15:22:04.333  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+07-12-2018 15:22:04.524  INFO MichalV-ntb - [      main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+07-12-2018 15:22:04.816  INFO MichalV-ntb - [      main] o.s.s.w.DefaultSecurityFilterChain       : Creating filter chain: org.springframework.security.web.util.matcher.AnyRequestMatcher@1, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@4331be30, org.springframework.security.web.context.SecurityContextPersistenceFilter@48aa0813, org.springframework.security.web.header.HeaderWriterFilter@2419fe6f, org.springframework.security.web.csrf.CsrfFilter@7672960e, org.springframework.security.web.authentication.logout.LogoutFilter@1e7cfd49, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@6774f264, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@6cbbfe29, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@178dc733, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5cd71ee2, org.springframework.security.web.session.SessionManagementFilter@398694a6, org.springframework.security.web.access.ExceptionTranslationFilter@294ebe11, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@28b2e4d8]
+07-12-2018 15:22:04.922  INFO MichalV-ntb - [      main] o.s.w.s.h.SimpleUrlHandlerMapping        : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+07-12-2018 15:22:05.177  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@61d6015a: startup date [Fri Dec 07 15:21:56 CET 2018]; root of context hierarchy
+07-12-2018 15:22:05.197  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Detected @ModelAttribute methods in userAdvice
+07-12-2018 15:22:05.272  INFO MichalV-ntb - [      main] o.s.w.s.h.SimpleUrlHandlerMapping        : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+07-12-2018 15:22:05.272  INFO MichalV-ntb - [      main] o.s.w.s.h.SimpleUrlHandlerMapping        : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+07-12-2018 15:22:05.296  INFO MichalV-ntb - [      main] .m.m.a.ExceptionHandlerExceptionResolver : Detected @ExceptionHandler methods in exceptionsControllerAdvice
+07-12-2018 15:22:06.073  INFO MichalV-ntb - [      main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+07-12-2018 15:22:06.075  INFO MichalV-ntb - [      main] o.s.j.e.a.AnnotationMBeanExporter        : Bean with name 'dataSource' has been autodetected for JMX exposure
+07-12-2018 15:22:06.083  INFO MichalV-ntb - [      main] o.s.j.e.a.AnnotationMBeanExporter        : Located MBean 'dataSource': registering with JMX server as MBean [com.zaxxer.hikari:name=dataSource,type=HikariDataSource]
+07-12-2018 15:22:06.088  INFO MichalV-ntb - [      main] o.s.c.s.DefaultLifecycleProcessor        : Starting beans in phase 2147483647
+07-12-2018 15:22:06.088  INFO MichalV-ntb - [      main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+07-12-2018 15:22:06.115  INFO MichalV-ntb - [      main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+07-12-2018 15:22:06.170  INFO MichalV-ntb - [      main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+07-12-2018 15:22:06.480  WARN MichalV-ntb - [      main] s.d.s.w.r.p.ParameterDataTypeReader      : Trying to infer dataType org.springframework.ui.ModelMap
+07-12-2018 15:22:06.488  WARN MichalV-ntb - [      main] s.d.s.w.r.p.ParameterDataTypeReader      : Trying to infer dataType org.springframework.ui.ModelMap
+07-12-2018 15:22:06.509  WARN MichalV-ntb - [      main] s.d.s.w.r.p.ParameterDataTypeReader      : Trying to infer dataType org.springframework.ui.ModelMap
+07-12-2018 15:22:06.540  INFO MichalV-ntb - [      main] o.a.c.h.Http11NioProtocol                : Starting ProtocolHandler ["http-nio-8080"]
+07-12-2018 15:22:06.571  INFO MichalV-ntb - [      main] o.a.t.u.n.NioSelectorPool                : Using a shared selector for servlet write/read
+07-12-2018 15:22:06.587  INFO MichalV-ntb - [      main] o.s.b.w.e.t.TomcatWebServer              : Tomcat started on port(s): 8080 (http) with context path ''
+07-12-2018 15:22:23.470  INFO MichalV-ntb - [nio-8080-exec-1] o.a.c.c.C.[.[.[/]                        : Initializing Spring FrameworkServlet 'dispatcherServlet'
+07-12-2018 15:22:23.470  INFO MichalV-ntb - [nio-8080-exec-1] o.s.w.s.DispatcherServlet                : FrameworkServlet 'dispatcherServlet': initialization started
+07-12-2018 15:22:23.504  INFO MichalV-ntb - [nio-8080-exec-1] o.s.w.s.DispatcherServlet                : FrameworkServlet 'dispatcherServlet': initialization completed in 34 ms
+07-12-2018 15:23:43.291  INFO MichalV-ntb - [on(2)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
+07-12-2018 15:23:43.291  INFO MichalV-ntb - [on(2)-127.0.0.1] ConfigServletWebServerApplicationContext : Closing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@61d6015a: startup date [Fri Dec 07 15:21:56 CET 2018]; root of context hierarchy
+07-12-2018 15:23:43.295  INFO MichalV-ntb - [on(2)-127.0.0.1] o.s.c.s.DefaultLifecycleProcessor        : Stopping beans in phase 2147483647
+07-12-2018 15:23:43.295  INFO MichalV-ntb - [on(2)-127.0.0.1] o.s.j.e.a.AnnotationMBeanExporter        : Unregistering JMX-exposed beans on shutdown
+07-12-2018 15:23:43.296  INFO MichalV-ntb - [on(2)-127.0.0.1] o.s.j.e.a.AnnotationMBeanExporter        : Unregistering JMX-exposed beans
+07-12-2018 15:23:43.307  INFO MichalV-ntb - [on(2)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+07-12-2018 15:23:43.308  INFO MichalV-ntb - [on(2)-127.0.0.1] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown initiated...
+07-12-2018 15:23:43.320  INFO MichalV-ntb - [on(2)-127.0.0.1] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown completed.
+07-12-2018 16:08:52.091  INFO MichalV-ntb - [      main] ConfigServletWebServerApplicationContext : Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@2e1d27ba: startup date [Fri Dec 07 16:08:52 CET 2018]; root of context hierarchy
+07-12-2018 16:08:54.303  INFO MichalV-ntb - [      main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$1d18b836] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+07-12-2018 16:08:54.744  INFO MichalV-ntb - [      main] o.s.b.w.e.t.TomcatWebServer              : Tomcat initialized with port(s): 8080 (http)
+07-12-2018 16:08:54.755  INFO MichalV-ntb - [      main] o.a.c.h.Http11NioProtocol                : Initializing ProtocolHandler ["http-nio-8080"]
+07-12-2018 16:08:54.766  INFO MichalV-ntb - [      main] o.a.c.c.StandardService                  : Starting service [Tomcat]
+07-12-2018 16:08:54.766  INFO MichalV-ntb - [      main] o.a.c.c.StandardEngine                   : Starting Servlet Engine: Apache Tomcat/8.5.34
+07-12-2018 16:08:54.771  INFO MichalV-ntb - [ost-startStop-1] o.a.c.c.AprLifecycleListener             : The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [C:\Program Files\Java\jre1.8.0_171\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:/Program Files/Java/jre1.8.0_171/bin/server;C:/Program Files/Java/jre1.8.0_171/bin;C:/Program Files/Java/jre1.8.0_171/lib/amd64;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\iCLS\;C:\Program Files\Intel\Intel(R) Management Engine Components\iCLS\;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\ProgramData\Oracle\Java\javapath;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\PuTTY\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\Java\jdk1.8.0_161\bin;C:\Program Files\Git\cmd;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Users\Michal\AppData\Local\Microsoft\WindowsApps;C:\Program Files\apache-maven-3.5.4\bin;;C:\Users\Michal\Desktop;;.]
+07-12-2018 16:08:54.958  INFO MichalV-ntb - [ost-startStop-1] o.a.c.c.C.[.[.[/]                        : Initializing Spring embedded WebApplicationContext
+07-12-2018 16:08:54.961  INFO MichalV-ntb - [ost-startStop-1] o.s.w.c.ContextLoader                    : Root WebApplicationContext: initialization completed in 2877 ms
+07-12-2018 16:08:55.083  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.FilterRegistrationBean         : Mapping filter: 'characterEncodingFilter' to: [/*]
+07-12-2018 16:08:55.083  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.FilterRegistrationBean         : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+07-12-2018 16:08:55.084  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.FilterRegistrationBean         : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+07-12-2018 16:08:55.084  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.FilterRegistrationBean         : Mapping filter: 'requestContextFilter' to: [/*]
+07-12-2018 16:08:55.085  INFO MichalV-ntb - [ost-startStop-1] .s.DelegatingFilterProxyRegistrationBean : Mapping filter: 'springSecurityFilterChain' to: [/*]
+07-12-2018 16:08:55.086  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.ServletRegistrationBean        : Servlet dispatcherServlet mapped to [/]
+07-12-2018 16:08:55.378  INFO MichalV-ntb - [      main] c.z.h.HikariDataSource                   : HikariPool-1 - Starting...
+07-12-2018 16:08:55.571  INFO MichalV-ntb - [      main] c.z.h.HikariDataSource                   : HikariPool-1 - Start completed.
+07-12-2018 16:08:55.703  INFO MichalV-ntb - [      main] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+07-12-2018 16:08:55.716  INFO MichalV-ntb - [      main] o.h.j.i.u.LogHelper                      : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+07-12-2018 16:08:55.872  INFO MichalV-ntb - [      main] o.h.Version                              : HHH000412: Hibernate Core {5.2.17.Final}
+07-12-2018 16:08:55.879  INFO MichalV-ntb - [      main] o.h.c.Environment                        : HHH000206: hibernate.properties not found
+07-12-2018 16:08:55.959  INFO MichalV-ntb - [      main] o.h.a.c.Version                          : HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+07-12-2018 16:08:56.343  INFO MichalV-ntb - [      main] o.h.d.Dialect                            : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL95Dialect
+07-12-2018 16:08:56.746  INFO MichalV-ntb - [      main] o.h.e.j.e.i.LobCreatorBuilderImpl        : HHH000424: Disabling contextual LOB creation as createClob() method threw error : java.lang.reflect.InvocationTargetException
+07-12-2018 16:08:56.759  INFO MichalV-ntb - [      main] o.h.t.BasicTypeRegistry                  : HHH000270: Type registration [java.util.UUID] overrides previous : org.hibernate.type.UUIDBinaryType@39941489
+07-12-2018 16:08:57.622  INFO MichalV-ntb - [      main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+07-12-2018 16:08:58.094  INFO MichalV-ntb - [      main] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
+07-12-2018 16:08:59.576  WARN MichalV-ntb - [      main] aWebConfiguration$JpaWebMvcConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+07-12-2018 16:08:59.654  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/home],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.home()
+07-12-2018 16:08:59.655  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.home1()
+07-12-2018 16:08:59.656  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/about],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.about()
+07-12-2018 16:08:59.657  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/logout],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.logout()
+07-12-2018 16:08:59.657  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/login],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.login()
+07-12-2018 16:08:59.658  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/403],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.error403()
+07-12-2018 16:08:59.668  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/saveStarsAndComment/{id}],methods=[POST]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.saveCommentAndStarsForSite(cz.fungisoft.coffeecompass.controller.StarsAndCommentModel,int)
+07-12-2018 16:08:59.669  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/createSite],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.siteToCreateAndModify(cz.fungisoft.coffeecompass.dto.CoffeeSiteDto)
+07-12-2018 16:08:59.669  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/createModifySite],methods=[POST]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteController.createOrUpdateCoffeeSite(cz.fungisoft.coffeecompass.dto.CoffeeSiteDto,org.springframework.validation.BindingResult)
+07-12-2018 16:08:59.670  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/modifySite/{id}],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.showSiteUpdatePage(java.lang.Integer)
+07-12-2018 16:08:59.670  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/activateSite/{id}],methods=[PUT]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteController.activateCoffeeSite(java.lang.Integer)
+07-12-2018 16:08:59.671  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/deactivateSite/{id}],methods=[PUT]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteController.deactivateCoffeeSite(java.lang.Integer)
+07-12-2018 16:08:59.672  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/allSites],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.sites(java.lang.String,java.lang.String)
+07-12-2018 16:08:59.672  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/cancelStatusSite/{id}],methods=[PUT]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteController.cancelStatusSite(java.lang.Integer)
+07-12-2018 16:08:59.673  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/site/],methods=[GET]}" onto public cz.fungisoft.coffeecompass.dto.CoffeeSiteDto cz.fungisoft.coffeecompass.controller.CoffeeSiteController.siteByName(java.lang.String)
+07-12-2018 16:08:59.673  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/mySites],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.showMySites()
+07-12-2018 16:08:59.674  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/finalDeleteSite/{id}],methods=[DELETE]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteController.finalDelete(int)
+07-12-2018 16:08:59.674  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/showSite/{id}],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.showSite(int)
+07-12-2018 16:08:59.675  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/dist/],methods=[GET]}" onto public double cz.fungisoft.coffeecompass.controller.CoffeeSiteController.distance(double,double,double,double)
+07-12-2018 16:08:59.676  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/searchSites],methods=[POST]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteSearchController.searchSitesWithStatusAndCoffeeSort(cz.fungisoft.coffeecompass.controller.CoffeeSiteSearchCriteria,org.springframework.validation.BindingResult)
+07-12-2018 16:08:59.676  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/searchSites],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteSearchController.getSitesWithStatusAndCoffeeSort(org.springframework.ui.Model)
+07-12-2018 16:08:59.677  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/contactMe],methods=[POST]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.ContactMeMessageController.createOrUpdateCoffeeSite(cz.fungisoft.coffeecompass.dto.ContactMeMessageDto,org.springframework.validation.BindingResult)
+07-12-2018 16:08:59.678  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/contactMe],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.ContactMeMessageController.getForm(cz.fungisoft.coffeecompass.dto.ContactMeMessageDto)
+07-12-2018 16:08:59.684  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/register],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.UserController.showRegistrationForm(cz.fungisoft.coffeecompass.dto.UserDataDto,org.springframework.ui.Model)
+07-12-2018 16:08:59.685  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/register-post],methods=[POST]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.UserController.registerUserAccount(cz.fungisoft.coffeecompass.dto.UserDataDto,org.springframework.validation.BindingResult,org.springframework.ui.ModelMap,java.util.Locale)
+07-12-2018 16:08:59.685  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/edit-put],methods=[PUT]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.UserController.editUserAccount(cz.fungisoft.coffeecompass.dto.UserDataDto,org.springframework.validation.BindingResult,org.springframework.ui.ModelMap,org.springframework.web.servlet.mvc.support.RedirectAttributes,java.util.Locale)
+07-12-2018 16:08:59.686  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/edit/{userName}],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.UserController.editUser(java.lang.String,org.springframework.ui.ModelMap)
+07-12-2018 16:08:59.687  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/show/{id}],methods=[GET]}" onto public org.springframework.http.ResponseEntity<cz.fungisoft.coffeecompass.dto.UserDataDto> cz.fungisoft.coffeecompass.controller.UserController.getUser(java.lang.Integer)
+07-12-2018 16:08:59.687  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/all],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.UserController.listAllUsers()
+07-12-2018 16:08:59.688  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/delete/{id}],methods=[DELETE]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.UserController.deleteUser(java.lang.Integer)
+07-12-2018 16:08:59.694  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/swagger-resources/configuration/security]}" onto public org.springframework.http.ResponseEntity<springfox.documentation.swagger.web.SecurityConfiguration> springfox.documentation.swagger.web.ApiResourceController.securityConfiguration()
+07-12-2018 16:08:59.694  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/swagger-resources]}" onto public org.springframework.http.ResponseEntity<java.util.List<springfox.documentation.swagger.web.SwaggerResource>> springfox.documentation.swagger.web.ApiResourceController.swaggerResources()
+07-12-2018 16:08:59.695  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/swagger-resources/configuration/ui]}" onto public org.springframework.http.ResponseEntity<springfox.documentation.swagger.web.UiConfiguration> springfox.documentation.swagger.web.ApiResourceController.uiConfiguration()
+07-12-2018 16:08:59.702  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+07-12-2018 16:08:59.703  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+07-12-2018 16:08:59.887  INFO MichalV-ntb - [      main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+07-12-2018 16:09:00.155  INFO MichalV-ntb - [      main] o.s.s.w.DefaultSecurityFilterChain       : Creating filter chain: org.springframework.security.web.util.matcher.AnyRequestMatcher@1, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@24e2355c, org.springframework.security.web.context.SecurityContextPersistenceFilter@30a62a5b, org.springframework.security.web.header.HeaderWriterFilter@3a8640f7, org.springframework.security.web.csrf.CsrfFilter@6cbbfe29, org.springframework.security.web.authentication.logout.LogoutFilter@46188a89, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@29532e91, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@30133a11, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@3c3cd13a, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@19739906, org.springframework.security.web.session.SessionManagementFilter@45e69324, org.springframework.security.web.access.ExceptionTranslationFilter@1aa59698, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@1bd59b82]
+07-12-2018 16:09:00.250  INFO MichalV-ntb - [      main] o.s.w.s.h.SimpleUrlHandlerMapping        : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+07-12-2018 16:09:00.435  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@2e1d27ba: startup date [Fri Dec 07 16:08:52 CET 2018]; root of context hierarchy
+07-12-2018 16:09:00.444  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Detected @ModelAttribute methods in userAdvice
+07-12-2018 16:09:00.492  INFO MichalV-ntb - [      main] o.s.w.s.h.SimpleUrlHandlerMapping        : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+07-12-2018 16:09:00.492  INFO MichalV-ntb - [      main] o.s.w.s.h.SimpleUrlHandlerMapping        : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+07-12-2018 16:09:00.506  INFO MichalV-ntb - [      main] .m.m.a.ExceptionHandlerExceptionResolver : Detected @ExceptionHandler methods in exceptionsControllerAdvice
+07-12-2018 16:09:01.182  INFO MichalV-ntb - [      main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+07-12-2018 16:09:01.196  INFO MichalV-ntb - [      main] o.s.j.e.a.AnnotationMBeanExporter        : Bean with name 'dataSource' has been autodetected for JMX exposure
+07-12-2018 16:09:01.203  INFO MichalV-ntb - [      main] o.s.j.e.a.AnnotationMBeanExporter        : Located MBean 'dataSource': registering with JMX server as MBean [com.zaxxer.hikari:name=dataSource,type=HikariDataSource]
+07-12-2018 16:09:01.209  INFO MichalV-ntb - [      main] o.s.c.s.DefaultLifecycleProcessor        : Starting beans in phase 2147483647
+07-12-2018 16:09:01.210  INFO MichalV-ntb - [      main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+07-12-2018 16:09:01.230  INFO MichalV-ntb - [      main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+07-12-2018 16:09:01.284  INFO MichalV-ntb - [      main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+07-12-2018 16:09:01.690  WARN MichalV-ntb - [      main] s.d.s.w.r.p.ParameterDataTypeReader      : Trying to infer dataType org.springframework.ui.ModelMap
+07-12-2018 16:09:01.701  WARN MichalV-ntb - [      main] s.d.s.w.r.p.ParameterDataTypeReader      : Trying to infer dataType org.springframework.ui.ModelMap
+07-12-2018 16:09:01.732  WARN MichalV-ntb - [      main] s.d.s.w.r.p.ParameterDataTypeReader      : Trying to infer dataType org.springframework.ui.ModelMap
+07-12-2018 16:09:01.777  INFO MichalV-ntb - [      main] o.a.c.h.Http11NioProtocol                : Starting ProtocolHandler ["http-nio-8080"]
+07-12-2018 16:09:01.791  INFO MichalV-ntb - [      main] o.a.t.u.n.NioSelectorPool                : Using a shared selector for servlet write/read
+07-12-2018 16:09:01.814  INFO MichalV-ntb - [      main] o.s.b.w.e.t.TomcatWebServer              : Tomcat started on port(s): 8080 (http) with context path ''
+07-12-2018 16:09:31.551  INFO MichalV-ntb - [nio-8080-exec-1] o.a.c.c.C.[.[.[/]                        : Initializing Spring FrameworkServlet 'dispatcherServlet'
+07-12-2018 16:09:31.554  INFO MichalV-ntb - [nio-8080-exec-1] o.s.w.s.DispatcherServlet                : FrameworkServlet 'dispatcherServlet': initialization started
+07-12-2018 16:09:31.623  INFO MichalV-ntb - [nio-8080-exec-1] o.s.w.s.DispatcherServlet                : FrameworkServlet 'dispatcherServlet': initialization completed in 69 ms
+07-12-2018 16:13:42.642  INFO MichalV-ntb - [on(2)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
+07-12-2018 16:13:42.645  INFO MichalV-ntb - [on(2)-127.0.0.1] ConfigServletWebServerApplicationContext : Closing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@2e1d27ba: startup date [Fri Dec 07 16:08:52 CET 2018]; root of context hierarchy
+07-12-2018 16:13:42.648  INFO MichalV-ntb - [on(2)-127.0.0.1] o.s.c.s.DefaultLifecycleProcessor        : Stopping beans in phase 2147483647
+07-12-2018 16:13:42.653  INFO MichalV-ntb - [on(2)-127.0.0.1] o.s.j.e.a.AnnotationMBeanExporter        : Unregistering JMX-exposed beans on shutdown
+07-12-2018 16:13:42.654  INFO MichalV-ntb - [on(2)-127.0.0.1] o.s.j.e.a.AnnotationMBeanExporter        : Unregistering JMX-exposed beans
+07-12-2018 16:13:42.662  INFO MichalV-ntb - [on(2)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+07-12-2018 16:13:42.673  INFO MichalV-ntb - [on(2)-127.0.0.1] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown initiated...
+07-12-2018 16:13:42.693  INFO MichalV-ntb - [on(2)-127.0.0.1] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown completed.
+07-12-2018 18:35:28.537  INFO MichalV-ntb - [      main] ConfigServletWebServerApplicationContext : Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@189aa67a: startup date [Fri Dec 07 18:35:28 CET 2018]; root of context hierarchy
+07-12-2018 18:35:29.823  INFO MichalV-ntb - [      main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$83f998cd] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+07-12-2018 18:35:30.219  INFO MichalV-ntb - [      main] o.s.b.w.e.t.TomcatWebServer              : Tomcat initialized with port(s): 8080 (http)
+07-12-2018 18:35:30.232  INFO MichalV-ntb - [      main] o.a.c.h.Http11NioProtocol                : Initializing ProtocolHandler ["http-nio-8080"]
+07-12-2018 18:35:30.240  INFO MichalV-ntb - [      main] o.a.c.c.StandardService                  : Starting service [Tomcat]
+07-12-2018 18:35:30.241  INFO MichalV-ntb - [      main] o.a.c.c.StandardEngine                   : Starting Servlet Engine: Apache Tomcat/8.5.34
+07-12-2018 18:35:30.245  INFO MichalV-ntb - [ost-startStop-1] o.a.c.c.AprLifecycleListener             : The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [C:\Program Files\Java\jre1.8.0_171\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:/Program Files/Java/jre1.8.0_171/bin/server;C:/Program Files/Java/jre1.8.0_171/bin;C:/Program Files/Java/jre1.8.0_171/lib/amd64;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\iCLS\;C:\Program Files\Intel\Intel(R) Management Engine Components\iCLS\;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\ProgramData\Oracle\Java\javapath;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\PuTTY\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\Java\jdk1.8.0_161\bin;C:\Program Files\Git\cmd;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Users\Michal\AppData\Local\Microsoft\WindowsApps;C:\Program Files\apache-maven-3.5.4\bin;;C:\Users\Michal\Desktop;;.]
+07-12-2018 18:35:30.334  INFO MichalV-ntb - [ost-startStop-1] o.a.c.c.C.[.[.[/]                        : Initializing Spring embedded WebApplicationContext
+07-12-2018 18:35:30.335  INFO MichalV-ntb - [ost-startStop-1] o.s.w.c.ContextLoader                    : Root WebApplicationContext: initialization completed in 1800 ms
+07-12-2018 18:35:30.424  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.FilterRegistrationBean         : Mapping filter: 'characterEncodingFilter' to: [/*]
+07-12-2018 18:35:30.424  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.FilterRegistrationBean         : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+07-12-2018 18:35:30.424  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.FilterRegistrationBean         : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+07-12-2018 18:35:30.425  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.FilterRegistrationBean         : Mapping filter: 'requestContextFilter' to: [/*]
+07-12-2018 18:35:30.425  INFO MichalV-ntb - [ost-startStop-1] .s.DelegatingFilterProxyRegistrationBean : Mapping filter: 'springSecurityFilterChain' to: [/*]
+07-12-2018 18:35:30.425  INFO MichalV-ntb - [ost-startStop-1] o.s.b.w.s.ServletRegistrationBean        : Servlet dispatcherServlet mapped to [/]
+07-12-2018 18:35:30.628  INFO MichalV-ntb - [      main] c.z.h.HikariDataSource                   : HikariPool-1 - Starting...
+07-12-2018 18:35:30.769  INFO MichalV-ntb - [      main] c.z.h.HikariDataSource                   : HikariPool-1 - Start completed.
+07-12-2018 18:35:30.840  INFO MichalV-ntb - [      main] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+07-12-2018 18:35:30.857  INFO MichalV-ntb - [      main] o.h.j.i.u.LogHelper                      : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+07-12-2018 18:35:30.958  INFO MichalV-ntb - [      main] o.h.Version                              : HHH000412: Hibernate Core {5.2.17.Final}
+07-12-2018 18:35:30.960  INFO MichalV-ntb - [      main] o.h.c.Environment                        : HHH000206: hibernate.properties not found
+07-12-2018 18:35:31.015  INFO MichalV-ntb - [      main] o.h.a.c.Version                          : HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+07-12-2018 18:35:31.202  INFO MichalV-ntb - [      main] o.h.d.Dialect                            : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL95Dialect
+07-12-2018 18:35:31.397  INFO MichalV-ntb - [      main] o.h.e.j.e.i.LobCreatorBuilderImpl        : HHH000424: Disabling contextual LOB creation as createClob() method threw error : java.lang.reflect.InvocationTargetException
+07-12-2018 18:35:31.399  INFO MichalV-ntb - [      main] o.h.t.BasicTypeRegistry                  : HHH000270: Type registration [java.util.UUID] overrides previous : org.hibernate.type.UUIDBinaryType@40f9f60d
+07-12-2018 18:35:32.026  INFO MichalV-ntb - [      main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+07-12-2018 18:35:32.365  INFO MichalV-ntb - [      main] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
+07-12-2018 18:35:33.578  WARN MichalV-ntb - [      main] aWebConfiguration$JpaWebMvcConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+07-12-2018 18:35:33.631  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/home],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.home()
+07-12-2018 18:35:33.633  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/logout],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.logout()
+07-12-2018 18:35:33.633  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/403],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.error403()
+07-12-2018 18:35:33.634  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/about],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.about()
+07-12-2018 18:35:33.634  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.home1()
+07-12-2018 18:35:33.634  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/login],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.BasicController.login()
+07-12-2018 18:35:33.638  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/mySites],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.showMySites()
+07-12-2018 18:35:33.639  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/dist/],methods=[GET]}" onto public double cz.fungisoft.coffeecompass.controller.CoffeeSiteController.distance(double,double,double,double)
+07-12-2018 18:35:33.640  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/showSite/{id}],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.showSite(int)
+07-12-2018 18:35:33.640  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/finalDeleteSite/{id}],methods=[DELETE]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteController.finalDelete(int)
+07-12-2018 18:35:33.640  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/site/],methods=[GET]}" onto public cz.fungisoft.coffeecompass.dto.CoffeeSiteDto cz.fungisoft.coffeecompass.controller.CoffeeSiteController.siteByName(java.lang.String)
+07-12-2018 18:35:33.640  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/cancelStatusSite/{id}],methods=[PUT]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteController.cancelStatusSite(java.lang.Integer)
+07-12-2018 18:35:33.640  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/allSites],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.sites(java.lang.String,java.lang.String)
+07-12-2018 18:35:33.641  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/activateSite/{id}],methods=[PUT]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteController.activateCoffeeSite(java.lang.Integer)
+07-12-2018 18:35:33.641  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/modifySite/{id}],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.showSiteUpdatePage(java.lang.Integer)
+07-12-2018 18:35:33.641  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/saveStarsAndComment/{id}],methods=[POST]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.saveCommentAndStarsForSite(cz.fungisoft.coffeecompass.controller.StarsAndCommentModel,int)
+07-12-2018 18:35:33.641  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/createSite],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteController.siteToCreateAndModify(cz.fungisoft.coffeecompass.dto.CoffeeSiteDto)
+07-12-2018 18:35:33.642  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/createModifySite],methods=[POST]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteController.createOrUpdateCoffeeSite(cz.fungisoft.coffeecompass.dto.CoffeeSiteDto,org.springframework.validation.BindingResult)
+07-12-2018 18:35:33.642  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/deactivateSite/{id}],methods=[PUT]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteController.deactivateCoffeeSite(java.lang.Integer)
+07-12-2018 18:35:33.642  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/searchSites],methods=[GET]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.CoffeeSiteSearchController.getSitesWithStatusAndCoffeeSort(org.springframework.ui.Model)
+07-12-2018 18:35:33.643  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/searchSites],methods=[POST]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.CoffeeSiteSearchController.searchSitesWithStatusAndCoffeeSort(cz.fungisoft.coffeecompass.controller.CoffeeSiteSearchCriteria,org.springframework.validation.BindingResult)
+07-12-2018 18:35:33.643  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/contactMe],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.ContactMeMessageController.getForm(cz.fungisoft.coffeecompass.dto.ContactMeMessageDto)
+07-12-2018 18:35:33.643  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/contactMe],methods=[POST]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.ContactMeMessageController.createOrUpdateCoffeeSite(cz.fungisoft.coffeecompass.dto.ContactMeMessageDto,org.springframework.validation.BindingResult)
+07-12-2018 18:35:33.646  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/delete/{id}],methods=[DELETE]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.UserController.deleteUser(java.lang.Integer)
+07-12-2018 18:35:33.646  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/all],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.UserController.listAllUsers()
+07-12-2018 18:35:33.646  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/edit-put],methods=[PUT]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.UserController.editUserAccount(cz.fungisoft.coffeecompass.dto.UserDataDto,org.springframework.validation.BindingResult,org.springframework.ui.ModelMap,org.springframework.web.servlet.mvc.support.RedirectAttributes,java.util.Locale)
+07-12-2018 18:35:33.647  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/show/{id}],methods=[GET]}" onto public org.springframework.http.ResponseEntity<cz.fungisoft.coffeecompass.dto.UserDataDto> cz.fungisoft.coffeecompass.controller.UserController.getUser(java.lang.Integer)
+07-12-2018 18:35:33.647  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/edit/{userName}],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.UserController.editUser(java.lang.String,org.springframework.ui.ModelMap)
+07-12-2018 18:35:33.647  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/register-post],methods=[POST]}" onto public java.lang.String cz.fungisoft.coffeecompass.controller.UserController.registerUserAccount(cz.fungisoft.coffeecompass.dto.UserDataDto,org.springframework.validation.BindingResult,org.springframework.ui.ModelMap,java.util.Locale)
+07-12-2018 18:35:33.647  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/register],methods=[GET]}" onto public org.springframework.web.servlet.ModelAndView cz.fungisoft.coffeecompass.controller.UserController.showRegistrationForm(cz.fungisoft.coffeecompass.dto.UserDataDto,org.springframework.ui.Model)
+07-12-2018 18:35:33.651  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/swagger-resources/configuration/ui]}" onto public org.springframework.http.ResponseEntity<springfox.documentation.swagger.web.UiConfiguration> springfox.documentation.swagger.web.ApiResourceController.uiConfiguration()
+07-12-2018 18:35:33.651  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/swagger-resources]}" onto public org.springframework.http.ResponseEntity<java.util.List<springfox.documentation.swagger.web.SwaggerResource>> springfox.documentation.swagger.web.ApiResourceController.swaggerResources()
+07-12-2018 18:35:33.652  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/swagger-resources/configuration/security]}" onto public org.springframework.http.ResponseEntity<springfox.documentation.swagger.web.SecurityConfiguration> springfox.documentation.swagger.web.ApiResourceController.securityConfiguration()
+07-12-2018 18:35:33.654  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+07-12-2018 18:35:33.655  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+07-12-2018 18:35:33.787  INFO MichalV-ntb - [      main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+07-12-2018 18:35:33.996  INFO MichalV-ntb - [      main] o.s.s.w.DefaultSecurityFilterChain       : Creating filter chain: org.springframework.security.web.util.matcher.AnyRequestMatcher@1, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@4fc84c92, org.springframework.security.web.context.SecurityContextPersistenceFilter@7e27b77a, org.springframework.security.web.header.HeaderWriterFilter@77fecd2c, org.springframework.security.web.csrf.CsrfFilter@5bfdc92b, org.springframework.security.web.authentication.logout.LogoutFilter@15afebcc, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@2396408a, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@21f94fe3, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@34588991, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5f7bd970, org.springframework.security.web.session.SessionManagementFilter@52b32622, org.springframework.security.web.access.ExceptionTranslationFilter@3f267e1b, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@7dd2a5f7]
+07-12-2018 18:35:34.076  INFO MichalV-ntb - [      main] o.s.w.s.h.SimpleUrlHandlerMapping        : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+07-12-2018 18:35:34.475  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@189aa67a: startup date [Fri Dec 07 18:35:28 CET 2018]; root of context hierarchy
+07-12-2018 18:35:34.482  INFO MichalV-ntb - [      main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Detected @ModelAttribute methods in userAdvice
+07-12-2018 18:35:34.520  INFO MichalV-ntb - [      main] o.s.w.s.h.SimpleUrlHandlerMapping        : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+07-12-2018 18:35:34.521  INFO MichalV-ntb - [      main] o.s.w.s.h.SimpleUrlHandlerMapping        : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+07-12-2018 18:35:34.535  INFO MichalV-ntb - [      main] .m.m.a.ExceptionHandlerExceptionResolver : Detected @ExceptionHandler methods in exceptionsControllerAdvice
+07-12-2018 18:35:34.835  INFO MichalV-ntb - [      main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+07-12-2018 18:35:34.837  INFO MichalV-ntb - [      main] o.s.j.e.a.AnnotationMBeanExporter        : Bean with name 'dataSource' has been autodetected for JMX exposure
+07-12-2018 18:35:34.843  INFO MichalV-ntb - [      main] o.s.j.e.a.AnnotationMBeanExporter        : Located MBean 'dataSource': registering with JMX server as MBean [com.zaxxer.hikari:name=dataSource,type=HikariDataSource]
+07-12-2018 18:35:34.847  INFO MichalV-ntb - [      main] o.s.c.s.DefaultLifecycleProcessor        : Starting beans in phase 2147483647
+07-12-2018 18:35:34.847  INFO MichalV-ntb - [      main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+07-12-2018 18:35:34.865  INFO MichalV-ntb - [      main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+07-12-2018 18:35:34.896  INFO MichalV-ntb - [      main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+07-12-2018 18:35:35.134  WARN MichalV-ntb - [      main] s.d.s.w.r.p.ParameterDataTypeReader      : Trying to infer dataType org.springframework.ui.ModelMap
+07-12-2018 18:35:35.140  WARN MichalV-ntb - [      main] s.d.s.w.r.p.ParameterDataTypeReader      : Trying to infer dataType org.springframework.ui.ModelMap
+07-12-2018 18:35:35.157  WARN MichalV-ntb - [      main] s.d.s.w.r.p.ParameterDataTypeReader      : Trying to infer dataType org.springframework.ui.ModelMap
+07-12-2018 18:35:35.179  INFO MichalV-ntb - [      main] o.a.c.h.Http11NioProtocol                : Starting ProtocolHandler ["http-nio-8080"]
+07-12-2018 18:35:35.195  INFO MichalV-ntb - [      main] o.a.t.u.n.NioSelectorPool                : Using a shared selector for servlet write/read
+07-12-2018 18:35:35.208  INFO MichalV-ntb - [      main] o.s.b.w.e.t.TomcatWebServer              : Tomcat started on port(s): 8080 (http) with context path ''
+07-12-2018 18:36:06.590  INFO MichalV-ntb - [nio-8080-exec-2] o.a.c.c.C.[.[.[/]                        : Initializing Spring FrameworkServlet 'dispatcherServlet'
+07-12-2018 18:36:06.590  INFO MichalV-ntb - [nio-8080-exec-2] o.s.w.s.DispatcherServlet                : FrameworkServlet 'dispatcherServlet': initialization started
+07-12-2018 18:36:06.613  INFO MichalV-ntb - [nio-8080-exec-2] o.s.w.s.DispatcherServlet                : FrameworkServlet 'dispatcherServlet': initialization completed in 23 ms

@@ -8,5 +8,5 @@ package cz.fungisoft.coffeecompass.service;
  */
 public interface ISendMeEmailService
 {
-    public void sendMeSimpleEmail(String from, String subject, String message);
+    public void sendMeSimpleEmail(String fromName, String fromEmail, String toEmail, String message);
 }

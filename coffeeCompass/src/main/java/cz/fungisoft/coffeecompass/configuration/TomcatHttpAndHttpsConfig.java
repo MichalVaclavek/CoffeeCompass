@@ -7,7 +7,12 @@ import org.apache.catalina.connector.Connector;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 
-
+/**
+ * This configuration should allow embeded Tomcat server to handle both http anf https requests.
+ * 
+ * @author Michal Vaclavek
+ *
+ */
 @Configuration
 @Profile(value= {"https_and_http"})
 public class TomcatHttpAndHttpsConfig {

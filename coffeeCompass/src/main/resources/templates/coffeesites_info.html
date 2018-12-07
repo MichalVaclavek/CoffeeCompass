@@ -47,8 +47,7 @@
 			  <td th:text="${site.uliceCP}">Street</td>	
 			  <td th:text="${site.zemDelka}">Delka</td>	  
 			  <td th:text="${site.zemSirka}">Sirka</td>
-			  <td th:text="${site.averageStarsWithNumOfHodnoceni.avgStars} + ' (' + ${site.averageStarsWithNumOfHodnoceni.numOfHodnoceni} + ')'">Stars</td>	
-			  
+			  <td th:text="${site.averageStarsWithNumOfHodnoceni.common}">Stars</td>
 			  <td sec:authorize="isAuthenticated()" th:text="${site.recordStatus.status}">Record status</td>			  
 	
 	          <!-- Form to generate GET http request with Modify button -->

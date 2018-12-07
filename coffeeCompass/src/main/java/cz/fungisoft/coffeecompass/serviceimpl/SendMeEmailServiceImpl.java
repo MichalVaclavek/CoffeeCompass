@@ -3,14 +3,10 @@ package cz.fungisoft.coffeecompass.serviceimpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailAuthenticationException;
 import org.springframework.mail.MailException;
-import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-
-import com.sun.activation.registries.MailcapParseException;
 
 import cz.fungisoft.coffeecompass.service.ISendMeEmailService;
 
@@ -28,14 +24,14 @@ public class SendMeEmailServiceImpl implements ISendMeEmailService
     }
 
     @Override
-    public void sendMeSimpleEmail(String from, String fromEmail, String messageText) {
+    public void sendMeSimpleEmail(String fromName, String fromEmail, String toEmail, String messageText) {
         SimpleMailMessage message = new SimpleMailMessage(); 
-        message.setTo("vaclavek.michal@gmail.com"); 
-        message.setSubject("Zprava z CoffeeCompas. Od: " + from + " , email: " + fromEmail); 
+        message.setTo(toEmail);
+        message.setSubject("Zprava z CoffeeCompass, od: " + fromName + " , email: " + fromEmail); 
         message.setText(messageText);
         try {
             emailSender.send(message);
-            logger.info("Zprava z CoffeeCompas. Od: " + from + " , email: " + fromEmail);
+            logger.info("Zprava z CoffeeCompass. Od: " + fromName + " , email: " + fromEmail);
         }
         catch (MailException e)
         {
