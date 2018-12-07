@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+      <div th:replace="fragments/header :: header-css"/>
+</head>
+<body>
+	<div th:replace="fragments/header :: header"/>
+	
+	<div class="w3-container">
+	
+		<div class="w3-pale-blue w3-display-container w3-round w3-panel">
+		    <span onclick="this.parentElement.style.display='none'"
+		  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
+		    <p th:text="${success}" class="w3-container" >
+		    </p>
+		</div>
+		  <!-- <span th:text="#{user.user}"> </span> <b><span th:text="${loggedInUser.userName}"> </span></b> <span th:text="#{error.user.notAllowed}"> </span> -->
+		 
+		<a sec:authorize="NOT isAuthenticated()" th:href="@{/login}" th:text="#{mainmenu.userlogin}" class="">User login</a>
+		 
+	</div>
+
+	<div th:replace="fragments/footer :: footer"/>
+
+</body>
+
+</html>

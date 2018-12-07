@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/header :: header-css"/>
+</head>
+
+<body>
+
+	<div th:replace="fragments/header :: header"/>
+		
+	<div>
+	    <h2 th:text="#{about.page.welcome.label}" class="w3-light-grey w3-margin-bottom w3-center">Coffee compass vás vítá!</h2><br>
+	    
+	    <div class="w3-content">    
+	        <div class="w3-left w3-margin">
+	        
+	        	<div class="w3-margin-bottom">
+		        	<h3 th:text="#{about.page.p1.label}"></h3>
+			        <p th:text="#{about.page.p1.s1}" ></p>
+			        <p th:text="#{about.page.p1.s2}" ></p>
+		        </div>
+		        
+		        <div class="w3-margin-bottom">
+			        <h3 th:text="#{about.page.p2.label}"></h3>
+			        <p th:text="#{about.page.p2.s1}"> </p>
+			        <p th:text="#{about.page.p2.s2}" class="w3-margin-bottom"></p>
+		        </div>
+		        
+		        <div class="w3-margin-bottom">
+			        <h3 th:text="#{about.page.p3.label}"></h3>
+			        <p th:text="#{about.page.p3.s1}" class="w3-margin-bottom"></p>
+			        
+			        <p th:text="#{about.page.p3.s2}" class="w3-margin-bottom"></p>
+		        </div>
+		        
+		        <div class="w3-margin-bottom">
+			        <h3 th:text="#{about.page.p4.label}"></h3>
+			        <p th:text="#{about.page.p4.s1}" class="w3-margin-bottom"></p>
+			        <p th:text="#{about.page.p4.s2}" class="w3-margin-bottom"></p>
+		        </div>
+		        
+	        </div>
+	    </div>
+	
+	</div>
+
+	<div th:replace="fragments/footer :: footer"/>
+
+</body>
+</html>

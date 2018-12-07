@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Coffee Compass</title>
+    <div th:replace="fragments/header :: header-css"/>
+</head>
+
+<body>
+
+	 <div th:replace="fragments/header :: header"/>
+	
+     <div class="w3-light-grey w3-margin-bottom w3-center">
+         <h1>Coffee compass</h1>
+     </div>
+	        
+     <div class="w3-container">
+     
+     	<!-- Used only in case User registratyion and modification is redirected to this page -->
+     	<div th:if="${param.contactmesuccess}" class="w3-pale-blue w3-display-container w3-round w3-panel">
+		    <span onclick="this.parentElement.style.display='none'"
+		  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
+		    <p th:text="#{home.contactme.success}" class="w3-container" > </p>
+		</div>
+		<!-- Used only in case User registration and modification is redirected to this page -->
+		<div th:if="${userCreateSuccess}" class="w3-pale-blue w3-display-container w3-round w3-panel">
+		    <span onclick="this.parentElement.style.display='none'"
+		  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
+		    <p th:text="${userCreateSuccessText}" class="w3-container" > </p>
+		</div>
+		<!-- Used only in case User registratyion and modification is redirected to this page -->
+		<div th:if="${userModifySuccess}" class="w3-pale-blue w3-display-container w3-round w3-panel">
+		    <span onclick="this.parentElement.style.display='none'"
+		  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
+		    <p th:text="${userModifySuccessText}" class="w3-container" > </p>
+		</div>
+		
+		
+		<div class="w3-content w3-margin-top">
+			<div class="w3-row-padding">
+				
+				<div class="w3-third" th:classappend="${#authorization.expression('isAuthenticated()')} ? 'w3-half'">
+				<div class="w3-container w3-padding-16 w3-sand w3-card-2">
+				
+					<div class="w3-center" >
+						<h5 th:text="#{home.about.text}"> </h5>
+					
+	        			<h4><a th:href="@{/about}" th:text="#{home.button.info}" class="w3-button w3-brown w3-margin-top">Informace o těchto stránkách.</a></h4>
+	        		</div>
+	        		
+	        	</div>	
+	        	</div>
+	        	
+	        	<div class="w3-third" th:classappend="${#authorization.expression('isAuthenticated()')} ? 'w3-half'">
+				<div class="w3-container w3-padding-16 w3-sand w3-card-2">
+	        	
+	        		<div class="w3-center">
+						<h5 th:text="#{home.search.text}"> </h5>
+						
+	        			<h4><a th:href="@{/searchSites}" th:text="#{home.button.search}" class="w3-button w3-brown w3-margin-top">Search sites</a></h4>
+	        		</div>
+				
+	        	</div>
+	        	</div>
+	        	
+	        	<div sec:authorize="NOT isAuthenticated()" class="w3-third">
+				<div class="w3-container w3-padding-16 w3-sand w3-card-2">
+
+	        		<div class="w3-center" >
+						<h5 th:text="#{home.register.text}" > </h5>
+						<a th:href="@{/user/register}" th:text="#{mainmenu.registeruser}">User login</a>
+	        			<h4><a th:href="@{/login}" th:text="#{home.button.login}" class="w3-button w3-brown">User login</a> </h4>
+	        		</div>
+	
+	        	</div>
+	        	</div>
+        </div>
+        </div>
+	</div>
+	
+	<div th:replace="fragments/footer :: footer"/>
+
+</body>
+</html>

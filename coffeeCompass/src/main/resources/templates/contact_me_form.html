@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+      <div th:replace="fragments/header :: header-css"/>
+</head>
+
+<body>
+
+	<div th:replace="fragments/header :: header"/>
+	
+	<div class="w3-light-grey w3-margin-bottom w3-center">
+		<h2 th:text="#{contactme.label}" class="w3-container">Search coffee sites</h2>
+	</div>
+	
+	<div class="w3-content">
+
+		<div class="w3-margin-bottom w3-left">
+		   <p th:text="#{contactme.page.info.s1}">
+			</p>
+			<p th:text="#{contactme.page.info.s2}">
+			</p>
+		</div>
+
+		<div class="w3-row">
+				
+	    	<div class="w3-card-4 w3-margin-top w3-light-grey w3-half" > <!-- style="width:20%" -->
+	
+			<!-- Formular pro Contact-me zpravu -->
+			<form action="#" th:object="${cmMessage}" th:action="@{/contactMe}" th:method="post">
+		
+		    <div class="w3-container w3-margin-top">
+	              <label for="authorName" th:text="#{contactme.message.author}">Author name</label>
+	              <div th:classappend="${#fields.hasErrors('authorName')} ? 'has-error':''"> 
+	                   <input id="cmMessage"
+	                	      class="w3-input w3-border"
+	                   	      th:field="*{authorName}"/>
+	              </div>
+	              <p class="error-message"
+	                 th:each="error: ${#fields.errors('authorName')}"
+	                 th:text="${error}">Validation error</p>
+	         </div>
+	          
+	         <div class="w3-container">
+	              <label for="email" th:text="#{contactme.message.email}">E-mail</label> *
+	              <div  th:classappend="${#fields.hasErrors('email')} ? 'has-error':''">
+	                 <input id="email" 
+	                        class="w3-input w3-border"
+	                        th:field="*{email}"
+	                        th:placeholder="#{contactme.email.placeholder}"/>
+	              </div>
+	              <p class="error-message"
+	                 th:each="error : ${#fields.errors('email')}"
+	                 th:text="${error}">Validation error</p>
+	         </div>
+        
+			<div class="w3-margin-top w3-container">
+				<div>
+	        		<b><label for="message" th:text="#{contactme.message.label}">Message</label></b> *
+	        	</div>
+	        	<div th:classappend="${#fields.hasErrors('textOfMessage')} ? 'has-error':''">
+				  <!-- <textarea id="messageArea" name="messageArea" th:field="*{textOfMessage}" rows="5" cols="50" maxlength=512>  -->
+				  <textarea id="messageArea" name="messageArea"
+				            th:field="*{textOfMessage}"
+				            class="w3-input w3-border" style="resize:none" maxlength=512
+				            th:placeholder="#{contactme.message.placeholder}"></textarea>
+				            <p class="error-message"
+	                           th:each="error : ${#fields.errors('textOfMessage')}"
+	                           th:text="${error}">Validation error</p>
+				  
+				</div>
+			</div>
+		
+			<div>
+	        	<input type="hidden" name="_method" value="post" />
+	            <button type="submit" id="submitButton" th:text="#{contactme.submitMessage}" class="w3-btn w3-blue w3-border w3-margin" >X</button>
+	        </div>
+        
+       </form>
+	   </div>
+	   
+	</div>
+	</div>
+	
+	<div th:replace="fragments/footer :: footer"/>
+	
+
+</body>
+</html>

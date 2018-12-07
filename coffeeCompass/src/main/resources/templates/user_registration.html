@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/header :: header-css"/>
+
+    <title>Registration</title>
+    
+</head>
+
+<body>
+    <div th:replace="fragments/header :: header"/>
+
+	<h2 sec:authorize="NOT hasRole('ROLE_ADMIN')" th:if="${!user.isToManageItself}" class="w3-display-container w3-margin-left">NOT ALLOWED!!!</h2>
+
+	<div class="w3-display-container w3-margin" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} OR ${user.isToManageItself}">
+	<div class="w3-card-2 w3-display-topmiddle w3-border w3-sand" style="width:40%">
+		
+           <h2 th:text="(${user.id} == 0) ? #{user.register.label.create} : #{user.register.label.update}" class="w3-center">Register/Update Label</h2>
+           
+           <!-- Confirm message in case of successful User data modification -->
+           <div th:if="${param.userModifySuccess}" class="w3-pale-blue w3-display-container w3-round w3-panel">
+		      <span onclick="this.parentElement.style.display='none'"
+		  		    class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
+		      <p th:text="#{user.modified.success}" class="w3-container" > </p>
+		    </div>
+           
+           <form th:action="${user.id} == 0 ? @{/user/register-post} : @{/user/edit-put}" th:object="${user}" th:method="${user.id} == 0 ? POST : PUT" class="w3-margin">
+            
+              <input th:type="hidden" name="id" th:field="${user.id}" />
+       
+				<div class="w3-container">
+                    <label for="userName" th:text="#{user.username}">User name</label> *
+                    <div th:classappend="${#fields.hasErrors('userName')} ? 'has-error':''"> 
+                         <input th:readonly="*{!isToManageItself}"
+                         		th:disabled="*{!isToManageItself}"  
+                  	            id="userName"
+                      	        class="w3-input w3-border"
+                         	    th:field="*{userName}"/>
+                    </div>
+                    <p class="error-message"
+                       th:each="error: ${#fields.errors('userName')}"
+                       th:text="${error}">Validation error</p>
+                </div>
+
+                <div class="w3-container">
+                    <label for="firstName" th:text="#{user.firstname}">First name</label>
+					<div th:classappend="${#fields.hasErrors('firstName')} ? 'has-error':''"> 		
+                       <input th:readonly="*{!isToManageItself}"
+                       		  th:disabled="*{!isToManageItself}"  	  
+                              id="firstName"
+                              class="w3-input w3-border"
+                              th:field="*{firstName}"/>
+                    </div>
+                    <p class="error-message"
+                       th:each="error: ${#fields.errors('firstName')}"
+                       th:text="${error}">Validation error</p>
+                </div>
+                <div class="w3-container">
+                    <label for="lastName" th:text="#{user.lastname}">Last name</label>
+                    <div th:classappend="${#fields.hasErrors('lastName')} ? 'has-error':''"> 
+                       <input th:readonly="*{!isToManageItself}"
+                              th:disabled="*{!isToManageItself}"   
+                              id="lastName"
+                              class="w3-input w3-border"
+                              th:field="*{lastName}"/>
+                    </div>
+                    <p class="error-message"
+                       th:each="error : ${#fields.errors('lastName')}"
+                       th:text="${error}">Validation error</p>
+                </div>
+                <div class="w3-container">
+                    <label for="email" th:text="#{user.email}">E-mail</label>
+                    <div  th:classappend="${#fields.hasErrors('email')} ? 'has-error':''">
+                       <input id="email" 
+                              th:readonly="*{!isToManageItself}"
+                              th:disabled="*{!isToManageItself}" 
+                              class="w3-input w3-border"
+                              th:field="*{email}"
+                              th:placeholder="#{user.email.placeholder}"/>
+                    </div>
+                    <p class="error-message"
+                       th:each="error : ${#fields.errors('email')}"
+                       th:text="${error}">Validation error</p>
+                </div>
+                
+                <div class="w3-container"> 
+                    <label for="password" th:text="#{user.register.password}">Password</label> <label th:if="${user.id} == 0"> *</label>
+                    <div th:classappend="${#fields.hasErrors('password')}? 'has-error':''">
+                       <input id="password"
+                              class="w3-input w3-border"
+                              type="password"
+                              th:field="*{password}"/>
+                    </div>
+                    <p class="error-message"
+                       th:each="error : ${#fields.errors('password')}"
+                       th:text="${error}">Validation error</p>
+                </div>
+                <div class="w3-container">
+                    <label for="confirmPassword" th:text="#{user.register.confirmpassword}">Confirm password</label><label th:if="${user.id} == 0"> *</label>
+                    <div th:classappend="${#fields.hasErrors('confirmPassword')}? 'has-error':''">
+                       <input id="confirmPassword"
+                              class="w3-input w3-border"
+                              type="password"
+                              th:field="*{confirmPassword}"/>
+                    </div>
+                    <p class="error-message"
+                       th:each="error : ${#fields.errors('confirmPassword')}"
+                       th:text="${error}">Validation error</p>
+                </div>
+              
+                <div sec:authorize="hasRole('ROLE_ADMIN')" class="w3-container w3-margin-top">
+                    <label for="userProfiles" th:text="#{user.profiles}">User profiles</label>
+                    <div th:classappend="${#fields.hasErrors('userProfiles')} ? 'has-error' : ''">
+                    <ul>
+                       <li th:each="userProfile : ${allUserProfiles}">
+               			 <input type="checkbox"
+               			 		class="w3-check"
+               			 		th:classappend="( (${userProfile.type} == 'ADMIN') AND *{hasADMINRole} AND *{!isToManageItself}) ? 'w3-disabled'"
+               			 		th:disabled="( (${userProfile.type} == 'ADMIN') AND *{hasADMINRole} AND *{!isToManageItself})"
+                	 		    th:field="*{userProfiles}"
+                	  		    th:value="${userProfile}" />
+               			 <label th:for="${userProfile.id}" th:text="${userProfile}">User profiles</label>
+               			  <p class="error-message"
+                       		th:each="error : ${#fields.errors('userProfiles')}"
+                       		th:text="${error}">Validation error</p>
+              		   </li>
+              		</ul>
+              		</div>
+                </div>
+                
+                <div class="w3-bar w3-margin">
+                  <div class="w3-bar-item">
+               		 <button type="submit" class="w3-button w3-blue w3-border" name="save" th:text="(${user.id} == 0) ? #{user.register.button.create} : #{user.register.button.update}">Save/Modify User</button>    
+          		  </div>
+          		
+	              <div class="w3-bar-item">
+	          	     <a th:href="@{'/home'}" th:text="#{user.edit.cancel}" class="w3-button">Cancel register/modify user</a>
+		          </div>  
+		          
+		          <div class="w3-bar-item w3-text-gray w3-margin-top w3-right">
+		             <label th:text="#{app.items.obligatory}" class="w3-text-gray w3-margin-top w3-small w3-right">Announcement</label>
+		          </div>
+		          
+		        </div>
+          		
+			</form>
+    	</div>
+	</div>
+
+	<div th:replace="fragments/footer :: footer"/>
+	
+</body>
+</html>

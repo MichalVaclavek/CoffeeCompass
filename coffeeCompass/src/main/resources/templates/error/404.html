@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/header :: header-css"/>
+</head>
+<body>
+
+<div th:replace="fragments/header :: header"/>
+
+<div class="w3-container">
+
+        <h1 th:text="app.error">404 - Něco se pokazilo :-(</h1>
+        <div th:text="app.error.notFound">Hledaná stránka/položka nenalezena.</div>
+
+</div>
+<!-- /.container -->
+
+<!-- <div th:replace="fragments/footer :: footer"/> -->
+
+</body>
+</html>

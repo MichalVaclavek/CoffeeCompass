@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+     <!-- <title th:text="#{app.title}"> Title </title> -->
+      <div th:replace="fragments/header :: header-css"/>
+</head>
+
+<body>
+	<div th:replace="fragments/header :: header"/>
+	
+	<div class="w3-light-grey w3-margin-bottom w3-center">	
+   		<h2 th:text="#{app.sites-list}" class="w3-center">Details</h2>
+    </div>
+   
+    <div class="w3-margin">
+    <!-- <table class="table table-striped">  -->
+    <table class="w3-table-all w3-hoverable">
+    	<thead>
+        <tr>
+           <th th:text="#{site.siteName}" class="w3-brown"></th>
+           <th th:text="#{site.siteStatus}" class="w3-brown"></th>
+           <th th:text="#{site.createdon}" class="w3-brown"></th>
+           <th th:text="#{site.type}" class="w3-brown"></th>
+           <th th:text="#{site.otherOffers}" class="w3-brown"></th>
+           <th th:text="#{site.coffeeSorts}" class="w3-brown"></th> 
+           <th th:text="#{site.city}" class="w3-brown"></th>
+           <th th:text="#{site.street}" class="w3-brown"></th>            
+           <th th:text="#{site.longitude}" class="w3-brown"></th>
+		   <th th:text="#{site.latitude}" class="w3-brown"></th>   
+           <th th:text="#{site.stars}" class="w3-brown"></th>    
+           <th sec:authorize="isAuthenticated()" th:text="#{site.recordStatus}" class="w3-brown"></th>
+        </tr>
+        <thead>        
+        <tbody>
+	        <tr th:each="site : ${allSites}" style="cursor: pointer"
+	        	th:if="${site.visible}"
+	        	th:onclick="'javascript:rowClicked(\'' + ${site.id} + '\');'"> <!-- Reference na /showSite/{site.id} viz nize -->
+
+			  <td th:text="${site.siteName}">SiteName</td>
+			  <td th:text="${site.statusZarizeni.status}">SiteStatus</td>
+			  <!--<td th:text="${site.createdOn}">CreatedOn</td>  -->
+			  <td th:text="${#dates.format(site.createdOn, 'dd.MM. yyyy , HH:mm')}"></td> 
+			  <td th:text="${site.typPodniku.coffeeSiteType}">TypPodniku</td>
+			  <td th:text="${site.otherOffers}">Offer</td>
+			  <td th:text="${site.coffeeSorts}">CoffeeSorts</td>
+			  <td th:text="${site.mesto}">City</td>	  
+			  <td th:text="${site.uliceCP}">Street</td>	
+			  <td th:text="${site.zemDelka}">Delka</td>	  
+			  <td th:text="${site.zemSirka}">Sirka</td>
+			  <td th:text="${site.averageStarsWithNumOfHodnoceni.avgStars} + ' (' + ${site.averageStarsWithNumOfHodnoceni.numOfHodnoceni} + ')'">Stars</td>	
+			  
+			  <td sec:authorize="isAuthenticated()" th:text="${site.recordStatus.status}">Record status</td>			  
+	
+	          <!-- Form to generate GET http request with Modify button -->
+	          <!-- Available only for logged-in user who created the site or for DBA or ADMIN user -->
+	          <td  th:if="${site.canBeModified}">
+	            <form action="#" th:action="@{'/modifySite/' + ${site.id}}" th:method="GET" >
+	              <input type="hidden" name="_method" value="get" />
+	              <button type="submit" id="submitButton" th:text="#{site.modify}" class="w3-btn w3-blue w3-round">X</button>
+	            </form>
+	          </td>
+	          
+	          <!-- Form to generate GET http request with Modify button -->
+	          <!-- Available only for logged-in user who created the site or for DBA or ADMIN user -->
+	          <td  th:if="${site.canBeDeleted}">
+	            <form action="#" th:action="@{'/finalDeleteSite/' + ${site.id}}" th:method="DELETE" >
+	              <input type="hidden" name="_method" value="delete" />
+	              <button type="submit" id="submitButton" th:text="#{site.delete}" class="w3-btn w3-red w3-round">X</button>
+	            </form>
+	          </td>
+	          
+		   </tr>
+		   </tbody>
+	</table>
+	</div>
+	
+	<!-- Reference na /showSite/{site.id} after table row click --> 
+	<script>
+       function rowClicked(value) {
+          location.href = "/showSite/" + value;
+       }
+    </script>
+
+	<!-- <div th:replace="fragments/footer :: footer"/>  --> 
+	
+  </body>
+  
+</html> 

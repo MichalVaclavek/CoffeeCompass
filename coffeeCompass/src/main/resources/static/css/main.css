@@ -1,0 +1,40 @@
+footer {
+    position: fixed;
+    height: 30px;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #ccc
+}
+
+.has-error {
+    border: 1px solid red;
+}
+
+.fieldError {
+    border: 1px solid red;
+}
+
+.error-message {
+    color: red;
+    font-size: 15px;
+}
+
+.user{
+    color: blue;
+    font-size: 15px;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+/* Basic style for map in the search template */
+#leafLetMapid { 
+	height: 600px;
+	width: 800px; 
+	}

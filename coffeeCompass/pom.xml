@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>cz.fungisoft</groupId>
+	<artifactId>coffeecompass</artifactId>
+	<version>0.8.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>Coffee Compass</name>
+	
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		 <version>2.0.5.RELEASE</version> 
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+		
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<thymeleaf.version>3.0.6.RELEASE</thymeleaf.version>
+   		<thymeleaf-layout-dialect.version>2.2.2</thymeleaf-layout-dialect.version>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<!-- Vyjmuti standardniho baliku pro logovani logback -->
+			<exclusions>
+    			<exclusion>
+      				<groupId>org.springframework.boot</groupId>
+      				<artifactId>spring-boot-starter-logging</artifactId>
+    			</exclusion>
+  			</exclusions>
+		</dependency>
+		
+		<!-- To deploy as war to Tomcat container -->
+		<!--
+		<dependency> 
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		-->
+		
+		<dependency>
+  			<groupId>org.springframework.boot</groupId>
+  			<artifactId>spring-boot-starter</artifactId>
+  				<!-- Vyjmuti standardniho baliku pro logovani logback -->
+  				<exclusions>
+    				<exclusion>
+      					<groupId>org.springframework.boot</groupId>
+      					<artifactId>spring-boot-starter-logging</artifactId>
+    				</exclusion>
+  				</exclusions>
+		</dependency>
+
+		<dependency>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-thymeleaf</artifactId>
+    		
+		</dependency> 
+		
+		<dependency>
+    		<groupId>org.thymeleaf</groupId>
+    		<artifactId>thymeleaf-spring5</artifactId>
+    		<version>3.0.8.RELEASE</version> <!-- Not working with higher versions -->
+		</dependency> 
+		
+		
+		<!-- optional, it brings userful tags to display spring security stuff -->
+        <!-- https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-springsecurity4 -->
+        <dependency>
+           <groupId>org.thymeleaf.extras</groupId>
+           <artifactId>thymeleaf-extras-springsecurity4</artifactId>
+           <!-- <version>3.0.2.RELEASE</version>-->
+        </dependency>
+        
+        <!-- For development only -->
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools -->
+		
+		               
+        <dependency> <!-- sending email -->
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-mail</artifactId>
+		    <version>2.0.1.RELEASE</version>
+		</dependency>
+        
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
+		<dependency>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-security</artifactId>   		
+    		<!-- <version>1.5.9.RELEASE</version> -->
+    			
+		</dependency>	
+				
+		<!-- Pro praci s DB resp. podpora JPA resp. Hibernate tj. ORM -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- Pro testovani prace s DB, vyuziva Spring-boot-starter-test pomoci @DataJpaTest pro vytvoreni TestEntityManager. -->
+		<!-- Jde o in-memory DB -->
+		<dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+       
+        <!-- Ovladace pro lokalni HSQL DB na D:\Java\skoleni-spring\hsqldb-eshop - POTREBUJEM ??? -->
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>2.4.0</version> <!-- If default 2.4.1 is used, then spring-boot-devtools throws exception Failed to read Class-Path attribute from manifest of jar file:/C:/Users/Michal/.m2/repository/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1.jar -->
+		</dependency>
+       
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+
+		<!-- http://localhost:8080/swagger-ui.html -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.7.0</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>ma.glasnost.orika</groupId>
+			<artifactId>orika-core</artifactId>
+			<version>1.5.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<!--<version>9.4-1200-jdbc41</version>-->
+		</dependency>
+		
+		<!-- Add Log4j2 Dependency -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency>	
+		
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+
+		
+	</dependencies>
+
+	<!-- Plugin, ktery umi, mimo jine, pracovat napr. s -->
+	<!-- knihovnou lombok, ktera generuje casti kodu jako -->
+	<!-- konstruktory a getters a setters -->
+	<build>
+		<finalName>${artifactId}</finalName>  <!-- Name of war -->
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+	<description>Server pro ukládání a vyhledávání informací o místech, kde se dá koupit káva - zvláště automaty, ale i bistra, kavárny apod.</description>
+	
+</project>

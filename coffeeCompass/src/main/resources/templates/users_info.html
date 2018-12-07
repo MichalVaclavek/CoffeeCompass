@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+      <!-- <title th:text="#{app.title}"> Title </title> -->
+      <div th:replace="fragments/header :: header-css"/>
+</head>
+
+<body>
+
+	<div th:replace="fragments/header :: header"/>
+	
+	<div class="w3-light-grey w3-margin-bottom w3-center">
+       <h2 th:text="#{app.user-details}" class="w3-margin">Details</h2>
+    </div>
+     
+    <table class="w3-table w3-margin" style="width:60%">
+    
+        <tr>
+           <th th:text="#{user.id}"/></th>
+           <th th:text="#{user.username}"></th>
+           <th th:text="#{user.firstname}"></th>
+           <th th:text="#{user.lastname}"></th>
+           <th th:text="#{user.email}"></th>
+           <th th:text="#{user.profiles}"></th>
+           <th th:text="#{user.createdon}"></th>
+           <th th:text="#{user.created_sites}"></th>
+        </tr>
+        <tr th:each="user : ${allUsers}">
+	      <td th:text="${user.id}">Id</td>
+		  <td th:text="${user.userName}">User</td>
+		  <td th:text="${user.firstName}">FirstName</td>
+		  <td th:text="${user.lastName}">LastName</td>
+		  <td th:text="${user.email}">Email</td>
+		  <td th:text="${user.userProfiles}">Profiles</td>
+		  <td th:text="${user.createdOn}">CreatedOn</td>
+		  <td th:text="${user.createdSites}">NumOfCreatedSites</td>		
+		  
+		  <td sec:authorize="hasRole('ROLE_ADMIN')">
+		  <!-- <td sec:authorize="hasRole('ROLE_ADMIN')" th:if="${!user.hasADMINRole}">  -->
+	         <form action="#" th:action="@{'/user/edit/' + ${user.userName}}" th:method="GET" >
+	            <input type="hidden" name="_method" value="get" />
+	            <button type="submit" id="submitButton" th:text="#{user.edit}" class="w3-button w3-blue w3-round">X</button>
+	         </form>
+	      </td>
+	      
+		  <td sec:authorize="hasRole('ROLE_ADMIN')" th:if="${!user.hasADMINRole}">
+	         <form action="#" th:action="@{'/user/delete/' + ${user.id}}" th:method="DELETE">
+	            <input type="hidden" name="_method" value="delete" />
+	            <button type="submit" id="submitButton" th:text="#{user.delete}" class="w3-button w3-red w3-round" >X</button>
+	         </form>
+	      </td>
+		    		  
+	    </tr>	
+	    
+	</table>
+	
+</body>
+</html> 

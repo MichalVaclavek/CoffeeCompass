@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+      <div th:replace="fragments/header :: header-css"/>
+      
+      <!-- Leaflet map css -->
+      <!--
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
+   			integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+   			crossorigin=""/>
+   			-->
+   	 <!-- Leaflet JavaScript - Make sure you put this AFTER Leaflet's CSS -->
+   	 <!--
+	 <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
+	   integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
+	   crossorigin=""></script>
+	   -->
+	   
+	   <script type="text/javascript" src="https://api.mapy.cz/loader.js"></script>
+	   <script type="text/javascript">Loader.load()</script> <!-- loads mapy.cz API	 -->   
+	   
+</head>
+
+<body>
+	<div th:replace="fragments/header :: header"/>
+	
+	
+	<div class="w3-light-grey w3-margin-bottom w3-center">
+		<h2 th:text="#{site.search-site}" class="w3-container">Search coffee sites</h2>
+	</div>
+	
+	<!--<div class="w3-display-container"> -->
+	<div class="w3-display-container"> <!-- Main container for complete page layout  -->
+	
+		<div class="w3-row w3-content w3-margin-bottom" style="max-width:1400px"> <!-- row with search form and map on the right -->
+	
+	    	<div class="w3-quarter">
+	    
+			    <div class="w3-container w3-border w3-round w3-card-4  w3-light-gray" > <!-- style="width:30%" -->
+			
+			      <form action="#" th:action="@{/searchSites}" th:object="${searchCriteria}" method="post">
+			    
+			          <div class="w3-cell-row w3-margin-top"> <!-- row for Latitude and Longitude -->
+			          
+				          <div class="w3-cell">
+				            <label for="Latitude">
+				              <span th:text="#{sitesearch.latitude}">Latitude</span>
+				            </label>
+				            <div th:classappend="${#fields.hasErrors('lat1')} ? 'has-error' : ''">
+				            	<input type="text" th:field="*{lat1}" th:errorclass="fieldError" class="w3-input w3-border w3-round" id="lat1"/>
+				            </div>
+				          
+				              <p class="error-message"
+					             th:each="error: ${#fields.errors('lat1')}"
+					             th:text="${error}">Validation error</p>
+					      </div>
+							 
+						  <div class="w3-container w3-cell">
+				            <label for="Longitude">
+				              <span th:text="#{sitesearch.longitude}">Longitude</span>
+				            </label>
+				            <div th:classappend="${#fields.hasErrors('lon1')} ? 'has-error' : ''">
+				               <input type="text" th:field="*{lon1}" th:errorclass="fieldError" class="w3-input w3-border w3-round" id="lon1"/>
+				            </div>
+				          
+				            <p class="error-message"
+					           th:each="error: ${#fields.errors('lon1')}"
+					           th:text="${error}">Validation error</p>
+					      </div>
+					             
+			          </div>
+			          
+			          <div class="w3-margin-top" style="width:50%"> 
+			            <label for="SearchRange">
+			              <span th:text="#{sitesearch.range}">Range meters</span>
+			            </label>
+			            <div th:classappend="${#fields.hasErrors('range')} ? 'has-error' : ''">
+			               <input type="text" th:field="*{range}"
+			                      th:errorclass="fieldError" class="w3-input w3-border w3-round"
+			                      th:placeholder="#{search.range.placeholder}"/>
+			            </div>
+			            <p class="error-message"
+					             th:each="error: ${#fields.errors('range')}"
+					             th:text="${error}">Validation error</p>
+			          </div>
+			          
+			          <div class="w3-margin-top">
+			          	
+			              <label for="CoffeeSort" th:text="#{sitesearch.coffeeSort}">Coffee sorts</label>
+			              <input id="selectSortCheckBox"
+			                     type="checkbox"
+			                     th:checked="*{sortSelected}"
+			                     th:field="*{sortSelected}"
+			                     class="w3-check"/>
+			              <div>
+			                <select id="selectSort"  style="visibility:hidden; width:50%" th:field="*{coffeeSort}" disabled class="w3-select">
+			                  <option th:each="coffeeSort : ${allCoffeeSorts}" 
+			                          th:value="${coffeeSort}"
+			                          th:text="${coffeeSort}">Site status</option>
+			                </select>
+			              </div>
+			             
+			          </div>
+			                      
+				      <div class="w3-margin">
+			            <button type="submit" name="search" th:text="#{site.button.search}" class="w3-button w3-blue w3-round">Search Coffee sites</button>    
+			          </div>
+			        
+			      </form>
+			    </div> <!-- div for search form  -->
+
+				<div th:if="${emptyResult}" class="error-message w3-margin">
+	    			<span th:text="#{sitesearch.nothingfound}"></span>
+	    		</div>
+		
+			    
+			    <div class="w3-panel w3-topbar w3-border-yellow w3-pale-yellow"> <!-- Navod pro obsluhu -->
+				    <p th:text="#{site.search.manual.label}" style="text-decoration: underline; font-weight: bold;"><b>Navod k obsluze: </b></p>
+				    <p th:text="#{site.search.manual.point1}">	1) klik do mapy - vyber stredu hledani</p>
+				    <p th:text="#{site.search.manual.point2}">	2) okruh hledani - vzdalenost v metrech</p>
+				    <p th:text="#{site.search.manual.point3}">	3) tlacitko hledat</p>
+				    <p th:text="#{site.search.manual.point4}">	4) klik na znacku v mape pro dalsi info</p>
+				    <p th:text="#{site.search.manual.point5}">	5) klik do tab. pro detaily</p>
+			    </div>
+		    
+		    </div> <!-- <div class="w3-col l3 w3-container"> -->
+    
+    		<div class="w3-threequarter">
+	        	<!-- Element to show map - class="w3-display-topright" -->
+	        	<div  id="map" class="w3-round w3-card-4 w3-margin-left" style="height: 600px; width: 100%;"></div> <!-- "height: 600px; width: 800px;" -->
+	    	</div>
+	    	
+		    <!--  Table containing the results of search -->
+			<div th:if="${not #lists.isEmpty(foundSites)}" class="w3-container w3-center">
+			    <!-- <table class="table table-striped">  -->
+			    <table class="w3-table-all w3-hoverable">
+			    	<thead>
+			        <tr>
+			           <th th:text="#{site.siteName}" class="w3-brown"></th>
+			           <th th:text="#{site.siteStatus}" class="w3-brown"></th>
+			           <th th:text="#{site.type}" class="w3-brown"></th>
+			           <th th:text="#{site.coffeeSorts}" class="w3-brown"></th> 
+			           <th th:text="#{site.otherOffers}" class="w3-brown"></th>
+					   <th th:text="#{site.distance}" class="w3-brown"></th>                
+			           <th th:text="#{site.stars}" class="w3-brown"></th>    
+			        </tr>
+			        <thead>        
+			        <tbody>
+				        <tr th:each="site : ${foundSites}" style="cursor: pointer"
+				        	th:if="${site.visible}"
+				        	th:onclick="'javascript:rowClicked(\'' + ${site.id} + '\');'"> <!-- Reference na js /showSite/{site.id} viz nize -->
+			
+						  <td th:text="${site.siteName}">SiteName</td>
+						  <td th:text="${site.statusZarizeni.status}">SiteStatus</td>
+						  <td th:text="${site.typPodniku.coffeeSiteType}">TypPodniku</td>
+						  <td th:text="${site.coffeeSorts}">CoffeeSorts</td>
+						  <td th:text="${site.otherOffers}">Offer</td>
+						  <td th:text="${site.distFromSearchPoint}">Distance</td>
+						  <td th:text="${site.averageStarsWithNumOfHodnoceni.avgStars} + ' (' + ${site.averageStarsWithNumOfHodnoceni.numOfHodnoceni} + ')'">Stars</td>	
+			  
+						  <!-- <td th:text="${site.averageStars}">Stars</td> -->	
+					   </tr>
+				    </tbody>
+				</table>
+			</div>
+		
+		</div> <!-- <div class="w3-row w3-content"> -->
+	
+	</div> <!-- <div class="w3-display-container"> -->
+	
+		
+	<!-- Obsluha clicku na radek tabulky s vysledky hledani CoffeeSites -->
+	<script>
+       function rowClicked(value) {
+          location.href = "/showSite/" + value;
+       }
+    </script>
+    
+    <!-- Script to handle visibility of Options for coffee sort selection --> 
+     <script>
+       var selectSortCheckBox = document.getElementById("selectSortCheckBox");
+     
+       selectSortCheckBox.addEventListener("click", function(e) {        	
+       	changeVisibility(document.getElementById("selectSort"));
+       });
+     
+     	var changeVisibility = function(node) {
+     		node.disabled = !node.disabled;
+     		if (node.disabled) node.style.visibility = "hidden";
+     		if (!node.disabled) node.style.visibility = "visible";
+     	}
+     </script>
+     
+     <!--
+     <script th:inline="javascript" src="/js/mapy_cz_test.js"></script> -->
+     
+     <!--
+     <script th:inline="javascript">
+       /*<![CDATA[*/
+       /*[+ [# th:insert="{src/main/resources/static/js/mapy_cz.js}" /] +]*/
+       /*]]>*/
+     </script>
+     -->
+     
+     
+     <script th:inline="javascript">
+
+	     /* Get all coffeesites coordinates */
+	     var foundSites = [];
+	     /*<![CDATA[*/
+	     foundSites = /*[[${foundSites}]]*/ null;
+	     /*]]>*/
+	
+	     var latSearch = document.getElementById("lat1");
+	     var lonSearch = document.getElementById("lon1");
+	
+	     var latInit = latSearch.value;
+	     var lonInit = lonSearch.value;
+	
+	     if (latInit == 0 && lonInit == 0) {
+	     	lat1 = 49.8250401;
+	        lon1 = 15.4190817;
+	     }
+	    	
+	     var m;
+	     var layer;
+	
+	     createMap = function(lat1, lon1) {
+	       
+	       var center = SMap.Coords.fromWGS84(lon1, lat1);
+	       m = new SMap(JAK.gel("map"), center, 8);
+	       m.addDefaultLayer(SMap.DEF_BASE).enable();
+	       m.addDefaultControls();
+	       
+	       var mouse = new SMap.Control.Mouse(SMap.MOUSE_PAN | SMap.MOUSE_WHEEL | SMap.MOUSE_ZOOM); /* Ovládání myší */
+	       m.addControl(mouse); 
+	       
+	       layer = new SMap.Layer.Marker();
+	       m.addLayer(layer);
+	       
+	       
+	       var card = new SMap.Card();
+	       card.getHeader().innerHTML = "Střed hledání, přesuň mě!";
+	
+	       var marker = new SMap.Marker(center);
+	       marker.decorate(SMap.Marker.Feature.Card, card);
+	       marker.decorate(SMap.Marker.Feature.Draggable);
+	       layer.addMarker(marker);
+	       	
+	       function start(e) { /* Začátek tažení */
+	         var node = e.target.getContainer();
+	         node[SMap.LAYER_MARKER].style.cursor = "help";
+	       }
+	
+	       function stop(e) {
+	         var node = e.target.getContainer();
+	         node[SMap.LAYER_MARKER].style.cursor = "";
+	         var coords = e.target.getCoords();
+	
+	     	 /* Vypsani do document */
+	         latSearch.value = coords.toWGS84()[1];
+	     	 lonSearch.value = coords.toWGS84()[0];
+	       }
+	
+	       var signals = m.getSignals();
+	       signals.addListener(window, "marker-drag-stop", stop);
+	       signals.addListener(window, "marker-drag-start", start);
+	
+	     }
+	
+	    createMap(latInit, lonInit);  
+	
+	    if (foundSites != null && foundSites.length > 0)
+	    {	     		     	
+     		var souradnice = [];
+     		// vytvoreni markeru
+     		foundSites.forEach(function(site) {
+     			var c = SMap.Coords.fromWGS84(site.zemDelka, site.zemSirka); /* Souřadnice značky, z textového formátu souřadnic */
+     		  
+     			var options = {
+     				url: "images/cup.png", /* cesta k /src/resources/images/cup.png  v mych resourcech */
+     				title: site.siteName, 
+     				anchor: {left:10, bottom: 1}  /* Ukotvení značky za bod uprostřed dole */
+     			}
+     			
+     			// prirazeni id jednotlivemu markeru - vlastni id, jinak se generuje nahodne
+     			var znacka = new SMap.Marker(c, site.id, options);
+     			var card = new SMap.Card();
+     			card.setSize(200, 170);
+     			card.getHeader().innerHTML = "<strong>" + site.siteName + "</strong>";
+     			var textVizitka = site.typPodniku.coffeeSiteType + "<br>" 
+     							  + site.typLokality.locationType + "<br>"
+     							  + site.statusZarizeni.status + "<br>"
+     							  + "vzdálenost: " + site.distFromSearchPoint + " m <br>"
+     							  + "hodnoceni: " + site.averageStarsWithNumOfHodnoceni.avgStars + " (" + site.averageStarsWithNumOfHodnoceni.numOfHodnoceni + ")";
+     			card.getBody().innerHTML = textVizitka;
+
+     			znacka.decorate(SMap.Marker.Feature.Card, card);
+     			
+     			souradnice.push(c);
+     			layer.addMarker(znacka);
+     		});
+
+     		
+     		var cz = m.computeCenterZoom(souradnice); /* Spočítat pozici mapy tak, aby značky byly vidět */
+     		m.setCenterZoom(cz[0], cz[1]);        
+
+     		// poslouchani na kliknuti u markeru - Pro zakladni info mame prirazenu card - Jake dalsi vyuziti ... vedle mapy mala karta s detaily, ktera by se vyplnila udaji o situ
+     		/*
+     		m.getSignals().addListener(this, "marker-click", function(e) {
+     		  // vybrany marker
+     		  var marker = e.target;
+     		  var id = marker.getId();
+     		  
+     		  for (var i = 0; i < markers.length; i++) {
+     			if (foundSites[i].id == id) {
+     				
+     			    break;
+     			}
+     		  }
+     		});  
+     		*/
+	    }
+	     
+	    layer.enable();
+     
+    </script>
+     
+     <!--
+	 <script type="text/javascript">window.start();</script>-->
+     
+    <!-- Script to handle map within the search page to show found sites -->
+    <!-- Obsahuje special token pro pristup k mapbox.com, kde jsou zdrojove obrazky pro mapu -->
+    <!-- Pomoci Thymeleaf je do scriptu vlozeno pole nalezenych CoffeeSitesDto -->
+    
+    <!--<script src="js/mapy_handle.js"></script> -->
+        
+	
+</body>
+</html>
