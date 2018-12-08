@@ -27,15 +27,15 @@ public class SendMeEmailServiceImpl implements ISendMeEmailService
     public void sendMeSimpleEmail(String fromName, String fromEmail, String toEmail, String messageText) {
         SimpleMailMessage message = new SimpleMailMessage(); 
         message.setTo(toEmail);
-        message.setSubject("Zprava z CoffeeCompass, od: " + fromName + " , email: " + fromEmail); 
+        message.setSubject("Zpráva z CoffeeCompass, od: " + fromName + " , email: " + fromEmail); 
         message.setText(messageText);
         try {
             emailSender.send(message);
-            logger.info("Zprava z CoffeeCompass. Od: " + fromName + " , email: " + fromEmail);
+            logger.info("ODESLÁNO - zpráva z CoffeeCompass, od: " + fromName + " , email: " + fromEmail);
         }
         catch (MailException e)
         {
-            logger.error("Chyba pri odesilani zpravy: " + e.getMessage());
+            logger.error("Chyba při odesílaní zprávy: " + e.getMessage());
         }
     }
     

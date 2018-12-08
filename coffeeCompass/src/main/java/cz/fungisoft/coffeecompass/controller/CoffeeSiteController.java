@@ -321,8 +321,11 @@ public class CoffeeSiteController
         return returnView;
     }
     
-    /* *** Zpracovani pozadavku na zmenu stavu CoffeeSite *** */
-   
+    /**
+     *  Zpracovani pozadavku na zmenu stavu CoffeeSite do stavu ACTIVE.
+     *  Pokud aktivaci provedl ADMIN, zobrazi se mu nasledni seznam vsech CoffeeSites,
+     *  jinak se zobrazi seznam všech CoffeeSites, které vytvořil daný user. 
+     */
     @PutMapping("/activateSite/{id}") 
     public String activateCoffeeSite(@PathVariable(name = "id") Integer id) {
         // After CoffeeSite activation, go to My Sites list
@@ -355,7 +358,7 @@ public class CoffeeSiteController
     }
 
     /**
-     * Pomocna metoda zdruzujici Controller prikazy pro modifikaci stavu CoffeeSitu
+     * Pomocna metoda zdruzujici Controller prikazy pro některé modifikace stavu CoffeeSitu
      */
     private String modifyStatusAndReturnSameView(Integer csID, CoffeeSiteRecordStatusEnum newStatus) {
         CoffeeSite cs = coffeeSiteService.findOneById(csID);
