@@ -2,6 +2,8 @@ package cz.fungisoft.coffeecompass.service;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.Comment;
 import cz.fungisoft.coffeecompass.entity.User;
@@ -22,19 +24,19 @@ public interface ICommentService
 	 * 
 	 * @return instance of the saved {@link Comment} object.
 	 */
-	public Comment saveTextAsComment(String commentText, int userID, int coffeeSiteID);
+	public Comment saveTextAsComment(String commentText, Integer userID, Integer coffeeSiteID);
 	public Comment saveTextAsComment(String commentText, User user, CoffeeSite coffeeSite);
 	public Comment saveTextAsComment(String commentText, CoffeeSite coffeeSite);
     
-	public Comment getById(int id);
+	public Comment getById(Integer id);
 	
 	/**
 	 * Gets list of all saved Comments for given Article id.
 	 * 
-	 * @param artId id of the Article for which the comments are required.
-	 * @return all Comments for given Article id
+	 * @param siteId id of the CoffeeSite for which the comments are required.
+	 * @return all Comments for given CoffeeSite id
 	 */
-	public List<Comment> getAllCommentsForSiteId(int artId);	
+	public List<Comment> getAllCommentsForSiteId(Integer siteId);	
 	
 	/**
 	 * Gets lis of all saved Comments from given {@code User}
@@ -42,7 +44,7 @@ public interface ICommentService
 	 * @param userID id of the User the comments are required from.
 	 * @return all Comments of given userID i.e. User with this id. 
 	 */
-	public List<Comment> getAllCommentsFromUser(int userID);
+	public List<Comment> getAllCommentsFromUser(Integer userID);
 	public List<Comment> getAllCommentsFromUser(User user);
 	
 	/**
@@ -56,10 +58,15 @@ public interface ICommentService
 	 * Deletes persistent {@link Comment} object from DB	
 	 * @param comment {@link Comment} object to be deleted from repository/DB.
 	 */
-	public void deleteComment(Comment comment);
+	@PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_DBA')")
+	public Integer deleteComment(Comment comment);
+	@PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_DBA')")
+	public Integer deleteCommentById(Integer commentId);
 	
-	/*
+	@PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_DBA')")
 	public void deleteAllCommentsFromUser(Integer userID);
+	@PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_DBA')")
 	public void deleteAllCommentsForSite(Integer coffeeSiteID);
-    */
+    
+    
 }

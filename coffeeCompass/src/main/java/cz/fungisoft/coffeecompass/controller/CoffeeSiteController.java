@@ -198,6 +198,7 @@ public class CoffeeSiteController
      * @param id
      * @return
      */
+    /*
     @PostMapping("/saveStarsAndComment/{id}") 
     public ModelAndView saveCommentAndStarsForSite(@ModelAttribute StarsAndCommentModel starsAndComment, @PathVariable int id) {
         // Ulozit hodnoceni if not empty
@@ -214,6 +215,7 @@ public class CoffeeSiteController
         
         return mav;
     }
+    */
    
     @GetMapping("/site/") // napr. http://localhost:8080/site/?name=test1
     public CoffeeSiteDto siteByName(@RequestParam(value="name") String name) {

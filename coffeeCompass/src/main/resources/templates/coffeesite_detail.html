@@ -261,13 +261,26 @@
 		        </div>
 			    
 			    <!-- Comments list  -->
+			    <!--  Every comment has button Delete in case ADMIN user is logged-in -->
 			    <div class="w3-container"> 
 			    <div class="w3-container w3-margin-top" th:if="${NOT #lists.isEmpty(comments)}">
 					<b><h3 th:text="#{site.listOfComments}" class="w3-border-bottom w3-bottombar">Comments: </h3></b>
 					<div th:each="comment : ${comments}" class="w3-border-bottom w3-margin-top">
 						<span th:text="${comment.user.userName}" style="font-weight: bold; font-style: italic" class="w3-small">User</span>
 							- <span th:text="${#dates.format(comment.created, 'dd.MM. yyyy , HH:mm')}" class="w3-small" style="font-style: italic">Date of comment</span> <!-- style="font-weight: bold" -->
-						<div th:text="${comment.text}" class="w3-margin-left"></div>
+						
+						<div class="w3-cell-row">
+						  <div th:text="${comment.text}" class="w3-margin-left w3-cell"></div>
+							<div class="w3-right w3-cell" sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_DBA')">
+						      <form action="#" 
+				                  th:action="@{'/deleteComment/' + ${comment.id}}" 
+				                  th:method="DELETE">
+				               <input type="hidden" name="_method" value="delete" />
+				               <button type="submit" id="submitButton" th:text="#{comment.delete}" class="w3-button w3-small w3-red w3-border">X</button>
+				              </form>
+				            </div>
+					    </div>
+					    
 					</div>
 				</div>
 				</div>

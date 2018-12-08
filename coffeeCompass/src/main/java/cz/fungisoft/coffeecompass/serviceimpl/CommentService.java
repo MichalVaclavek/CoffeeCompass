@@ -47,7 +47,7 @@ public class CommentService implements ICommentService
 	}
 	
 	@Override
-    public Comment saveTextAsComment(String commentText, int userID, int coffeeSiteID) {
+    public Comment saveTextAsComment(String commentText, Integer userID, Integer coffeeSiteID) {
         User user = userRepo.findById(userID).orElse(null);
               
         CoffeeSite cs = coffeeSiteRepo.findById(coffeeSiteID).orElse(null);             
@@ -81,7 +81,7 @@ public class CommentService implements ICommentService
 	 * @see cz.zutrasoft.base.services.CommentService#getAllCommentsFromUser(int)
 	 */
 	@Override
-	public List<Comment> getAllCommentsFromUser(int userID) {
+	public List<Comment> getAllCommentsFromUser(Integer userID) {
 		return commentsRepo.getAllCommentsFromUser(userID);
 	}
 
@@ -96,31 +96,36 @@ public class CommentService implements ICommentService
 	}
 
 	@Override
-	public void deleteComment(Comment comment) {
-	    commentsRepo.delete(comment);
+	public Integer deleteComment(Comment comment) {
+	    return deleteCommentById(comment.getId());
 	}
+	
+	@Override
+    public Integer deleteCommentById(Integer commentId) {
+	    Integer siteId = commentsRepo.getSiteIdForComment(commentId);
+	    commentsRepo.deleteById(commentId);
+	    return siteId;
+    }
 
     @Override
-    public Comment getById(int id) {
+    public Comment getById(Integer id) {
         return commentsRepo.findById(id).orElse(null);
     }
 
     @Override
-    public List<Comment> getAllCommentsForSiteId(int coffeeSiteID) {
+    public List<Comment> getAllCommentsForSiteId(Integer coffeeSiteID) {
         return commentsRepo.getAllCommentsForSite(coffeeSiteID);
     }
 
-    /*
     @Override
-    public void deleteAllCommentsFromUser(Integer userID)
-    {
+    public void deleteAllCommentsFromUser(Integer userID) {
         commentsRepo.deleteAllFromUser(userID);
+        
     }
 
     @Override
-    public void deleteAllCommentsForSite(Integer coffeeSiteID)
-    {
+    public void deleteAllCommentsForSite(Integer coffeeSiteID) {
         commentsRepo.deleteAllForSite(coffeeSiteID);
     }
-    */
+
 }

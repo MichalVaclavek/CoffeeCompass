@@ -34,7 +34,7 @@ public class Comment implements Serializable
 	private static final long serialVersionUID = -4668072504757454270L;
 
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
+	private Integer id;
 	
     @NotNull
 	@Column(name="text", nullable=false)
@@ -46,12 +46,12 @@ public class Comment implements Serializable
 	private Date created;
 	
     @NotNull
-    @ManyToOne(cascade = {CascadeType.REMOVE}) // jde o pohled ze strany Comment, tedy Many Comments To One CoffeeSite
+    @ManyToOne // jde o pohled ze strany Comment, tedy Many Comments To One CoffeeSite
     @JoinColumn(name = "site_id", nullable = false)
     private CoffeeSite coffeeSite;
 	    	
     @NotNull
-    @OneToOne(cascade = {CascadeType.REMOVE})
+    @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }
