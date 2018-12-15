@@ -21,7 +21,6 @@ import cz.fungisoft.coffeecompass.service.UserService;
  * <br>
  * 
  * @author Michal Vaclavek
- *
  */
 @Controller
 public class ContactMeMessageController

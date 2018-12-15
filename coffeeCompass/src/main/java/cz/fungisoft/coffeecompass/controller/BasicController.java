@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  * <br>
  * Vrací základní html stránky uložené v src/main/resources/templates
  * 
- * @author Michal
- *
+ * @author Michal Vaclavek
  */
 @Controller
 public class BasicController

@@ -33,7 +33,7 @@ public class ConfigurationRedirectToHttps
                    securityConstraint.addCollection(collection);
                    context.addConstraint(securityConstraint);
                 }
-          };
+            };
         tomcat.addAdditionalTomcatConnectors(redirectConnector());
         return tomcat;
     }

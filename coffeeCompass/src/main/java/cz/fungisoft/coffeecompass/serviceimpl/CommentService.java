@@ -7,18 +7,21 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cz.fungisoft.coffeecompass.dto.CommentDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.Comment;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
 import cz.fungisoft.coffeecompass.repository.CommentRepository;
-import cz.fungisoft.coffeecompass.repository.UsersRepository;
 import cz.fungisoft.coffeecompass.service.ICommentService;
 import cz.fungisoft.coffeecompass.service.UserService;
+import ma.glasnost.orika.MapperFacade;
 
 
 /**
@@ -30,8 +33,7 @@ import cz.fungisoft.coffeecompass.service.UserService;
 @Transactional
 public class CommentService implements ICommentService
 {
-    @Autowired
-    UsersRepository userRepo;
+    private static final Logger logger = LogManager.getLogger(CommentService.class);
     
     @Autowired
     CoffeeSiteRepository coffeeSiteRepo;
@@ -40,16 +42,17 @@ public class CommentService implements ICommentService
     private UserService userService;
    
     private CommentRepository commentsRepo;
+    private MapperFacade mapperFacade;
 		
 	@Autowired
-	public CommentService(CommentRepository commentsRepo) {
+	public CommentService(CommentRepository commentsRepo, MapperFacade mapperFacade) {
 	    this.commentsRepo = commentsRepo;
+	    this.mapperFacade = mapperFacade;
 	}
 	
 	@Override
     public Comment saveTextAsComment(String commentText, Integer userID, Integer coffeeSiteID) {
-        User user = userRepo.findById(userID).orElse(null);
-              
+	    User user = userService.findById(userID);
         CoffeeSite cs = coffeeSiteRepo.findById(coffeeSiteID).orElse(null);             
        
         return saveTextAsComment(commentText, user, cs);
@@ -81,19 +84,52 @@ public class CommentService implements ICommentService
 	 * @see cz.zutrasoft.base.services.CommentService#getAllCommentsFromUser(int)
 	 */
 	@Override
-	public List<Comment> getAllCommentsFromUser(Integer userID) {
-		return commentsRepo.getAllCommentsFromUser(userID);
+	public List<CommentDTO> getAllCommentsFromUser(Integer userID) {
+	    return modifyToTransfer(commentsRepo.getAllCommentsFromUser(userID));
 	}
 
 	@Override
-	public List<Comment> getAllCommentsFromUser(User user) {
-	    return commentsRepo.getAllCommentsFromUser(user.getId());
+	public List<CommentDTO> getAllCommentsFromUser(User user) {
+	    return modifyToTransfer(commentsRepo.getAllCommentsFromUser(user.getId()));
 	}
+	
+	@Override
+    public List<CommentDTO> getAllCommentsForSiteId(Integer coffeeSiteID) {
+	    return modifyToTransfer(commentsRepo.getAllCommentsForSite(coffeeSiteID));
+    }
 
 	@Override
-	public List<Comment> getAllComments() {
-		return commentsRepo.findAll();
+	public List<CommentDTO> getAllComments() {
+	    return modifyToTransfer(commentsRepo.findAll());
 	}
+	
+	private CommentDTO convertCommentToDto(Comment comment) {
+	    CommentDTO retValComment = mapperFacade.map(comment, CommentDTO.class);
+	    retValComment.setCanBeDeleted(isDeletable(retValComment));
+	    return retValComment;
+	}
+	
+	/**
+     * Adds attributes to CoffeeSite to identify what operations can be done with CoffeeSite in UI
+     * 
+     * @param sites
+     * @return
+     */
+    private List<CommentDTO> modifyToTransfer(List<Comment> comments) {
+        List<CommentDTO> commentsTransfer = mapperFacade.mapAsList(comments, CommentDTO.class);
+        
+        for (CommentDTO comment : commentsTransfer) {
+            comment.setCanBeDeleted(isDeletable(comment));
+        }
+        
+        return commentsTransfer;
+    }
+    
+    private boolean isDeletable(CommentDTO comment) {
+        return (comment != null && userService.getCurrentLoggedInUser() != null) ? 
+                  userService.isADMINloggedIn() || comment.getUserName().equals(userService.getCurrentLoggedInUser().getUserName()) : 
+                     false;
+    }
 
 	@Override
 	public Integer deleteComment(Comment comment) {
@@ -112,10 +148,7 @@ public class CommentService implements ICommentService
         return commentsRepo.findById(id).orElse(null);
     }
 
-    @Override
-    public List<Comment> getAllCommentsForSiteId(Integer coffeeSiteID) {
-        return commentsRepo.getAllCommentsForSite(coffeeSiteID);
-    }
+    
 
     @Override
     public void deleteAllCommentsFromUser(Integer userID) {

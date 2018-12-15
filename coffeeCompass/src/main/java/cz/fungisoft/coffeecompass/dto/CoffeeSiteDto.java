@@ -53,8 +53,6 @@ public class CoffeeSiteDto
     
     private Set<CupType> cupTypes;
     
-//    private double averageStars;
-    
     private AverageStarsForSiteDto averageStarsWithNumOfHodnoceni; 
     
     private PriceRange cena;

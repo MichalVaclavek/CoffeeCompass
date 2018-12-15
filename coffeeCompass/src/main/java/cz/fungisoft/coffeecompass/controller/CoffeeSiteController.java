@@ -1,7 +1,7 @@
 package cz.fungisoft.coffeecompass.controller;
 
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDto;
-
+import cz.fungisoft.coffeecompass.dto.CommentDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
@@ -28,6 +28,7 @@ import cz.fungisoft.coffeecompass.service.PriceRangeService;
 import cz.fungisoft.coffeecompass.service.SiteLocationTypeService;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
 import cz.fungisoft.coffeecompass.service.UserService;
+
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,14 +45,14 @@ import java.util.List;
 /**
  * Základní Controller pro obsluhu požadavků, které se týkají práce s hlavním objektem CoffeeSite.<br>
  * Tj. pro základní CRUD operace a pro vyhledávání CoffeeSites.<br>
- * Tato verze je urcena pro pouziti se sablonovacim html/template systemem Thymeleaf, pro REST je vytvorena
+ * Tato verze je urcena pro pouziti se sablonovacim html/template systemem Thymeleaf, pro REST je/bude vytvorena
  * extra verze CoffeeSiteRESTController.
  * <br>
  * 
  * @author Michal Václavek
  */
 @Api // Anotace Swagger
-@Controller // lepsi pro pouziti s sablonovacim systemem Thymeleaf, vraci stranky napr. coffeesite_create.html pri return "coffeesite_create";
+@Controller
 public class CoffeeSiteController
 {
     @Autowired
@@ -167,7 +168,7 @@ public class CoffeeSiteController
         mav.addObject("starsAndComment", starsAndComment);
         
         // Add comments for coffeeSite
-        List<Comment> comments = commentsService.getAllCommentsForSiteId(id);
+        List<CommentDTO> comments = commentsService.getAllCommentsForSiteId(id);
         mav.addObject("comments", comments);
         
         mav.setViewName("coffeesite_detail");
@@ -190,32 +191,6 @@ public class CoffeeSiteController
         return mav;   
     }
    
-    /**
-     * Zpracuje POST pozadavek ze stranky zobrazujici info o jednom CoffeeSite, z Formu, ktery umoznuje zadat
-     * hodnoceni a komentar.
-     * 
-     * @param starsAndComment
-     * @param id
-     * @return
-     */
-    /*
-    @PostMapping("/saveStarsAndComment/{id}") 
-    public ModelAndView saveCommentAndStarsForSite(@ModelAttribute StarsAndCommentModel starsAndComment, @PathVariable int id) {
-        // Ulozit hodnoceni if not empty
-        starsForCoffeeSiteService.saveStarsForCoffeeSite(id, starsAndComment.getStars().getNumOfStars());
-        
-        CoffeeSite cs = coffeeSiteService.findOneById(id);
-        
-        if ((starsAndComment.getComment() != null) && !starsAndComment.getComment().isEmpty())
-            commentsService.saveTextAsComment(starsAndComment.getComment(), cs);
-        
-        // Show same coffee site with new Stars and comments
-        CoffeeSiteDto cst = coffeeSiteService.findOneToTransfer(id);
-        ModelAndView mav = new ModelAndView("redirect:/showSite/"+ cst.getId());
-        
-        return mav;
-    }
-    */
    
     @GetMapping("/site/") // napr. http://localhost:8080/site/?name=test1
     public CoffeeSiteDto siteByName(@RequestParam(value="name") String name) {
@@ -275,7 +250,6 @@ public class CoffeeSiteController
      */
     @GetMapping("/modifySite/{id}")
     public ModelAndView showSiteUpdatePage(@PathVariable(name = "id") Integer id) {
-//        CoffeeSite cs = coffeeSiteService.findOneById(id);
         CoffeeSiteDto cs = coffeeSiteService.findOneToTransfer(id);
         
         ModelAndView mav = new ModelAndView();
@@ -353,9 +327,7 @@ public class CoffeeSiteController
         {
             CoffeeSite cs = coffeeSiteService.findOneById(id);
             cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, CoffeeSiteRecordStatusEnum.CANCELED);
-            String returnView = "redirect:/mySites";
-            
-            return returnView;
+            return "redirect:/mySites";
         }
     }
 
@@ -365,7 +337,6 @@ public class CoffeeSiteController
     private String modifyStatusAndReturnSameView(Integer csID, CoffeeSiteRecordStatusEnum newStatus) {
         CoffeeSite cs = coffeeSiteService.findOneById(csID);
         cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, newStatus);
-
         return "redirect:/showSite/" + cs.getId();
     }
     
@@ -415,7 +386,6 @@ public class CoffeeSiteController
         return cupTypesService.getAllCupTypes();
     }
         
-       
     @ModelAttribute("allNextToMachineTypes")
     public List<NextToMachineType> populateNextToMachineTypes() {
         return ntmtService.getAllNextToMachineTypes();

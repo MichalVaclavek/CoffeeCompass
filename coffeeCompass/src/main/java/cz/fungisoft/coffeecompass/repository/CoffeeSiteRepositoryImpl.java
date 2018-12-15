@@ -43,6 +43,7 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
      * Skoro vSechny vyhledavaci SQL query v teto tride budou mit stejny tvar. Na zacatku SELECT vsech polozek z coffeecompass.coffee_site tab. a na konci
      * omezeni podle geograficke polohy pomoci podminky s ulozenou procedurou. Proto se tento dotaz bude rozdelovat na 3 casti,
      * kde se bude menit akorat stred dotazu s dalsimi podminkami.
+     * Zatim nepouzito.
      */
     private static final String SITES_IN_RANGE_QUERY = "SELECT *, poloha_gps_sirka, poloha_gps_delka FROM coffeecompass.coffee_site WHERE distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3";
     private static final String QUERY_START_WHERE = "SELECT *, poloha_gps_sirka, poloha_gps_delka FROM coffeecompass.coffee_site AS cs WHERE ";
@@ -218,4 +219,5 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
         
         return sites.getResultList();
     }
+    
 }

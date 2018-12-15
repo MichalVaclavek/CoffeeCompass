@@ -122,9 +122,13 @@
 		    
 		    </div> <!-- <div class="w3-col l3 w3-container"> -->
     
-    		<div class="w3-threequarter"> <!-- Element to insert script for mapy.cz -->
+    		<div class="w3-threequarter"> <!-- Element to insert script for map -->
 	        	<!-- Element to show map - class="w3-display-topright" -->
 	        	<div  id="map" class="w3-round w3-card-4 w3-margin-left" style="height: 600px; width: 100%;"></div> <!-- "height: 600px; width: 800px;" -->
+	    	</div>
+	    	
+	    	<div class="w3-container w3-threequarter w3-margin-top" th:if="${NOT #lists.isEmpty(foundSites)}"> <!-- Show number of found sites -->
+	        	<b>	<span th:text="#{sitesearch.sitesFound} + ' ' + ${#lists.size(foundSites)}"></span> </b>
 	    	</div>
 	    	
 		    <!--  Table containing the results of search -->

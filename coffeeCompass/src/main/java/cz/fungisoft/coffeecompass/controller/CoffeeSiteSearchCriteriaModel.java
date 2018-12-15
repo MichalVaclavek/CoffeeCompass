@@ -17,10 +17,9 @@ import lombok.Data;
  *{@link CoffeeSort}<br>
  * 
  * @author Michal Vaclavek
- *
  */
 @Data
-public class CoffeeSiteSearchCriteria
+public class CoffeeSiteSearchCriteriaModel
 {
     @NotNull
     @DecimalMax(value="180.0")

@@ -190,7 +190,7 @@ public class CoffeeSiteRESTController
     }
     
     /**
-     * Priprava dat pro clienta, ktery zobrazi stranku pro vyhledavani CoffeeSites podle {@link CoffeeSiteSearchCriteria}
+     * Priprava dat pro clienta, ktery zobrazi stranku pro vyhledavani CoffeeSites podle {@link CoffeeSiteSearchCriteriaModel}
      * 
      * @param model
      * @return
@@ -198,7 +198,7 @@ public class CoffeeSiteRESTController
     @GetMapping("/searchSites") 
     public String getSitesWithStatusAndCoffeeSort(Model model)
     {
-        CoffeeSiteSearchCriteria searchCriteria = new CoffeeSiteSearchCriteria();
+        CoffeeSiteSearchCriteriaModel searchCriteria = new CoffeeSiteSearchCriteriaModel();
         
         // Defaultni hodnoty Search criterii. Defaultni pro polohu bude aktualni poloha zarizeni
         searchCriteria.setSortSelected(false);

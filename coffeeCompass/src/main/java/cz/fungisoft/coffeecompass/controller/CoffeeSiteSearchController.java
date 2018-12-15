@@ -23,13 +23,12 @@ import cz.fungisoft.coffeecompass.service.CoffeeSortService;
 import io.swagger.annotations.Api;
 
 /**
- * Obsluha pozadavku na strance pro vyhledavani CoffeeSites ...
+ * Obsluha pozadavku na strance pro vyhledavani CoffeeSites.
  * 
  * @author Michal Vaclavek
- *
  */
 @Api // Anotace Swagger
-@Controller // lepsi pro pouziti s sablonovacim systemem Thymeleaf, vraci stranky napr. coffeesite_create.html pri return "coffeesite_create";
+@Controller
 public class CoffeeSiteSearchController
 {
     private CoffeeSiteService coffeeSiteService;
@@ -58,7 +57,7 @@ public class CoffeeSiteSearchController
      */
     @GetMapping("/searchSites") // napr. http://localhost:8080/searchSites/?lat1=50.1669497&lon1=14.7657927&range=50000&status=Opened&sort=espresso
     public String getSitesWithStatusAndCoffeeSort(Model model) {
-        CoffeeSiteSearchCriteria searchCriteria = new CoffeeSiteSearchCriteria();
+        CoffeeSiteSearchCriteriaModel searchCriteria = new CoffeeSiteSearchCriteriaModel();
             
         model.addAttribute("searchCriteria", searchCriteria);
         return "coffeesite_search";
@@ -73,7 +72,7 @@ public class CoffeeSiteSearchController
      * @return
      */
    @PostMapping("/searchSites") // napr. http://localhost:8080/getSites/?lat1=50.1669497&lon1=14.7711140&range=50000&status=Opened&sort=espresso
-   public ModelAndView searchSitesWithStatusAndCoffeeSort(@ModelAttribute("searchCriteria") @Valid CoffeeSiteSearchCriteria searchCriteria, final BindingResult bindingResult) {
+   public ModelAndView searchSitesWithStatusAndCoffeeSort(@ModelAttribute("searchCriteria") @Valid CoffeeSiteSearchCriteriaModel searchCriteria, final BindingResult bindingResult) {
        ModelAndView mav = new ModelAndView();
        
        if (bindingResult.hasErrors()) {

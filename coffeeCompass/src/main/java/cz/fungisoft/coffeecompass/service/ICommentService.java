@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import cz.fungisoft.coffeecompass.dto.CommentDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.Comment;
 import cz.fungisoft.coffeecompass.entity.User;
@@ -36,7 +37,7 @@ public interface ICommentService
 	 * @param siteId id of the CoffeeSite for which the comments are required.
 	 * @return all Comments for given CoffeeSite id
 	 */
-	public List<Comment> getAllCommentsForSiteId(Integer siteId);	
+	public List<CommentDTO> getAllCommentsForSiteId(Integer siteId);	
 	
 	/**
 	 * Gets lis of all saved Comments from given {@code User}
@@ -44,19 +45,20 @@ public interface ICommentService
 	 * @param userID id of the User the comments are required from.
 	 * @return all Comments of given userID i.e. User with this id. 
 	 */
-	public List<Comment> getAllCommentsFromUser(Integer userID);
-	public List<Comment> getAllCommentsFromUser(User user);
+	public List<CommentDTO> getAllCommentsFromUser(Integer userID);
+	public List<CommentDTO> getAllCommentsFromUser(User user);
 	
 	/**
 	 * Gets list all saved Comments.
 	 * 
 	 * @return list all saved Comments
 	 */
-	public List<Comment> getAllComments();
+	public List<CommentDTO> getAllComments();
 	
 	/**
 	 * Deletes persistent {@link Comment} object from DB	
 	 * @param comment {@link Comment} object to be deleted from repository/DB.
+	 * @retutn id of the CoffeeSite the deleted Comment belongs to.
 	 */
 	@PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_DBA')")
 	public Integer deleteComment(Comment comment);
@@ -67,6 +69,5 @@ public interface ICommentService
 	public void deleteAllCommentsFromUser(Integer userID);
 	@PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_DBA')")
 	public void deleteAllCommentsForSite(Integer coffeeSiteID);
-    
     
 }

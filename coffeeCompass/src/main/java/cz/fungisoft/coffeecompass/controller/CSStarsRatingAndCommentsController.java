@@ -16,13 +16,15 @@ import io.swagger.annotations.Api;
 
 /**
  * Controller for handling addition/deletition of Comment and Stars for CoffeeSite.
+ * Obsluhuje operace souvisejici s hondocenim CoffeeSitu a s vkladanim/mazanim
+ * komentare ke CoffeeSitu na strance/templatu coffeesite_info.html
  * 
  * @author Michal Vaclavek
  *
  */
 @Api // Anotace Swagger
 @Controller 
-public class CSCommentsController
+public class CSStarsRatingAndCommentsController
 {
     private ICommentService commentsService;
     
@@ -32,7 +34,7 @@ public class CSCommentsController
     
     
     @Autowired
-    public CSCommentsController(ICommentService commentsService, IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService,
+    public CSStarsRatingAndCommentsController(ICommentService commentsService, IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService,
                                 CoffeeSiteService coffeeSiteService) {
         super();
         this.commentsService = commentsService;

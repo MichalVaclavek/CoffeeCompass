@@ -9,7 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 import lombok.Data;
 
 /**
- * Obsahuje dalsi specificke konfiguracni parametry aplikace.
+ * Obsahuje dalsi specificke konfiguracni parametry aplikace, ktere lze nacist z src/main/resources/configprops.properties souboru
  * 
  * @author Michal Vaclavek
  */
@@ -22,11 +22,5 @@ public class ConfigProperties
     @Email
     @Value("${contactme.mail.to}")
     private String contactMeEmailTo;
-
-    /*
-    public static String getContactMeEmailTo() {
-        return contactMeEmailTo;
-    }
-    */
     
 }

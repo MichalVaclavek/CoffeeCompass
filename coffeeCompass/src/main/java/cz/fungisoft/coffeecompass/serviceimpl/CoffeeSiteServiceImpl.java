@@ -98,9 +98,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     }
     
     private CoffeeSiteDto evaluateAverageStars(CoffeeSiteDto site) {
-//        double avgStarsForSite = starsForCoffeeSiteService.avgStarsForSite(site.getId());
         site.setAverageStarsWithNumOfHodnoceni(starsForCoffeeSiteService.getStarsAndNumOfHodnoceniForSite(site.getId()));
-//        site.setAverageStars(avgStarsForSite);
         return site;
     }
     

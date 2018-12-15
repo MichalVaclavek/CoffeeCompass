@@ -34,7 +34,6 @@ public class UserServiceImpl implements UserService
 {
     private UsersRepository usersRepository;
    
-       
     private PasswordEncoder passwordEncoder;
         
     private MapperFacade mapperFacade;
@@ -197,9 +196,6 @@ public class UserServiceImpl implements UserService
                 Authentication authentication = authenticationFacade.getAuthentication();
                 
                 if (authentication != null) {
-//                    Collection<SimpleGrantedAuthority> nowAuthorities = (Collection<SimpleGrantedAuthority>) authentication.getAuthorities();
-//                    if (isADMINloggedIn()) // logged-in ADMIN can modify its ROLES //TODO (isADMINloggedIn() ckecks ROLES against already changed and save object
-                    // i.e. if ADMIN has removed its ADMIN role this code is never called and ADMIN role is not removed for Spring authentication object
                     Collection<SimpleGrantedAuthority>  nowAuthorities = (Collection<SimpleGrantedAuthority>) userDetailsService.getGrantedAuthorities(entity);
                         
                     UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(newUserName, newPasswd, nowAuthorities);
@@ -214,7 +210,6 @@ public class UserServiceImpl implements UserService
     @Override
     public UserDataDto updateUser(UserDataDto userDTO) {
         return mapperFacade.map(updateUser(mapperFacade.map(userDTO,  User.class)), UserDataDto.class);
-//      updateUser(mapperFacade.map(userDTO,  User.class));
     }
     
     @Override
