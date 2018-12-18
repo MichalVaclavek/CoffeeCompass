@@ -53,7 +53,7 @@ public class User implements Serializable
  
     @NotNull
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_to_user_profile", schema="coffeecompass",
+    @JoinTable(name = "user_to_user_profile", schema = "coffeecompass",
                joinColumns = { @JoinColumn(name = "user_id") }, 
                inverseJoinColumns = { @JoinColumn(name = "user_profile_id") })
     private Set<UserProfile> userProfiles = new HashSet<UserProfile>();

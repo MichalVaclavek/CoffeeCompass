@@ -136,6 +136,10 @@ public class CommentService implements ICommentService
 	    return deleteCommentById(comment.getId());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * Returns CoffeeSite the deleted Comment belonged to.
+	 */
 	@Override
     public Integer deleteCommentById(Integer commentId) {
 	    Integer siteId = commentsRepo.getSiteIdForComment(commentId);

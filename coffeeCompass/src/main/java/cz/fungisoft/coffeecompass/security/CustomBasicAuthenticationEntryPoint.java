@@ -1,3 +1,4 @@
+
 package cz.fungisoft.coffeecompass.security;
 
 import java.io.IOException;

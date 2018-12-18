@@ -18,13 +18,16 @@ import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedStoredProcedureQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.NamedStoredProcedureQueries;
 import javax.persistence.ParameterMode;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -192,6 +195,15 @@ public class CoffeeSite
                     inverseJoinColumns = { @JoinColumn(name = "druhy_kavy_id") })
     private Set<CoffeeSort> coffeeSorts = new HashSet<>();      
     
+    /* **** ONE TO ONE relations **** */
+    /*
+    @OneToOne
+    @JoinColumn(name = "image_id")
+    */
+    @OneToOne(mappedBy = "coffeeSite", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Image image;
+    
+    
     /* **** ONE TO MANY relations **** */
     /**
      * Odkaz do tabulky Entity Commnent, spojeno pomoci coffeeSite atributu v tab./entite Comment
@@ -199,7 +211,11 @@ public class CoffeeSite
     /* Pravdepodobne neni potreba uvadet zde, zkusime doplnit servisni vrstvou Comment a najit, jen kdyz
      * si uzivatel zobrazi informace o jednom CoffeeSite.
      * Nebude se tedy ziskavat cely seznam commentu pri kazdem dotazu na CoffeeSite.
+     * */
     @OneToMany(mappedBy="coffeeSite", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Comment> comments;
-    */
+    private List<Comment> comments = new ArrayList<>();
+    
+    @OneToMany(mappedBy="coffeeSite", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StarsForCoffeeSiteAndUser> ratings = new ArrayList<>();
+    
 }

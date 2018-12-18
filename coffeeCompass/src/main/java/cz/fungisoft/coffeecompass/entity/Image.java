@@ -16,11 +16,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Type;
 import org.springframework.web.multipart.MultipartFile;
 //import org.apache.tomcat.util.http.fileupload.FileUpload;
 
@@ -43,29 +46,41 @@ public class Image implements Serializable
 	private static final long serialVersionUID = 4976306313068414171L;
 
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
+	private Integer id;
 	  
-	@NotNull
+//	@OneToOne
+//    @JoinColumn(name = "coffeesite_id")
 	@OneToOne
+//    @MapsId
     @JoinColumn(name = "coffeesite_id")
-    private CoffeeSite cfSite;
+    private CoffeeSite coffeeSite;
 	
-    @NotNull
-	@Column(name = "saved_On", nullable = false)
+//    @NotNull
+	@Column(name = "saved_on", nullable = false)
 	private Timestamp savedOn;
 		
 	@NotEmpty
 	@Column(name="file_name", nullable=false)
 	private String fileName;
 	
-	@Lob // Large Object Binary
+	/**
+	 * File object used in FileUploadController and ImageFileStorageServiceImpl
+	 */
+	@Transient
+	private MultipartFile file;
+	
+	public void setFile(MultipartFile file) {
+	    this.file = file;
+	    this.fileName = file.getOriginalFilename();
+	}
+	
 	@Column(name="data", nullable=false)
 	private byte[] imageBytes;
 	
 	
 	public Image(CoffeeSite cfSite, MultipartFile imageFile) throws IOException
 	{
-		setCfSite(cfSite);
+		setCoffeeSite(cfSite);
 		setFileName(imageFile.getOriginalFilename());
 		setImageBytes(imageFile.getBytes());
 	}

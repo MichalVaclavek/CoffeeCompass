@@ -1,0 +1,56 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+      <div th:replace="fragments/header :: header-css"/>
+</head>
+
+<body>
+	<div th:replace="fragments/header :: header"/>
+	
+	<div th:if="${message}">
+		<h2 th:text="${message}"/>
+	</div>
+
+	<div>
+		 <form method="POST" enctype="multipart/form-data" action="#" th:method="post"
+		       th:action="@{/imageUpload(${_csrf.parameterName}=${_csrf.token})}"
+		       th:object="${image}"> 
+		       <!--
+		       <input th:type="hidden" name="id" th:field="${image.id}" />
+		        
+               <input th:type="hidden" name="originalUserName" th:field="${coffeeSite.originalUserName}" />
+               <input th:type="hidden" name="recordStatus" th:field="${coffeeSite.recordStatus}" />
+                -->
+		       
+			<div class="w3-row">
+              <div class="w3-col s12 l8">
+                <div th:classappend="${#fields.hasErrors('file')}? 'error' : ''">
+                    <input type="file" th:field="*{file}"/>
+                    <span class="placeholder" data-placeholder="Choose an image...">Choose an image...</span>
+                    <div class="error-message" th:if="${#fields.hasErrors('file')}" th:errors="*{file}"></div>
+                </div>
+               </div>
+            </div>
+            
+            <div class="w3-row">
+              
+              <div class="w3-margin w3-bar-item">
+              	 
+	             <button type="submit" name="save" th:text="#{image.upload}" class="w3-button w3-blue w3-round">Save/Modify Coffee site</button>    
+	          </div>
+            </div>
+        </form>
+        
+        <form action="#" th:object="${image}"
+               th:action="@{'/deleteImage/' + ${image.id}}" 
+               th:method="DELETE">
+            <input type="hidden" name="_method" value="delete" />
+            <button type="submit" id="submitButton" th:text="#{image.delete}" class="w3-button w3-small w3-red w3-border">X</button>
+           </form>
+        
+            <!--<img th:src="${'data:image/png;base64,'+pic}" alt="" height="500" width="300" />  -->
+            <img th:src="${pic}" alt="" class="w3-panel w3-card" height="500" width="350"/> 
+
+	</div>
+		
+</body>
+</html>

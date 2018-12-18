@@ -1,6 +1,7 @@
 package cz.fungisoft.coffeecompass.controller;
 
 import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
+import cz.fungisoft.coffeecompass.exception.StorageFileException;
 import cz.fungisoft.coffeecompass.pojo.Message;
 import cz.fungisoft.coffeecompass.serviceimpl.SendMeEmailServiceImpl;
 
@@ -48,5 +49,11 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
         
         return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body(new Message(e.getMessage()));
     }
+    
+    @ExceptionHandler(StorageFileException.class)
+    public ResponseEntity<?> handleStorageFileNotFound(StorageFileException exc) {
+        return ResponseEntity.notFound().build();
+    }
+    
     
 }

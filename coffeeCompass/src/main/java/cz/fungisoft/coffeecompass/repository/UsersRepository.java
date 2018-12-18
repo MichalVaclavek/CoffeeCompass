@@ -9,7 +9,7 @@ import cz.fungisoft.coffeecompass.entity.User;
 /**
  * JpaRepository<CoffeeSite, Integer> - Integer znamena ze primarni klic pro CoffeeSite je typu Integer
  */
-@CrossOrigin
+//@CrossOrigin
 public interface UsersRepository extends JpaRepository<User, Integer>
 {
     @Query("select u from User u where userName= ?1")

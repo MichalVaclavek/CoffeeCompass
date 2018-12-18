@@ -9,8 +9,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 
@@ -30,13 +32,15 @@ public class StarsForCoffeeSiteAndUser
     @Column(name = "id")
     private int id;
 
+    @NotNull
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
     
-    @OneToOne
-    @JoinColumn(name = "coffeesite_id")
-    private CoffeeSite site;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "coffeesite_id", nullable = false)
+    private CoffeeSite coffeeSite;
     
     @OneToOne
     @JoinColumn(name = "stars_id")
@@ -56,7 +60,7 @@ public class StarsForCoffeeSiteAndUser
      * @param stars
      */
     public StarsForCoffeeSiteAndUser(CoffeeSite coffeeSite, User user, StarsQualityDescription stars) {
-        this.site = coffeeSite;
+        this.coffeeSite = coffeeSite;
         this.user = user;
         this.stars = stars;
     }

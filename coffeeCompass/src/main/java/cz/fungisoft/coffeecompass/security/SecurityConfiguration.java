@@ -48,10 +48,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 
         http.authorizeRequests()
                 .antMatchers("/","/home", "/about").permitAll()
-//                .antMatchers("/createModifySite/**", "/createSite", "/modifySite/**").access("hasRole('USER') or hasRole('ADMIN') or hasRole('DBA')")
                 .antMatchers("/createModifySite/**", "/createSite", "/modifySite/**").authenticated()
-//                .antMatchers("/cancelStatusSite/**", "/deactivateSite/**", "/activateSite/**").access("hasRole('USER') or hasRole('ADMIN') or hasRole('DBA')")
-//                .antMatchers("/saveStarsAndComment/**", "/mySites").access("hasRole('USER') or hasRole('ADMIN') or hasRole('DBA')")
 //                .antMatchers("/allSites").access("hasRole('ADMIN') or hasRole('DBA')")
                 .antMatchers("/cancelStatusSite/**", "/deactivateSite/**", "/activateSite/**").authenticated()
                 .antMatchers("/saveStarsAndComment/**", "/mySites").authenticated()
@@ -60,6 +57,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
                 .antMatchers("/user/delete/**").hasAnyRole("ADMIN")
 //                .antMatchers("/user/edit-put", "/user/edit/**").access("hasRole('ADMIN') or hasRole('DBA') or hasRole('USER')")
                 .antMatchers("/user/edit-put", "/user/edit/**").authenticated()
+                .antMatchers("/imageUpload/**").authenticated()
                 .and()
                 .formLogin().loginPage("/login").defaultSuccessUrl("/home", false).permitAll()
                 .and()
