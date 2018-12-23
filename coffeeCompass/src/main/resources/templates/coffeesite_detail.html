@@ -34,7 +34,7 @@
 	    
 		    <div class="w3-container w3-margin w3-cell" style="width:30%"> <!--  style="width:30%" -->
 		    
-			    <table class="w3-table w3-card-4">
+			    <table class="w3-table w3-card-4 w3-bordered w3-border">
 			        
 				    <tr>
 					  <td th:text="#{site.siteName}" class="w3-brown">SiteName</td>
@@ -127,12 +127,9 @@
 					  
 					  <tr>
 					 	<td th:text="#{site.stars}">Stars</td>			  
-					    <td class="w3-right-align w3-sand"
-					        >
-					        <span th:text="${coffeeSite.averageStarsWithNumOfHodnoceni.avgStars}" style="font-weight: bold">
-					         </span>
-					         <span th:if="${coffeeSite.averageStarsWithNumOfHodnoceni.numOfHodnoceni} > 0" th:text="' (' + ${coffeeSite.averageStarsWithNumOfHodnoceni.numOfHodnoceni} + ')'">
-					         </span>
+					    <td class="w3-right-align w3-sand">
+					        <span th:text="${coffeeSite.averageStarsWithNumOfHodnoceni.avgStars}" style="font-weight: bold"></span>
+					        <span th:if="${coffeeSite.averageStarsWithNumOfHodnoceni.numOfHodnoceni} > 0" th:text="' (' + ${coffeeSite.averageStarsWithNumOfHodnoceni.numOfHodnoceni} + ')'"></span>
 					    </td>
 					        
 					  </tr>
@@ -142,7 +139,8 @@
 					    <td class="w3-right-align w3-sand" th:text="${coffeeSite.initialComment}">Author's comment</td>
 					  </tr>
 					  
-					  <tr th:if="${coffeeSite.canBeModified}">
+					  <!-- <tr th:if="${coffeeSite.canBeModified}"> -->
+					  <tr sec:authorize="isAuthenticated()">
 						 <td th:text="#{site.recordStatus}">Initial comment</td>			  
 						 <td class="w3-right-align w3-sand" th:text="${coffeeSite.recordStatus.status}" style="font-weight: bold">Status of record</td>
 					  </tr>
@@ -150,73 +148,130 @@
 				</table>
 			</div>
 			
- 			<div class="w3-display-container w3-cell" style="width:10%">
-				<!-- Buttons for modification of the CoffeeSite and for changing status of CS  -->
-				<div class="w3-container">
-				
-					 <div class="w3-display-topleft w3-margin">
-				         <!-- TODO element pro vlozeni obrazku situ -->
-			         </div>
-					 
+ 			<div class="w3-display-container w3-cell w3-margin" style="width:25%">
+				<div>
 					 <!-- Group of buttons for modifying CoffeeSite status -->
-					 <div class="w3-display-bottomleft">
+					 <!-- Buttons for modification of the CoffeeSite and for changing status of CS  -->
+					 <div class="w3-display-topleft">
 					 
 						 <!-- Tlacitko pro Modifikaci pro uzivatele, ktery site vytvoril nebo pro DBA a ADMIN -->
 				         <!-- Available only for logged-in user who created the site or for DBA or ADMIN user -->
-				         <div class="w3-margin">
-				             <form th:if="${coffeeSite.canBeModified}"
-				             	   action="#"
-				             	   th:action="@{'/modifySite/' + ${coffeeSite.id}}"
-				             	   th:method="GET" >
-					             <input type="hidden" name="_method" value="get" />
-					             <button type="submit" id="submitButton" th:text="#{site.modify}" class="w3-btn w3-blue w3-border">X</button>
-					         </form>
-				         </div>	
-				         
-					 	 <!-- Sada tlacitek pro zmenu stavu CoffeeSitu. Tj. Activate/Deactivate/Delete/Cancel -->
-				         <div class="w3-margin">
-				            <form th:if="${coffeeSite.canBeActivated}"
-				                  action="#" 
-				                  th:action="@{'/activateSite/' + ${coffeeSite.id}}" 
-				                  th:method="PUT" >
-				               <input type="hidden" name="_method" value="put" />
-				               <button type="submit" id="submitButton" th:text="#{site.status.activate}" class="w3-btn w3-green w3-border">X</button>
-				            </form>
-				         </div>
-				         
-				         <div class="w3-margin">
-				            <form th:if="${coffeeSite.canBeDeactivated}" 
-				                  action="#" 
-				                  th:action="@{'/deactivateSite/' + ${coffeeSite.id}}" 
-				                  th:method="PUT">
-				               <input type="hidden" name="_method" value="put" />
-				               <button type="submit" id="submitButton" th:text="#{site.status.deactivate}" class="w3-btn w3-orange w3-border">X</button>
-				            </form> 
-				         </div>
-				         
-				         <!-- Zmena record statusu na Cancel. Ne finalni delete, to muze provest pouze ADMIN -->
-				         <div class="w3-margin">
-				            <form th:if="${coffeeSite.canBeCanceled}" 
-				                  action="#" 
-				                  th:action="@{'/cancelStatusSite/' + ${coffeeSite.id}}" 
-				                  th:method="PUT" > 
-				               <input type="hidden" name="_method" value="put" />
-				               <button type="submit" id="submitButton" th:text="#{site.status.cancel}" class="w3-btn w3-red w3-border">X</button>
-    			            </form>
-				         </div>
-				          
-				          <!-- Form to generate DELETE http request with Delete button. For ADMIN only. -->
-				         <div class="w3-margin">
-							<form th:if="${coffeeSite.canBeDeleted}" 
-				                  action="#" 
-				                  th:action="@{'/finalDeleteSite/' + ${coffeeSite.id}}" 
-				                  th:method="DELETE">
-				               <input type="hidden" name="_method" value="delete" />
-				               <button type="submit" id="submitButton" th:text="#{site.delete}" class="w3-btn w3-red w3-border">X</button>
-				            </form>
-				         </div>
-				          
-				       </div>
+				         <table class="w3-table" sec:authorize="isAuthenticated()">
+					         <tr >
+						         <td>
+						         <div>
+						             <form th:if="${coffeeSite.canBeModified} OR ${coffeeSite.canBeDeactivated}"
+						             	   action="#"
+						             	   th:action="@{'/modifySite/' + ${coffeeSite.id}}"
+						             	   th:method="GET" >
+							             <input type="hidden" name="_method" value="get" />
+							             <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.modify}" class="w3-btn w3-blue w3-border w3-round">X</button>
+							         </form>
+						         </div>	
+						         </td>
+					         </tr>
+						 	 <!-- Sada tlacitek pro zmenu stavu CoffeeSitu. Tj. Activate/Deactivate/Delete/Cancel -->
+						 	 <tr>
+						 	 	 <td>
+						         <div>
+						            <form th:if="${coffeeSite.canBeActivated} OR ${coffeeSite.canBeDeactivated} "
+						                  action="#" 
+						                  th:action="@{'/activateSite/' + ${coffeeSite.id}}" 
+						                  th:method="PUT" >
+						               <input type="hidden" name="_method" value="put" />
+						               <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.status.activate}" class="w3-btn w3-green w3-border w3-round">X</button>
+						            </form>
+						         </div>
+						         </td>						
+						         <td>
+						         <div >
+						            <form th:if="${coffeeSite.canBeActivated} OR ${coffeeSite.canBeDeactivated}"
+						                  action="#" 
+						                  th:action="@{'/deactivateSite/' + ${coffeeSite.id}}" 
+						                  th:method="PUT">
+						               <input type="hidden" name="_method" value="put" />
+						               <button  th:disabled="${coffeeSite.canBeActivated}" type="submit" id="submitButton" th:text="#{site.status.deactivate}" class="w3-btn w3-orange w3-border w3-round">X</button>
+						            </form> 
+						         </div>
+						         </td>
+					         </tr>
+					         
+					         <!-- Zmena record statusu na Cancel. Ne finalni delete, to muze provest pouze ADMIN -->
+					         <tr>
+						         <td>
+						         <div >
+						            <form th:if="${coffeeSite.canBeCanceled} OR ${coffeeSite.canBeDeactivated}" 
+						                  action="#" 
+						                  th:action="@{'/cancelStatusSite/' + ${coffeeSite.id}}" 
+						                  th:method="PUT" > 
+						               <input type="hidden" name="_method" value="put" />
+						               <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.status.cancel}" class="w3-btn w3-red w3-border w3-round">X</button>
+		    			            </form>
+						         </div>
+						         </td>
+					         
+						         <!-- Form to generate DELETE http request with Delete button. For ADMIN only. -->
+						         <td>
+						         <div>
+									<form th:if="${coffeeSite.canBeDeleted}" 
+						                  action="#" 
+						                  th:action="@{'/finalDeleteSite/' + ${coffeeSite.id}}" 
+						                  th:method="DELETE">
+						               <input type="hidden" name="_method" value="delete" />
+						               <button type="submit" id="submitButton" th:text="#{site.delete}" class="w3-btn w3-red w3-border w3-round">X</button>
+						            </form>
+						         </div>
+						         </td>
+					         </tr>
+				         </table>
+				    </div>
+				    
+				    <!-- Picture of the CoffeeSite, if available -->
+				     <!-- <div th:classappend="${coffeeSite.canBeModified} ? 'w3-display-middle' : 'w3-display-bottomleft'" style="width:110%">  -->
+				    <div class="w3-display-middle" style="width:110%"> 
+				         <!-- Element pro vlozeni obrazku situ -->
+				         <img th:src="${pic}" alt=""  class="photo w3-image"/>
+			         </div>
+			         
+				    <!-- Element with Forms to upload or delete image of the Site -->
+				    <div th:if="${coffeeSite.canBeModified}" class="w3-display-bottommiddle">
+				    
+				     <div class="w3-right" th:if="(${image.id} > 0) AND ${coffeeSite.canBeModified}">
+					        <form action="#" th:object="${image}"
+					               th:action="@{'/deleteImage/' + ${image.id}}" 
+					               th:method="DELETE">
+					            <input type="hidden" name="_method" value="delete" />
+					            <button th:disabled="${image.id} == 0" type="submit" id="submitDeleteFileButton" th:text="#{image.delete}" class="w3-button w3-red w3-round w3-tiny">Delete image</button>
+					        </form>
+				     	</div> 
+				    <!-- <div class="w3-cell-bottom">  -->
+			         <!-- Element with Forms to upload or delete image of the Site -->
+			         <h4>Insert/delete photo here</h4>
+			         <div class="w3-border">
+			         	<div class="w3-container">
+				         	<form method="POST" enctype="multipart/form-data" action="#" th:method="post"
+							       th:action="@{/imageUpload(${_csrf.parameterName}=${_csrf.token})}"
+							       th:object="${image}"> 
+							       
+							       <input th:type="hidden" name="siteId" th:field="*{coffeeSiteID}" />
+							      
+								    <div class="w3-row">
+					                <div  th:classappend="${#fields.hasErrors('file')} ? 'has-error' : ''">
+					                    <input class= "w3-border" name="file" id="fileNameInput" type="file" th:field="*{file}" th:text="#{image.selectfile.button}" th:placeholder="#{image.selectfile.placeholder}"/>
+					                    <div class="error-message" th:if="${#fields.hasErrors('file')}" th:errors="*{file}"></div>
+					                </div>
+					                </div>
+					            
+					            <div class="w3-right">
+						            <button type="submit" id="saveImage" th:text="#{image.upload}" class="w3-button w3-light-blue w3-round w3-small w3-margin-bottom"  disabled>Upload image</button>    
+					            </div>
+					            
+					        </form>
+				      	</div> 
+				      	 
+			         </div>
+			         </div>
+				    
 			    </div>
 
 		    </div>
@@ -225,46 +280,44 @@
 		    <div class="w3-container w3-cell w3-border-left">   
 		    
 		        <!-- A panel for entering Stars and comment  -->
-		        <div class="w3-container w3-border w3-round w3-card-4">
-				  
-					<!-- Formular pro zadani hodnoceni - Stars. Muze zadat pouze prihlaseny uzivatel. -->
-					<form th:if="${coffeeSite.canBeCommented} OR ${coffeeSite.canBeRatedByStars}" action="#"
-					      th:action="@{'/saveStarsAndComment/' + ${coffeeSite.id}}" th:method="post">
-						
-						<div th:if="${coffeeSite.canBeRatedByStars}" style="width:20%" class="w3-margin-top">
-				            <b><label for="hodnoceniKavyStars" th:text="#{site.stars}">Hodnoceni kavy - stars</label></b>
-				            <select class="w3-select" th:field="*{starsAndComment.stars}">
-					            <option th:each="star : ${allHodnoceniKavyStars}"
-					            		class="w3-option"
-				                    	th:value="${star.numOfStars}" 
-				                    	th:text="${star}">Hodnoceni kavy - stars</option>
-				            </select>
-				        </div>
-				        
-						<div th:if="${coffeeSite.canBeCommented}" class="w3-margin-top">
-							<div>
-				        		<b><label for="comment" th:text="#{site.comment.add}">Message</label></b>
-				        	</div>
-				        	<div>
-				        	<!-- 
-				        		<textarea id="commentArea" name="commentArea" th:field="*{starsAndComment.comment}" rows="4" cols="60" maxlength=240>
-							  </textarea>
-							  -->
-							   <textarea id="commentArea" name="commentArea"
-				                         th:field="*{starsAndComment.comment}"
-				                         class="w3-input w3-border" style="resize:none" maxlength=240
-				                         th:placeholder="#{site.comment.message.placeholder}"></textarea>
+		        <div th:if="${coffeeSite.canBeCommented} OR ${coffeeSite.canBeRatedByStars}">
+		        	<h4>Your rating and/or comment</h4>
+			        <div class="w3-container w3-border w3-round w3-card-4">
+						<!-- Formular pro zadani hodnoceni - Stars. Muze zadat pouze prihlaseny uzivatel. -->
+						<form action="#"
+						      th:action="@{'/saveStarsAndComment/' + ${coffeeSite.id}}" th:method="post">
+							
+							<div th:if="${coffeeSite.canBeRatedByStars}" style="width:20%" class="w3-margin-top">
+					            <b><label for="hodnoceniKavyStars" th:text="#{site.stars}">Hodnoceni kavy - stars</label></b>
+					            <select class="w3-select" th:field="*{starsAndComment.stars}">
+						            <option th:each="star : ${allHodnoceniKavyStars}"
+						            		class="w3-option"
+					                    	th:value="${star.numOfStars}" 
+					                    	th:text="${star}">Hodnoceni kavy - stars</option>
+					            </select>
+					        </div>
+					        
+							<div th:if="${coffeeSite.canBeCommented}" class="w3-margin-top">
+								<div>
+					        		<b><label for="comment" th:text="#{site.comment.add}">Message</label></b>
+					        	</div>
+					        	<div>
+								   <textarea id="commentArea" name="commentArea"
+					                         th:field="*{starsAndComment.comment}"
+					                         class="w3-input w3-border" style="resize:none" maxlength=240
+					                         th:placeholder="#{site.comment.message.placeholder}">
+					               </textarea>
+								</div>
 							</div>
-						</div>
-						
-						<div>
-				        	<input type="hidden" name="_method" value="post" />
-				            <button type="submit" id="submitButton" th:text="#{site.submitStarsAndComment}" class="w3-btn w3-blue w3-border w3-margin" >X</button>
-				        </div>
-			        </form>
-			        
-		        </div>
-			    
+							
+							<div>
+					        	<input type="hidden" name="_method" value="post" />
+					            <button type="submit" id="submitButton" th:text="#{site.submitStarsAndComment}" class="w3-btn w3-blue w3-border w3-margin w3-round">X</button>
+					        </div>
+				        </form>
+				        
+			        </div>
+			    </div>
 			    <!-- Comments list  -->
 			    <!--  Every comment has button Delete in case ADMIN user is logged-in -->
 			    <div class="w3-container"> 
@@ -282,7 +335,7 @@
 					                  th:action="@{'/deleteComment/' + ${comment.id}}" 
 					                  th:method="DELETE">
 					               <input type="hidden" name="_method" value="delete" />
-					               <button type="submit" id="submitButton" th:text="#{comment.delete}" class="w3-button w3-small w3-red w3-border">X</button>
+					               <button type="submit" id="submitButton" th:text="#{comment.delete}" class="w3-button w3-small w3-red w3-border w3-round">X</button>
 					              </form>
 				            </div>
 					    </div>
@@ -297,5 +350,23 @@
 	 <!-- <div th:replace="fragments/footer :: footer"/>  -->
 	 
 </body>
+
+ 	 <!-- Script to handle visibility of Options for coffee sort selection --> 
+     <script>
+            var chooseFile = document.getElementById("fileNameInput");
+            
+            if (chooseFile) chooseFile.onchange = enableDisableButton;
+            
+            function enableDisableButton(event) {
+            	
+	        	var saveImageButton = document.getElementById("saveImage");		
+	        	
+	        	if (chooseFile.files.length == 0) {
+	        		saveImageButton.disabled = true;
+	        	} else
+	        		saveImageButton.disabled = false;
+            }
+     	
+     </script>
   
 </html> 

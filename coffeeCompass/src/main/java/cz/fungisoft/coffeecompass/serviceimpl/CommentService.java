@@ -51,7 +51,7 @@ public class CommentService implements ICommentService
 	}
 	
 	@Override
-    public Comment saveTextAsComment(String commentText, Integer userID, Integer coffeeSiteID) {
+    public Comment saveTextAsComment(String commentText, Integer userID, Long coffeeSiteID) {
 	    User user = userService.findById(userID);
         CoffeeSite cs = coffeeSiteRepo.findById(coffeeSiteID).orElse(null);             
        
@@ -94,7 +94,7 @@ public class CommentService implements ICommentService
 	}
 	
 	@Override
-    public List<CommentDTO> getAllCommentsForSiteId(Integer coffeeSiteID) {
+    public List<CommentDTO> getAllCommentsForSiteId(Long coffeeSiteID) {
 	    return modifyToTransfer(commentsRepo.getAllCommentsForSite(coffeeSiteID));
     }
 
@@ -132,7 +132,7 @@ public class CommentService implements ICommentService
     }
 
 	@Override
-	public Integer deleteComment(Comment comment) {
+	public Long deleteComment(Comment comment) {
 	    return deleteCommentById(comment.getId());
 	}
 	
@@ -141,8 +141,8 @@ public class CommentService implements ICommentService
 	 * Returns CoffeeSite the deleted Comment belonged to.
 	 */
 	@Override
-    public Integer deleteCommentById(Integer commentId) {
-	    Integer siteId = commentsRepo.getSiteIdForComment(commentId);
+    public Long deleteCommentById(Integer commentId) {
+	    Long siteId = commentsRepo.getSiteIdForComment(commentId);
 	    commentsRepo.deleteById(commentId);
 	    return siteId;
     }
@@ -161,7 +161,7 @@ public class CommentService implements ICommentService
     }
 
     @Override
-    public void deleteAllCommentsForSite(Integer coffeeSiteID) {
+    public void deleteAllCommentsForSite(Long coffeeSiteID) {
         commentsRepo.deleteAllForSite(coffeeSiteID);
     }
 

@@ -22,13 +22,13 @@ public interface CoffeeSiteService
     public List<CoffeeSiteDto> findAllFromUser(User user);
     public List<CoffeeSiteDto> findAllFromLoggedInUser();
     
-    public CoffeeSiteDto findOneToTransfer(int id);
-    public CoffeeSite findOneById(int id);
+    public CoffeeSiteDto findOneToTransfer(Long siteId);
+    public CoffeeSite findOneById(Long id);
     public CoffeeSiteDto findByName(String siteName);
     public List<CoffeeSiteDto> findByCityName(String cityName);
     public List<CoffeeSiteDto> findByCityAndStreetNames(String cityName, String streetName);
     
-    public boolean isSiteNameUnique(Integer id, String siteName);
+    public boolean isSiteNameUnique(Long siteId, String siteName);
     
     /**
      * Methods to evaluate if the CoffeSite can be modified according its current status
@@ -66,7 +66,7 @@ public interface CoffeeSiteService
     public CoffeeSite updateCSRecordStatusAndSave(CoffeeSite cs, CoffeeSiteRecordStatusEnum newStatus);
     
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void delete(int id);
+    public void delete(Long id);
     
     // Pomocna metoda pro otestovani, ze funguje volani Stored procedure v DB
     public double getDistance(double zemSirka1, double zemDelka1, double zemSirka2, double zemDelka2);

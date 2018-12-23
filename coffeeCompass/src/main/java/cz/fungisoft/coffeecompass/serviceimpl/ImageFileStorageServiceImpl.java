@@ -64,6 +64,7 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
         }
     }
 
+    /*
     @Override
     public String storeFile(MultipartFile file) {
         // Normalize file name
@@ -85,14 +86,21 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
             throw new StorageFileException("Could not store file " + fileName + ". Please try again!", ex);
         }
     }
+    */
     
     @Override
     @Transactional
-    public Integer storeImageFile(Image image, MultipartFile file, Integer siteID) {
+    public Integer storeImageFile(Image image, MultipartFile file, Long siteID) {
         
+        Integer retVal = 0;
         CoffeeSite cs = coffeeSiteService.findOneById(siteID);
         if (cs != null) {
             try {
+                // Check if there is already image assigned to the CS. If yes, delete the old image first
+                if (cs.getImage() != null) {
+                    Image oldImage = cs.getImage();
+                    imageRepo.delete(oldImage);
+                }
                 image.setImageBytes(file.getBytes());
                 image.setFile(file);
                 image.setCoffeeSite(cs);
@@ -101,10 +109,11 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
     
             }
             imageRepo.save(image);
-//            cs.setImage(image);
-            return image.getId();
-        } else
-            return 0;
+            cs.setImage(image);
+            retVal = image.getId();
+        } 
+        
+        return retVal;
     }
     
     @Override
@@ -116,6 +125,7 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
     /**
      * 
      */
+    /*
     @Override
     public Resource loadFileAsResource(String fileName) {
         
@@ -131,13 +141,15 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
             throw new MyFileNotFoundException("File not found " + fileName, ex);
         }
     }
-    
+    */
 
+    /*
     @Override
     public Path loadFile(String filename) {
         return fileStorageLocation.resolve(filename);
     }
-
+*/
+    /*
     @Override
     public void deleteFile(String fileName) {
         
@@ -147,26 +159,36 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
             throw new MyFileNotFoundException("File not found for delete " + fileName, ex);
         }
     }
-
-    
+*/
+    /*
     @Override
     public Resource getImageAsResource(Integer imageID) {
         // TODO Auto-generated method stub
         return null;
     }
-
+*/
     @Override
     public String getImageAsBase64(Integer imageID) {
         
         Image imFromDB = getImageById(imageID);
+        return convertImageToBase64(imFromDB);
+    }
+    
+    private String convertImageToBase64(Image image) {
         
-//        Encoder base64Encoder = Base64.getEncoder();
         StringBuilder imageString = new StringBuilder();
-        imageString.append("data:image/png;base64,");
-        imageString.append(Base64.getEncoder().encodeToString(imFromDB.getImageBytes())); //bytes will be image byte[] come from DB 
+        
+        if (image != null) {
+            imageString.append("data:image/png;base64,");
+            imageString.append(Base64.getEncoder().encodeToString(image.getImageBytes())); //bytes will be image byte[] come from DB 
+        }
         return imageString.toString();
     }
 
+    /**
+     * @return id of the CoffeeSites this image beloned to before deletition
+     */
+    @Transactional
     @Override
     public Integer deleteSiteImageById(Integer id) {
         Integer siteId = imageRepo.getSiteIdForImage(id);
@@ -174,10 +196,16 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
         return siteId;
     }
     
+    @Transactional
     @Override
-    public Image getImageForSiteId(Integer siteId) {
+    public Image getImageForSiteId(Long siteId) {
         
         return imageRepo.getImageForSite(siteId);
+    }
+
+    @Override
+    public String getImageAsBase64ForSiteId(Long siteID) {
+        return convertImageToBase64(coffeeSiteService.findOneById(siteID).getImage());
     }
        
 }

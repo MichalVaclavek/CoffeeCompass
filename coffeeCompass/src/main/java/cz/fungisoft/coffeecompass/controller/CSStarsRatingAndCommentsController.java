@@ -51,18 +51,18 @@ public class CSStarsRatingAndCommentsController
      * @param id CoffeeSite id to which the StarsAndCommentModel belongs to
      * @return
      */
-    @PostMapping("/saveStarsAndComment/{id}") 
-    public ModelAndView saveCommentAndStarsForSite(@ModelAttribute StarsAndCommentModel starsAndComment, @PathVariable Integer id) {
+    @PostMapping("/saveStarsAndComment/{coffeeSiteId}") 
+    public ModelAndView saveCommentAndStarsForSite(@ModelAttribute StarsAndCommentModel starsAndComment, @PathVariable Long coffeeSiteId) {
         // Ulozit hodnoceni if not empty
-        starsForCoffeeSiteService.saveStarsForCoffeeSite(id, starsAndComment.getStars().getNumOfStars());
+        starsForCoffeeSiteService.saveStarsForCoffeeSite(coffeeSiteId, starsAndComment.getStars().getNumOfStars());
         
-        CoffeeSite cs = coffeeSiteService.findOneById(id);
+        CoffeeSite cs = coffeeSiteService.findOneById(coffeeSiteId);
         
         if ((starsAndComment.getComment() != null) && !starsAndComment.getComment().isEmpty())
             commentsService.saveTextAsComment(starsAndComment.getComment(), cs);
         
         // Show same coffee site with new Stars and comments
-        ModelAndView mav = new ModelAndView("redirect:/showSite/"+ id);
+        ModelAndView mav = new ModelAndView("redirect:/showSite/"+ coffeeSiteId);
         
         return mav;
     }
@@ -74,10 +74,10 @@ public class CSStarsRatingAndCommentsController
      * @param id of the Comment to delete
      * @return
      */
-    @DeleteMapping("/deleteComment/{id}") 
-    public ModelAndView deleteCommentAndStarsForSite(@PathVariable Integer id) {
+    @DeleteMapping("/deleteComment/{commentId}") 
+    public ModelAndView deleteCommentAndStarsForSite(@PathVariable Integer commentId) {
         // Smazat komentar - need to have site Id to give it to /showSite Controller
-        Integer siteId = commentsService.deleteCommentById(id);
+        Long siteId = commentsService.deleteCommentById(commentId);
         
         // Show same coffee site with updated Stars and comments
         ModelAndView mav = new ModelAndView("redirect:/showSite/"+ siteId);

@@ -15,7 +15,7 @@ import cz.fungisoft.coffeecompass.entity.Comment;
 public interface CommentRepository extends JpaRepository<Comment, Integer>
 {
     @Query("select cl from Comment cl where coffeeSite.id=?1")
-    public List<Comment> getAllCommentsForSite(Integer coffeeSiteID);
+    public List<Comment> getAllCommentsForSite(Long coffeeSiteID);
     
     @Query("select cl from Comment cl where user.id=?1")
     public List<Comment> getAllCommentsFromUser(Integer userID);
@@ -25,12 +25,12 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>
      * @param commentID
      */
     @Query("select coffeeSite.id FROM Comment cl where id=?1")
-    public Integer getSiteIdForComment(Integer commentId);
+    public Long getSiteIdForComment(Integer commentId);
     
     @Query("delete FROM Comment cl where user.id=?1")
     public void deleteAllFromUser(Integer userID);
 
     @Query("delete FROM Comment cl where coffeeSite.id=?1")
-    public void deleteAllForSite(Integer siteID);
+    public void deleteAllForSite(Long siteID);
  
 }

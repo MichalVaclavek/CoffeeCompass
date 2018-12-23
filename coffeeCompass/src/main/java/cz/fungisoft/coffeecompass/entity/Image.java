@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Timestamp;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -48,12 +49,20 @@ public class Image implements Serializable
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	  
-//	@OneToOne
-//    @JoinColumn(name = "coffeesite_id")
-	@OneToOne
-//    @MapsId
+	@OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coffeesite_id")
     private CoffeeSite coffeeSite;
+	
+	public void setCoffeeSite(CoffeeSite coffeeSite) {
+	    this.coffeeSite = coffeeSite;
+	    this.coffeeSiteID = this.coffeeSite.getId();
+	}
+	
+	/**
+	 * Used to transfer coffeeSite id between different Views/Forms in case only Image object is handled by the Form
+	 */
+	@Transient
+	private Long coffeeSiteID = 0L;
 	
 //    @NotNull
 	@Column(name = "saved_on", nullable = false)
@@ -77,6 +86,7 @@ public class Image implements Serializable
 	@Column(name="data", nullable=false)
 	private byte[] imageBytes;
 	
+	public Image() {}
 	
 	public Image(CoffeeSite cfSite, MultipartFile imageFile) throws IOException
 	{
@@ -109,6 +119,4 @@ public class Image implements Serializable
 	}
 	*/
 	
-	public Image() {}
-
 }

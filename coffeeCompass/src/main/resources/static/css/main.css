@@ -29,12 +29,25 @@ table {
     border-collapse: collapse;
 }
 
+/*
 table, th, td {
     border: 1px solid black;
 }
+*/
 
-/* Basic style for map in the search template */
-#leafLetMapid { 
-	height: 600px;
-	width: 800px; 
-	}
+.photo {
+	-ms-transform: rotate(90deg); /* IE 9 */
+	-webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
+	transform: rotate(90deg);
+	position : relative;
+}
+
+.photoShow {
+	-ms-transform: rotate(90deg); /* IE 9 */
+	-webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
+	transform: rotate(90deg);
+	-webkit-transform-origin: 50% 50%;
+	position : relative;
+
+}
+

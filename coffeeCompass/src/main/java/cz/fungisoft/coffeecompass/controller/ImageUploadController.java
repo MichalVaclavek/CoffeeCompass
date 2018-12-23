@@ -44,12 +44,12 @@ import io.swagger.annotations.Api;
  */
 @Api // Anotace Swagger
 @Controller
-public class FileUploadController
+public class ImageUploadController
 {
     private final ImageFileStorageService imageStorageService;
 
     @Autowired
-    public FileUploadController(ImageFileStorageService storageService) {
+    public ImageUploadController(ImageFileStorageService storageService) {
         this.imageStorageService = storageService;
     }
 
@@ -60,6 +60,7 @@ public class FileUploadController
      * @return
      * @throws IOException
      */
+    /*
     @GetMapping(value = {"/imageUpload", "/imageUpload/{siteId}"})
     public ModelAndView listUploadedFiles(final Image image, @RequestParam(defaultValue = "21") Integer siteID, ModelMap model) throws IOException {
 
@@ -78,7 +79,7 @@ public class FileUploadController
         mav.setViewName("upload_file_form");
         return mav;
     }
-    
+    */
 
     /**
      * To download image file ?
@@ -127,20 +128,21 @@ public class FileUploadController
     @PostMapping("/imageUpload")
     public String handleFileUpload(@ModelAttribute("image") @Valid Image image, BindingResult result, RedirectAttributes redirectAttributes) {
     
-        if (result.hasErrors()) {
+       Long siteId = image.getCoffeeSiteID();
+       
+       if (result.hasErrors()) {
            result.rejectValue("file", "error.image.empty");
-           return "upload_file_form"; 
-        }
+//           redirectAttributes.addFlashAttribute("result", result);
+           return "redirect:/showSite/" + siteId;
+       }
         
-        Integer imageID = imageStorageService.storeImageFile(image, image.getFile(), 21);
+       Integer imageID = imageStorageService.storeImageFile(image, image.getFile(), siteId);
         
-        redirectAttributes.addFlashAttribute("imageID", imageID);
-        
-        redirectAttributes.addFlashAttribute("savedFileName", image.getFile().getOriginalFilename());
-        
-        redirectAttributes.addFlashAttribute("message", "You successfully uploaded " + image.getFileName() + "!");
+       redirectAttributes.addFlashAttribute("imageID", imageID);
+       redirectAttributes.addFlashAttribute("savedFileName", image.getFile().getOriginalFilename());
+       redirectAttributes.addFlashAttribute("message", "You successfully uploaded " + image.getFileName() + "!");
 
-        return "redirect:/imageUpload";
+       return "redirect:/showSite/" + siteId;
     }
     
     /**
@@ -152,11 +154,12 @@ public class FileUploadController
      */
     @DeleteMapping("/deleteImage/{id}") 
     public ModelAndView deleteCommentAndStarsForSite(@PathVariable Integer id) {
-        // Smazat komentar - need to have site Id to give it to /showSite Controller
+        // Smazat Image daneho coffeeSite - need to have site Id to give it to /showSite Controller
         Integer siteId = imageStorageService.deleteSiteImageById(id);
         
         // Show same coffee site with updated Stars and comments
-        ModelAndView mav = new ModelAndView("redirect:/imageUpload/?siteID=" + siteId);
+//        ModelAndView mav = new ModelAndView("redirect:/imageUpload/?siteID=" + siteId);
+        ModelAndView mav = new ModelAndView("redirect:/showSite/" + siteId);
         
         return mav;
     }

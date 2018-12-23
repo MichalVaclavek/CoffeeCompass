@@ -19,6 +19,7 @@ import cz.fungisoft.coffeecompass.service.CSRecordStatusService;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.CompanyService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
+import cz.fungisoft.coffeecompass.service.ImageFileStorageService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +64,10 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     private IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService;
     
     @Autowired
-    CoffeeSiteRecordStatusRepository csRecordStatusRepo;
+    private CoffeeSiteRecordStatusRepository csRecordStatusRepo;
+    
+//    @Autowired
+//    private ImageFileStorageService imageStorageService;
     
     private User loggedInUser;
     
@@ -157,16 +161,20 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     }
 
     @Override
-    public CoffeeSiteDto findOneToTransfer(int id) {
-        CoffeeSiteDto site = mapperFacade.map(coffeeSiteRepo.findById(id).orElse(null), CoffeeSiteDto.class);
+    public CoffeeSiteDto findOneToTransfer(Long id) {
+        CoffeeSite site = coffeeSiteRepo.findById(id).orElse(null);
+        CoffeeSiteDto siteDto = null;
+        if (site != null) {
+            siteDto = mapperFacade.map(site, CoffeeSiteDto.class);
         
-        site = evaluateUIAttributes(site);
-        site = evaluateAverageStars(site);
-        return site;
+            siteDto = evaluateUIAttributes(siteDto);
+            siteDto = evaluateAverageStars(siteDto);
+        }
+        return siteDto;
     }
     
     @Override
-    public CoffeeSite findOneById(int id) {
+    public CoffeeSite findOneById(Long id) {
         return coffeeSiteRepo.findById(id).orElse(null);
     }
 
@@ -279,7 +287,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     }
     
     @Override
-    public void delete(int id) {
+    public void delete(Long id) {
         coffeeSiteRepo.deleteById(id);
     }
     
@@ -531,7 +539,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     }
 
     @Override
-    public boolean isSiteNameUnique(Integer id, String siteName) {
+    public boolean isSiteNameUnique(Long id, String siteName) {
         CoffeeSite site = coffeeSiteRepo.searchByName(siteName);
         return ( site == null || ((id != null) && (site.getId() == id)));
     }

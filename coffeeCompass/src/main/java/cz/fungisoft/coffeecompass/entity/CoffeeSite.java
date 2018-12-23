@@ -24,6 +24,10 @@ import javax.persistence.ParameterMode;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -88,7 +92,7 @@ public class CoffeeSite
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Long id;
 
     @NotNull
     @Size(min = 3, max = 50)
@@ -181,13 +185,13 @@ public class CoffeeSite
     @JoinTable(name = "coffee_site_to_nabidka", schema="coffeecompass",
                 joinColumns = { @JoinColumn(name = "id_mainsitetab") }, 
                    inverseJoinColumns = { @JoinColumn(name = "id_nabidka") })
-    private Set<OtherOffer> otherOffers = new HashSet<OtherOffer>();
+    private Set<OtherOffer> otherOffers = new HashSet<>();
 
     @ManyToMany(fetch= FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(name = "coffee_site_to_dalsi_automat_vedle", schema="coffeecompass",
                  joinColumns = { @JoinColumn(name = "id_mainsitetab") }, 
                     inverseJoinColumns = { @JoinColumn(name = "id_dalsi_automat") })
-    private Set<NextToMachineType> nextToMachineTypes = new HashSet<NextToMachineType>();
+    private Set<NextToMachineType> nextToMachineTypes = new HashSet<>();
     
     @ManyToMany(fetch= FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(name = "coffee_site_to_druhy_kavy", schema="coffeecompass",
@@ -200,7 +204,9 @@ public class CoffeeSite
     @OneToOne
     @JoinColumn(name = "image_id")
     */
-    @OneToOne(mappedBy = "coffeeSite", cascade = CascadeType.ALL, orphanRemoval = true)
+    
+    @OneToOne(mappedBy = "coffeeSite", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @LazyToOne(LazyToOneOption.NO_PROXY)
     private Image image;
     
     

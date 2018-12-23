@@ -60,7 +60,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
      * @see cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService#avgStarsForSite(java.lang.Integer)
      */
     @Override
-    public double avgStarsForSite(Integer coffeeSiteID) {
+    public double avgStarsForSite(Long coffeeSiteID) {
         double starsAvg = 0;
         
         try {
@@ -107,7 +107,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
      * Only logged-in user can save the stars.
      */
     @Override
-    public void saveStarsForCoffeeSite(Integer coffeeSiteID, Integer stars) {
+    public void saveStarsForCoffeeSite(Long coffeeSiteID, Integer stars) {
         CoffeeSite cs = coffeeSiteService.findOneById(coffeeSiteID);
         
         User logedInUser = userService.getCurrentLoggedInUser();
@@ -147,7 +147,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     }
 
     @Override
-    public AverageStarsForSiteDto getStarsAndNumOfHodnoceniForSite(Integer coffeeSiteID) {
+    public AverageStarsForSiteDto getStarsAndNumOfHodnoceniForSite(Long coffeeSiteID) {
         AverageStarsForSiteDto starsDto = new AverageStarsForSiteDto();
         
         int numOfHodnoceni = avgStarsRepo.getNumOfHodnoceniForSite(coffeeSiteID);

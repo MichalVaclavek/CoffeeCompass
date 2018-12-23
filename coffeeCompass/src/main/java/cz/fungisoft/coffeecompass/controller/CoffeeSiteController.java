@@ -9,6 +9,7 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSiteType;
 import cz.fungisoft.coffeecompass.entity.CoffeeSort;
 import cz.fungisoft.coffeecompass.entity.Comment;
 import cz.fungisoft.coffeecompass.entity.CupType;
+import cz.fungisoft.coffeecompass.entity.Image;
 import cz.fungisoft.coffeecompass.entity.NextToMachineType;
 import cz.fungisoft.coffeecompass.entity.OtherOffer;
 import cz.fungisoft.coffeecompass.entity.PriceRange;
@@ -22,6 +23,7 @@ import cz.fungisoft.coffeecompass.service.CoffeeSortService;
 import cz.fungisoft.coffeecompass.service.CupTypeService;
 import cz.fungisoft.coffeecompass.service.ICommentService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
+import cz.fungisoft.coffeecompass.service.ImageFileStorageService;
 import cz.fungisoft.coffeecompass.service.NextToMachineTypeService;
 import cz.fungisoft.coffeecompass.service.OtherOfferService;
 import cz.fungisoft.coffeecompass.service.PriceRangeService;
@@ -30,6 +32,8 @@ import cz.fungisoft.coffeecompass.service.StarsQualityService;
 import cz.fungisoft.coffeecompass.service.UserService;
 
 import io.swagger.annotations.Api;
+import ma.glasnost.orika.impl.util.StringUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -90,6 +94,9 @@ public class CoffeeSiteController
    
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private ImageFileStorageService imageStorageService;
 
     private CoffeeSiteService coffeeSiteService;
     
@@ -144,16 +151,16 @@ public class CoffeeSiteController
      * site, ktery sam zalozil, zobrazuji se tlacitka pro zmenu stavu a pro Modifikaci)<br>
      * Model musi obsahovat polozky pro zadani hodnoceni (stars) a komentare.
      * 
-     * @param id of CoffeeSite to show
+     * @param siteId of CoffeeSite to show
      * @return
      */
-    @GetMapping("/showSite/{id}") // napr. http://localhost:8080/showSite/2
-    public ModelAndView showSite(@PathVariable int id) {
+    @GetMapping("/showSite/{siteId}") // napr. http://localhost:8080/showSite/2
+    public ModelAndView showSite(@PathVariable Long siteId) {
         
         ModelAndView mav = new ModelAndView();
         
         // Add CoffeeSite to model
-        CoffeeSiteDto cs = coffeeSiteService.findOneToTransfer(id);
+        CoffeeSiteDto cs = coffeeSiteService.findOneToTransfer(siteId);
         
         mav.addObject("coffeeSite", cs);
 
@@ -168,8 +175,21 @@ public class CoffeeSiteController
         mav.addObject("starsAndComment", starsAndComment);
         
         // Add comments for coffeeSite
-        List<CommentDTO> comments = commentsService.getAllCommentsForSiteId(id);
+        List<CommentDTO> comments = commentsService.getAllCommentsForSiteId(siteId);
         mav.addObject("comments", comments);
+        
+        // Add Image object
+        Image image = imageStorageService.getImageForSiteId(siteId);
+        if (image == null) { // coffeeSite without image
+            image = new Image();
+            image.setId(0);
+        }
+        image.setCoffeeSiteID(siteId);
+        mav.addObject("image", image);
+        
+        // Add picture object of the CoffeeSite cs
+        String picString = imageStorageService.getImageAsBase64ForSiteId(cs.getId());
+        mav.addObject("pic", picString);
         
         mav.setViewName("coffeesite_detail");
         
@@ -229,7 +249,7 @@ public class CoffeeSiteController
         CoffeeSiteDto cs;
         
         cs = coffeeSite; // novou instanci CoffeeSite vytvori Spring ? v konstruktoru
-        cs.setId(0); // je potreba zadat ID=0, aby se v Thymeleaf formulari dalo rozlisit, ze jde o novy CoffeeSite a zobrazit spravny Label text aj.
+        cs.setId(0L); // je potreba zadat ID=0, aby se v Thymeleaf formulari dalo rozlisit, ze jde o novy CoffeeSite a zobrazit spravny Label text aj.
         cs.setCreatedOn(new Timestamp(new Date().getTime()));
 
         ModelAndView mav = new ModelAndView();
@@ -249,7 +269,7 @@ public class CoffeeSiteController
      * @return
      */
     @GetMapping("/modifySite/{id}")
-    public ModelAndView showSiteUpdatePage(@PathVariable(name = "id") Integer id) {
+    public ModelAndView showSiteUpdatePage(@PathVariable(name = "id") Long id) {
         CoffeeSiteDto cs = coffeeSiteService.findOneToTransfer(id);
         
         ModelAndView mav = new ModelAndView();
@@ -303,7 +323,7 @@ public class CoffeeSiteController
      *  jinak se zobrazi seznam všech CoffeeSites, které vytvořil daný user. 
      */
     @PutMapping("/activateSite/{id}") 
-    public String activateCoffeeSite(@PathVariable(name = "id") Integer id) {
+    public String activateCoffeeSite(@PathVariable(name = "id") Long id) {
         // After CoffeeSite activation, go to My Sites list
         CoffeeSite cs = coffeeSiteService.findOneById(id);
         cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, CoffeeSiteRecordStatusEnum.ACTIVE);
@@ -312,12 +332,12 @@ public class CoffeeSiteController
     }
     
     @PutMapping("/deactivateSite/{id}") 
-    public String deactivateCoffeeSite(@PathVariable(name = "id") Integer id) {
+    public String deactivateCoffeeSite(@PathVariable(name = "id") Long id) {
         return modifyStatusAndReturnSameView(id, CoffeeSiteRecordStatusEnum.INACTIVE);
     }
 
     @PutMapping("/cancelStatusSite/{id}") 
-    public String cancelStatusSite(@PathVariable(name = "id") Integer id) {
+    public String cancelStatusSite(@PathVariable(name = "id") Long id) {
         // ADMIN or DBA can still continue in CoffeeSite view page to modify site's status
         User loggedInUser = userService.getCurrentLoggedInUser();
         
@@ -334,7 +354,7 @@ public class CoffeeSiteController
     /**
      * Pomocna metoda zdruzujici Controller prikazy pro některé modifikace stavu CoffeeSitu
      */
-    private String modifyStatusAndReturnSameView(Integer csID, CoffeeSiteRecordStatusEnum newStatus) {
+    private String modifyStatusAndReturnSameView(Long csID, CoffeeSiteRecordStatusEnum newStatus) {
         CoffeeSite cs = coffeeSiteService.findOneById(csID);
         cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, newStatus);
         return "redirect:/showSite/" + cs.getId();
@@ -349,7 +369,7 @@ public class CoffeeSiteController
      * @return
      */
     @DeleteMapping("/finalDeleteSite/{id}") // Mapovani http DELETE na DB operaci delete
-    public String finalDelete(@PathVariable int id) {
+    public String finalDelete(@PathVariable Long id) {
         coffeeSiteService.delete(id);
         return "redirect:/allSites";
     }

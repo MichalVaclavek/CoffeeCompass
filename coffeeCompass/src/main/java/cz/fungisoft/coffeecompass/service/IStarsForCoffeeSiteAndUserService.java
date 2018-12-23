@@ -26,13 +26,13 @@ public interface IStarsForCoffeeSiteAndUserService
     public String getStarsStringForCoffeeSiteAndLoggedInUser(CoffeeSiteDto coffeeSite);
     public StarsQualityDescription getStarsForCoffeeSiteAndLoggedInUser(CoffeeSiteDto coffeeSite);
     
-    public void saveStarsForCoffeeSite(Integer coffeeSiteID, Integer stars);
+    public void saveStarsForCoffeeSite(Long coffeeSiteID, Integer stars);
     
     public void saveStarsForCoffeeSite(CoffeeSite coffeeSite, User user, int stars);
     public void cancelStarsForCoffeeSite(CoffeeSite coffeeSite, User user);
     
-    public double avgStarsForSite(Integer coffeeSiteID);
+    public double avgStarsForSite(Long coffeeSiteID);
     public double avgStarsForUser(Integer userID);
     
-    public AverageStarsForSiteDto getStarsAndNumOfHodnoceniForSite(Integer coffeeSiteID);
+    public AverageStarsForSiteDto getStarsAndNumOfHodnoceniForSite(Long coffeeSiteID);
 }

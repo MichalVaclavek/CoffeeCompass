@@ -16,6 +16,7 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSiteType;
 import cz.fungisoft.coffeecompass.entity.CoffeeSort;
 import cz.fungisoft.coffeecompass.entity.Company;
 import cz.fungisoft.coffeecompass.entity.CupType;
+import cz.fungisoft.coffeecompass.entity.Image;
 import cz.fungisoft.coffeecompass.entity.NextToMachineType;
 import cz.fungisoft.coffeecompass.entity.OtherOffer;
 import cz.fungisoft.coffeecompass.entity.PriceRange;
@@ -30,7 +31,7 @@ import lombok.Data;
 @Data
 public class CoffeeSiteDto
 {
-    private int id;
+    private Long id;
 
     @Size(min=3, max=50)
     private String siteName;
@@ -97,6 +98,12 @@ public class CoffeeSiteDto
     private Set<OtherOffer> otherOffers;
     
     private Set<NextToMachineType> nextToMachineTypes;
+   
+    
+    /**
+     * Image of the coffeeSite if available
+     */
+//    private String base64Image;
 
     /* 
      * Attributes to hold info about "editable" status of the CoffeeSite

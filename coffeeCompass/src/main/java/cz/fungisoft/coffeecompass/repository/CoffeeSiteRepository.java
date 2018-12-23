@@ -24,7 +24,7 @@ import java.util.List;
  * tj. CoffeeSiteRepository na CoffeeSiteRepositoryCustom
  * 
  */
-public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Integer>, CoffeeSiteRepositoryCustom
+public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, CoffeeSiteRepositoryCustom
 {
     @Query("select cs from CoffeeSite cs where siteName=?1")
     public CoffeeSite searchByName(String name);

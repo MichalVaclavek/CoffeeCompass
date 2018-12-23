@@ -138,14 +138,14 @@ public class CoffeeSiteRESTController
     
 
     @GetMapping("/{id}") // napr. http://localhost:8080/site/2
-    public CoffeeSiteDto siteById(@PathVariable int id)
+    public CoffeeSiteDto siteById(@PathVariable Long id)
     {
         return coffeeSiteService.findOneToTransfer(id);
     }
     
     
     @PostMapping("/modify/{id}") // napr. http://localhost:8080/modifySite/2
-    public void modifySiteToModifyById(@PathVariable int id, @ModelAttribute CoffeeSite coffeeSite, final BindingResult bindingResult, final ModelMap model)
+    public void modifySiteToModifyById(@PathVariable Long id, @ModelAttribute CoffeeSite coffeeSite, final BindingResult bindingResult, final ModelMap model)
     {
         coffeeSite.setId(id);
         coffeeSiteService.save(coffeeSite);
@@ -238,7 +238,7 @@ public class CoffeeSiteRESTController
     * Priprava a poslani dat pro zobrazeni stranky/formulare pro vytvoreni noveho nebo editaci stavajiciho CoffeeSite  
     */
     @GetMapping(value={"/createModifySite", "/createModifySite/{id}"})
-    public String siteToCreateAndModify(final CoffeeSite coffeeSite,  @PathVariable(required = false, name = "id") Integer id)
+    public String siteToCreateAndModify(final CoffeeSite coffeeSite,  @PathVariable(required = false, name = "id") Long id)
     {
         CoffeeSite cs;
         
@@ -275,7 +275,7 @@ public class CoffeeSiteRESTController
     
 
     @PutMapping("/{id}") // Mapovani http PUT na DB operaci UPDATE tj. zmena zaznamu c. id polozkou coffeeSite
-    public void updateRest(@PathVariable int id, @Valid @RequestBody CoffeeSite coffeeSite)
+    public void updateRest(@PathVariable Long id, @Valid @RequestBody CoffeeSite coffeeSite)
     {
         coffeeSite.setId(id);
         coffeeSiteService.save(coffeeSite);
@@ -287,7 +287,7 @@ public class CoffeeSiteRESTController
      * @param id
      */
     @DeleteMapping("/{id}") // Mapovani http DELETE na DB operaci delete
-    public void delete(@PathVariable int id)
+    public void delete(@PathVariable Long id)
     {
         coffeeSiteService.delete(id);
     }
