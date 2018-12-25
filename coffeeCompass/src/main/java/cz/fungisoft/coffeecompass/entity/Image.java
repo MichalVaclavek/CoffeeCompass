@@ -3,11 +3,8 @@ package cz.fungisoft.coffeecompass.entity;
 import java.io.IOException;
 //import java.io.File;
 import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.Timestamp;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,16 +12,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Type;
 import org.springframework.web.multipart.MultipartFile;
 //import org.apache.tomcat.util.http.fileupload.FileUpload;
 
@@ -35,7 +27,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 */
 
 /**
- * Class representing an image assigned to CoffeeSite. Contains {@link CoffeeSite} atribute to link the Image and CoffeeSite.
+ * Class representing an image assigned to CoffeeSite. Contains {@link CoffeeSite} atribute to link the Image and respective CoffeeSite.
  *
  * @author Michal Václavek - added JPA Hibernate
  */

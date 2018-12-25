@@ -21,6 +21,7 @@ import cz.fungisoft.coffeecompass.service.CompanyService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.service.ImageFileStorageService;
 import cz.fungisoft.coffeecompass.service.UserService;
+import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -41,6 +42,7 @@ import java.util.List;
  */
 @Service("coffeeSiteService")
 @Transactional
+@Log4j2
 public class CoffeeSiteServiceImpl implements CoffeeSiteService
 {
     private CoffeeSiteRepository coffeeSiteRepo;
@@ -65,9 +67,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     
     @Autowired
     private CoffeeSiteRecordStatusRepository csRecordStatusRepo;
-    
-//    @Autowired
-//    private ImageFileStorageService imageStorageService;
     
     private User loggedInUser;
     
@@ -198,6 +197,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             }
         } else { // modifikace stavajiciho CoffeeSitu
             updateSite(coffeeSite);
+            log.info("CoffeeSite name {} updated.", coffeeSite.getSiteName());
         }
             
         // Zjisteni, jestli Company je nove nebo ne
@@ -207,7 +207,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             comp = companyService.saveCompany(coffeeSite.getDodavatelPodnik().toString());
         }
         coffeeSite.setDodavatelPodnik(comp);
-        
+        log.info("CoffeeSite name {} saved into DB.", coffeeSite.getSiteName());
         return coffeeSiteRepo.save(coffeeSite);
     }
     
@@ -289,6 +289,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     @Override
     public void delete(Long id) {
         coffeeSiteRepo.deleteById(id);
+        log.info("CoffeeSite id {} deleted from DB.", id);
     }
     
     @Override
@@ -445,7 +446,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     }
     
     /**
-     * CoffeeSite can be modified only if it is in CREATED or INACTIVE statuses.
+     * CoffeeSite can be modified only if it is in CREATED or INACTIVE states.
      */
     @Override
     public boolean canBeModified(CoffeeSiteDto cs) {
@@ -501,7 +502,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     @Override
     public boolean canBeCommented(CoffeeSiteDto cs) {
         loggedInUser = userService.getCurrentLoggedInUser();
-        return (loggedInUser != null) ? true : false;
+        return (loggedInUser != null);
     }
     
     /**
@@ -510,7 +511,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     @Override
     public boolean canBeRateByStars(CoffeeSiteDto cs) {
         loggedInUser = userService.getCurrentLoggedInUser();
-        return (loggedInUser != null) ? true : false;
+        return (loggedInUser != null);
     }
 
     /**

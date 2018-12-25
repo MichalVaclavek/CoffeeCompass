@@ -5,7 +5,7 @@
 
 	<groupId>cz.fungisoft</groupId>
 	<artifactId>coffeecompass</artifactId>
-	<version>0.8.1-SNAPSHOT</version>
+	<version>0.9.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Coffee Compass</name>
@@ -159,7 +159,7 @@
 			<!--<version>9.4-1200-jdbc41</version>-->
 		</dependency>
 		
-		<!-- Add Log4j2 Dependency -->
+		<!-- Adds Log4j2 Dependency -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-log4j2</artifactId>

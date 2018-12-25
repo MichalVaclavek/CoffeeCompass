@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-      <!-- <title th:text="#{app.title}"> Title </title> -->
       <div th:replace="fragments/header :: header-css"/>
 </head>
 
@@ -13,7 +12,7 @@
        <h2 th:text="#{app.user-details}" class="w3-margin">Details</h2>
     </div>
      
-    <table class="w3-table w3-margin" style="width:60%">
+    <table class="w3-table-all w3-hoverable w3-margin" style="width:60%">
     
         <tr>
            <th th:text="#{user.id}"/></th>
@@ -36,7 +35,6 @@
 		  <td th:text="${user.createdSites}">NumOfCreatedSites</td>		
 		  
 		  <td sec:authorize="hasRole('ROLE_ADMIN')">
-		  <!-- <td sec:authorize="hasRole('ROLE_ADMIN')" th:if="${!user.hasADMINRole}">  -->
 	         <form action="#" th:action="@{'/user/edit/' + ${user.userName}}" th:method="GET" >
 	            <input type="hidden" name="_method" value="get" />
 	            <button type="submit" id="submitButton" th:text="#{user.edit}" class="w3-button w3-blue w3-round">X</button>

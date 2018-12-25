@@ -31,8 +31,7 @@
 
        <div class="w3-container">
       
-           <div class="w3-bar w3-border w3-black">   <!--<div class="w3-bar w3-black w3-card"> -->
-              <!-- <ul class="nav navbar-nav"> -->
+           <div class="w3-bar w3-border w3-black">  
                    <a th:href="@{/home}" th:text="#{mainmenu.home}" class="w3-bar-item w3-button w3-brown" >Home</a>
                    <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/user/all}" th:text="#{mainmenu.allusers}" class="w3-bar-item w3-button">Users</a>
                    <a th:href="@{/allSites}" th:text="#{mainmenu.allsites}" class="w3-bar-item w3-button">Coffee sites</a>
@@ -50,10 +49,8 @@
            	   			<input type="hidden" name="_method" value="post"/>
              			<button type="submit" id="submitLogoutButton" th:text="#{mainmenu.userlogout}" class="w3-button w3-white w3-border w3-round">X</button>
        	    	   </form>
-           		   <a sec:authorize="isAuthenticated()" th:href="@{'/user/edit/' + ${#authentication.name}}" th:text="${#authentication.name}" class="w3-bar-item w3-button w3-blue w3-right">Edit user's account</a>
+           		   <a sec:authorize="isAuthenticated()" th:href="@{'/user/edit/' + ${#authentication.name}}" th:text="${#authentication.name}" class="w3-bar-item w3-button w3-blue w3-right w3-round">Edit user's account</a>
                    
-              <!-- </ul> -->
-               
            </div>
        </div>
 </div>

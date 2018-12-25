@@ -7,6 +7,6 @@ package cz.fungisoft.coffeecompass.validators;
  * @author Michal Vaclavek
  *
  */
-public @interface GeoCoordinator {
+public @interface GeoCoordinates {
 
 }

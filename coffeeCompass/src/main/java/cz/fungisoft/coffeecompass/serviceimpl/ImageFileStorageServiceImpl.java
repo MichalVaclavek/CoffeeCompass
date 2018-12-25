@@ -6,16 +6,12 @@ package cz.fungisoft.coffeecompass.serviceimpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import cz.fungisoft.coffeecompass.configuration.FileStorageProperties;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.Image;
-import cz.fungisoft.coffeecompass.exception.MyFileNotFoundException;
 import cz.fungisoft.coffeecompass.exception.StorageFileException;
 import cz.fungisoft.coffeecompass.repository.ImageRepository;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
@@ -23,11 +19,9 @@ import cz.fungisoft.coffeecompass.service.ImageFileStorageService;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.sql.Timestamp;
 import java.util.Base64;
 import java.util.Date;
@@ -35,6 +29,8 @@ import java.util.Date;
 import javax.transaction.Transactional;
 
 /**
+ * Sluzba pro praci s objekty Image, obrazek CoffeeSitu.
+ * 
  * @author Michal Vaclavek
  *
  */
@@ -42,6 +38,8 @@ import javax.transaction.Transactional;
 @Log4j2
 public class ImageFileStorageServiceImpl implements ImageFileStorageService
 {
+//    private static final Logger logger = LogManager.getLogger("HelloWorld");
+    
     private final Path fileStorageLocation;
     
     private ImageRepository imageRepo;
@@ -110,6 +108,7 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
             }
             imageRepo.save(image);
             cs.setImage(image);
+            log.info("Image saved. File name: {}. CoffeeSite name: {}", image.getFileName(), cs.getSiteName());
             retVal = image.getId();
         } 
         
@@ -190,9 +189,10 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
      */
     @Transactional
     @Override
-    public Integer deleteSiteImageById(Integer id) {
-        Integer siteId = imageRepo.getSiteIdForImage(id);
-        imageRepo.deleteById(id);
+    public Integer deleteSiteImageById(Integer imageId) {
+        Integer siteId = imageRepo.getSiteIdForImage(imageId);
+        imageRepo.deleteById(imageId);
+        log.info("Image deleted for CoffeeSite id: {}", imageId);
         return siteId;
     }
     

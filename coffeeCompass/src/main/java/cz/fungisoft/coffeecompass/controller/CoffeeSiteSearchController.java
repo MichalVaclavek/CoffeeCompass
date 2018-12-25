@@ -84,10 +84,10 @@ public class CoffeeSiteSearchController
             searchCriteria.setCoffeeSort("");
            
         List<CoffeeSiteDto> foundSites = coffeeSiteService.findAllWithinCircleWithCSStatusAndCoffeeSort(searchCriteria.getLat1(),
-                searchCriteria.getLon1(),
-                searchCriteria.getRange(),
-                searchCriteria.getCoffeeSort(),
-                searchCriteria.getCoffeeSiteStatus());
+                                                                                                        searchCriteria.getLon1(),
+                                                                                                        searchCriteria.getRange(),
+                                                                                                        searchCriteria.getCoffeeSort(),
+                                                                                                        searchCriteria.getCoffeeSiteStatus());
         
         mav.addObject("foundSites", foundSites);
         if (foundSites == null || foundSites.size() == 0)

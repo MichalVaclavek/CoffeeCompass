@@ -36,7 +36,7 @@ import java.util.Set;
 
 /**
  * Hlavni model objekt aplikace. Obsahuje vsechny potrebne informace o "Coffee situ".
- * Atributy obsahuji anotace pro Hibernate.
+ * Atributy obsahuji anotace pro Hibernate.<br>
  * 
  * Prvni Stored procedure je jen pro otestovani, ze funguje volani stored procedure v DB.
  * 
@@ -200,10 +200,6 @@ public class CoffeeSite
     private Set<CoffeeSort> coffeeSorts = new HashSet<>();      
     
     /* **** ONE TO ONE relations **** */
-    /*
-    @OneToOne
-    @JoinColumn(name = "image_id")
-    */
     
     @OneToOne(mappedBy = "coffeeSite", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @LazyToOne(LazyToOneOption.NO_PROXY)
@@ -216,7 +212,7 @@ public class CoffeeSite
      */
     /* Pravdepodobne neni potreba uvadet zde, zkusime doplnit servisni vrstvou Comment a najit, jen kdyz
      * si uzivatel zobrazi informace o jednom CoffeeSite.
-     * Nebude se tedy ziskavat cely seznam commentu pri kazdem dotazu na CoffeeSite.
+     * Nebude se tedy ziskavat cely seznam commentu pri kazdem dotazu na CoffeeSite.???
      * */
     @OneToMany(mappedBy="coffeeSite", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();

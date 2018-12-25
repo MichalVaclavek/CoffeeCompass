@@ -25,11 +25,13 @@ import cz.fungisoft.coffeecompass.repository.UsersRepository;
 import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
 import cz.fungisoft.coffeecompass.security.IAuthenticationFacade;
 import cz.fungisoft.coffeecompass.service.UserService;
+import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
  
   
 @Service("userService")
 @Transactional
+@Log4j2
 public class UserServiceImpl implements UserService
 {
     private UsersRepository usersRepository;
@@ -125,6 +127,7 @@ public class UserServiceImpl implements UserService
     @Override
     public User saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        log.info("Saving user name {}", user.getUserName());
         return usersRepository.save(user);
     }
  
@@ -164,29 +167,27 @@ public class UserServiceImpl implements UserService
             if (user.getEmail() != null)
                 entity.setEmail(user.getEmail());
             
-            // User profiles can be empty during update - means no update required by ADMIN user
+            // User profiles can be empty during update - means remove all roles - this is not applicable for ADMIN user
             // ADMIN cannot remove ADMIN role of another user
+            
+            // curent and new User's ROLES
             Set<UserProfile> newUserProfiles = entity.getUserProfiles();
             
+            // New desired ROLES - can be empty
             Set<UserProfile> updatedUserProfiles = user.getUserProfiles(); 
             
-            /* Pouze pokud modifikovany je non ADMIN */
-            if (!hasADMINRole(entity)) {
-                if (updatedUserProfiles != null && !updatedUserProfiles.isEmpty())
-                    newUserProfiles = updatedUserProfiles;
-            } 
-            else { // edited User has ADMIN role - this role cannot be removed, except if current ADMIN is editing iteself
-                // delete all current ROLES 
+            // Checks desired ROLES against current ROLES
+            if (hasADMINRole(entity)) {
                 newUserProfiles.clear();
-                
-                if (updatedUserProfiles != null && !updatedUserProfiles.isEmpty()) { // enter new ROLES, if not empty
-                    newUserProfiles.addAll(updatedUserProfiles);
-                } else // if empty, at least USER role is assigned
-                    newUserProfiles.add(userProfileRepository.searchByType("USER"));
-                // If ADMIN is editing another ADMIN, but not itself, ADMIN has be inserted again
                 if (!isLoggedInUserToManageItself(entity))
                     newUserProfiles.add(userProfileRepository.searchByType("ADMIN"));
-            } 
+                newUserProfiles.addAll(updatedUserProfiles);
+            } else {
+                if (updatedUserProfiles != null)
+                    newUserProfiles = updatedUserProfiles;
+                if (newUserProfiles.isEmpty()) // There must be at least one basic user ROLE
+                    newUserProfiles.add(userProfileRepository.searchByType("USER"));
+            }
             
             entity.setUserProfiles(newUserProfiles);
             entity.setUpdatedOn(new Timestamp(new Date().getTime()));
@@ -204,6 +205,7 @@ public class UserServiceImpl implements UserService
             }
         }
         
+        log.info("User name {} updated.", user.getUserName());
         return entity;
     }
     
@@ -215,11 +217,13 @@ public class UserServiceImpl implements UserService
     @Override
     public void deleteUserBySSO(String ssoId) {
         usersRepository.deleteByUserName(ssoId);
+        log.info("User name {} deleted.", ssoId);
     }
            
     @Override
     public void deleteUserById(Integer id) {
         usersRepository.deleteById(id);
+        log.info("User id {} deleted.", id);
     }
  
     @Override
@@ -271,6 +275,7 @@ public class UserServiceImpl implements UserService
         userProfiles.add(userProfileRepository.searchByType("USER"));
         user.setUserProfiles(userProfiles);
         
+        log.info("Saving new user name {}", user.getUserName());
         return usersRepository.save(user);
     }
 

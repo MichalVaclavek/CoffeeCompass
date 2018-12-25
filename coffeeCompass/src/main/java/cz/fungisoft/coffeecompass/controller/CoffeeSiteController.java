@@ -36,9 +36,11 @@ import ma.glasnost.orika.impl.util.StringUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
@@ -102,11 +104,11 @@ public class CoffeeSiteController
     
     /**
      * Dependency Injection pomoci konstruktoru, neni potreba uvadet @Autowired u atributu, Spring toto umi automaticky.
-     * Lze ale uvest u konstruktoru, aby bylo jasne, ze Injection provede Spring.
+     * Lze ale uvest u konstruktoru, aby bylo jasne, ze Injection provede Spring.<br>
      * 
-     * Ale protoze techto servicu bude v tomto Controleru mnoho, bude konstruktor obsahovat pouze jeden
+     * Ale protoze techto servicu obsahuje tento Controler mnoho, bude konstruktor obsahovat pouze jeden
      * parametr se zakladnim Servicem CoffeeSiteService.
-     * Ostatni service budou @Autowired jako atributy instance, Spring zaridi injection. Spravnejsi je pres setter
+     * Ostatni service budou @Autowired jako atributy instance, Spring zaridi injection. Spravnejsi je pres setter nebo prave konstruktor.
      * 
      * @param coffeeSiteService
      */
@@ -117,6 +119,7 @@ public class CoffeeSiteController
     }
 
     /**
+     * Zakladni obsluzna metoda pro zobrazeni seznamu CoffeeSite.<br>
      * Priklady http dotazu, ktere vrati serazeny seznam CoffeeSitu jsou:
      *
      * http://localhost:8080/allSites/?orderBy=siteName&direction=asc
@@ -147,9 +150,9 @@ public class CoffeeSiteController
     
     /**
      * Vrati stranku zobrazujici vsechny informace pro jeden CoffeeSite. Pokud je prihlaseny nejaky uzivatel,
-     * zobrazi se moznost zadani hodnoceni (hvezdicky) a pridani komentare. Poku uzivatel zobrazi
-     * site, ktery sam zalozil, zobrazuji se tlacitka pro zmenu stavu a pro Modifikaci)<br>
-     * Model musi obsahovat polozky pro zadani hodnoceni (stars) a komentare.
+     * zobrazi se moznost zadani hodnoceni (hvezdicky) a pridani komentare. Pokud uzivatel zobrazi
+     * site, ktery sam zalozil, zobrazuji se tlacitka pro zmenu stavu a pro Modifikaci.<br>
+     * Model musi obsahovat take polozky pro zadani hodnoceni (stars) a komentare a polozku pro vlozeni Image, obrazku situ.
      * 
      * @param siteId of CoffeeSite to show
      * @return
@@ -178,7 +181,7 @@ public class CoffeeSiteController
         List<CommentDTO> comments = commentsService.getAllCommentsForSiteId(siteId);
         mav.addObject("comments", comments);
         
-        // Add Image object
+        // Add Image object to model
         Image image = imageStorageService.getImageForSiteId(siteId);
         if (image == null) { // coffeeSite without image
             image = new Image();
@@ -297,7 +300,6 @@ public class CoffeeSiteController
         }
         
         if (bindingResult.hasErrors()) {
-            //TODO nebylo by lepsi udelat pomoci redirect:\ ...
             return "coffeesite_create";
         }
         
@@ -318,16 +320,17 @@ public class CoffeeSiteController
     }
     
     /**
-     *  Zpracovani pozadavku na zmenu stavu CoffeeSite do stavu ACTIVE.
+     *  Zpracovani pozadavku na zmenu stavu CoffeeSite do stavu ACTIVE.<br>
      *  Pokud aktivaci provedl ADMIN, zobrazi se mu nasledni seznam vsech CoffeeSites,
      *  jinak se zobrazi seznam všech CoffeeSites, které vytvořil daný user. 
      */
     @PutMapping("/activateSite/{id}") 
-    public String activateCoffeeSite(@PathVariable(name = "id") Long id) {
+    public String activateCoffeeSite(@PathVariable(name = "id") Long id, RedirectAttributes redirectAttributes) {
         // After CoffeeSite activation, go to My Sites list
         CoffeeSite cs = coffeeSiteService.findOneById(id);
         cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, CoffeeSiteRecordStatusEnum.ACTIVE);
-
+        String siteName = cs.getSiteName();
+        redirectAttributes.addFlashAttribute("activatedSiteName", siteName);
         return userService.isADMINloggedIn() ? "redirect:/allSites" : "redirect:/mySites";
     }
     
@@ -337,16 +340,18 @@ public class CoffeeSiteController
     }
 
     @PutMapping("/cancelStatusSite/{id}") 
-    public String cancelStatusSite(@PathVariable(name = "id") Long id) {
+    public String cancelStatusSite(@PathVariable(name = "id") Long id, RedirectAttributes redirectAttributes) {
         // ADMIN or DBA can still continue in CoffeeSite view page to modify site's status
         User loggedInUser = userService.getCurrentLoggedInUser();
         
         if (loggedInUser != null &&  userService.hasADMINorDBARole(loggedInUser))
             return modifyStatusAndReturnSameView(id, CoffeeSiteRecordStatusEnum.CANCELED);
-        else // Normal USER is redirected to list of his/her sites
+        else // Normal USER is redirected to list of his/her sites after cancelling site
         {
             CoffeeSite cs = coffeeSiteService.findOneById(id);
             cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, CoffeeSiteRecordStatusEnum.CANCELED);
+            String siteName = cs.getSiteName();
+            redirectAttributes.addFlashAttribute("canceledSiteName", siteName);
             return "redirect:/mySites";
         }
     }
@@ -369,7 +374,9 @@ public class CoffeeSiteController
      * @return
      */
     @DeleteMapping("/finalDeleteSite/{id}") // Mapovani http DELETE na DB operaci delete
-    public String finalDelete(@PathVariable Long id) {
+    public String finalDelete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        String siteName = coffeeSiteService.findOneById(id).getSiteName();
+        redirectAttributes.addFlashAttribute("deletedSiteName", siteName);
         coffeeSiteService.delete(id);
         return "redirect:/allSites";
     }

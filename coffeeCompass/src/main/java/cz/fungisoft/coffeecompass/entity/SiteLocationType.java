@@ -23,7 +23,6 @@ import lombok.Data;
 @Table(name="typ_lokality", schema="coffeecompass")
 public class SiteLocationType
 {
-    /* ======= INSTANCES VARIABLES ======== */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
