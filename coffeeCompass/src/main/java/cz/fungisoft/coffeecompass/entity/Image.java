@@ -1,7 +1,6 @@
 package cz.fungisoft.coffeecompass.entity;
 
 import java.io.IOException;
-//import java.io.File;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
@@ -18,13 +17,9 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
 
 import org.springframework.web.multipart.MultipartFile;
-//import org.apache.tomcat.util.http.fileupload.FileUpload;
 
+import cz.fungisoft.coffeecompass.validators.ImageFileValidatorConstraint;
 import lombok.Data;
-/*
-import org.apache.wicket.markup.html.form.upload.FileUpload;
-import org.hibernate.validator.constraints.NotEmpty;
-*/
 
 /**
  * Class representing an image assigned to CoffeeSite. Contains {@link CoffeeSite} atribute to link the Image and respective CoffeeSite.
@@ -56,7 +51,6 @@ public class Image implements Serializable
 	@Transient
 	private Long coffeeSiteID = 0L;
 	
-//    @NotNull
 	@Column(name = "saved_on", nullable = false)
 	private Timestamp savedOn;
 		
@@ -68,6 +62,7 @@ public class Image implements Serializable
 	 * File object used in FileUploadController and ImageFileStorageServiceImpl
 	 */
 	@Transient
+	@ImageFileValidatorConstraint
 	private MultipartFile file;
 	
 	public void setFile(MultipartFile file) {

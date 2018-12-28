@@ -49,13 +49,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
         http.authorizeRequests()
                 .antMatchers("/","/home", "/about").permitAll()
                 .antMatchers("/createModifySite/**", "/createSite", "/modifySite/**").authenticated()
-//                .antMatchers("/allSites").access("hasRole('ADMIN') or hasRole('DBA')")
                 .antMatchers("/cancelStatusSite/**", "/deactivateSite/**", "/activateSite/**").authenticated()
                 .antMatchers("/saveStarsAndComment/**", "/mySites").authenticated()
                 .antMatchers("/finalDeleteSite/**").access("hasRole('ADMIN')") // real deletition of the CoffeeSite record
                 .antMatchers("/user/all", "/user/show/**").access("hasRole('ADMIN') or hasRole('DBA')")
                 .antMatchers("/user/delete/**").hasAnyRole("ADMIN")
-//                .antMatchers("/user/edit-put", "/user/edit/**").access("hasRole('ADMIN') or hasRole('DBA') or hasRole('USER')")
                 .antMatchers("/user/edit-put", "/user/edit/**").authenticated()
                 .antMatchers("/imageUpload/**").authenticated()
                 .and()

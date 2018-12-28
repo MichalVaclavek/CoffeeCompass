@@ -20,7 +20,7 @@ import cz.fungisoft.coffeecompass.service.ImageFileStorageService;
 import io.swagger.annotations.Api;
 
 /**
- * Controller to handle operations concerning upload or delete CoffeeSite's image files
+ * Controller to handle operations concerning upload or delete CoffeeSite's image file.
  *  
  * @author Michal Vaclavek
  *
@@ -37,11 +37,12 @@ public class ImageUploadController
     }
 
     /**
-     * Serves upload image request to siteID.
+     * Serves upload image request for CoffeeSite. Coffee site is identified by it's ID included
+     * in the Image object to be uploaded/saved.
      * 
-     * @param image
-     * @param result
-     * @param redirectAttributes
+     * @param image uploaded Image from View. Contains file to be uploaded and ID of the coffeeSite the image belongs to.
+     * @param result for checking errors during form validation
+     * @param redirectAttributes attributes to be passed to other Controller after redirection from this View/Controller.
      * @return
      */
     @PostMapping("/imageUpload")
@@ -50,7 +51,8 @@ public class ImageUploadController
        Long siteId = image.getCoffeeSiteID();
        
        if (result.hasErrors()) {
-           result.rejectValue("file", "error.image.empty");
+           redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.image", result);
+           redirectAttributes.addFlashAttribute("image", image);
            return "redirect:/showSite/" + siteId;
        }
         
@@ -58,16 +60,16 @@ public class ImageUploadController
         
        redirectAttributes.addFlashAttribute("imageID", imageID);
        redirectAttributes.addFlashAttribute("savedFileName", image.getFile().getOriginalFilename());
-       redirectAttributes.addFlashAttribute("message", "You successfully uploaded " + image.getFileName() + "!");
+       redirectAttributes.addFlashAttribute("uploadSuccessMessage", "You successfully uploaded " + image.getFileName() + "!");
 
        return "redirect:/showSite/" + siteId;
     }
     
     /**
-     * Zpracuje DELETE pozadavek na smazani komentare ze stranky zobrazujici komentare k jednomu CoffeeSitu.
-     * Muze byt volano pouze ADMINEM (zarizeno v Thymeleaf View strance coffeesite_detail.html)
+     * Zpracuje DELETE pozadavek na smazani obrazku/Image ze stranky zobrazujici detaily k jednomu CoffeeSitu.<br>
+     * Muze byt volano pouze ADMINEM resp. zakladatelem coffee situ (zarizeno v Thymeleaf View strance coffeesite_detail.html)
      * 
-     * @param id of the Comment to delete
+     * @param id of the Image to delete
      * @return
      */
     @DeleteMapping("/deleteImage/{id}") 
@@ -75,7 +77,7 @@ public class ImageUploadController
         // Smazat Image daneho coffeeSite - need to have site Id to give it to /showSite Controller
         Integer siteId = imageStorageService.deleteSiteImageById(id);
         
-        // Show same coffee site with updated Stars and comments
+        // Show same coffee site with deleted Image
         ModelAndView mav = new ModelAndView("redirect:/showSite/" + siteId);
         
         return mav;

@@ -9,7 +9,7 @@
 
 <div class="w3-container">
 
-        <h2 th:text="#{app.access.denied}">403 - Access is denied</h2>
+        <h2 th:text="#{app.error.accessdenied}">403 - Access is denied</h2>
         <div sec:authorize="isAuthenticated()" style="display: inline-block;">
         	<span th:text="#{user.user}"> </span> <b><span th:text="${loggedInUser.userName}"> </span></b> <span th:text="#{error.user.notAllowed}"> </span>
         </div>

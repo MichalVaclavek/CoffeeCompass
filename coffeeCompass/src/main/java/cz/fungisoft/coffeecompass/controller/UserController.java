@@ -28,6 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import cz.fungisoft.coffeecompass.dto.UserDataDto;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
+import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.service.UserProfileService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import io.swagger.annotations.Api;
@@ -258,13 +259,20 @@ public class UserController
      
     // ------------------- Retrieve Single User -------------------------------------------------------- //
       
+    /**
+     * Not used, yet.
+     * 
+     * @param id
+     * @return
+     */
     @GetMapping("/show/{id}")
     public ResponseEntity<UserDataDto> getUser(@PathVariable("id") Integer id) {
         logger.info("Fetching User with id " + id);
         UserDataDto user = userService.findByIdToTransfer(id);
         if (user == null) {
             logger.info("User with id " + id + " not found");
-            return new ResponseEntity<UserDataDto>(HttpStatus.NOT_FOUND);
+//            return new ResponseEntity<UserDataDto>(HttpStatus.NOT_FOUND);
+            throw new EntityNotFoundException("User with id " + id + " not found");
         }
         return new ResponseEntity<UserDataDto>(user, HttpStatus.OK);
     }

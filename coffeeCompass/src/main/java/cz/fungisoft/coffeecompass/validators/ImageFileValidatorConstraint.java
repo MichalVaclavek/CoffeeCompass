@@ -10,17 +10,16 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 /**
- * Overeni, ze byl vybran soubor k uploadu.
+ * Overeni, ze byl vybran jpg, jpeg nebo png soubor k uploadu.
  * 
- * @author Michal
- *
+ * @author Michal Václavek
  */
 @Documented
-@Constraint(validatedBy = FileValidator.class)
+@Constraint(validatedBy = ImageFileValidator.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.METHOD, ElementType.FIELD })
-public @interface FileValidatorConstraint {
-    String message() default "Please, select valid file to upload.";
+public @interface ImageFileValidatorConstraint {
+    String message() default "Only jpg, jpeg or png files allowed";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

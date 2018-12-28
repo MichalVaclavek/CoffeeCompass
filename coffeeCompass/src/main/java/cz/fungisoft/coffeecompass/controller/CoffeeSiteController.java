@@ -4,10 +4,10 @@ import cz.fungisoft.coffeecompass.dto.CoffeeSiteDto;
 import cz.fungisoft.coffeecompass.dto.CommentDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
+import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteType;
 import cz.fungisoft.coffeecompass.entity.CoffeeSort;
-import cz.fungisoft.coffeecompass.entity.Comment;
 import cz.fungisoft.coffeecompass.entity.CupType;
 import cz.fungisoft.coffeecompass.entity.Image;
 import cz.fungisoft.coffeecompass.entity.NextToMachineType;
@@ -32,7 +32,6 @@ import cz.fungisoft.coffeecompass.service.StarsQualityService;
 import cz.fungisoft.coffeecompass.service.UserService;
 
 import io.swagger.annotations.Api;
-import ma.glasnost.orika.impl.util.StringUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -107,8 +106,8 @@ public class CoffeeSiteController
      * Lze ale uvest u konstruktoru, aby bylo jasne, ze Injection provede Spring.<br>
      * 
      * Ale protoze techto servicu obsahuje tento Controler mnoho, bude konstruktor obsahovat pouze jeden
-     * parametr se zakladnim Servicem CoffeeSiteService.
-     * Ostatni service budou @Autowired jako atributy instance, Spring zaridi injection. Spravnejsi je pres setter nebo prave konstruktor.
+     * parametr se zakladnim Servicem CoffeeSiteService.<br>
+     * Ostatni service budou @Autowired jako atributy instance, Spring zaridi injection. Spravnejsi je ale pres setter nebo prave konstruktor.
      * 
      * @param coffeeSiteService
      */
@@ -158,43 +157,56 @@ public class CoffeeSiteController
      * @return
      */
     @GetMapping("/showSite/{siteId}") // napr. http://localhost:8080/showSite/2
-    public ModelAndView showSite(@PathVariable Long siteId) {
+    public ModelAndView showSite(@PathVariable Long siteId, ModelMap model) {
         
         ModelAndView mav = new ModelAndView();
         
         // Add CoffeeSite to model
         CoffeeSiteDto cs = coffeeSiteService.findOneToTransfer(siteId);
         
-        mav.addObject("coffeeSite", cs);
-
-        // Add object to cary users's comment and stars evaluation
-        // If a user is logged-in, than find if he already saved comment for this site. If yes, this stars to model.
-        StarsAndCommentModel starsAndComment = new StarsAndCommentModel();
-        
-        StarsQualityDescription userStarsForThisSite = starsForCoffeeSiteService.getStarsForCoffeeSiteAndLoggedInUser(cs);
-        if (userStarsForThisSite != null )
-            starsAndComment.setStars(userStarsForThisSite);
+        if (cs != null) {
             
-        mav.addObject("starsAndComment", starsAndComment);
+            mav.addObject("coffeeSite", cs);
+    
+            // Add object to cary users's comment and stars evaluation
+            // If a user is logged-in, than find if he already saved comment for this site. If yes, this stars to model.
+            StarsAndCommentModel starsAndComment = new StarsAndCommentModel();
+            
+            StarsQualityDescription userStarsForThisSite = starsForCoffeeSiteService.getStarsForCoffeeSiteAndLoggedInUser(cs);
+            if (userStarsForThisSite != null )
+                starsAndComment.setStars(userStarsForThisSite);
+                
+            mav.addObject("starsAndComment", starsAndComment);
+            
+            // Add all comments for this coffeeSite
+            List<CommentDTO> comments = commentsService.getAllCommentsForSiteId(siteId);
+            mav.addObject("comments", comments);
+            
+            // Add Image of the coffee site to model
+            Image image;
+            
+            if (!model.containsAttribute("image")) { // model can contain image because of redirection from ImageUploadController in case of image file validation error
+                image = imageStorageService.getImageForSiteId(siteId);
+                if (image == null) { // coffeeSite without image, create new Image
+                    image = new Image();
+                }
+            } else
+                image = (Image) model.get("image");
+            
+            if (image.getId() == null) {
+                image.setId(0); // to be evaluated in a View by Thymeleaf
+            }
+            image.setCoffeeSiteID(siteId); // pomocny atribut. needed for later upload/save within ImageUploadController
+            mav.addObject("image", image);
+            
+            // Add picture object (image of this coffee site) to the model
+            String picString = imageStorageService.getImageAsBase64ForSiteId(cs.getId());
+            mav.addObject("pic", picString);
+            
+            mav.setViewName("coffeesite_detail");
+        } else
+            throw new EntityNotFoundException("Coffee site with id " + siteId + " not found.");
         
-        // Add comments for coffeeSite
-        List<CommentDTO> comments = commentsService.getAllCommentsForSiteId(siteId);
-        mav.addObject("comments", comments);
-        
-        // Add Image object to model
-        Image image = imageStorageService.getImageForSiteId(siteId);
-        if (image == null) { // coffeeSite without image
-            image = new Image();
-            image.setId(0);
-        }
-        image.setCoffeeSiteID(siteId);
-        mav.addObject("image", image);
-        
-        // Add picture object of the CoffeeSite cs
-        String picString = imageStorageService.getImageAsBase64ForSiteId(cs.getId());
-        mav.addObject("pic", picString);
-        
-        mav.setViewName("coffeesite_detail");
         
         return mav;
     }
@@ -202,7 +214,6 @@ public class CoffeeSiteController
     /**
      * Method to handle request to show CoffeeSites created by logged in user.
      * 
-     * @param id
      * @return
      */
     @GetMapping("/mySites") // napr. http://localhost:8080/mySites

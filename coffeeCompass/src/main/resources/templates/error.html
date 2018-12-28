@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+		table td {
+		vertical-align:top;
+		border:solid 1px #888;
+		padding:10px;
+		}
+    </style>
+</head>
+
+<body>
+
+<h2 th:text="#{app.error}">Něco se pokazilo :-(</h2>
+
+<a href="/">Home</a>
+
+<h2>Error Page</h2>
+
+	<table>
+	   
+	    <tr>
+	        <td>Error</td>
+	        <td th:text="${error}"/>
+	    </tr>
+	    
+	    <tr>
+	        <td>Http Status</td>
+	        <td th:text="${status}"/>
+	    </tr>
+	    
+	    <tr>
+	        <td>Message</td>
+	        <td th:text="${errorMessage}"/>
+	    </tr>
+	    
+    </table>
+    
+</body>
+</html>

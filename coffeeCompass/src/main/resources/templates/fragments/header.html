@@ -39,11 +39,12 @@
                    <a sec:authorize="isAuthenticated()" th:href="@{/mySites}" th:text="#{mainmenu.mysites}" class="w3-bar-item w3-button">Coffee sites of the user</a>
                    <a th:href="@{/createSite}" th:text="#{mainmenu.createsite}" class="w3-bar-item w3-button">New site</a>
                    <a th:href="@{/searchSites}" th:text="#{mainmenu.searchsites}" class="w3-bar-item w3-button">Search sites</a>
-                   <a sec:authorize="NOT isAuthenticated()" th:href="@{/user/register}" th:text="#{mainmenu.registeruser}" class="w3-bar-item w3-button">User register</a>
-                   <a sec:authorize="NOT isAuthenticated()" th:href="@{/login}" th:text="#{mainmenu.userlogin}" class="w3-bar-item w3-button">User login</a>
                    <!--<a sec:authorize="isAuthenticated()" th:href="@{'/user/edit/' + ${#authentication.name}}" th:text="#{mainmenu.user.editaccount}" class="w3-bar-item w3-button">Edit user's account</a>-->
                    <a th:href="@{/about}" th:text="#{mainmenu.about}" class="w3-bar-item w3-button"></a>
                    <a th:href="@{/contactMe}" th:text="#{mainmenu.contactme}" class="w3-bar-item w3-button"></a>
+                   
+                   <a sec:authorize="NOT isAuthenticated()" th:href="@{/user/register}" th:text="#{mainmenu.registeruser}" class="w3-bar-item w3-button w3-right">User register</a>
+                   <a sec:authorize="NOT isAuthenticated()" th:href="@{/login}" th:text="#{mainmenu.userlogin}" class="w3-bar-item w3-button w3-right w3-green">User login</a>
                    
                	   <form sec:authorize="isAuthenticated()" action="#" th:action="@{/logout}" method="post" class="w3-right">
            	   			<input type="hidden" name="_method" value="post"/>

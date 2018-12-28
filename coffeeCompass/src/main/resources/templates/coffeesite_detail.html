@@ -151,11 +151,11 @@
 				<div>
 					 <!-- Group of buttons for modifying CoffeeSite status -->
 					 <!-- Buttons for modification of the CoffeeSite and for changing status of CS  -->
-					 <div class="w3-display-topleft">
+					 <div class="w3-display-topleft w3-card-2" th:if="${coffeeSite.canBeModified}">
 					 
 						 <!-- Tlacitko pro Modifikaci pro uzivatele, ktery site vytvoril nebo pro DBA a ADMIN -->
 				         <!-- Available only for logged-in user who created the site or for DBA or ADMIN user -->
-				         <table class="w3-table" sec:authorize="isAuthenticated()">
+				         <table class="w3-table">
 					         <tr>
 						         <td>
 						         <div>
@@ -164,7 +164,7 @@
 						             	   th:action="@{'/modifySite/' + ${coffeeSite.id}}"
 						             	   th:method="GET" >
 							             <input type="hidden" name="_method" value="get" />
-							             <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.modify}" class="w3-btn w3-blue w3-border w3-round">X</button>
+							             <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.modify}" class="w3-btn w3-light-blue w3-border w3-round">X</button>
 							         </form>
 						         </div>	
 						         </td>
@@ -178,7 +178,7 @@
 						                  th:action="@{'/activateSite/' + ${coffeeSite.id}}" 
 						                  th:method="PUT" >
 						               <input type="hidden" name="_method" value="put" />
-						               <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.status.activate}" class="w3-btn w3-green w3-border w3-round">X</button>
+						               <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.status.activate}" class="w3-btn w3-light-green w3-border w3-round">X</button>
 						            </form>
 						         </div>
 						         </td>						
@@ -189,7 +189,7 @@
 						                  th:action="@{'/deactivateSite/' + ${coffeeSite.id}}" 
 						                  th:method="PUT">
 						               <input type="hidden" name="_method" value="put" />
-						               <button  th:disabled="${coffeeSite.canBeActivated}" type="submit" id="submitButton" th:text="#{site.status.deactivate}" class="w3-btn w3-orange w3-border w3-round">X</button>
+						               <button  th:disabled="${coffeeSite.canBeActivated}" type="submit" id="submitButton" th:text="#{site.status.deactivate}" class="w3-btn w3-amber w3-border w3-round">X</button>
 						            </form> 
 						         </div>
 						         </td>
@@ -259,15 +259,19 @@
 								       <input th:type="hidden" name="siteId" th:field="*{coffeeSiteID}" />
 								      
 									    <div class="w3-row">
-						                <div  th:classappend="${#fields.hasErrors('file')} ? 'has-error' : ''">
-						                    <input class= "w3-border" name="file" id="fileNameInput" type="file" th:field="*{file}" th:text="#{image.selectfile.button}" th:placeholder="#{image.selectfile.placeholder}"/>
-						                    <div class="error-message" th:if="${#fields.hasErrors('file')}" th:errors="*{file}"></div>
-						                </div>
+							                <div th:classappend="${#fields.hasErrors('file')} ? 'has-error' : ''">
+							                    <input class= "w3-border" 
+							                           name="file" id="fileNameInput"
+							                           type="file" th:field="*{file}"
+							                           th:text="#{image.selectfile.button}"
+							                           th:placeholder="#{image.selectfile.placeholder}"/>
+							                </div>
+						                	<div class="error-message" th:if="${#fields.hasErrors('file')}" th:errors="*{file}"></div>
 						                </div>
 						            
-						            <div class="w3-right">
-							            <button type="submit" id="saveImage" th:text="#{image.upload}" class="w3-button w3-light-blue w3-round w3-small w3-margin-bottom"  disabled>Upload image</button>    
-						            </div>
+							            <div class="w3-right">
+								            <button type="submit" id="saveImage" th:text="#{image.upload}" class="w3-button w3-light-blue w3-round w3-small w3-margin-bottom"  disabled>Upload image</button>    
+							            </div>
 						            
 						        </form>
 					      	</div> 
@@ -354,7 +358,7 @@
 	 
 </body>
 
- 	 <!-- Script to handle visibility of Options for coffee sort selection --> 
+ 	 <!-- Script to handle availability of upload image Button --> 
      <script>
             var chooseFile = document.getElementById("fileNameInput");
             

@@ -16,7 +16,7 @@ import lombok.Data;
  *{@link CoffeeSiteStatus}<br>
  *{@link CoffeeSort}<br>
  * 
- * @author Michal Vaclavek
+ * @author Michal Václavek
  */
 @Data
 public class CoffeeSiteSearchCriteriaModel

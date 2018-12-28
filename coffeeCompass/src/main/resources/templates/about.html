@@ -49,6 +49,15 @@
 			        <p th:text="#{about.page.p4.s2}" class="w3-margin-bottom"></p>
 		        </div>
 		        
+		        <div class="w3-margin-bottom">
+			        <h3 th:text="#{about.page.aboutAuthor.label}"></h3>
+			        <p th:text="#{about.page.info.aboutAuthor.s1}" class="w3-margin-bottom"></p>
+			        <p th:text="#{about.page.info.aboutAuthor.s2}" class="w3-margin-bottom"></p>
+			        <span th:text="#{about.page.info.aboutAuthor.linkedin}"></span><a th:href="@{#{about.page.info.aboutAuthor.linkto.linkedin}}" th:text="LinkedIn" class="w3-text-blue"></a><br>
+			        <span th:text="#{about.page.info.aboutAuthor.github}"></span><a th:href="@{#{about.page.info.aboutAuthor.linkto.github}}" th:text="GitHub" class="w3-text-blue"></a><br>
+			        <span th:text="#{about.page.info.aboutAuthor.email.start}"></span><a th:href="@{/contactMe}" th:text="#{about.page.info.aboutAuthor.email.form}" class="w3-text-blue"></a><span th:text="#{about.page.info.aboutAuthor.email.end}"></span>
+		        </div>
+		        
 	        </div>
 	    </div>
 	

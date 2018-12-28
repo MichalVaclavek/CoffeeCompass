@@ -3,7 +3,8 @@ package cz.fungisoft.coffeecompass.controller;
 import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.exception.StorageFileException;
 import cz.fungisoft.coffeecompass.pojo.Message;
-import cz.fungisoft.coffeecompass.serviceimpl.SendMeEmailServiceImpl;
+
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import javax.validation.ConstraintViolationException;
 
@@ -13,10 +14,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 /**
- * Centralizovane zachycovani vyjimek a prirazovani textu vsem druhum vyjimek
+ * Centralizovane zachycovani vyjimek a prirazovani textu a View vsem druhum vyjimek.
  */
 //@RestControllerAdvice
 @ControllerAdvice
@@ -24,36 +26,59 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
 {
     private static final Logger logger = LogManager.getLogger(ExceptionsControllerAdvice.class);
     
-    @ExceptionHandler
-    public ResponseEntity<Message> handleEntNotFound(EntityNotFoundException e) {
-        // Co se ma poslat v html body v pripade vyjimky. HttpStatus.NOT_FOUND generuje response/status kod 404
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ModelAndView handleEntNotFound(EntityNotFoundException e) {
         logger.error("Chyba Entity Not Found {}", e.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(e.getMessage()));
+        
+        ModelAndView model = new ModelAndView();
+        model.addObject("errorMessage", e.getMessage());
+        model.setViewName("error/404");
+        return model;
     }
 
-    
-    @ExceptionHandler  
+    /**
+     * Probably not used yet. 
+     * @param e
+     * @return
+     */
+    /*
+    @ExceptionHandler(ConstraintViolationException.class)  
     public ResponseEntity<Message> handleConstraintViolation(ConstraintViolationException e) {
         logger.error("Chyba Constraint Violation {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message(e.getMessage()));
-    }
-    
-    /**
-     * Osetreni dalsiho typu vyjimky v definovanych v me aplikaci 
-     *
-     */
-    @ExceptionHandler
-    public ResponseEntity<Message> handleOtherExceptions(Exception e) {
-        // Co se ma poslat v html body v pripade vyjimky. HttpStatus.NOT_FOUND generuje response/status kod 404
-        logger.error("Chyba {}", e.getMessage());
-        
-        return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body(new Message(e.getMessage()));
     }
     
     @ExceptionHandler(StorageFileException.class)
     public ResponseEntity<?> handleStorageFileNotFound(StorageFileException exc) {
         return ResponseEntity.notFound().build();
     }
+    */
     
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ModelAndView MaxUploadSizeExceeded(MaxUploadSizeExceededException exc) {
+        
+        logger.error("MaxUploadSizeExceeded {}", exc.getMessage());
+        
+        ModelAndView model = new ModelAndView();
+        model.addObject("errorMessage", exc.getMessage());
+        model.getModel().put("fileTooLargeError", "File too large!");
+        model.setViewName("error");
+//        model.setViewName("/showSite/");
+        return model;
+    }
+    
+    /**
+     * Osetreni ostatnich vyjimky nedefinovanych v me aplikaci 
+     */
+    @ExceptionHandler
+    public ModelAndView handleOtherExceptions(Exception e) {
+        
+        logger.error("Chyba {}", e.getMessage());
+        
+        ModelAndView model = new ModelAndView();
+        model.addObject("errorMessage", e.getMessage());
+        model.setViewName("error");
+        return model;
+    }
     
 }

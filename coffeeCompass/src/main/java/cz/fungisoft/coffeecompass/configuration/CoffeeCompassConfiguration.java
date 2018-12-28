@@ -2,8 +2,11 @@ package cz.fungisoft.coffeecompass.configuration;
 
 import java.util.Locale;
 
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -84,5 +87,27 @@ public class CoffeeCompassConfiguration implements WebMvcConfigurer
      
         return mapperFactory.getMapperFacade();
     }      
+    
+    @Bean
+    public MessageSource messageSource() {
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasenames("classpath:/messages");
+        messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setUseCodeAsDefaultMessage(true);
+        messageSource.setFallbackToSystemLocale(false);
+        return messageSource;
+    }
+    
+    /**
+     * Defines source of validation error messages. In this case is same like all other i18n messages, see @Bean above
+     * @param messageSource
+     * @return
+     */
+    @Bean
+    public LocalValidatorFactoryBean getValidatorMessages(MessageSource messageSource) {
+        LocalValidatorFactoryBean validatorFactory = new LocalValidatorFactoryBean();
+        validatorFactory.setValidationMessageSource(messageSource);
+        return validatorFactory;
+    }
     
 }
