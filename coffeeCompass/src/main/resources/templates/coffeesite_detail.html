@@ -29,8 +29,15 @@
 			  		  class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
 		   		<p th:text="${param.createSuccess} ? #{app.site.created.success} : #{app.site.modified.success}" class="w3-container" >
 		   		</p>
-		  
 		    </div>
+		    
+		    <!-- Confirmation messages - used in case coffeeSite was Activated susccessfuly -->
+		   	<div th:if="${param.activationSuccess}" class="w3-pale-blue w3-display-container w3-round w3-panel">
+			    <span onclick="this.parentElement.style.display='none'"
+			  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
+			    <p><span th:text="#{site.activated.success}"></span><b><span th:text="${coffeeSite.siteName}"></span></b>
+			    </p>
+			</div>
 	    
 		    <div class="w3-container w3-margin w3-cell" style="width:30%"> <!--  style="width:30%" -->
 		    

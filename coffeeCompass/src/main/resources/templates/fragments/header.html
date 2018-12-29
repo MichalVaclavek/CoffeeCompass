@@ -34,7 +34,7 @@
            <div class="w3-bar w3-border w3-black">  
                    <a th:href="@{/home}" th:text="#{mainmenu.home}" class="w3-bar-item w3-button w3-brown" >Home</a>
                    <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/user/all}" th:text="#{mainmenu.allusers}" class="w3-bar-item w3-button">Users</a>
-                   <a th:href="@{/allSites}" th:text="#{mainmenu.allsites}" class="w3-bar-item w3-button">Coffee sites</a>
+                   <a sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('DBA')" th:href="@{/allSites}" th:text="#{mainmenu.allsites}" class="w3-bar-item w3-button">Coffee sites</a>
   					<!-- link to show sites created by logged-in user -->
                    <a sec:authorize="isAuthenticated()" th:href="@{/mySites}" th:text="#{mainmenu.mysites}" class="w3-bar-item w3-button">Coffee sites of the user</a>
                    <a th:href="@{/createSite}" th:text="#{mainmenu.createsite}" class="w3-bar-item w3-button">New site</a>

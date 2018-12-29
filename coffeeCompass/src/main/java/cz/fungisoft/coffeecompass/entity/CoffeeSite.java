@@ -177,26 +177,26 @@ public class CoffeeSite
     
     @ManyToMany(fetch= FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(name = "coffee_site_to_typ_kelimku", schema="coffeecompass",
-               joinColumns = { @JoinColumn(name = "coffee_site_id") }, 
-                  inverseJoinColumns = { @JoinColumn(name = "typ_kelimku_id") })
+                   joinColumns = { @JoinColumn(name = "coffee_site_id") }, 
+                      inverseJoinColumns = { @JoinColumn(name = "typ_kelimku_id") })
     private Set<CupType> cupTypes = new HashSet<>();
     
     @ManyToMany(fetch= FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(name = "coffee_site_to_nabidka", schema="coffeecompass",
-                joinColumns = { @JoinColumn(name = "id_mainsitetab") }, 
-                   inverseJoinColumns = { @JoinColumn(name = "id_nabidka") })
+                   joinColumns = { @JoinColumn(name = "id_mainsitetab") }, 
+                      inverseJoinColumns = { @JoinColumn(name = "id_nabidka") })
     private Set<OtherOffer> otherOffers = new HashSet<>();
 
     @ManyToMany(fetch= FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(name = "coffee_site_to_dalsi_automat_vedle", schema="coffeecompass",
-                 joinColumns = { @JoinColumn(name = "id_mainsitetab") }, 
-                    inverseJoinColumns = { @JoinColumn(name = "id_dalsi_automat") })
+                    joinColumns = { @JoinColumn(name = "id_mainsitetab") }, 
+                       inverseJoinColumns = { @JoinColumn(name = "id_dalsi_automat") })
     private Set<NextToMachineType> nextToMachineTypes = new HashSet<>();
     
     @ManyToMany(fetch= FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(name = "coffee_site_to_druhy_kavy", schema="coffeecompass",
-                 joinColumns = { @JoinColumn(name = "coffee_site_id") }, 
-                    inverseJoinColumns = { @JoinColumn(name = "druhy_kavy_id") })
+                    joinColumns = { @JoinColumn(name = "coffee_site_id") }, 
+                       inverseJoinColumns = { @JoinColumn(name = "druhy_kavy_id") })
     private Set<CoffeeSort> coffeeSorts = new HashSet<>();      
     
     /* **** ONE TO ONE relations **** */
@@ -204,7 +204,6 @@ public class CoffeeSite
     @OneToOne(mappedBy = "coffeeSite", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @LazyToOne(LazyToOneOption.NO_PROXY)
     private Image image;
-    
     
     /* **** ONE TO MANY relations **** */
     /**

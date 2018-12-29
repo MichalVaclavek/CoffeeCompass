@@ -22,6 +22,7 @@ import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
 import cz.fungisoft.coffeecompass.repository.CommentRepository;
 import cz.fungisoft.coffeecompass.service.ICommentService;
 import cz.fungisoft.coffeecompass.service.UserService;
+import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
 
 
@@ -32,9 +33,10 @@ import ma.glasnost.orika.MapperFacade;
  */
 @Service("commentService")
 @Transactional
+@Log4j2
 public class CommentService implements ICommentService
 {
-    private static final Logger logger = LogManager.getLogger(CommentService.class);
+//    private static final Logger logger = LogManager.getLogger(CommentService.class);
     
     @Autowired
     CoffeeSiteRepository coffeeSiteRepo;
@@ -71,6 +73,8 @@ public class CommentService implements ICommentService
         comment.setCoffeeSite(coffeeSite);
        
         commentsRepo.save(comment);
+        
+        log.info("Comment saved. User name: {}, Coffee site name: {}", user.getUserName(), coffeeSite.getSiteName());
         
         return comment;
      }
@@ -145,6 +149,7 @@ public class CommentService implements ICommentService
     public Long deleteCommentById(Integer commentId) {
 	    Long siteId = commentsRepo.getSiteIdForComment(commentId);
 	    commentsRepo.deleteById(commentId);
+	    log.info("Comment deleted. Id {}", commentId);
 	    return siteId;
     }
 
@@ -156,16 +161,16 @@ public class CommentService implements ICommentService
         return comment;
     }
 
-    
-
     @Override
     public void deleteAllCommentsFromUser(Integer userID) {
+        log.info("All comments from user id {} deleted.", userID);
         commentsRepo.deleteAllFromUser(userID);
         
     }
 
     @Override
     public void deleteAllCommentsForSite(Long coffeeSiteID) {
+        log.info("All comments of the Coffee site id {} deleted.", coffeeSiteID);
         commentsRepo.deleteAllForSite(coffeeSiteID);
     }
 

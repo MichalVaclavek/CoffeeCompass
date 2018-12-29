@@ -14,10 +14,12 @@ import cz.fungisoft.coffeecompass.entity.ContactMeMessage;
 import cz.fungisoft.coffeecompass.repository.ContactMeMessageRepository;
 import cz.fungisoft.coffeecompass.service.IContactMeMessageService;
 import cz.fungisoft.coffeecompass.service.ISendMeEmailService;
+import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
 
 @Service("contactMeMessageService")
 @Transactional
+@Log4j2
 public class ContactMeMessageServiceImpl implements IContactMeMessageService
 {
     private ContactMeMessageRepository contactMeMessageRepo;
@@ -50,6 +52,8 @@ public class ContactMeMessageServiceImpl implements IContactMeMessageService
        
         contactMeMessageRepo.save(cmMessage);
         
+        log.info("Contact me message from user e-mail {} saved.", email);
+        
         return cmMessage;
     }
 
@@ -71,7 +75,7 @@ public class ContactMeMessageServiceImpl implements IContactMeMessageService
     @Override
     public ContactMeMessage saveContactMeMessage(ContactMeMessage message) {
         sendMeEmailService.sendMeSimpleEmail(message.getAuthorName(), message.getEmail(), config.getContactMeEmailTo(), message.getTextOfMessage());
-//        sendMeEmailService.sendMeSimpleEmail(message.getAuthorName(), message.getEmail(), "sadlokan@email.cz", message.getTextOfMessage());
+        log.info("Contact me message from user e-mail {} sent to me.", message.getEmail());
         return contactMeMessageRepo.save(message);
     }
 

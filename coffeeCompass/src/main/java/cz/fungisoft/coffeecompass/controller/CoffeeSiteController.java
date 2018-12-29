@@ -328,13 +328,11 @@ public class CoffeeSiteController
      *  jinak se zobrazi seznam všech CoffeeSites, které vytvořil daný user. 
      */
     @PutMapping("/activateSite/{id}") 
-    public String activateCoffeeSite(@PathVariable(name = "id") Long id, RedirectAttributes redirectAttributes) {
-        // After CoffeeSite activation, go to My Sites list
+    public String activateCoffeeSite(@PathVariable(name = "id") Long id) {
+        // After CoffeeSite activation, go to the same page and show confirmation message
         CoffeeSite cs = coffeeSiteService.findOneById(id);
         cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, CoffeeSiteRecordStatusEnum.ACTIVE);
-        String siteName = cs.getSiteName();
-        redirectAttributes.addFlashAttribute("activatedSiteName", siteName);
-        return userService.isADMINloggedIn() ? "redirect:/allSites" : "redirect:/mySites";
+        return "redirect:/showSite/" + cs.getId() + "?activationSuccess";
     }
     
     @PutMapping("/deactivateSite/{id}") 

@@ -20,6 +20,7 @@ import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
 import cz.fungisoft.coffeecompass.service.UserService;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Implementace prislusneho service interfacu. Vyuziva StarsForCoffeeSiteAndUserRepository
@@ -29,9 +30,10 @@ import cz.fungisoft.coffeecompass.service.UserService;
  */
 @Service("avgStarsService")
 @Transactional
+@Log4j2
 public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSiteAndUserService
 {
-    private static final Logger logger = LoggerFactory.getLogger(StarsForCoffeeSiteAndUserServiceImpl.class); 
+//    private static final Logger logger = LoggerFactory.getLogger(StarsForCoffeeSiteAndUserServiceImpl.class); 
     
     private StarsForCoffeeSiteAndUserRepository avgStarsRepo;
     
@@ -68,7 +70,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
             starsAvg = Math.round(starsAvg * 10.0)/10.0; // one decimal place round
         }
         catch (Exception e) {
-            logger.info("Average stars could not be calculated: {}", e.getMessage() );
+            log.info("Average stars could not be calculated: {}", e.getMessage() );
         }
         
         return starsAvg;
@@ -95,11 +97,13 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
         
         // Nove/updatovane hodnoceni ulozit do Repositoy
         avgStarsRepo.save(sfcsu);
+        log.info("Average stars for Coffee site name {} and User name {} saved. Stars: {}", coffeeSite.getSiteName(), user.getUserName(), stars );
     }
 
     @Override
     public void cancelStarsForCoffeeSite(CoffeeSite coffeeSite, User user) {
         avgStarsRepo.deleteStarsForSiteAndUser(coffeeSite.getId(), user.getId());
+        log.info("Average stars for Coffee site name {} and User name {} canceled.", coffeeSite.getSiteName(), user.getUserName() );
     }
 
     /**
@@ -118,6 +122,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
 
     @Override
     public String getStarsForCoffeeSiteAndUser(CoffeeSiteDto coffeeSite, User user) {
+        log.info("Retrieving Stars for Coffee site name {} and User name {}", coffeeSite.getSiteName(), user.getUserName());
         return (user != null && coffeeSite != null) 
             ? avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), user.getId()).getStars().getQuality()
             : "";
@@ -125,6 +130,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     
     @Override
     public Integer getStarsForCoffeeSiteAndUser(CoffeeSite coffeeSite, User user) {
+        log.info("Retrieving Stars for Coffee site name {} and User name {}", coffeeSite.getSiteName(), user.getUserName());
         return (user != null && coffeeSite != null) 
             ? avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), user.getId()).getStars().getNumOfStars()
             : 0;
@@ -133,7 +139,6 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     @Override
     public String getStarsStringForCoffeeSiteAndLoggedInUser(CoffeeSiteDto coffeeSite) {
         User logedInUser = userService.getCurrentLoggedInUser();
-        
         return getStarsForCoffeeSiteAndUser(coffeeSite, logedInUser);
     }
 
@@ -141,14 +146,9 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     public StarsQualityDescription getStarsForCoffeeSiteAndLoggedInUser(CoffeeSiteDto coffeeSite) {
         
         User logedInUser = userService.getCurrentLoggedInUser();
-        
-        // Already saved stars for this CoffeeSite from logged-in user
-        if (logedInUser != null) {
-            StarsForCoffeeSiteAndUser userSiteStars = avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), logedInUser.getId());
-            return (userSiteStars == null) ? null :  userSiteStars.getStars();
-        }
-        else
-            return null;
+        log.info("Retrieving Stars for Coffee site name {} and User name {}", coffeeSite.getSiteName(), logedInUser.getUserName());
+        StarsForCoffeeSiteAndUser userSiteStars = avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), logedInUser.getId());
+        return (userSiteStars == null) ? null :  userSiteStars.getStars();
     }
 
     @Override
@@ -161,6 +161,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
             starsDto.setAvgStars(stars);
             starsDto.setNumOfHodnoceni(numOfHodnoceni);
         }
+        log.info("Average Stars for Coffee site id {} retrieved.", coffeeSiteID);
         return starsDto;
     }
 

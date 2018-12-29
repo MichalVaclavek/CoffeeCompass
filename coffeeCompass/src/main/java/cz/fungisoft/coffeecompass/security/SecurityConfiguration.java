@@ -52,10 +52,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
                 .antMatchers("/cancelStatusSite/**", "/deactivateSite/**", "/activateSite/**").authenticated()
                 .antMatchers("/saveStarsAndComment/**", "/mySites").authenticated()
                 .antMatchers("/finalDeleteSite/**").access("hasRole('ADMIN')") // real deletition of the CoffeeSite record
-                .antMatchers("/user/all", "/user/show/**").access("hasRole('ADMIN') or hasRole('DBA')")
+                .antMatchers("/user/all", "/user/show/**").access("hasRole('ADMIN')")
+                .antMatchers("/allSites").access("hasRole('ADMIN') or hasRole('DBA')")
                 .antMatchers("/user/delete/**").hasAnyRole("ADMIN")
                 .antMatchers("/user/edit-put", "/user/edit/**").authenticated()
-                .antMatchers("/imageUpload/**").authenticated()
+                .antMatchers("/imageUpload", "/deleteImage/**").authenticated()
                 .and()
                 .formLogin().loginPage("/login").defaultSuccessUrl("/home", false).permitAll()
                 .and()

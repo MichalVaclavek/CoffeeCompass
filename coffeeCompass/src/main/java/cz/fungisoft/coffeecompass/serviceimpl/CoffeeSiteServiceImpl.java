@@ -88,6 +88,9 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      * @return
      */
     private CoffeeSiteDto evaluateUIAttributes(CoffeeSiteDto site) {
+        // Currently logged-in user needed for evaluation of available operations for CoffeeSiteDto 
+        loggedInUser = userService.getCurrentLoggedInUser();
+        
         site.setCanBeActivated(canBeActivated(site));
         site.setCanBeCanceled(canBeCanceled(site));
         site.setCanBeDeleted(canBeDeleted(site));
@@ -126,12 +129,14 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     @Override
     public List<CoffeeSiteDto> findAll(String orderBy, String direction) {
         List<CoffeeSite> items = coffeeSiteRepo.findAll(new Sort(Sort.Direction.fromString(direction.toUpperCase()), orderBy));
+        log.info("All Coffee sites retrieved: " + items.size());
         return modifyToTransfer(items);
     }
     
     @Override
     public List<CoffeeSiteDto> findAllWithRecordStatus(CoffeeSiteRecordStatusEnum csRecordStatus) {
         List<CoffeeSite> items = coffeeSiteRepo.findSitesWithRecordStatus(csRecordStatus.getSiteRecordStatus());
+        log.info("All Coffee sites with status {} retrieved: {}",  csRecordStatus.toString(), items.size());
         return modifyToTransfer(items);
     }
     
@@ -150,6 +155,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     @Override
     public List<CoffeeSiteDto> findAllFromUser(User user) {
         List<CoffeeSite> items = coffeeSiteRepo.findSitesFromUserID(user.getId());
+        log.info("All Coffee sites from user {} retrieved: {}",  user.getUserName(), items.size());
         return modifyToTransfer(items);
     }
     
@@ -161,7 +167,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
 
     @Override
     public CoffeeSiteDto findOneToTransfer(Long id) {
-//        CoffeeSite site = coffeeSiteRepo.findById(id).orElse(null);
         CoffeeSite site = findOneById(id);
         CoffeeSiteDto siteDto = null;
         if (site != null) {
@@ -177,7 +182,11 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     public CoffeeSite findOneById(Long id) {
         CoffeeSite site = coffeeSiteRepo.findById(id).orElse(null);
         if (site == null)
+        {
+            log.error("Coffee site with id {} not found in DB.",  id);
             throw new EntityNotFoundException("Coffee site with id " + id + " not found.");
+        }
+        log.info("Coffee site with id {} retrieved.",  id);
         return site;
     }
 
@@ -201,7 +210,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             }
         } else { // modifikace stavajiciho CoffeeSitu
             updateSite(coffeeSite);
-            log.info("CoffeeSite name {} updated.", coffeeSite.getSiteName());
         }
             
         // Zjisteni, jestli Company je nove nebo ne
@@ -267,7 +275,9 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             entityFromDB.setZemSirka(coffeeSite.getZemSirka());
             entityFromDB.setRecordStatus(coffeeSite.getRecordStatus());
             
-            entityFromDB.setOriginalUser(coffeeSite.getOriginalUser());            
+            entityFromDB.setOriginalUser(coffeeSite.getOriginalUser());   
+            
+            log.info("CoffeeSite name {} updated.", coffeeSite.getSiteName());
         }
     }
     
@@ -308,6 +318,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     @Override
     public List<CoffeeSiteDto> findAllWithinCircle(double zemSirka, double zemDelka, long meters) {       
        List<CoffeeSite> coffeeSites = coffeeSiteRepo.findSitesWithinRange(zemSirka, zemDelka, meters);
+       log.info("All Coffee sites within circle (Latit.: {} , Long.: {}, range: {}) retrieved: {}", zemSirka, zemDelka, meters, coffeeSites.size());
        return countDistancesAndSortByDist(modifyToTransfer(coffeeSites), zemSirka, zemDelka);
     }
     
@@ -356,6 +367,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             coffeeSites = coffeeSiteRepo.findSitesWithStatus(zemSirka, zemDelka, meters, csS, csR);
         }
         
+        log.info("All Coffee sites within circle (Latit.: {} , Long.: {}, range: {}) retrieved: {}", zemSirka, zemDelka, meters, coffeeSites.size());
         return countDistancesAndSortByDist(modifyToTransfer(coffeeSites), zemSirka, zemDelka);
     }
   
@@ -416,8 +428,10 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     @Override
     public CoffeeSiteDto findByName(String siteName) {
         CoffeeSiteDto site = mapperFacade.map(coffeeSiteRepo.searchByName(siteName), CoffeeSiteDto.class);
-        if (site == null)
+        if (site == null) {
+            log.error("Coffee site with name {} not found in DB.",  siteName);
             throw new EntityNotFoundException("Coffee site with name " + siteName + " not found.");
+        }
         return site;
     }
 
@@ -440,8 +454,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      * @return
      */
     private boolean siteUserMatch(CoffeeSiteDto cs) {
-        loggedInUser = userService.getCurrentLoggedInUser();
-        
         if (loggedInUser != null
                && cs.getOriginalUserName() != null)
             return (loggedInUser.getUserName().equals(cs.getOriginalUserName())
@@ -497,8 +509,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      */
     @Override
     public boolean canBeDeleted(CoffeeSiteDto cs) {
-        loggedInUser = userService.getCurrentLoggedInUser();
-        
         return (loggedInUser != null) ? userService.hasADMINRole(loggedInUser) : false;
     }
 
@@ -507,7 +517,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      */
     @Override
     public boolean canBeCommented(CoffeeSiteDto cs) {
-        loggedInUser = userService.getCurrentLoggedInUser();
         return (loggedInUser != null);
     }
     
@@ -516,7 +525,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      */
     @Override
     public boolean canBeRateByStars(CoffeeSiteDto cs) {
-        loggedInUser = userService.getCurrentLoggedInUser();
         return (loggedInUser != null);
     }
 
@@ -532,7 +540,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         if (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.ACTIVE))
             return true;
         else {
-            loggedInUser = userService.getCurrentLoggedInUser();
             
             if (!cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CANCELED)) {
                 // not ACTIVE site and not CANCELED, logged-in user

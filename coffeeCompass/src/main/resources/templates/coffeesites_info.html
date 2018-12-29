@@ -16,32 +16,25 @@
    	<div th:if="${activatedSiteName}" class="w3-pale-blue w3-display-container w3-round w3-panel">
 	    <span onclick="this.parentElement.style.display='none'"
 	  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
-	    <!--<p th:text="#{site.cancelled.success} + ${param.canceledSiteName}" class="w3-container" > </p> -->
-	    <p>
-	    	<span th:text="#{site.activated.success}"></span><b><span th:text="${activatedSiteName}"></span></b>
+	    <p><span th:text="#{site.activated.success}"></span><b><span th:text="${activatedSiteName}"></span></b>
 	    </p>
 	</div>
     <!-- Used in case coffeeSite was Canceled susccessfuly -->
    	<div th:if="${canceledSiteName}" class="w3-pale-blue w3-display-container w3-round w3-panel">
 	    <span onclick="this.parentElement.style.display='none'"
 	  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
-	    <!--<p th:text="#{site.cancelled.success} + ${param.canceledSiteName}" class="w3-container" > </p> -->
-	    <p>
-	    	<span th:text="#{site.canceled.success}"></span><b><span th:text="${canceledSiteName}"></span></b>
+	    <p><span th:text="#{site.canceled.success}"></span><b><span th:text="${canceledSiteName}"></span></b>
 	    </p>
 	</div>
 	<!-- Used in case coffeeSite was Deleted susccessfuly -->
    	<div th:if="${deletedSiteName}" class="w3-pale-blue w3-display-container w3-round w3-panel">
 	    <span onclick="this.parentElement.style.display='none'"
 	  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
-	    <!--<p th:text="#{site.deleted.success} + ${param.deletedSiteName}" class="w3-container" > </p>-->
-	    <p>
-	    	<span th:text="#{site.deleted.success}"></span><b><span th:text="${deletedSiteName}"></span></b>
+	    <p><span th:text="#{site.deleted.success}"></span><b><span th:text="${deletedSiteName}"></span></b>
 	    </p>
 	</div>
    
     <div class="w3-margin">
-    <!-- <table class="table table-striped">  -->
     <table class="w3-table-all w3-hoverable">
     	<thead>
         <tr>

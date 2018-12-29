@@ -72,18 +72,42 @@ public class UserServiceImpl implements UserService
     @Override
     public UserDataDto findByIdToTransfer(Integer id) {        
         User user = findById(id);
+        
+        if (user == null) {
+            log.error("User with id {} not found.", id);
+        }
+        else {
+            log.info("User with id {} found.", id);
+        }
+        
         return addNonPersistentInfoToUser(user);
     }
     
     @Override
     public User findById(Integer id) {
         User user = usersRepository.findById(id).orElse(null);
+        
+        if (user == null) {
+            log.error("User with id {} not found.", id);
+        }
+        else {
+            log.info("User with id {} found.", id);
+        }
+        
         return user;
     }
     
     @Override
     public UserDataDto findByUserNameToTransfer(String userName) {      
         User user = findByUserName(userName);
+        
+        if (user == null) {
+            log.error("User with user name {} not found.", userName);
+        }
+        else {
+            log.info("User with user name {} found.", userName);
+        }
+        
         return addNonPersistentInfoToUser(user);
     }
     
@@ -108,6 +132,14 @@ public class UserServiceImpl implements UserService
     @Override
     public User findByUserName(String userName) {
         User user = usersRepository.searchByUsername(userName);
+        
+        if (user == null) {
+            log.error("User with user name {} not found.", userName);
+        }
+        else {
+            log.info("User with user name {} found.", userName);
+        }
+        
         return user ;
     }
     
@@ -116,6 +148,13 @@ public class UserServiceImpl implements UserService
         User user = null;
         if (!email.isEmpty())
             user = usersRepository.searchByEmail(email);
+        
+        if (user == null) {
+            log.error("User with e-mail {} not found.", email);
+        }
+        else {
+            log.info("User with e-mail {} found. User name: ", email, user.getUserName());
+        }
         
         return user ;
     }

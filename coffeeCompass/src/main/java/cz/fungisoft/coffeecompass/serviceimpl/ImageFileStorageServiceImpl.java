@@ -162,7 +162,6 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
     @Transactional
     @Override
     public Image getImageForSiteId(Long siteId) {
-        
         return imageRepo.getImageForSite(siteId);
     }
     
