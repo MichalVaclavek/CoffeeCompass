@@ -17,6 +17,7 @@ import cz.fungisoft.coffeecompass.dto.CommentDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.Comment;
 import cz.fungisoft.coffeecompass.entity.User;
+import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
 import cz.fungisoft.coffeecompass.repository.CommentRepository;
 import cz.fungisoft.coffeecompass.service.ICommentService;
@@ -149,7 +150,10 @@ public class CommentService implements ICommentService
 
     @Override
     public Comment getById(Integer id) {
-        return commentsRepo.findById(id).orElse(null);
+        Comment comment = commentsRepo.findById(id).orElse(null);
+        if (comment == null)
+            throw new EntityNotFoundException("Comment with id " + id + " not found.");
+        return comment;
     }
 
     

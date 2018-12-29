@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cz.fungisoft.coffeecompass.entity.CupType;
+import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.repository.CupTypeRepository;
 import cz.fungisoft.coffeecompass.service.CupTypeService;
 
@@ -23,8 +24,11 @@ public class CupTypeServiceImpl implements CupTypeService
     }
 
     @Override
-    public CupType findCupTypeByName(String cupType) {
-        return cupTypeRepo.searchByName(cupType);
+    public CupType findCupTypeByName(String cupTypeName) {
+        CupType cupType = cupTypeRepo.searchByName(cupTypeName);
+        if (cupType == null)
+            throw new EntityNotFoundException("Cup type name " + cupTypeName + " not found in DB.");
+        return cupType;
     }
 
     @Override

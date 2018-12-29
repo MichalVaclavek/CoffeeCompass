@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cz.fungisoft.coffeecompass.entity.PriceRange;
+import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.repository.PriceRangeRepository;
 import cz.fungisoft.coffeecompass.service.PriceRangeService;
 
@@ -23,8 +24,11 @@ public class PriceRangeServiceImpl implements PriceRangeService
     }
 
     @Override
-    public PriceRange findPriceRangeByString(String priceRange) {
-        return priceRangeRepo.searchByName(priceRange);
+    public PriceRange findPriceRangeByString(String priceRangeString) {
+        PriceRange priceRange = priceRangeRepo.searchByName(priceRangeString);
+        if (priceRange == null)
+            throw new EntityNotFoundException("Price range " + priceRangeString + " not found in DB.");
+        return priceRange;
     }
 
     @Override

@@ -12,30 +12,23 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface ImageFileStorageService
 {
-//    String storeFile(MultipartFile file);
-    
     /**
      * Save Image and return db ID of the saved image
      * 
      * @param image
      * @param file
      * @param siteID
-     * @return
+     * @return id of the saved Image
      */
-    Integer storeImageFile(Image image, MultipartFile file, Long siteID);
+    public Integer storeImageFile(Image image, MultipartFile file, Long siteID);
 
-//    Path loadFile(String filename);
+    public Image getImageById(Integer imageID);
+    public String getImageAsBase64(Integer imageID);
+    public String getImageAsBase64ForSiteId(Long siteID);
+    public Integer getImageIdForSiteId(Long siteID);
 
-    Image getImageById(Integer imageID);
-//    Resource loadFileAsResource(String filename);
-//    Resource getImageAsResource(Integer imageID);
-    String getImageAsBase64(Integer imageID);
-    String getImageAsBase64ForSiteId(Long siteID);
+    public Long deleteSiteImageById(Integer imageId);
+    public Long deleteSiteImageBySiteId(Long coffeeSiteId);
 
-//    void deleteFile(String filename);
-
-    Integer deleteSiteImageById(Integer imageId);
-
-    Image getImageForSiteId(Long siteId);
-    
+    public Image getImageForSiteId(Long siteId);
 }

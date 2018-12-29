@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cz.fungisoft.coffeecompass.entity.Company;
+import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.repository.CompanyRepository;
 import cz.fungisoft.coffeecompass.service.CompanyService;
 
@@ -14,12 +15,20 @@ import cz.fungisoft.coffeecompass.service.CompanyService;
 @Transactional
 public class CompanyServiceImpl implements CompanyService
 {
-    @Autowired
     private CompanyRepository companyRepo;
     
+    @Autowired
+    public CompanyServiceImpl(CompanyRepository companyRepo) {
+        super();
+        this.companyRepo = companyRepo;
+    }
+
     @Override
     public Company findCompanyByName(String companyName) {
-        return companyRepo.searchByName(companyName);
+        Company comp = companyRepo.searchByName(companyName);
+        if (comp == null)
+            throw new EntityNotFoundException("Company with name " + companyName + " not found.");
+        return comp;
     }
 
     @Override

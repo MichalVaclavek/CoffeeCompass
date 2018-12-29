@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
+import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRecordStatusRepository;
 import cz.fungisoft.coffeecompass.service.CSRecordStatusService;
 
@@ -25,7 +26,10 @@ public class CSRecordStatusServiceImpl implements CSRecordStatusService
 
     @Override
     public CoffeeSiteRecordStatus findCSRecordStatusByName(String coffeeSiteRecordStatus) {
-        return csRecordStatusRepo.searchByName(coffeeSiteRecordStatus);
+        CoffeeSiteRecordStatus csRecStatus = csRecordStatusRepo.searchByName(coffeeSiteRecordStatus);
+        if (csRecStatus == null)
+            throw new EntityNotFoundException("Coffee site Record status name " + coffeeSiteRecordStatus + " not found in DB.");
+        return csRecStatus;
     }
 
     @Override

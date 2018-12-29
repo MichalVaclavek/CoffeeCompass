@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cz.fungisoft.coffeecompass.entity.SiteLocationType;
+import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.repository.SiteLocationTypeRepository;
 import cz.fungisoft.coffeecompass.service.SiteLocationTypeService;
 
@@ -17,15 +18,18 @@ public class SiteLocationTypeServiceImpl implements SiteLocationTypeService
     private SiteLocationTypeRepository siteLocTypeRepo;
     
     @Autowired
-    public SiteLocationTypeServiceImpl(SiteLocationTypeRepository siteLocTypeRepo)
-    {
+    public SiteLocationTypeServiceImpl(SiteLocationTypeRepository siteLocTypeRepo) {
         super();
         this.siteLocTypeRepo = siteLocTypeRepo;
     }
 
     @Override
-    public SiteLocationType findSiteLocationType(String siteLocationType) {
-        return siteLocTypeRepo.searchByName(siteLocationType);
+    public SiteLocationType findSiteLocationType(String siteLocationTypeName) {
+        
+        SiteLocationType locType = siteLocTypeRepo.searchByName(siteLocationTypeName);
+        if (locType == null)
+            throw new EntityNotFoundException("Location type " + siteLocationTypeName + " not found in DB.");
+        return locType;
     }
 
     @Override

@@ -46,21 +46,19 @@ public class ImageUploadController
      * @return
      */
     @PostMapping("/imageUpload")
-    public String handleFileUpload(@ModelAttribute("image") @Valid Image image, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String handleFileUpload(@ModelAttribute("newImage") @Valid Image newImage, BindingResult result, RedirectAttributes redirectAttributes) {
     
-       Long siteId = image.getCoffeeSiteID();
+       Long siteId = newImage.getCoffeeSiteID();
        
        if (result.hasErrors()) {
-           redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.image", result);
-           redirectAttributes.addFlashAttribute("image", image);
+           redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.newImage", result);
+           redirectAttributes.addFlashAttribute("newImage", newImage); // to pass validation errors to other View
            return "redirect:/showSite/" + siteId;
        }
         
-       Integer imageID = imageStorageService.storeImageFile(image, image.getFile(), siteId);
-        
-       redirectAttributes.addFlashAttribute("imageID", imageID);
-       redirectAttributes.addFlashAttribute("savedFileName", image.getFile().getOriginalFilename());
-       redirectAttributes.addFlashAttribute("uploadSuccessMessage", "You successfully uploaded " + image.getFileName() + "!");
+       imageStorageService.storeImageFile(newImage, newImage.getFile(), siteId);
+       redirectAttributes.addFlashAttribute("savedFileName", newImage.getFile().getOriginalFilename());
+       redirectAttributes.addFlashAttribute("uploadSuccessMessage", "You successfully uploaded " + newImage.getFileName() + "!");
 
        return "redirect:/showSite/" + siteId;
     }
@@ -73,14 +71,34 @@ public class ImageUploadController
      * @return
      */
     @DeleteMapping("/deleteImage/{id}") 
-    public ModelAndView deleteCommentAndStarsForSite(@PathVariable Integer id) {
+    public ModelAndView deleteImage(@PathVariable Integer id) {
         // Smazat Image daneho coffeeSite - need to have site Id to give it to /showSite Controller
-        Integer siteId = imageStorageService.deleteSiteImageById(id);
+        Long siteId = imageStorageService.deleteSiteImageById(id);
         
         // Show same coffee site with deleted Image
         ModelAndView mav = new ModelAndView("redirect:/showSite/" + siteId);
         
         return mav;
     }
+    
+    /**
+     * Zpracuje DELETE pozadavek na smazani obrazku/Image ze stranky zobrazujici detaily k jednomu CoffeeSitu.<br>
+     * Muze byt volano pouze ADMINEM resp. zakladatelem coffee situ (zarizeno v Thymeleaf View strance coffeesite_detail.html)
+     * 
+     * @param id of the Image to delete
+     * @return
+     */
+    /*
+    @DeleteMapping("/deleteImage/{siteId}") 
+    public ModelAndView deleteImageForSiteId(@PathVariable Long siteId) {
+        // Smazat Image daneho coffeeSite - need to have site Id to give it to /showSite Controller
+        imageStorageService.deleteSiteImageBySiteId(siteId);
+        
+        // Show same coffee site with deleted Image
+        ModelAndView mav = new ModelAndView("redirect:/showSite/" + siteId);
+        
+        return mav;
+    }
+    */
 
 }

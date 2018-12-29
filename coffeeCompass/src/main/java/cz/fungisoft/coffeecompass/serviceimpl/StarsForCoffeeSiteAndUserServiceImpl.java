@@ -117,19 +117,24 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     }
 
     @Override
-    public int getStarsForCoffeeSiteAndUser(CoffeeSite coffeeSite, User user) {
-        // TODO Auto-generated method stub
-        return 0;
+    public String getStarsForCoffeeSiteAndUser(CoffeeSiteDto coffeeSite, User user) {
+        return (user != null && coffeeSite != null) 
+            ? avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), user.getId()).getStars().getQuality()
+            : "";
+    }
+    
+    @Override
+    public Integer getStarsForCoffeeSiteAndUser(CoffeeSite coffeeSite, User user) {
+        return (user != null && coffeeSite != null) 
+            ? avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), user.getId()).getStars().getNumOfStars()
+            : 0;
     }
 
     @Override
     public String getStarsStringForCoffeeSiteAndLoggedInUser(CoffeeSiteDto coffeeSite) {
         User logedInUser = userService.getCurrentLoggedInUser();
         
-        if (logedInUser != null)
-            return avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), logedInUser.getId()).getStars().getQuality();
-        else 
-            return "";
+        return getStarsForCoffeeSiteAndUser(coffeeSite, logedInUser);
     }
 
     @Override
@@ -158,5 +163,5 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
         }
         return starsDto;
     }
-    
+
 }

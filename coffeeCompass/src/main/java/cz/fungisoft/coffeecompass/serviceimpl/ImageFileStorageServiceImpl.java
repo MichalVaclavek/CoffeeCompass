@@ -38,8 +38,7 @@ import javax.transaction.Transactional;
 @Log4j2
 public class ImageFileStorageServiceImpl implements ImageFileStorageService
 {
-//    private static final Logger logger = LogManager.getLogger("HelloWorld");
-    
+    // Currently not used in production (image files are stored in DB). Can be used for testing.
     private final Path fileStorageLocation;
     
     private ImageRepository imageRepo;
@@ -121,51 +120,7 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
         return imageRepo.getOne(imageID);
     }
 
-    /**
-     * 
-     */
-    /*
-    @Override
-    public Resource loadFileAsResource(String fileName) {
-        
-        try {
-            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
-            if(resource.exists()) {
-                return resource;
-            } else {
-                throw new MyFileNotFoundException("File not found " + fileName);
-            }
-        } catch (MalformedURLException ex) {
-            throw new MyFileNotFoundException("File not found " + fileName, ex);
-        }
-    }
-    */
-
-    /*
-    @Override
-    public Path loadFile(String filename) {
-        return fileStorageLocation.resolve(filename);
-    }
-*/
-    /*
-    @Override
-    public void deleteFile(String fileName) {
-        
-        try {
-            Files.delete(fileStorageLocation.resolve(fileName));
-        } catch (IOException ex) {
-            throw new MyFileNotFoundException("File not found for delete " + fileName, ex);
-        }
-    }
-*/
-    /*
-    @Override
-    public Resource getImageAsResource(Integer imageID) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-*/
+   
     @Override
     public String getImageAsBase64(Integer imageID) {
         
@@ -185,15 +140,23 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
     }
 
     /**
-     * @return id of the CoffeeSites this image beloned to before deletition
+     * @return id of the CoffeeSites this image belonged to before deletition
      */
     @Transactional
     @Override
-    public Integer deleteSiteImageById(Integer imageId) {
-        Integer siteId = imageRepo.getSiteIdForImage(imageId);
+    public Long deleteSiteImageById(Integer imageId) {
+        Long siteId = imageRepo.getSiteIdForImage(imageId);
         imageRepo.deleteById(imageId);
-        log.info("Image deleted for CoffeeSite id: {}", imageId);
+        log.info("Image deleted for CoffeeSite id: {}", siteId);
         return siteId;
+    }
+    
+    @Transactional
+    @Override
+    public Long deleteSiteImageBySiteId(Long coffeeSiteId) {
+        imageRepo.deleteBySiteId(coffeeSiteId);
+        log.info("Image deleted for CoffeeSite id: {}", coffeeSiteId);
+        return coffeeSiteId;
     }
     
     @Transactional
@@ -202,10 +165,16 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
         
         return imageRepo.getImageForSite(siteId);
     }
+    
+    @Override
+    public Integer getImageIdForSiteId(Long siteID) {
+        return imageRepo.getImageIdForSiteId(siteID);
+    }
+
 
     @Override
     public String getImageAsBase64ForSiteId(Long siteID) {
         return convertImageToBase64(coffeeSiteService.findOneById(siteID).getImage());
     }
-       
+
 }

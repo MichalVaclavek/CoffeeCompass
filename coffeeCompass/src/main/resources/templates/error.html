@@ -17,24 +17,21 @@
 
 <a href="/">Home</a>
 
-<h2>Error Page</h2>
-
 	<table>
 	   
 	    <tr>
 	        <td>Error</td>
 	        <td th:text="${error}"/>
 	    </tr>
-	    
-	    <tr>
-	        <td>Http Status</td>
-	        <td th:text="${status}"/>
-	    </tr>
-	    
 	    <tr>
 	        <td>Message</td>
 	        <td th:text="${errorMessage}"/>
 	    </tr>
+	    <tr>
+	        <td>Status</td>
+	        <td th:text="${status}"/>
+	    </tr>
+	    
 	    
     </table>
     

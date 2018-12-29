@@ -22,7 +22,8 @@ public interface IStarsForCoffeeSiteAndUserService
      * @param user
      * @return
      */
-    public int getStarsForCoffeeSiteAndUser(CoffeeSite coffeeSite, User user);
+    public Integer getStarsForCoffeeSiteAndUser(CoffeeSite coffeeSite, User user);
+    public String getStarsForCoffeeSiteAndUser(CoffeeSiteDto coffeeSite, User user);
     public String getStarsStringForCoffeeSiteAndLoggedInUser(CoffeeSiteDto coffeeSite);
     public StarsQualityDescription getStarsForCoffeeSiteAndLoggedInUser(CoffeeSiteDto coffeeSite);
     

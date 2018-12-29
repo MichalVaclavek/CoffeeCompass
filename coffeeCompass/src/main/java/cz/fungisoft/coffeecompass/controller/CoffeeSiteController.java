@@ -4,7 +4,6 @@ import cz.fungisoft.coffeecompass.dto.CoffeeSiteDto;
 import cz.fungisoft.coffeecompass.dto.CommentDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
-import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteType;
 import cz.fungisoft.coffeecompass.entity.CoffeeSort;
@@ -148,8 +147,8 @@ public class CoffeeSiteController
     }
     
     /**
-     * Vrati stranku zobrazujici vsechny informace pro jeden CoffeeSite. Pokud je prihlaseny nejaky uzivatel,
-     * zobrazi se moznost zadani hodnoceni (hvezdicky) a pridani komentare. Pokud uzivatel zobrazi
+     * Vrati stranku zobrazujici vsechny informace pro jeden CoffeeSite. Pokud je prihlaseny nejaky uzivatel,<br>
+     * zobrazi se moznost zadani hodnoceni (hvezdicky) a pridani komentare. Pokud uzivatel zobrazi<br>
      * site, ktery sam zalozil, zobrazuji se tlacitka pro zmenu stavu a pro Modifikaci.<br>
      * Model musi obsahovat take polozky pro zadani hodnoceni (stars) a komentare a polozku pro vlozeni Image, obrazku situ.
      * 
@@ -164,49 +163,42 @@ public class CoffeeSiteController
         // Add CoffeeSite to model
         CoffeeSiteDto cs = coffeeSiteService.findOneToTransfer(siteId);
         
-        if (cs != null) {
-            
-            mav.addObject("coffeeSite", cs);
-    
-            // Add object to cary users's comment and stars evaluation
-            // If a user is logged-in, than find if he already saved comment for this site. If yes, this stars to model.
-            StarsAndCommentModel starsAndComment = new StarsAndCommentModel();
-            
-            StarsQualityDescription userStarsForThisSite = starsForCoffeeSiteService.getStarsForCoffeeSiteAndLoggedInUser(cs);
-            if (userStarsForThisSite != null )
-                starsAndComment.setStars(userStarsForThisSite);
-                
-            mav.addObject("starsAndComment", starsAndComment);
-            
-            // Add all comments for this coffeeSite
-            List<CommentDTO> comments = commentsService.getAllCommentsForSiteId(siteId);
-            mav.addObject("comments", comments);
-            
-            // Add Image of the coffee site to model
-            Image image;
-            
-            if (!model.containsAttribute("image")) { // model can contain image because of redirection from ImageUploadController in case of image file validation error
-                image = imageStorageService.getImageForSiteId(siteId);
-                if (image == null) { // coffeeSite without image, create new Image
-                    image = new Image();
-                }
-            } else
-                image = (Image) model.get("image");
-            
-            if (image.getId() == null) {
-                image.setId(0); // to be evaluated in a View by Thymeleaf
-            }
-            image.setCoffeeSiteID(siteId); // pomocny atribut. needed for later upload/save within ImageUploadController
-            mav.addObject("image", image);
-            
-            // Add picture object (image of this coffee site) to the model
-            String picString = imageStorageService.getImageAsBase64ForSiteId(cs.getId());
-            mav.addObject("pic", picString);
-            
-            mav.setViewName("coffeesite_detail");
-        } else
-            throw new EntityNotFoundException("Coffee site with id " + siteId + " not found.");
+        mav.addObject("coffeeSite", cs);
+
+        // Add object to cary users's comment and stars evaluation
+        // If a user is logged-in, than find if he already saved comment for this site. If yes, this stars to model.
+        StarsAndCommentModel starsAndComment = new StarsAndCommentModel();
         
+        StarsQualityDescription userStarsForThisSite = starsForCoffeeSiteService.getStarsForCoffeeSiteAndLoggedInUser(cs);
+        if (userStarsForThisSite != null )
+            starsAndComment.setStars(userStarsForThisSite);
+            
+        mav.addObject("starsAndComment", starsAndComment);
+        
+        // Add all comments for this coffeeSite
+        List<CommentDTO> comments = commentsService.getAllCommentsForSiteId(siteId);
+        mav.addObject("comments", comments);
+        
+        // Add current image ID of the CoffeeSite if available - to allow its deletition in a View
+        Integer thisSiteImageId = imageStorageService.getImageIdForSiteId(siteId);
+        thisSiteImageId = (thisSiteImageId == null) ? 0 : thisSiteImageId;
+        
+        mav.addObject("thisSiteImageId", thisSiteImageId);
+        
+        // Add new Image to model
+        if (!model.containsAttribute("newImage")) { // othervise returned after validation error and model already contains newImage object 
+            Image newImage = new Image();
+            newImage.setId(0); 
+            
+            newImage.setCoffeeSiteID(siteId); // pomocny atribut. needed for later upload/save within ImageUploadController
+            mav.addObject("newImage", newImage);
+        }
+        
+        // Add picture object (image of this coffee site) to the model
+        String picString = imageStorageService.getImageAsBase64ForSiteId(cs.getId());
+        mav.addObject("pic", picString);
+        
+        mav.setViewName("coffeesite_detail");
         
         return mav;
     }

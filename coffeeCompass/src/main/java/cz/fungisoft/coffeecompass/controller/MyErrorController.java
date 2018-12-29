@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 /**
  * Controller pro obsluhu obecnych chyb. Pouzije se namisto "Whiteable Error Page"
  * 
- * @author Michal
+ * @author Michal Vaclavek
  *
  */
 @Controller

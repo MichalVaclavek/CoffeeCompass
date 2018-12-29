@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cz.fungisoft.coffeecompass.entity.NextToMachineType;
+import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.repository.NextToMachineTypeRepository;
 import cz.fungisoft.coffeecompass.service.NextToMachineTypeService;
 
@@ -23,8 +24,11 @@ public class NextToMachineTypeServiceImpl implements NextToMachineTypeService
     }
 
     @Override
-    public NextToMachineType findNextToMachineTypeByName(String nextToMachineType) {
-        return ntmTypeRepo.searchByName(nextToMachineType);
+    public NextToMachineType findNextToMachineTypeByName(String nextToMachineTypeName) {
+        NextToMachineType ntmType = ntmTypeRepo.searchByName(nextToMachineTypeName);
+        if (ntmType == null)
+            throw new EntityNotFoundException("Next to machine type name " + nextToMachineTypeName + " not found in DB.");
+        return ntmType;
     }
 
     @Override

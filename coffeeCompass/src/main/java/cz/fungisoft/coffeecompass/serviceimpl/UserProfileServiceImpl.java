@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cz.fungisoft.coffeecompass.entity.UserProfile;
+import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
 import cz.fungisoft.coffeecompass.service.UserProfileService;
 
@@ -25,12 +26,18 @@ public class UserProfileServiceImpl implements UserProfileService
 
     @Override
     public UserProfile findById(Integer id) {
-        return userProfRepository.findById(id).orElse(null);
+        UserProfile userProfile = userProfRepository.findById(id).orElse(null);
+        if (userProfile == null)
+            throw new EntityNotFoundException("User profile id " + id + " not found in DB.");
+        return  userProfile;
     }
  
     @Override
     public UserProfile findByType(String type) {
-        return userProfRepository.searchByType(type);
+        UserProfile userProfile = userProfRepository.searchByType(type);
+        if (userProfile == null)
+            throw new EntityNotFoundException("User profile " + type + " not found in DB.");
+        return userProfile;
     }
  
     @Override

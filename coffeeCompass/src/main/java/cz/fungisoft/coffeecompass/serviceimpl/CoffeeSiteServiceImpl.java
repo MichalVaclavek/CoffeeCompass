@@ -11,6 +11,7 @@ import cz.fungisoft.coffeecompass.entity.NextToMachineType;
 import cz.fungisoft.coffeecompass.entity.OtherOffer;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
+import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRecordStatusRepository;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteStatusRepository;
@@ -19,7 +20,6 @@ import cz.fungisoft.coffeecompass.service.CSRecordStatusService;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.CompanyService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
-import cz.fungisoft.coffeecompass.service.ImageFileStorageService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
@@ -161,7 +161,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
 
     @Override
     public CoffeeSiteDto findOneToTransfer(Long id) {
-        CoffeeSite site = coffeeSiteRepo.findById(id).orElse(null);
+//        CoffeeSite site = coffeeSiteRepo.findById(id).orElse(null);
+        CoffeeSite site = findOneById(id);
         CoffeeSiteDto siteDto = null;
         if (site != null) {
             siteDto = mapperFacade.map(site, CoffeeSiteDto.class);
@@ -174,7 +175,10 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     
     @Override
     public CoffeeSite findOneById(Long id) {
-        return coffeeSiteRepo.findById(id).orElse(null);
+        CoffeeSite site = coffeeSiteRepo.findById(id).orElse(null);
+        if (site == null)
+            throw new EntityNotFoundException("Coffee site with id " + id + " not found.");
+        return site;
     }
 
     /**
@@ -412,6 +416,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     @Override
     public CoffeeSiteDto findByName(String siteName) {
         CoffeeSiteDto site = mapperFacade.map(coffeeSiteRepo.searchByName(siteName), CoffeeSiteDto.class);
+        if (site == null)
+            throw new EntityNotFoundException("Coffee site with name " + siteName + " not found.");
         return site;
     }
 

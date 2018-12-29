@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
+import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteStatusRepository;
 import cz.fungisoft.coffeecompass.service.CSStatusService;
 
@@ -24,7 +25,10 @@ public class CSStatusServiceImpl implements CSStatusService
 
     @Override
     public CoffeeSiteStatus findCoffeeSiteStatusByName(String coffeeSiteStatus) {
-        return csStatusRepo.searchByName(coffeeSiteStatus);
+        CoffeeSiteStatus csStatus = csStatusRepo.searchByName(coffeeSiteStatus);
+        if (csStatus == null)
+            throw new EntityNotFoundException("Coffee site status " + coffeeSiteStatus + " not found in DB.");
+        return csStatus;
     }
 
     @Override

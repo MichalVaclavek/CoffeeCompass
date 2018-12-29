@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cz.fungisoft.coffeecompass.entity.OtherOffer;
+import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.repository.OfferRepository;
 import cz.fungisoft.coffeecompass.service.OtherOfferService;
 
@@ -23,8 +24,11 @@ public class OtherOfferServiceImpl implements OtherOfferService
     }
 
     @Override
-    public OtherOffer findOfferByName(String offer) {
-        return offerRepo.searchByName(offer);
+    public OtherOffer findOfferByName(String offerName) {
+        OtherOffer otherOffer = offerRepo.searchByName(offerName);
+        if (otherOffer == null)
+            throw new EntityNotFoundException("Other offer name " + offerName + " not found in DB.");
+        return otherOffer;
     }
 
     @Override
@@ -34,6 +38,9 @@ public class OtherOfferServiceImpl implements OtherOfferService
 
     @Override
     public OtherOffer findOfferById(Integer id) {
-        return offerRepo.findById(id).orElse(null);
+        OtherOffer otherOffer = offerRepo.findById(id).orElse(null);
+        if (otherOffer == null)
+            throw new EntityNotFoundException("Other offer id " + id + " not found in DB.");
+        return otherOffer;
     }
 }

@@ -10,7 +10,8 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 /**
- * Overeni, ze byl vybran jpg, jpeg nebo png soubor k uploadu.
+ * Pro overeni, ze byl vybran jpg, jpeg nebo png soubor k uploadu<br>
+ * a ze velikost uploadovaneho souboru nepresahuje definovanou hodnotu.
  * 
  * @author Michal Václavek
  */

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
+import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.repository.StarsQualityDescriptionRepository;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
 
@@ -24,7 +25,10 @@ public class StarsQualityServiceImpl implements StarsQualityService
     
     @Override
     public StarsQualityDescription findStarsQualityDescr(String starsQualityDescr) {
-        return starsQaulityRepo.searchByName(starsQualityDescr);
+        StarsQualityDescription qualityDescr = starsQaulityRepo.searchByName(starsQualityDescr);
+        if (qualityDescr == null)
+            throw new EntityNotFoundException("Quality description " + starsQualityDescr + " not found in DB.");
+        return qualityDescr;
     }
 
     @Override
@@ -34,6 +38,9 @@ public class StarsQualityServiceImpl implements StarsQualityService
     
     @Override
     public StarsQualityDescription findStarsQualityById(Integer id) {
-        return starsQaulityRepo.findById(id).orElse(null);
+        StarsQualityDescription qualityDescr = starsQaulityRepo.findById(id).orElse(null);
+        if (qualityDescr == null)
+            throw new EntityNotFoundException("Quality description id " + id + " not found in DB.");
+        return qualityDescr;
     }
 }

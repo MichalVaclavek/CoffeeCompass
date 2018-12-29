@@ -5,10 +5,41 @@ import javax.validation.ConstraintValidatorContext;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public class ImageFileValidator implements ConstraintValidator<ImageFileValidatorConstraint, MultipartFile> {
+import cz.fungisoft.coffeecompass.configuration.FileStorageProperties;
+
+/**
+ * Validator to check if the file requested to upload:
+ *  - is jpg, jpeg or png
+ *  - has size lower then limit in FileStorageProperties resp. in configprops.properties or any definied config file.
+ * 
+ * @author Michal Vaclavek
+ *
+ */
+public class ImageFileValidator implements ConstraintValidator<ImageFileValidatorConstraint, MultipartFile>
+{
  
+    private Long maxFileSize = 10_000_000L; 
+    
+    private FileStorageProperties properties;
+    
+    /**
+     * Default construktor needed for Hibernate? othervise Exception is thrown
+     */
+    public ImageFileValidator() {};
+    
+    /**
+     * FileStorageProperties is injected by Spring as this class implements ConstraintValidator interface
+     * 
+     * @param properties
+     */
+    public ImageFileValidator(FileStorageProperties properties) {
+        super();
+        this.properties = properties;
+        maxFileSize = this.properties.getMaxUploadFileByteSize();
+    }
+
     @Override
-    public void initialize(ImageFileValidatorConstraint fileName) {
+    public void initialize(ImageFileValidatorConstraint file) {
     }
  
     @Override
@@ -21,11 +52,20 @@ public class ImageFileValidator implements ConstraintValidator<ImageFileValidato
             String contentType = fileToUpload.getContentType();
             if (!isSupportedContentType(contentType)) {
                 cxt.disableDefaultConstraintViolation();
-                cxt.buildConstraintViolationWithTemplate("{ImageFileValidatorConstraint.Image.file}") // retrieve message from Validation Messages source defined in CoffeeCompassConfiguration
+                cxt.buildConstraintViolationWithTemplate("{ImageFileValidatorConstraint.Image.file.type}") // retrieve message from Validation Messages source defined in CoffeeCompassConfiguration
                        .addConstraintViolation();
     
                 result = false;
             }
+            
+            if (!isAcceptableSize(fileToUpload)) {
+                cxt.disableDefaultConstraintViolation();
+                cxt.buildConstraintViolationWithTemplate("{ImageFileValidatorConstraint.Image.file.size}") // retrieve message from Validation Messages source defined in CoffeeCompassConfiguration
+                       .addConstraintViolation();
+    
+                result = false;
+            }
+            
         } else
         {
             cxt.disableDefaultConstraintViolation();
@@ -42,6 +82,10 @@ public class ImageFileValidator implements ConstraintValidator<ImageFileValidato
         return contentType.equals("image/png")
                 || contentType.equals("image/jpg")
                 || contentType.equals("image/jpeg");
+    }
+    
+    private boolean isAcceptableSize(MultipartFile file) {
+        return file.getSize() < maxFileSize;
     }
  
 }

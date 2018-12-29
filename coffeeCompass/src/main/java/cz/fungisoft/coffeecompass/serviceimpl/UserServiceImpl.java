@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +19,7 @@ import cz.fungisoft.coffeecompass.dto.UserDataDto;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.entity.UserProfileTypeEnum;
+import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
 import cz.fungisoft.coffeecompass.repository.UsersRepository;
 import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
@@ -77,7 +77,8 @@ public class UserServiceImpl implements UserService
     
     @Override
     public User findById(Integer id) {
-        return usersRepository.findById(id).orElse(null);
+        User user = usersRepository.findById(id).orElse(null);
+        return user;
     }
     
     @Override
@@ -105,7 +106,7 @@ public class UserServiceImpl implements UserService
     }
     
     @Override
-    public User findByUserName(String userName) {      
+    public User findByUserName(String userName) {
         User user = usersRepository.searchByUsername(userName);
         return user ;
     }
@@ -115,10 +116,7 @@ public class UserServiceImpl implements UserService
         User user = null;
         if (!email.isEmpty())
             user = usersRepository.searchByEmail(email);
-        /*
-        if (user == null)
-            throw new EntityNotFoundException("User with username " + userName + " not found.");
-        */
+        
         return user ;
     }
  
@@ -176,7 +174,7 @@ public class UserServiceImpl implements UserService
             // New desired ROLES - can be empty
             Set<UserProfile> updatedUserProfiles = user.getUserProfiles(); 
             
-            // Checks desired ROLES against current ROLES
+            // Checks desired (updatedUserProfiles) ROLES against current (newUserProfiles) ROLES
             if (hasADMINRole(entity)) {
                 newUserProfiles.clear();
                 if (!isLoggedInUserToManageItself(entity))
@@ -231,7 +229,6 @@ public class UserServiceImpl implements UserService
         List<UserDataDto> usersDTO = mapperFacade.mapAsList(usersRepository.findAll(), UserDataDto.class);
         
         for (UserDataDto userDTO : usersDTO) {
-            // TODO neslo by udelat bez prevodu na userDataDTO ?
             userDTO.setHasADMINRole(hasADMINRole(mapperFacade.map(userDTO,  User.class)));
             userDTO.setToManageItself(isLoggedInUserToManageItself(mapperFacade.map(userDTO,  User.class)));
         }
