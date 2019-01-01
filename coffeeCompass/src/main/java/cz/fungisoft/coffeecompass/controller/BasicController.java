@@ -1,7 +1,12 @@
 package cz.fungisoft.coffeecompass.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import cz.fungisoft.coffeecompass.entity.StatisticsToShow;
+import cz.fungisoft.coffeecompass.service.StatisticsInfoService;
 
 /**
  * Controller pro obsluhu zakladnich odkazu.
@@ -13,14 +18,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class BasicController
 {   
-    @GetMapping("/")
-    public String home1() {
-        return "home";
+    private StatisticsInfoService statsService;
+    
+    @Autowired
+    public BasicController(StatisticsInfoService statsService) {
+        super();
+        this.statsService = statsService;
     }
 
-    @GetMapping("/home")
-    public String home() {
-        return "home";
+
+    @GetMapping(value= {"/home", "/"})
+    public ModelAndView home() {
+        // Get and show statistical info
+        ModelAndView mav = new ModelAndView("home");
+        StatisticsToShow stats = statsService.getCurrentStatisticalInfoToShow();
+        mav.addObject("stats", stats);
+        return mav;
     }
     
     @GetMapping("/about")

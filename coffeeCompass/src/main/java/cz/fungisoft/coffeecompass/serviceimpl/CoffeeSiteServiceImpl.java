@@ -389,12 +389,17 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         
         // Usporadani vysledku db dotazu (seznam CoffeeSites v danem okruhu) podle vzdalenosti od bodu hledani
         // Sama DB tyto vzdalenosti pro dane CoffeeSites nevraci
-        sites.sort((cs1, cs2) -> {
+        sites.sort((cs1, cs2) -> { //TODO zjednodusit compare pomoci 2x ? :
+            return (cs1.getDistFromSearchPoint() == cs2.getDistFromSearchPoint()) ? 0 :
+                (cs1.getDistFromSearchPoint() < cs2.getDistFromSearchPoint()) ? -1 : 1;}
+            /*
             if (cs1.getDistFromSearchPoint() == cs2.getDistFromSearchPoint()) {
                 return 0;
             }
             return (cs1.getDistFromSearchPoint() < cs2.getDistFromSearchPoint()) ? -1 : 1;
-        });
+        }
+        */
+        );
         
         return sites;
     }

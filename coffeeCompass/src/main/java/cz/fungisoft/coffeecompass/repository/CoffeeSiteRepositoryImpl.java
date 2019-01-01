@@ -1,20 +1,34 @@
 package cz.fungisoft.coffeecompass.repository;
 
+import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.persistence.EntityManager;
 import javax.persistence.ParameterMode;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.StoredProcedureQuery;
+import javax.persistence.TemporalType;
 import javax.transaction.Transactional;
 
+import org.hibernate.cfg.annotations.ResultsetMappingSecondPass;
 import org.springframework.stereotype.Repository;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSort;
+import cz.fungisoft.coffeecompass.entity.StatisticsToShow.DBReturnPair;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Trida implementujici Custom Repository interface  urcena pro specilani dotazy (napr. pouzivajici StoredProcedure
@@ -37,6 +51,7 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSort;
  */
 @Repository
 @Transactional
+@Log4j2
 public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
 {
     /**
@@ -219,5 +234,43 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
         
         return sites.getResultList();
     }
+
+    @Override
+    public Long getNumOfSitesInGivenState(CoffeeSiteRecordStatus csRecordStatus) {
+        String selectQuery = "SELECT COUNT(*)"
+                + " FROM coffeecompass.coffee_site AS cs"
+                + " WHERE status_zaznamu_id=?1";
+      
+        Query sites = em.createNativeQuery(selectQuery, CoffeeSite.class);
+        
+        sites.setParameter(1, csRecordStatus.getId());
+        
+        return (long) sites.getFirstResult();
+    }
+
     
+    @Override
+      public List<DBReturnPair> getTop5CityNames() {
+//        String selectQuery =  "SELECT new map(cs.mesto, COUNT(*) as NumOfSites) FROM CoffeeSite cs GROUP BY cs.mesto ORDER BY NumOfSites DESC";
+        String selectQuery = "SELECT DISTINCT poloha_mesto, COUNT(*) as NumOfSites FROM coffeecompass.coffee_site AS cs WHERE cs.status_zaznamu_id=1 GROUP BY poloha_mesto ORDER BY NumOfSites DESC LIMIT 5";
+        Query sites = em.createNativeQuery(selectQuery);
+//        Query sites = em.createQuery(selectQuery, Map.class);
+//        sites.setMaxResults(5);
+        
+        List<Object[]> results = sites.getResultList();
+        
+        List<DBReturnPair> retVal = new ArrayList<>();
+        
+        for (Object[] res : results) {
+            log.info("{} {}", (String)res[0], (BigInteger)res[1]);
+        }
+        
+        results.stream().filter(record -> !((String)record[0]).isEmpty())
+                        .forEach(record -> { retVal.add(new DBReturnPair((String)record[0], (BigInteger)record[1])); });
+        
+        log.info("Top 5 cities statistics retrieved.");
+        
+        return retVal;
+    }
+
 }

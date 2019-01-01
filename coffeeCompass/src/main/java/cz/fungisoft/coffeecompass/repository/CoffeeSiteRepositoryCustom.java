@@ -1,11 +1,14 @@
 package cz.fungisoft.coffeecompass.repository;
 
+import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSort;
+import cz.fungisoft.coffeecompass.entity.StatisticsToShow.DBReturnPair;
 
 /**
  * Pomocny interface pro definici metody, ktera umozni volat interni Stored procedure, ktera vraci ResultList,
@@ -60,4 +63,15 @@ public interface CoffeeSiteRepositoryCustom
 
     public List<CoffeeSite> findSitesWithCoffeeSortAndSiteStatus(double sirka, double delka, long rangeMeters, CoffeeSort sort,
                                                                  CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus);  
+    
+    public Long getNumOfSitesInGivenState(CoffeeSiteRecordStatus csRecordStatus);
+    
+    /**
+     * Gets 5 cities with most ACTIVE CoffeeSites
+     * 
+     * @return
+     */
+//    public Map<String, BigInteger> getTop5CityNames();
+     public List<DBReturnPair> getTop5CityNames();
+
 }

@@ -53,7 +53,7 @@
 				              <span th:text="#{sitesearch.latitude}">Latitude</span>
 				            </label>
 				            <div th:classappend="${#fields.hasErrors('lat1')} ? 'has-error' : ''">
-				            	<input type="text" th:field="*{lat1}" th:errorclass="fieldError" class="w3-input w3-border w3-round" id="lat1"/>
+				            	<input type="number" step="any" th:field="*{lat1}" th:errorclass="fieldError" class="w3-input w3-border w3-round" id="lat1"/>
 				            </div>
 				          
 				              <p class="error-message"
@@ -66,7 +66,7 @@
 				              <span th:text="#{sitesearch.longitude}">Longitude</span>
 				            </label>
 				            <div th:classappend="${#fields.hasErrors('lon1')} ? 'has-error' : ''">
-				               <input type="text" th:field="*{lon1}" th:errorclass="fieldError" class="w3-input w3-border w3-round" id="lon1"/>
+				               <input type="number" step="any" th:field="*{lon1}" th:errorclass="fieldError" class="w3-input w3-border w3-round" id="lon1"/>
 				            </div>
 				          
 				            <p class="error-message"
@@ -81,7 +81,7 @@
 			              <span th:text="#{sitesearch.range}">Range meters</span>
 			            </label>
 			            <div th:classappend="${#fields.hasErrors('range')} ? 'has-error' : ''">
-			               <input type="text" th:field="*{range}"
+			               <input type="number" th:field="*{range}"
 			                      th:errorclass="fieldError" class="w3-input w3-border w3-round"
 			                      th:placeholder="#{search.range.placeholder}"/>
 			            </div>

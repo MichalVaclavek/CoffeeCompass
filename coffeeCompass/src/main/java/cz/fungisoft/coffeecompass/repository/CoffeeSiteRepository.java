@@ -38,6 +38,16 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
     @Query("select cs from CoffeeSite cs where cs.recordStatus.status=?1 order by cs.siteName asc")
     public List<CoffeeSite> findSitesWithRecordStatus(String csRecordStatus);  
      
+    @Query("select count(*) from CoffeeSite cs where cs.recordStatus.status='ACTIVE'")
+    public Long getNumOfAllActiveSites();
+    
+    @Query("select count(id) from CoffeeSite cs where date(cs.createdOn) = current_date")
+    public Long getNumOfSitesCreatedToday();
+    
+    @Query("select count(id) from CoffeeSite cs where date(cs.createdOn) > (current_date - 7)")
+    public Long getNumOfSitesCreatedLast7Days();
+    
+    
     /*
      * Dotaz s vyuzitim Postgres FUNCTION, ktera pocita vzdalenost CoffeeSite od souradnic
      * double sirka, double delka a vraci takove CoffeeSite, ktere maji tuto vzdalenost menzi jako rangeMeters:
