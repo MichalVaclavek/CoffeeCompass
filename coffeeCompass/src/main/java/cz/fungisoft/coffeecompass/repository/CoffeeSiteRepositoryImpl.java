@@ -251,7 +251,7 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
     
     @Override
       public List<DBReturnPair> getTop5CityNames() {
-//        String selectQuery =  "SELECT new map(cs.mesto, COUNT(*) as NumOfSites) FROM CoffeeSite cs GROUP BY cs.mesto ORDER BY NumOfSites DESC";
+        
         String selectQuery = "SELECT DISTINCT poloha_mesto, COUNT(*) as NumOfSites FROM coffeecompass.coffee_site AS cs WHERE cs.status_zaznamu_id=1 GROUP BY poloha_mesto ORDER BY NumOfSites DESC LIMIT 5";
         Query sites = em.createNativeQuery(selectQuery);
 //        Query sites = em.createQuery(selectQuery, Map.class);
@@ -260,10 +260,6 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
         List<Object[]> results = sites.getResultList();
         
         List<DBReturnPair> retVal = new ArrayList<>();
-        
-        for (Object[] res : results) {
-            log.info("{} {}", (String)res[0], (BigInteger)res[1]);
-        }
         
         results.stream().filter(record -> !((String)record[0]).isEmpty())
                         .forEach(record -> { retVal.add(new DBReturnPair((String)record[0], (BigInteger)record[1])); });

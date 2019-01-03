@@ -1,6 +1,3 @@
-/**
- * 
- */
 package cz.fungisoft.coffeecompass.serviceimpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +13,7 @@ import cz.fungisoft.coffeecompass.exception.StorageFileException;
 import cz.fungisoft.coffeecompass.repository.ImageRepository;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.ImageFileStorageService;
+import cz.fungisoft.coffeecompass.service.ImageResizerService;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
@@ -29,7 +27,7 @@ import java.util.Date;
 import javax.transaction.Transactional;
 
 /**
- * Sluzba pro praci s objekty Image, obrazek CoffeeSitu.
+ * Sluzba pro praci s objekty Image, obrazek CoffeeSitu. Ukladani, mazani, konverze na Base64String
  * 
  * @author Michal Vaclavek
  *
@@ -45,11 +43,14 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
     
     private CoffeeSiteService coffeeSiteService;
     
+    private ImageResizerService imageResizer;
+    
     @Autowired
-    public ImageFileStorageServiceImpl(FileStorageProperties fileStorageProperties, ImageRepository imageRepo, CoffeeSiteService coffeeSiteService) {
+    public ImageFileStorageServiceImpl(FileStorageProperties fileStorageProperties, ImageRepository imageRepo, CoffeeSiteService coffeeSiteService, ImageResizerService imageResizer) {
         
         this.imageRepo = imageRepo;
         this.coffeeSiteService = coffeeSiteService;
+        this.imageResizer = imageResizer;
         
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
                 .toAbsolutePath().normalize();
@@ -62,6 +63,7 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
     }
 
     /*
+     * Stores uploaded image file into local file system file
     @Override
     public String storeFile(MultipartFile file) {
         // Normalize file name
@@ -105,6 +107,7 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
             } catch (IOException e) {
     
             }
+            image = imageResizer.resize(image);
             imageRepo.save(image);
             cs.setImage(image);
             log.info("Image saved. File name: {}. CoffeeSite name: {}", image.getFileName(), cs.getSiteName());
@@ -119,7 +122,6 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
     public Image getImageById(Integer imageID) {
         return imageRepo.getOne(imageID);
     }
-
    
     @Override
     public String getImageAsBase64(Integer imageID) {
@@ -128,6 +130,12 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
         return convertImageToBase64(imFromDB);
     }
     
+    /**
+     * Conversion of the Image bytes into "standard" Base64 String used in web browsers
+     * 
+     * @param image
+     * @return
+     */
     private String convertImageToBase64(Image image) {
         
         StringBuilder imageString = new StringBuilder();

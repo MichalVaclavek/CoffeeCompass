@@ -3,8 +3,6 @@
  */
 package cz.fungisoft.coffeecompass.serviceimpl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,8 +31,6 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSiteAndUserService
 {
-//    private static final Logger logger = LoggerFactory.getLogger(StarsForCoffeeSiteAndUserServiceImpl.class); 
-    
     private StarsForCoffeeSiteAndUserRepository avgStarsRepo;
     
     @Autowired
@@ -63,6 +59,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
      */
     @Override
     public double avgStarsForSite(Long coffeeSiteID) {
+        
         double starsAvg = 0;
         
         try {
@@ -122,7 +119,6 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
 
     @Override
     public String getStarsForCoffeeSiteAndUser(CoffeeSiteDto coffeeSite, User user) {
-        log.info("Retrieving Stars for Coffee site name {} and User name {}", coffeeSite.getSiteName(), user.getUserName());
         return (user != null && coffeeSite != null) 
             ? avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), user.getId()).getStars().getQuality()
             : "";
@@ -130,7 +126,6 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     
     @Override
     public Integer getStarsForCoffeeSiteAndUser(CoffeeSite coffeeSite, User user) {
-        log.info("Retrieving Stars for Coffee site name {} and User name {}", coffeeSite.getSiteName(), user.getUserName());
         return (user != null && coffeeSite != null) 
             ? avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), user.getId()).getStars().getNumOfStars()
             : 0;
@@ -146,8 +141,13 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     public StarsQualityDescription getStarsForCoffeeSiteAndLoggedInUser(CoffeeSiteDto coffeeSite) {
         
         User logedInUser = userService.getCurrentLoggedInUser();
-        log.info("Retrieving Stars for Coffee site name {} and User name {}", coffeeSite.getSiteName(), logedInUser.getUserName());
-        StarsForCoffeeSiteAndUser userSiteStars = avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), logedInUser.getId());
+        StarsForCoffeeSiteAndUser userSiteStars = null;
+        if (logedInUser != null) {
+            log.info("Retrieving Stars for Coffee site name {} and User name {}", coffeeSite.getSiteName(), logedInUser.getUserName());
+            userSiteStars = avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), logedInUser.getId());
+        }
+        else
+            log.info("Stars for Coffee site name {} cannot be retrieved, no user logged-in.", coffeeSite.getSiteName());
         return (userSiteStars == null) ? null :  userSiteStars.getStars();
     }
 
