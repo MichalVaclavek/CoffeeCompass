@@ -1,4 +1,4 @@
-package cz.fungisoft.coffeecompass.controller;
+package cz.fungisoft.coffeecompass.controller.rest;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cz.fungisoft.coffeecompass.controller.CoffeeSiteSearchCriteriaModel;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDto;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
@@ -60,15 +61,13 @@ import io.swagger.annotations.Api;
  * <br>
  * @author Michal Václavek
  *
- * @author Michal
- *
  */
 /*
 @Api // Anotace Swagger
 @RestController // Ulehcuje zpracovani HTTP/JSON pozadavku z clienta a automaticky vytvari i HTTP/JSON response odpovedi na HTTP/JSON requesty
-@RequestMapping("/site") // uvadi se, pokud vsechny dotazy v kontroleru maji zacinat timto retezcem
+@RequestMapping("/rest/site") // uvadi se, pokud vsechny dotazy v kontroleru maji zacinat timto retezcem
 */
-public class CoffeeSiteRESTController
+public class CoffeeSiteControllerREST
 {
     @Autowired
     private OtherOfferService offerService;
@@ -110,7 +109,7 @@ public class CoffeeSiteRESTController
      * @param coffeeSiteService
      */
     @Autowired
-    public CoffeeSiteRESTController(CoffeeSiteService coffeeSiteService)
+    public CoffeeSiteControllerREST(CoffeeSiteService coffeeSiteService)
     {
         super();
         this.coffeeSiteService = coffeeSiteService;

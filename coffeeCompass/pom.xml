@@ -5,7 +5,7 @@
 
 	<groupId>cz.fungisoft</groupId>
 	<artifactId>coffeecompass</artifactId>
-	<version>0.9.0-SNAPSHOT</version>
+	<version>0.9.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Coffee Compass</name>

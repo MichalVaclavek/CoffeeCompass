@@ -391,14 +391,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         // Sama DB tyto vzdalenosti pro dane CoffeeSites nevraci
         sites.sort((cs1, cs2) -> { //TODO zjednodusit compare pomoci 2x ? :
             return (cs1.getDistFromSearchPoint() == cs2.getDistFromSearchPoint()) ? 0 :
-                (cs1.getDistFromSearchPoint() < cs2.getDistFromSearchPoint()) ? -1 : 1;}
-            /*
-            if (cs1.getDistFromSearchPoint() == cs2.getDistFromSearchPoint()) {
-                return 0;
-            }
-            return (cs1.getDistFromSearchPoint() < cs2.getDistFromSearchPoint()) ? -1 : 1;
-        }
-        */
+                   (cs1.getDistFromSearchPoint() < cs2.getDistFromSearchPoint()) ? -1 : 1;}
         );
         
         return sites;
@@ -557,10 +550,13 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         }     
     }
 
+    /**
+     * Checks if the coffe site name is already used or not
+     */
     @Override
     public boolean isSiteNameUnique(Long id, String siteName) {
         CoffeeSite site = coffeeSiteRepo.searchByName(siteName);
-        return ( site == null || ((id != null) && (site.getId() == id)));
+        return ( site == null || ((id != null) && site.getId().equals(id)));
     }
 
 

@@ -115,9 +115,7 @@
 			      </form>
 			    </div> <!-- div for search form  -->
 
-				<div th:if="${emptyResult}" class="error-message w3-margin">
-	    			<span th:text="#{sitesearch.nothingfound}"></span>
-	    		</div>
+				
 		
 		    </div> <!-- <div class="w3-col l3 w3-container"> -->
     
@@ -128,6 +126,9 @@
 	    	
 	    	<div class="w3-container w3-threequarter w3-margin-top" th:if="${NOT #lists.isEmpty(foundSites)}"> <!-- Show number of found sites -->
 	        	<b>	<span th:text="#{sitesearch.sitesFound} + ' ' + ${#lists.size(foundSites)}"></span> </b>
+	    	</div>
+	    	<div th:if="${emptyResult}" class="error-message w3-margin">
+	    		<span th:text="#{sitesearch.nothingfound}"></span>
 	    	</div>
 	    	
 		    <!--  Table containing the results of search -->

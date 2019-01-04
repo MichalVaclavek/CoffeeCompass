@@ -19,6 +19,9 @@ public interface UsersRepository extends JpaRepository<User, Integer>, UsersRepo
     @Query("delete from User u where userName= ?1") 
     public void deleteByUserName(String userName);
 
-    @Query(nativeQuery = true, value = "select count(*) from User")
-    public long countItems();
+    @Query("select count(id) from User u")
+    public Long countAllUsers();
+    
+    @Query("select count(id) from User u where date(u.createdOn) > (current_date - 7)")
+    public Long getNumOfUsersRegisteredLast7Days();
 }

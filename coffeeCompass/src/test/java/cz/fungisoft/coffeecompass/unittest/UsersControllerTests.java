@@ -33,7 +33,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import cz.fungisoft.coffeecompass.controller.UserRestController;
+import cz.fungisoft.coffeecompass.controller.rest.UserControllerREST;
 import cz.fungisoft.coffeecompass.dto.UserDataDto;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
@@ -50,7 +50,7 @@ import ma.glasnost.orika.MapperFacade;
  *
  */
 @RunWith(SpringRunner.class)
-@WebMvcTest(UserRestController.class)
+@WebMvcTest(UserControllerREST.class)
 public class UsersControllerTests
 { 
     @Autowired

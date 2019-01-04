@@ -1,4 +1,4 @@
-package cz.fungisoft.coffeecompass.controller;
+package cz.fungisoft.coffeecompass.controller.rest;
 
 import java.util.List;
 
@@ -32,9 +32,9 @@ import io.swagger.annotations.Api;
 @Api // Anotace Swagger
 //@RequestMapping("/user") // uvadi se, pokud vsechny dotazy v kontroleru maji zacinat timto retezcem
 //@RestController
-public class UserRestController
+public class UserControllerREST
 {  
-    private static final Logger logger = LoggerFactory.getLogger(UserRestController.class); 
+    private static final Logger logger = LoggerFactory.getLogger(UserControllerREST.class); 
     
     private UserService userService;
      
@@ -43,7 +43,7 @@ public class UserRestController
       * @param userService
       */
     @Autowired
-    public UserRestController(UserService userService /*, UserProfileService userProfileService*/)
+    public UserControllerREST(UserService userService /*, UserProfileService userProfileService*/)
     {
         super();
         this.userService = userService;
@@ -65,18 +65,13 @@ public class UserRestController
     
 //  @RequestMapping(value = "/users", method = RequestMethod.GET)  
     @GetMapping("/all") 
-    public ModelAndView listAllUsers()
+    public ResponseEntity<List<UserDataDto>> listAllUsers()
     {
-        ModelAndView mav = new ModelAndView();
-        
         List<UserDataDto> users = userService.findAllUsers();
-        
-        mav.addObject("allUsers", users);
-        mav.setViewName("users_info");
-    
+       
         //Test loogging
         logger.info("All users retrieved: {}", users.size());
-        return mav;
+        return new ResponseEntity<List<UserDataDto>>(users, HttpStatus.OK);
     }
   
   

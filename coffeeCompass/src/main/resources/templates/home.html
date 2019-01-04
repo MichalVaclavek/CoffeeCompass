@@ -85,7 +85,7 @@
 	        	</div>
         </div>
         </div>
-        
+        <br>
         <!-- News and statistics info -->
         <div class="w3-content">
         	<div class="w3-container w3-margin-top">
@@ -94,23 +94,27 @@
 			        	<span th:text="#{home.statistics.allsites.label}" class="w3-left" >Number of all sites: </span><span class="w3-right" th:text="${stats.numOfAllSites}"></span><br>
 			        	<span th:text="#{home.statistics.todaysites.label}" class="w3-left" >Number of sites created today: </span><span class="w3-right" th:text="${stats.numOfNewSitesToday}"></span><br>
 			        	<span th:text="#{home.statistics.last7daysites.label}" class="w3-left" >Number of sites created within last 7 days: </span><span class="w3-right" th:text="${stats.numOfNewSitesLast7Days}"></span><br>
+			        	<br>
+			        	<span th:text="#{home.statistics.allUsers.label}" class="w3-left" >Number of all users: </span><span class="w3-right" th:text="${stats.numOfAllUsers}"></span><br>
+			        	<span th:text="#{home.statistics.last7dayusers.label}" class="w3-left" >Number of users registered within last 7 days: </span><span class="w3-right" th:text="${stats.numOfNewUsersThisWeek}"></span><br>
+			        	
 		        	</div>
 		        	<div class="w3-row w3-container w3-margin-top w3-border-top">
 		        		<div class="w3-half w3-justify w3-container w3-margin-top">
 			        		<b><h4 th:text="#{home.statistics.topcities.label}" >Cities with most active sites: </h4></b>
 			        		<div class="w3-margin-top">
 			        			<div th:each="city : ${stats.top5CitiesMostCoffeeSites}" 
-			        														 th:text="${city}"></div> 
+			        				 th:text="${city}"></div> 
 			        		</div>
 			        	</div>	
 			        	<div class="w3-half w3-justify w3-container w3-margin-top">
 			        		<b><h4 th:text="#{home.statistics.topusers.label}">Users with most active sites: </h4></b>
 			        			<div class="w3-margin-top">
 			        				<div th:each="user : ${stats.top5UserNamesMostCreatedSites}"
-			        														 th:text="${user}" ></div>
+			        					 th:text="${user}" ></div>
 			        			</div>
 			        	</div>	
-		            </div>												 													 
+		            </div>
 	        </div>
         </div>
         

@@ -34,7 +34,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import cz.fungisoft.coffeecompass.controller.CoffeeSiteController;
-import cz.fungisoft.coffeecompass.controller.UserRestController;
+import cz.fungisoft.coffeecompass.controller.rest.UserControllerREST;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDto;
 import cz.fungisoft.coffeecompass.dto.UserDataDto;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
