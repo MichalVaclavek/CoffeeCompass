@@ -5,22 +5,15 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationTrustResolver;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import cz.fungisoft.coffeecompass.dto.UserDataDto;
@@ -30,8 +23,8 @@ import cz.fungisoft.coffeecompass.service.UserService;
 import io.swagger.annotations.Api;
 
 @Api // Anotace Swagger
-//@RequestMapping("/user") // uvadi se, pokud vsechny dotazy v kontroleru maji zacinat timto retezcem
-//@RestController
+@RequestMapping("/rest/user") // uvadi se, pokud vsechny dotazy v kontroleru maji zacinat timto retezcem
+@RestController
 public class UserControllerREST
 {  
     private static final Logger logger = LoggerFactory.getLogger(UserControllerREST.class); 
@@ -43,8 +36,7 @@ public class UserControllerREST
       * @param userService
       */
     @Autowired
-    public UserControllerREST(UserService userService /*, UserProfileService userProfileService*/)
-    {
+    public UserControllerREST(UserService userService /*, UserProfileService userProfileService*/) {
         super();
         this.userService = userService;
     }
@@ -63,10 +55,8 @@ public class UserControllerREST
     
     // ------------------- Retrieve All Users --------------------------------------------------------//
     
-//  @RequestMapping(value = "/users", method = RequestMethod.GET)  
     @GetMapping("/all") 
-    public ResponseEntity<List<UserDataDto>> listAllUsers()
-    {
+    public ResponseEntity<List<UserDataDto>> listAllUsers() {
         List<UserDataDto> users = userService.findAllUsers();
        
         //Test loogging
@@ -77,14 +67,11 @@ public class UserControllerREST
   
     // ------------------- Retrieve Single User -------------------------------------------------------- //
       
-//    @RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
     @GetMapping("/{id}")
-    public ResponseEntity<UserDataDto> getUser(@PathVariable("id") Integer id)
-    {
+    public ResponseEntity<UserDataDto> getUser(@PathVariable("id") Integer id) {
         logger.info("Fetching User with id " + id);
         UserDataDto user = userService.findByIdToTransfer(id);
-        if (user == null)
-        {
+        if (user == null) {
             logger.info("User with id " + id + " not found");
             return new ResponseEntity<UserDataDto>(HttpStatus.NOT_FOUND);
         }
@@ -95,8 +82,7 @@ public class UserControllerREST
     // ------------------- Create a User -------------------------------------------------------- //
       
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ResponseEntity<Void> createUser(@RequestBody User user, UriComponentsBuilder ucBuilder)
-    {
+    public ResponseEntity<Void> createUser(@RequestBody User user, UriComponentsBuilder ucBuilder) {
         logger.info("Creating User " + user.getUserName());
   
         if (userService.isUserNameUnique(null, user.getUserName())) {
@@ -107,21 +93,19 @@ public class UserControllerREST
         userService.saveUser(user);
   
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri());
+        headers.setLocation(ucBuilder.path("/rest/user/{id}").buildAndExpand(user.getId()).toUri());
         return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
     }
        
     // ------------------- Update a User -------------------------------------------------------- //
       
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<UserDataDto> updateUser(@PathVariable("id") Integer id, @RequestBody User user)
-    {
+    public ResponseEntity<UserDataDto> updateUser(@PathVariable("id") Integer id, @RequestBody User user) {
         logger.info("Updating User " + id);
           
         User currentUser = userService.findById(id);        
           
-        if (currentUser == null)
-        {
+        if (currentUser == null) {
             logger.info("User with id " + id + " not found");
             return new ResponseEntity<UserDataDto>(HttpStatus.NOT_FOUND);
         }        
@@ -134,8 +118,7 @@ public class UserControllerREST
     // ------------------- Delete a User -------------------------------------------------------- //
       
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<User> deleteUser(@PathVariable("id") Integer id)
-    {
+    public ResponseEntity<User> deleteUser(@PathVariable("id") Integer id) {
         logger.info("Fetching & Deleting User with id " + id);
   
         UserDataDto user = userService.findByIdToTransfer(id);

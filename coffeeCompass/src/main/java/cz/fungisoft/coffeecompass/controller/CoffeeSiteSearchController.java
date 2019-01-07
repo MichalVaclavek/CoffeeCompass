@@ -93,8 +93,9 @@ public class CoffeeSiteSearchController
         if (foundSites == null || foundSites.size() == 0)
             mav.addObject("emptyResult", true);
         
+        searchCriteria.setSortSelected(false); // set deault value before next searching
+        
         mav.setViewName("coffeesite_search");
-    
         return mav;
    }
    

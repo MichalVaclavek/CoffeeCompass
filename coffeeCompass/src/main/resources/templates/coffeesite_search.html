@@ -127,13 +127,13 @@
 	    	<div class="w3-container w3-threequarter w3-margin-top" th:if="${NOT #lists.isEmpty(foundSites)}"> <!-- Show number of found sites -->
 	        	<b>	<span th:text="#{sitesearch.sitesFound} + ' ' + ${#lists.size(foundSites)}"></span> </b>
 	    	</div>
-	    	<div th:if="${emptyResult}" class="error-message w3-margin">
+	    	<div th:if="${emptyResult}" class="error-message w3-container w3-threequarter w3-margin-top"> <!-- Or nothing found label -->
 	    		<span th:text="#{sitesearch.nothingfound}"></span>
 	    	</div>
 	    	
 		    <!--  Table containing the results of search -->
 			<div th:if="${not #lists.isEmpty(foundSites)}" class="w3-container w3-center">
-			    <!-- <table class="table table-striped">  -->
+			
 			    <table class="w3-table-all w3-hoverable  w3-margin-top">
 			    	<thead>
 			        <tr>
