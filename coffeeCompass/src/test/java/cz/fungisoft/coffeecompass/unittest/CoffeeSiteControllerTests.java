@@ -69,18 +69,16 @@ public class CoffeeSiteControllerTests
        
     
     @Before
-    public void setUp()
-    {
+    public void setUp() {
     }
  
     @Test
-    public void whenPostUser_thenCreateCoffeeSite() throws Exception 
-    {
+    public void whenPostSite_thenCreateCoffeeSite() throws Exception {
         CoffeeSite cs = CoffeeSiteFactory.getCoffeeSite("ControllerTestSite", "automat");
                 
         given(csService.save(Mockito.any(CoffeeSiteDto.class))).willReturn(cs);
 
-        mvc.perform(post("/site/").contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(cs)))
+        mvc.perform(post("/rest/site/").contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(cs)))
         .andExpect(status().isCreated()).andExpect(jsonPath("$.siteName", is("ControllerTestSite")));
         
         verify(csService, VerificationModeFactory.times(1)).save(Mockito.any(CoffeeSiteDto.class));
@@ -88,8 +86,7 @@ public class CoffeeSiteControllerTests
     }
     
     @Test
-    public void givenUsers_whenGetSites_thenReturnJsonArray() throws Exception
-    {       
+    public void givenUsers_whenGetSites_thenReturnJsonArray() throws Exception {       
         CoffeeSite cs1 = CoffeeSiteFactory.getCoffeeSite("ControllerTestSite1", "automat");
         CoffeeSiteDto cs1Dto = mapperFacade.map(cs1, CoffeeSiteDto.class);
         
@@ -100,7 +97,7 @@ public class CoffeeSiteControllerTests
      
         given(csService.findAll("siteName", "ASC")).willReturn(allSites);
      
-        mvc.perform(get("/sites")
+        mvc.perform(get("/rest/site/allSites")
           .contentType(MediaType.APPLICATION_JSON))
           .andExpect(status().isOk())
           .andExpect(jsonPath("$", hasSize(1)))

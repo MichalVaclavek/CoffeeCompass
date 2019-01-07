@@ -54,8 +54,7 @@ public class UsersTests
     private UserProfile userProfAdmin;
     
     @Before
-    public void setUp()
-    {
+    public void setUp() {
         // Vytvorit zaznamy do UserProfile DB        
         userProfUser = new UserProfile();
         userProfUser.setType("USER");
@@ -70,8 +69,7 @@ public class UsersTests
     
     
     @Test
-    public void whenFindByName_thenReturnUser()
-    {              
+    public void whenFindByName_thenReturnUser() {              
         User newUser = new User();
         
         newUser.setUserName("pauld");

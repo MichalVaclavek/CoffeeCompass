@@ -1,5 +1,7 @@
 package cz.fungisoft.coffeecompass.integrattest;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
@@ -33,8 +35,7 @@ public class StatisticsTest
     private StatisticsToShow statsToShow;
     
     @Test
-    public void testStatistics()
-    {
+    public void testStatistics() {
         statsToShow = new StatisticsToShow();
         
         statsToShow.setNumOfAllSites(csRepo.getNumOfAllActiveSites());
@@ -43,8 +44,10 @@ public class StatisticsTest
         
         List<DBReturnPair> cities = csRepo.getTop5CityNames();
         statsToShow.setTop5CitiesMostCoffeeSites(cities);
+        assertThat(cities.size()).isGreaterThan(0);
         
         List<DBReturnPair> users = usersRepo.getTop5Users();
         statsToShow.setTop5UserNamesMostCreatedSites(users);
+        assertThat(users.size()).isGreaterThan(0);
     }
 }

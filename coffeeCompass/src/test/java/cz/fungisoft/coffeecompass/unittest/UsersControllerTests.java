@@ -71,8 +71,7 @@ public class UsersControllerTests
     private Set<UserProfile> userProfiles;
     
     @Before
-    public void setUp()
-    {
+    public void setUp() {
         // Vytvori UserProfile        
         userProfUser = new UserProfile();
         userProfUser.setType("USER");
@@ -82,8 +81,7 @@ public class UsersControllerTests
     }
  
     @Test
-    public void whenPostUser_thenCreateUser() throws Exception 
-    {
+    public void whenPostUser_thenCreateUser() throws Exception {
         User john = new User();
         john.setUserName("john");
         
@@ -92,7 +90,7 @@ public class UsersControllerTests
                 
         given(userService.saveUser(Mockito.anyObject())).willReturn(john);
 
-        mvc.perform(post("/user/").contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(john)))
+        mvc.perform(post("/rest/user/").contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(john)))
         .andExpect(status().isCreated()).andExpect(jsonPath("$.userName", is("john")));
         
         verify(userService, VerificationModeFactory.times(1)).saveUser(Mockito.anyObject());
@@ -100,8 +98,7 @@ public class UsersControllerTests
     }
     
     @Test
-    public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception
-    {       
+    public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {       
         User john = new User();
         john.setUserName("john");
         UserDataDto johnDto = mapperFacade.map(john, UserDataDto.class);
@@ -118,7 +115,7 @@ public class UsersControllerTests
      
         given(userService.findAllUsers()).willReturn(allUsers);
      
-        mvc.perform(get("/users")
+        mvc.perform(get("/rest/user/all")
           .contentType(MediaType.APPLICATION_JSON))
           .andExpect(status().isOk())
           .andExpect(jsonPath("$", hasSize(1)))

@@ -65,8 +65,7 @@ public class UserServiceImplTest
     
     
     @Before
-    public void setUp()
-    {
+    public void setUp() {
         userProfUser = new UserProfile();
         userProfUser.setType("USER");
         
@@ -90,8 +89,7 @@ public class UserServiceImplTest
     }
     
     @Test
-    public void whenValidName_thenUserShouldBeFound()
-    {
+    public void whenValidName_thenUserShouldBeFound() {
         String name = "bert";
         String passwd = "gravity";
         User found = userService.findByUserName(name);

@@ -122,8 +122,7 @@ public class CoffeeSiteRepositoryTests
      * Vsechno se vytvari v testovaci in-memory DB, takze se neovlivni "ziva" DB.
      */
     @Before
-    public void setUp()
-    {
+    public void setUp() {
         // Inicializace objektů, na které se odkazuje CoffeeSite
         pr.setPriceRange("15 - 20 Kč"); 
         
@@ -181,8 +180,7 @@ public class CoffeeSiteRepositoryTests
     }
  
 	@Test
-	public void whenFindByName_thenReturnCoffeeSite()
-	{
+	public void whenFindByName_thenReturnCoffeeSite() {
 	    CoffeeSite newCS = new CoffeeSite();
 	    
 	    newCS.setSiteName("tišnov1");
@@ -262,8 +260,7 @@ public class CoffeeSiteRepositoryTests
 	}
 	
 //	@Test
-    public void test_Stored_Procedure_Call()
-    {
+    public void test_Stored_Procedure_Call() {
 	    double distance = 0;
 	    distance = coffeeRepos.callStoredProcedureCalculateDistance(50.1256, 14.123, 50.2356, 14.236);
 	    
