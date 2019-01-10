@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import cz.fungisoft.coffeecompass.dto.ContactMeMessageDto;
+import cz.fungisoft.coffeecompass.dto.ContactMeMessageDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.service.IContactMeMessageService;
 import cz.fungisoft.coffeecompass.service.UserService;
@@ -38,7 +38,7 @@ public class ContactMeMessageController
 
 
     @GetMapping("/contactMe") 
-    public ModelAndView getForm(final ContactMeMessageDto cmMessage) {
+    public ModelAndView getForm(final ContactMeMessageDTO cmMessage) {
    
         ModelAndView mav = new ModelAndView();
         
@@ -55,7 +55,7 @@ public class ContactMeMessageController
     }
     
     @PostMapping("/contactMe") // Mapovani http POST na DB SAVE
-    public String createOrUpdateCoffeeSite(@ModelAttribute("cmMessage") @Valid ContactMeMessageDto cmMessage, final BindingResult bindingResult) {
+    public String createOrUpdateCoffeeSite(@ModelAttribute("cmMessage") @Valid ContactMeMessageDTO cmMessage, final BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             return "contact_me_form";

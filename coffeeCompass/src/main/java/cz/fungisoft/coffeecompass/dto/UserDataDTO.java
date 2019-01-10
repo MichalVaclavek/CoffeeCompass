@@ -15,7 +15,7 @@ import lombok.Data;
  * @author Michal Vaclavek
  */
 @Data
-public class UserDataDto
+public class UserDataDTO
 {
     private int id; 
      

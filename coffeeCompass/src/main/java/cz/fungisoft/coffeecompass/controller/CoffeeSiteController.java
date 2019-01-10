@@ -1,6 +1,6 @@
 package cz.fungisoft.coffeecompass.controller;
 
-import cz.fungisoft.coffeecompass.dto.CoffeeSiteDto;
+import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.dto.CommentDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
@@ -161,7 +161,7 @@ public class CoffeeSiteController
         ModelAndView mav = new ModelAndView();
         
         // Add CoffeeSite to model
-        CoffeeSiteDto cs = coffeeSiteService.findOneToTransfer(siteId);
+        CoffeeSiteDTO cs = coffeeSiteService.findOneToTransfer(siteId);
         
         mav.addObject("coffeeSite", cs);
 
@@ -219,7 +219,7 @@ public class CoffeeSiteController
    
    
     @GetMapping("/site/") // napr. http://localhost:8080/site/?name=test1
-    public CoffeeSiteDto siteByName(@RequestParam(value="name") String name) {
+    public CoffeeSiteDTO siteByName(@RequestParam(value="name") String name) {
         return coffeeSiteService.findByName(name);
     }
     
@@ -250,9 +250,9 @@ public class CoffeeSiteController
     * @return {@code ModelAndView} pro zobrazeni formulare s hodnotami noveho/stavajiciho CoffeeSite.
     */
     @RequestMapping(value = {"/createSite"}, method = RequestMethod.GET)
-    public ModelAndView siteToCreateAndModify(final CoffeeSiteDto coffeeSite) {
+    public ModelAndView siteToCreateAndModify(final CoffeeSiteDTO coffeeSite) {
         
-        CoffeeSiteDto cs;
+        CoffeeSiteDTO cs;
         
         cs = coffeeSite; // novou instanci CoffeeSite vytvori Spring ? v konstruktoru
         cs.setId(0L); // je potreba zadat ID=0, aby se v Thymeleaf formulari dalo rozlisit, ze jde o novy CoffeeSite a zobrazit spravny Label text aj.
@@ -276,7 +276,7 @@ public class CoffeeSiteController
      */
     @GetMapping("/modifySite/{id}")
     public ModelAndView showSiteUpdatePage(@PathVariable(name = "id") Long id) {
-        CoffeeSiteDto cs = coffeeSiteService.findOneToTransfer(id);
+        CoffeeSiteDTO cs = coffeeSiteService.findOneToTransfer(id);
         
         ModelAndView mav = new ModelAndView();
         mav.addObject("coffeeSite", cs);
@@ -296,7 +296,7 @@ public class CoffeeSiteController
      * @return
      */
     @PostMapping("/createModifySite") // Mapovani http POST na DB SAVE/UPDATE
-    public String createOrUpdateCoffeeSite(@ModelAttribute("coffeeSite") @Valid CoffeeSiteDto coffeeSite, final BindingResult bindingResult) {
+    public String createOrUpdateCoffeeSite(@ModelAttribute("coffeeSite") @Valid CoffeeSiteDTO coffeeSite, final BindingResult bindingResult) {
         //Overeni jmena, nesmi se shodovat s jinym jmenem. Pokud jde o modifikaci stavajiciho situ, nekontrolovat
         if (!coffeeSiteService.isSiteNameUnique(coffeeSite.getId(), coffeeSite.getSiteName())) {
             bindingResult.rejectValue("siteName", "error.site.name.used", "Name already used.");

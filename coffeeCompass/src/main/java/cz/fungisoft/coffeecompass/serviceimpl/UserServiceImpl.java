@@ -15,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cz.fungisoft.coffeecompass.dto.UserDataDto;
+import cz.fungisoft.coffeecompass.dto.UserDataDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.entity.UserProfileTypeEnum;
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService
     // ** Findind User ** /
 
     @Override
-    public UserDataDto findByIdToTransfer(Integer id) {        
+    public UserDataDTO findByIdToTransfer(Integer id) {        
         User user = findById(id);
         
         if (user == null) {
@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService
     }
     
     @Override
-    public UserDataDto findByUserNameToTransfer(String userName) {      
+    public UserDataDTO findByUserNameToTransfer(String userName) {      
         User user = findByUserName(userName);
         
         if (user == null) {
@@ -117,11 +117,11 @@ public class UserServiceImpl implements UserService
      * @param userName
      * @return
      */
-    private UserDataDto addNonPersistentInfoToUser(User user) {
-        UserDataDto userDTO = null;
+    private UserDataDTO addNonPersistentInfoToUser(User user) {
+        UserDataDTO userDTO = null;
         
         if (user != null) {
-            userDTO = mapperFacade.map(user, UserDataDto.class);
+            userDTO = mapperFacade.map(user, UserDataDTO.class);
             userDTO.setHasADMINRole(hasADMINRole(user));
             userDTO.setToManageItself(isLoggedInUserToManageItself(user));
         }
@@ -247,8 +247,8 @@ public class UserServiceImpl implements UserService
     }
     
     @Override
-    public UserDataDto updateUser(UserDataDto userDTO) {
-        return mapperFacade.map(updateUser(mapperFacade.map(userDTO,  User.class)), UserDataDto.class);
+    public UserDataDTO updateUser(UserDataDTO userDTO) {
+        return mapperFacade.map(updateUser(mapperFacade.map(userDTO,  User.class)), UserDataDTO.class);
     }
     
     @Override
@@ -264,10 +264,10 @@ public class UserServiceImpl implements UserService
     }
  
     @Override
-    public List<UserDataDto> findAllUsers() {
-        List<UserDataDto> usersDTO = mapperFacade.mapAsList(usersRepository.findAll(), UserDataDto.class);
+    public List<UserDataDTO> findAllUsers() {
+        List<UserDataDTO> usersDTO = mapperFacade.mapAsList(usersRepository.findAll(), UserDataDTO.class);
         
-        for (UserDataDto userDTO : usersDTO) {
+        for (UserDataDTO userDTO : usersDTO) {
             userDTO.setHasADMINRole(hasADMINRole(mapperFacade.map(userDTO,  User.class)));
             userDTO.setToManageItself(isLoggedInUserToManageItself(mapperFacade.map(userDTO,  User.class)));
         }
@@ -291,7 +291,7 @@ public class UserServiceImpl implements UserService
      * Saves new user data to DB. Converts from UserDataDto to standard User
      */
     @Override
-    public User save(UserDataDto registration) {
+    public User save(UserDataDTO registration) {
         User user = new User();
         
         user.setUserName(registration.getUserName());

@@ -35,8 +35,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import cz.fungisoft.coffeecompass.controller.CoffeeSiteController;
 import cz.fungisoft.coffeecompass.controller.rest.UserControllerREST;
-import cz.fungisoft.coffeecompass.dto.CoffeeSiteDto;
-import cz.fungisoft.coffeecompass.dto.UserDataDto;
+import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
+import cz.fungisoft.coffeecompass.dto.UserDataDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
@@ -76,24 +76,24 @@ public class CoffeeSiteControllerTests
     public void whenPostSite_thenCreateCoffeeSite() throws Exception {
         CoffeeSite cs = CoffeeSiteFactory.getCoffeeSite("ControllerTestSite", "automat");
                 
-        given(csService.save(Mockito.any(CoffeeSiteDto.class))).willReturn(cs);
+        given(csService.save(Mockito.any(CoffeeSiteDTO.class))).willReturn(cs);
 
         mvc.perform(post("/rest/site/").contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(cs)))
         .andExpect(status().isCreated()).andExpect(jsonPath("$.siteName", is("ControllerTestSite")));
         
-        verify(csService, VerificationModeFactory.times(1)).save(Mockito.any(CoffeeSiteDto.class));
+        verify(csService, VerificationModeFactory.times(1)).save(Mockito.any(CoffeeSiteDTO.class));
         reset(csService);
     }
     
     @Test
     public void givenUsers_whenGetSites_thenReturnJsonArray() throws Exception {       
         CoffeeSite cs1 = CoffeeSiteFactory.getCoffeeSite("ControllerTestSite1", "automat");
-        CoffeeSiteDto cs1Dto = mapperFacade.map(cs1, CoffeeSiteDto.class);
+        CoffeeSiteDTO cs1Dto = mapperFacade.map(cs1, CoffeeSiteDTO.class);
         
         CoffeeSite cs2 = CoffeeSiteFactory.getCoffeeSite("ControllerTestSite2", "automat");
-        CoffeeSiteDto cs2Dto = mapperFacade.map(cs2, CoffeeSiteDto.class);
+        CoffeeSiteDTO cs2Dto = mapperFacade.map(cs2, CoffeeSiteDTO.class);
             
-        List<CoffeeSiteDto> allSites = Arrays.asList(cs1Dto, cs2Dto);
+        List<CoffeeSiteDTO> allSites = Arrays.asList(cs1Dto, cs2Dto);
      
         given(csService.findAll("siteName", "ASC")).willReturn(allSites);
      

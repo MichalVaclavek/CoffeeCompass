@@ -13,9 +13,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
-import cz.fungisoft.coffeecompass.dto.CoffeeSiteDto;
+import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.dto.CommentDTO;
-import cz.fungisoft.coffeecompass.dto.UserDataDto;
+import cz.fungisoft.coffeecompass.dto.UserDataDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.Comment;
 import cz.fungisoft.coffeecompass.entity.User;
@@ -64,15 +64,15 @@ public class CoffeeCompassConfiguration implements WebMvcConfigurer
         MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
         
         // Uprava pro mapovano z User na UserDataDTO - pro prenaseni na clienta neni potreba prenaset heslo a confirm hesla
-        mapperFactory.classMap(User.class, UserDataDto.class).exclude("password")
+        mapperFactory.classMap(User.class, UserDataDTO.class).exclude("password")
                                                              .exclude("confirmPassword")
                                                              .byDefault()
                                                              .register();
         
-        mapperFactory.classMap(UserDataDto.class, User.class).byDefault().register();
+        mapperFactory.classMap(UserDataDTO.class, User.class).byDefault().register();
 
         // Only userName is needed for CoffeeSiteDto object
-        mapperFactory.classMap(CoffeeSite.class, CoffeeSiteDto.class)
+        mapperFactory.classMap(CoffeeSite.class, CoffeeSiteDTO.class)
                                         .field("originalUser.userName", "originalUserName")
                                         .field("lastEditUser.userName", "lastEditUserName")
                                         .byDefault()

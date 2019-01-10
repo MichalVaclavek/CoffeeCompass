@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import cz.fungisoft.coffeecompass.dto.CoffeeSiteDto;
+import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSort;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.CoffeeSortService;
@@ -83,7 +83,7 @@ public class CoffeeSiteSearchController
         if (!searchCriteria.getSortSelected())
             searchCriteria.setCoffeeSort("");
            
-        List<CoffeeSiteDto> foundSites = coffeeSiteService.findAllWithinCircleWithCSStatusAndCoffeeSort(searchCriteria.getLat1(),
+        List<CoffeeSiteDTO> foundSites = coffeeSiteService.findAllWithinCircleWithCSStatusAndCoffeeSort(searchCriteria.getLat1(),
                                                                                                         searchCriteria.getLon1(),
                                                                                                         searchCriteria.getRange(),
                                                                                                         searchCriteria.getCoffeeSort(),

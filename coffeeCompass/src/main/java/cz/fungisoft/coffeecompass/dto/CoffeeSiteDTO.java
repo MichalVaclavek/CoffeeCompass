@@ -10,6 +10,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteType;
@@ -29,13 +31,14 @@ import lombok.Data;
  * @author Michal Vaclavek
  */
 @Data
-public class CoffeeSiteDto
+public class CoffeeSiteDTO
 {
     private Long id;
 
     @Size(min=3, max=50)
     private String siteName;
     
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     private Date createdOn;
     
     private Set<CoffeeSort> coffeeSorts;
@@ -54,7 +57,7 @@ public class CoffeeSiteDto
     
     private Set<CupType> cupTypes;
     
-    private AverageStarsForSiteDto averageStarsWithNumOfHodnoceni; 
+    private AverageStarsForSiteDTO averageStarsWithNumOfHodnoceni; 
     
     private PriceRange cena;
     

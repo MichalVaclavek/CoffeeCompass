@@ -14,7 +14,7 @@ import lombok.Data;
  *
  */
 @Data
-public class AverageStarsForSiteDto {
+public class AverageStarsForSiteDTO {
 
     private Double avgStars = 0D;
     private Integer numOfHodnoceni = 0;
@@ -28,9 +28,9 @@ public class AverageStarsForSiteDto {
         return numOfHodnoceni > 0 ? avgStars + " (" + numOfHodnoceni + ")" : avgStars+"";
     }
     
-    public AverageStarsForSiteDto() {}
+    public AverageStarsForSiteDTO() {}
     
-    public AverageStarsForSiteDto(Double stars, Integer numOfHod) {
+    public AverageStarsForSiteDTO(Double stars, Integer numOfHod) {
         this.avgStars = stars;
         this.numOfHodnoceni = numOfHod;
     }

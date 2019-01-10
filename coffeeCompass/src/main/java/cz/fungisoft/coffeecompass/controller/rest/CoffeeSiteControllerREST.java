@@ -1,18 +1,15 @@
 package cz.fungisoft.coffeecompass.controller.rest;
 
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,9 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import cz.fungisoft.coffeecompass.controller.CoffeeSiteSearchCriteriaModel;
-import cz.fungisoft.coffeecompass.dto.CoffeeSiteDto;
-import cz.fungisoft.coffeecompass.dto.UserDataDto;
+import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteType;
@@ -38,8 +33,6 @@ import cz.fungisoft.coffeecompass.entity.OtherOffer;
 import cz.fungisoft.coffeecompass.entity.PriceRange;
 import cz.fungisoft.coffeecompass.entity.SiteLocationType;
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
-import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.entity.CoffeeSort.CoffeeSortEnum;
 import cz.fungisoft.coffeecompass.service.CSStatusService;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteTypeService;
@@ -53,21 +46,22 @@ import cz.fungisoft.coffeecompass.service.StarsQualityService;
 import io.swagger.annotations.Api;
 
 /**
- * Zatím jen pomocná, nevyužitá třída/kontroler, který bude použit v případě využití REST rozhraní
- *  Základní Controller pro obsluhu požadavků, které se týkají práce s hlavním objektem CoffeeSite.<br>
+ * Zatím jen pomocná, nevyužitá třída/kontroler, který bude použit v případě využití REST rozhraní<br>
+ * 
+ * Základní Controller pro obsluhu požadavků, které se týkají práce s hlavním objektem CoffeeSite.<br>
  * Tj. pro základní CRUD operace a pro vyhledávání CoffeeSites.<br>
- * Tato verze je urcena pro REST,
- * pro testovaci/prototypovaci ucely je urcena verze CoffeeSiteController, ktera vyuziva system/framework Thymeleaf
+ * Tato verze je urcena pro REST, pro testovaci/prototypovaci ucely je urcena verze CoffeeSiteController, ktera vyuziva system/framework Thymeleaf
  * <br>
  * @author Michal Václavek
  *
  */
-
 @Api // Anotace Swagger
 @RestController // Ulehcuje zpracovani HTTP/JSON pozadavku z clienta a automaticky vytvari i HTTP/JSON response odpovedi na HTTP/JSON requesty
-@RequestMapping("/rest/site") // uvadi se, pokud vsechny dotazy v kontroleru maji zacinat timto retezcem
+@RequestMapping("/rest/site") // vsechny http dotazy v kontroleru maji zacinat timto retezcem
 public class CoffeeSiteControllerREST
 {
+    private static final Logger log = LoggerFactory.getLogger(CoffeeSiteControllerREST.class);
+    
     @Autowired
     private OtherOfferService offerService;
     
@@ -124,28 +118,43 @@ public class CoffeeSiteControllerREST
      * @return
      */
     @GetMapping("/allSites") 
-    public ResponseEntity<List<CoffeeSiteDto>> items(@RequestParam(defaultValue = "id") String orderBy,
-                                     @RequestParam(defaultValue = "asc") String direction) {
-        return new ResponseEntity<List<CoffeeSiteDto>>(coffeeSiteService.findAll(orderBy, direction), HttpStatus.OK);
+    public ResponseEntity<List<CoffeeSiteDTO>> sites(@RequestParam(defaultValue = "id") String orderBy,
+                                                     @RequestParam(defaultValue = "asc") String direction) {
+        
+        List<CoffeeSiteDTO> coffeeSites = coffeeSiteService.findAll(orderBy, direction);
+        log.info("All sites retrieved.");
+        if (coffeeSites == null || coffeeSites.size() == 0) {
+            log.error("No Coffee site found.");
+            return new ResponseEntity<List<CoffeeSiteDTO>>(coffeeSites, HttpStatus.NOT_FOUND);
+        } 
+        
+        log.info("All sites retrieved.");
+        return new ResponseEntity<List<CoffeeSiteDTO>>(coffeeSites, HttpStatus.OK);
     }
     
 
     @GetMapping("/{id}") // napr. http://localhost:8080/rest/site/2
-    public ResponseEntity<CoffeeSiteDto> siteById(@PathVariable Long id) {
-        return new ResponseEntity<CoffeeSiteDto>(coffeeSiteService.findOneToTransfer(id), HttpStatus.OK);
-    }
-    
-    
-    @PostMapping("/modify/{id}") // napr. http://localhost:8080//rest/site/modify/2
-    public void modifySiteToModifyById(@PathVariable Long id, @ModelAttribute CoffeeSite coffeeSite) {
-        coffeeSite.setId(id);
-        coffeeSiteService.save(coffeeSite);
+    public ResponseEntity<CoffeeSiteDTO> siteById(@PathVariable Long id) {
+        
+        CoffeeSiteDTO cs = coffeeSiteService.findOneToTransfer(id);
+        
+        if (cs == null) {
+            return new ResponseEntity<CoffeeSiteDTO>(cs, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<CoffeeSiteDTO>(cs, HttpStatus.OK);
     }
     
     @GetMapping("/") // napr. http://localhost:8080/rest/site/?name=test1
-    public ResponseEntity<CoffeeSiteDto> siteByName(@RequestParam(value="name") String name) {
-        return new ResponseEntity<CoffeeSiteDto>(coffeeSiteService.findByName(name), HttpStatus.OK);
+    public ResponseEntity<CoffeeSiteDTO> siteByName(@RequestParam(value="name") String name) {
+        
+        CoffeeSiteDTO cs = coffeeSiteService.findByName(name);
+        
+        if (cs == null) {
+            return new ResponseEntity<CoffeeSiteDTO>(cs, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<CoffeeSiteDTO>(cs , HttpStatus.OK);
     }
+    
     
     /**
      * Pomocna metoda pro otestovani, ze funguje volani Stored procedure v DB
@@ -172,9 +181,9 @@ public class CoffeeSiteControllerREST
      * @return
      */
     @GetMapping("/getSitesInRange/") // napr. http://localhost:8080/rest/site/getSitesInRange/?lat1=50.1669497&lon1=14.7657927&range=50000
-    public ResponseEntity<List<CoffeeSiteDto>> sitesWithinRange(@RequestParam(value="lat1") double lat1, @RequestParam(value="lon1") double lon1,
+    public ResponseEntity<List<CoffeeSiteDTO>> sitesWithinRange(@RequestParam(value="lat1") double lat1, @RequestParam(value="lon1") double lon1,
                                                 @RequestParam(value="range") long rangeMeters) {
-        return new ResponseEntity<List<CoffeeSiteDto>>(coffeeSiteService.findAllWithinCircle(lat1, lon1, rangeMeters), HttpStatus.OK);
+        return new ResponseEntity<List<CoffeeSiteDTO>>(coffeeSiteService.findAllWithinCircle(lat1, lon1, rangeMeters), HttpStatus.OK);
     }
     
     
@@ -190,13 +199,13 @@ public class CoffeeSiteControllerREST
      * @return
      */
     @PostMapping("/searchSites") // napr. http://localhost:8080/rest/site/searchSites/?lat1=50.1669497&lon1=14.7657927&range=50000&status=Opened&sort=espresso
-    public ResponseEntity<List<CoffeeSiteDto>> searchSitesWithStatusAndCoffeeSort(@RequestParam(value="lat1") double lat1,
-                                                                  @RequestParam(value="lon1") double lon1,
-                                                                  @RequestParam(value="range") long rangeMeters,
-                                                                  @RequestParam(value="status", defaultValue="Opened") String status,
-                                                                  @RequestParam(value="sort", defaultValue="espresso") String sort) {
+    public ResponseEntity<List<CoffeeSiteDTO>> searchSitesWithStatusAndCoffeeSort(@RequestParam(value="lat1") double lat1,
+                                                                                  @RequestParam(value="lon1") double lon1,
+                                                                                  @RequestParam(value="range") long rangeMeters,
+                                                                                  @RequestParam(value="status", defaultValue="Opened") String status,
+                                                                                  @RequestParam(value="sort", defaultValue="espresso") String sort) {
         
-        return new ResponseEntity<List<CoffeeSiteDto>>(coffeeSiteService.findAllWithinCircleWithCSStatusAndCoffeeSort(lat1, lon1, rangeMeters, sort, status), HttpStatus.OK); // REST/JSON
+        return new ResponseEntity<List<CoffeeSiteDTO>>(coffeeSiteService.findAllWithinCircleWithCSStatusAndCoffeeSort(lat1, lon1, rangeMeters, sort, status), HttpStatus.OK); // REST/JSON
     }
 
    
@@ -208,22 +217,39 @@ public class CoffeeSiteControllerREST
      * @param coffeeSite
      * @return
      */
-    @PostMapping("/createSite") // Mapovani http POST na DB save/INSERT
-    public ResponseEntity<Void> insert(@Valid @RequestBody CoffeeSiteDto coffeeSite, UriComponentsBuilder ucBuilder) {
-       coffeeSiteService.save(coffeeSite);
+    @PostMapping("/create") // Mapovani http POST na DB save/INSERT
+    public ResponseEntity<Void> insert(@Valid @RequestBody CoffeeSiteDTO coffeeSite, UriComponentsBuilder ucBuilder) {
     
+       CoffeeSite cs = coffeeSiteService.save(coffeeSite);
+       
        HttpHeaders headers = new HttpHeaders();
-       headers.setLocation(ucBuilder.path("/rest/site/{id}").buildAndExpand(coffeeSite.getId()).toUri());
-       return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+       if (cs != null) {
+           log.info("New Coffee site created.");
+           headers.setLocation(ucBuilder.path("/rest/site/{id}").buildAndExpand(coffeeSite.getId()).toUri());
+           return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+       }
+       else {
+           log.error("Coffee site creation failed");
+           headers.setLocation(ucBuilder.path("/rest/site/create}").buildAndExpand(coffeeSite.getId()).toUri());
+           return new ResponseEntity<Void>(headers, HttpStatus.BAD_REQUEST);
+       }
     }
     
 
-    @PutMapping("/{id}") // Mapovani http PUT na DB operaci UPDATE tj. zmena zaznamu c. id polozkou coffeeSite
-    public ResponseEntity<CoffeeSiteDto> updateRest(@PathVariable Long id, @Valid @RequestBody CoffeeSiteDto coffeeSite) {
+    @PutMapping("/update/{id}") // Mapovani http PUT na DB operaci UPDATE tj. zmena zaznamu c. id polozkou coffeeSite, napr. http://localhost:8080/rest/site/update/2
+    public ResponseEntity<CoffeeSiteDTO> updateRest(@PathVariable Long id, @Valid @RequestBody CoffeeSiteDTO coffeeSite) {
         coffeeSite.setId(id);
-        coffeeSiteService.save(coffeeSite);
         
-        return new ResponseEntity<CoffeeSiteDto>(coffeeSiteService.findOneToTransfer(id), HttpStatus.OK);
+        CoffeeSiteDTO cs = null;
+        if (coffeeSiteService.save(coffeeSite) != null) {
+            log.info("Coffee site update successful.");
+            cs = coffeeSiteService.findOneToTransfer(id);
+        } else
+            log.error("Coffee site update failed.");
+        
+        return (cs != null) ? new ResponseEntity<CoffeeSiteDTO>(cs, HttpStatus.CREATED)
+                            : new ResponseEntity<CoffeeSiteDTO>(cs, HttpStatus.BAD_REQUEST);
+        
     }
     
     /**
@@ -231,10 +257,10 @@ public class CoffeeSiteControllerREST
      * 
      * @param id
      */
-    @DeleteMapping("/{id}") // Mapovani http DELETE na DB operaci delete
-    public ResponseEntity<CoffeeSiteDto> delete(@PathVariable Long id) {
+    @DeleteMapping("/delete/{id}") // Mapovani http DELETE na DB operaci delete, napr. http://localhost:8080/rest/site/delete/2
+    public ResponseEntity<CoffeeSiteDTO> delete(@PathVariable Long id) {
         coffeeSiteService.delete(id);
-        return new ResponseEntity<CoffeeSiteDto>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<CoffeeSiteDTO>(HttpStatus.NO_CONTENT);
     }
     
     

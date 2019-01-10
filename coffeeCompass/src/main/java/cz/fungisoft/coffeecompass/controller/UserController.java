@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import cz.fungisoft.coffeecompass.dto.UserDataDto;
+import cz.fungisoft.coffeecompass.dto.UserDataDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
@@ -70,7 +70,7 @@ public class UserController
     public ModelAndView listAllUsers() {
         ModelAndView mav = new ModelAndView();
         
-        List<UserDataDto> users = userService.findAllUsers();
+        List<UserDataDTO> users = userService.findAllUsers();
         
         mav.addObject("allUsers", users);
         mav.setViewName("users_info");
@@ -89,7 +89,7 @@ public class UserController
      * @return
      */
     @GetMapping("/register")
-    public ModelAndView showRegistrationForm(final UserDataDto user, Model model) {
+    public ModelAndView showRegistrationForm(final UserDataDTO user, Model model) {
         
         ModelAndView mav = new ModelAndView();
         
@@ -113,7 +113,7 @@ public class UserController
      * @return nova stranka potvrzuji upsesnou registraci, v tomto pripade je to home stranka
      */
     @PostMapping("/register-post")
-    public String registerUserAccount(@ModelAttribute("user") @Valid UserDataDto userDto, BindingResult result, ModelMap model, Locale locale) {
+    public String registerUserAccount(@ModelAttribute("user") @Valid UserDataDTO userDto, BindingResult result, ModelMap model, Locale locale) {
 
         if (userDto.getId() == 0) // Jde o noveho usera k registraci
         { 
@@ -169,7 +169,7 @@ public class UserController
         // Model uz muze atribut "user" obsahovat a to v pripade, ze predchozi update/put daneho usera obsahoval chyby
         // a presmeroval na tento handler
         if (!model.containsAttribute("user")) {
-            UserDataDto user = userService.findByUserNameToTransfer(userName);
+            UserDataDTO user = userService.findByUserNameToTransfer(userName);
             mav.addObject("user", user);
         }
         
@@ -200,7 +200,7 @@ public class UserController
      * @return
      */
     @PutMapping("/edit-put")
-    public String editUserAccount(@ModelAttribute("user") @Valid UserDataDto userDto, BindingResult result, ModelMap model, RedirectAttributes attr, Locale locale) {
+    public String editUserAccount(@ModelAttribute("user") @Valid UserDataDTO userDto, BindingResult result, ModelMap model, RedirectAttributes attr, Locale locale) {
         // Neprihlaseny uzivatel muze byt editovany ADMINem - ten muze menit pouze Password a ROLES, pokud nejde taky o ADMIN usera. ADMIN nemuze byt editovan jinym ADMINem.
         User loggedInUser = userService.getCurrentLoggedInUser();
         
@@ -266,22 +266,22 @@ public class UserController
      * @return
      */
     @GetMapping("/show/{id}")
-    public ResponseEntity<UserDataDto> getUser(@PathVariable("id") Integer id) {
+    public ResponseEntity<UserDataDTO> getUser(@PathVariable("id") Integer id) {
         logger.info("Fetching User with id " + id);
-        UserDataDto user = userService.findByIdToTransfer(id);
+        UserDataDTO user = userService.findByIdToTransfer(id);
         if (user == null) {
             logger.info("User with id " + id + " not found");
 //            return new ResponseEntity<UserDataDto>(HttpStatus.NOT_FOUND);
             throw new EntityNotFoundException("User with id " + id + " not found");
         }
-        return new ResponseEntity<UserDataDto>(user, HttpStatus.OK);
+        return new ResponseEntity<UserDataDTO>(user, HttpStatus.OK);
     }
     
     // ------------------- Delete a User -------------------------------------------------------- //
       
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public String deleteUser(@PathVariable("id") Integer id) {
-        UserDataDto user = userService.findByIdToTransfer(id);
+        UserDataDTO user = userService.findByIdToTransfer(id);
         if (user == null) {
             logger.info("Unable to delete. User with id " + id + " not found");
         } else

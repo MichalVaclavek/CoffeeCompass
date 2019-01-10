@@ -12,7 +12,7 @@ import lombok.Data;
  *
  */
 @Data
-public class ContactMeMessageDto
+public class ContactMeMessageDTO
 {
     private Integer id;
     

@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cz.fungisoft.coffeecompass.dto.AverageStarsForSiteDto;
-import cz.fungisoft.coffeecompass.dto.CoffeeSiteDto;
+import cz.fungisoft.coffeecompass.dto.AverageStarsForSiteDTO;
+import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.StarsForCoffeeSiteAndUser;
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
@@ -118,7 +118,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     }
 
     @Override
-    public String getStarsForCoffeeSiteAndUser(CoffeeSiteDto coffeeSite, User user) {
+    public String getStarsForCoffeeSiteAndUser(CoffeeSiteDTO coffeeSite, User user) {
         return (user != null && coffeeSite != null) 
             ? avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), user.getId()).getStars().getQuality()
             : "";
@@ -132,13 +132,13 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     }
 
     @Override
-    public String getStarsStringForCoffeeSiteAndLoggedInUser(CoffeeSiteDto coffeeSite) {
+    public String getStarsStringForCoffeeSiteAndLoggedInUser(CoffeeSiteDTO coffeeSite) {
         User logedInUser = userService.getCurrentLoggedInUser();
         return getStarsForCoffeeSiteAndUser(coffeeSite, logedInUser);
     }
 
     @Override
-    public StarsQualityDescription getStarsForCoffeeSiteAndLoggedInUser(CoffeeSiteDto coffeeSite) {
+    public StarsQualityDescription getStarsForCoffeeSiteAndLoggedInUser(CoffeeSiteDTO coffeeSite) {
         
         User logedInUser = userService.getCurrentLoggedInUser();
         StarsForCoffeeSiteAndUser userSiteStars = null;
@@ -152,8 +152,8 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     }
 
     @Override
-    public AverageStarsForSiteDto getStarsAndNumOfHodnoceniForSite(Long coffeeSiteID) {
-        AverageStarsForSiteDto starsDto = new AverageStarsForSiteDto();
+    public AverageStarsForSiteDTO getStarsAndNumOfHodnoceniForSite(Long coffeeSiteID) {
+        AverageStarsForSiteDTO starsDto = new AverageStarsForSiteDTO();
         
         int numOfHodnoceni = avgStarsRepo.getNumOfHodnoceniForSite(coffeeSiteID);
         if (numOfHodnoceni > 0) {

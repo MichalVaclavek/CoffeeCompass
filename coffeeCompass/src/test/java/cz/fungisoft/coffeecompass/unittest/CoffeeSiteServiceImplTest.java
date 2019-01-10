@@ -20,7 +20,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import cz.fungisoft.coffeecompass.dto.CoffeeSiteDto;
+import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
@@ -179,7 +179,7 @@ public class CoffeeSiteServiceImplTest
     @Test
     public void whenValidName_thenSiteShouldBeFound()
     {
-        CoffeeSiteDto found = coffeeSiteService.findByName(testSiteName);
+        CoffeeSiteDTO found = coffeeSiteService.findByName(testSiteName);
       
         assertThat(found.getSiteName())
           .isEqualTo(testSiteName);
@@ -200,7 +200,7 @@ public class CoffeeSiteServiceImplTest
           .isEqualTo(numOfCoffeeMachines);
                
         assertThat(found.getOriginalUserName())
-          .isEqualTo(mapperFacade.map(coffeeS, CoffeeSiteDto.class).getOriginalUserName() );
+          .isEqualTo(mapperFacade.map(coffeeS, CoffeeSiteDTO.class).getOriginalUserName() );
         
         assertThat(found.getStatusZarizeni().getStatus())
           .isEqualTo(siteStatE.getSiteStatus());

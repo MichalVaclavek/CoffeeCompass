@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
-import cz.fungisoft.coffeecompass.dto.ContactMeMessageDto;
+import cz.fungisoft.coffeecompass.dto.ContactMeMessageDTO;
 import cz.fungisoft.coffeecompass.entity.ContactMeMessage;
 import cz.fungisoft.coffeecompass.repository.ContactMeMessageRepository;
 import cz.fungisoft.coffeecompass.service.IContactMeMessageService;
@@ -80,7 +80,7 @@ public class ContactMeMessageServiceImpl implements IContactMeMessageService
     }
 
     @Override
-    public ContactMeMessage saveContactMeMessage(ContactMeMessageDto message) {
+    public ContactMeMessage saveContactMeMessage(ContactMeMessageDTO message) {
         ContactMeMessage cmmToSave = mapperFacade.map(message, ContactMeMessage.class);
         cmmToSave.setCreatedTime(new Timestamp(new Date().getTime()));
         return saveContactMeMessage(cmmToSave);

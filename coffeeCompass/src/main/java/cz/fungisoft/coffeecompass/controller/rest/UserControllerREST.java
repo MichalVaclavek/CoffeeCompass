@@ -16,9 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import cz.fungisoft.coffeecompass.dto.UserDataDto;
+import cz.fungisoft.coffeecompass.dto.UserDataDTO;
 import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.service.UserProfileService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import io.swagger.annotations.Api;
 
@@ -55,27 +54,27 @@ public class UserControllerREST
     
     // ------------------- Retrieve All Users --------------------------------------------------------//
     
-    @GetMapping("/all") 
-    public ResponseEntity<List<UserDataDto>> listAllUsers() {
-        List<UserDataDto> users = userService.findAllUsers();
+    @GetMapping("/all")
+    public ResponseEntity<List<UserDataDTO>> listAllUsers() {
+        
+        List<UserDataDTO> users = userService.findAllUsers();
        
-        //Test loogging
         logger.info("All users retrieved: {}", users.size());
-        return new ResponseEntity<List<UserDataDto>>(users, HttpStatus.OK);
+        return new ResponseEntity<List<UserDataDTO>>(users,  HttpStatus.OK);
     }
   
   
     // ------------------- Retrieve Single User -------------------------------------------------------- //
       
     @GetMapping("/{id}")
-    public ResponseEntity<UserDataDto> getUser(@PathVariable("id") Integer id) {
+    public ResponseEntity<UserDataDTO> getUser(@PathVariable("id") Integer id) {
         logger.info("Fetching User with id " + id);
-        UserDataDto user = userService.findByIdToTransfer(id);
+        UserDataDTO user = userService.findByIdToTransfer(id);
         if (user == null) {
             logger.info("User with id " + id + " not found");
-            return new ResponseEntity<UserDataDto>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<UserDataDTO>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<UserDataDto>(user, HttpStatus.OK);
+        return new ResponseEntity<UserDataDTO>(user, HttpStatus.OK);
     }
   
       
@@ -100,19 +99,19 @@ public class UserControllerREST
     // ------------------- Update a User -------------------------------------------------------- //
       
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<UserDataDto> updateUser(@PathVariable("id") Integer id, @RequestBody User user) {
+    public ResponseEntity<UserDataDTO> updateUser(@PathVariable("id") Integer id, @RequestBody User user) {
         logger.info("Updating User " + id);
           
         User currentUser = userService.findById(id);        
           
         if (currentUser == null) {
             logger.info("User with id " + id + " not found");
-            return new ResponseEntity<UserDataDto>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<UserDataDTO>(HttpStatus.NOT_FOUND);
         }        
           
         userService.updateUser(currentUser);
         
-        return new ResponseEntity<UserDataDto>(userService.findByIdToTransfer(id), HttpStatus.OK);
+        return new ResponseEntity<UserDataDTO>(userService.findByIdToTransfer(id), HttpStatus.OK);
     }
   
     // ------------------- Delete a User -------------------------------------------------------- //
@@ -121,7 +120,7 @@ public class UserControllerREST
     public ResponseEntity<User> deleteUser(@PathVariable("id") Integer id) {
         logger.info("Fetching & Deleting User with id " + id);
   
-        UserDataDto user = userService.findByIdToTransfer(id);
+        UserDataDTO user = userService.findByIdToTransfer(id);
         if (user == null) {
             logger.info("Unable to delete. User with id " + id + " not found");
             return new ResponseEntity<User>(HttpStatus.NOT_FOUND);

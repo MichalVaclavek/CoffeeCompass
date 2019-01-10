@@ -4,26 +4,26 @@ import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import cz.fungisoft.coffeecompass.dto.UserDataDto;
+import cz.fungisoft.coffeecompass.dto.UserDataDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 
  
 public interface UserService
 {     
-    UserDataDto findByIdToTransfer(Integer id);
+    UserDataDTO findByIdToTransfer(Integer id);
     
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     User findById(Integer id);
     
-    UserDataDto findByUserNameToTransfer(String userName);
+    UserDataDTO findByUserNameToTransfer(String userName);
     User findByUserName(String userName);
     User findByEmail(String email);
      
     User saveUser(User user);
     
     // Pro ulozeni nove vytvoreneho usera z DTO objektu ve formulari
-    User save(UserDataDto registration);
-    UserDataDto updateUser(UserDataDto user);
+    User save(UserDataDTO registration);
+    UserDataDTO updateUser(UserDataDTO user);
     User updateUser(User user);    
     
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -33,7 +33,7 @@ public interface UserService
     void deleteUserById(Integer id);
  
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    List<UserDataDto> findAllUsers();
+    List<UserDataDTO> findAllUsers();
     
     boolean isUserNameUnique(Integer id, String sso);
     boolean isEmailUnique(Integer id, String email);

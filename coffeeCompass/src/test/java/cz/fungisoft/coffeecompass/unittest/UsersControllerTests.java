@@ -34,7 +34,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import cz.fungisoft.coffeecompass.controller.rest.UserControllerREST;
-import cz.fungisoft.coffeecompass.dto.UserDataDto;
+import cz.fungisoft.coffeecompass.dto.UserDataDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.security.SecurityConfiguration;
@@ -101,17 +101,17 @@ public class UsersControllerTests
     public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {       
         User john = new User();
         john.setUserName("john");
-        UserDataDto johnDto = mapperFacade.map(john, UserDataDto.class);
+        UserDataDTO johnDto = mapperFacade.map(john, UserDataDTO.class);
         
         User mary = new User();
         mary.setUserName("mary");
-        UserDataDto maryDto = mapperFacade.map(john, UserDataDto.class);        
+        UserDataDTO maryDto = mapperFacade.map(john, UserDataDTO.class);        
         
         User dick = new User();        
         dick.setUserName("dick");
-        UserDataDto dickDto = mapperFacade.map(john, UserDataDto.class);
+        UserDataDTO dickDto = mapperFacade.map(john, UserDataDTO.class);
             
-        List<UserDataDto> allUsers = Arrays.asList(dickDto, maryDto, johnDto);
+        List<UserDataDTO> allUsers = Arrays.asList(dickDto, maryDto, johnDto);
      
         given(userService.findAllUsers()).willReturn(allUsers);
      

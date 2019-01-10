@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import cz.fungisoft.coffeecompass.dto.CoffeeSiteDto;
+import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
@@ -18,15 +18,15 @@ import cz.fungisoft.coffeecompass.entity.User;
 */
 public interface CoffeeSiteService
 {
-    public List<CoffeeSiteDto> findAll(String orderBy, String direction);
-    public List<CoffeeSiteDto> findAllFromUser(User user);
-    public List<CoffeeSiteDto> findAllFromLoggedInUser();
+    public List<CoffeeSiteDTO> findAll(String orderBy, String direction);
+    public List<CoffeeSiteDTO> findAllFromUser(User user);
+    public List<CoffeeSiteDTO> findAllFromLoggedInUser();
     
-    public CoffeeSiteDto findOneToTransfer(Long siteId);
+    public CoffeeSiteDTO findOneToTransfer(Long siteId);
     public CoffeeSite findOneById(Long id);
-    public CoffeeSiteDto findByName(String siteName);
-    public List<CoffeeSiteDto> findByCityName(String cityName);
-    public List<CoffeeSiteDto> findByCityAndStreetNames(String cityName, String streetName);
+    public CoffeeSiteDTO findByName(String siteName);
+    public List<CoffeeSiteDTO> findByCityName(String cityName);
+    public List<CoffeeSiteDTO> findByCityAndStreetNames(String cityName, String streetName);
     
     public boolean isSiteNameUnique(Long siteId, String siteName);
     
@@ -37,14 +37,14 @@ public interface CoffeeSiteService
      * @param cs
      * @return
      */
-    public boolean canBeModified(CoffeeSiteDto cs);
-    public boolean canBeActivated(CoffeeSiteDto cs);
-    public boolean canBeDeactivated(CoffeeSiteDto cs);
-    public boolean canBeCanceled(CoffeeSiteDto cs);
-    public boolean canBeDeleted(CoffeeSiteDto cs);
-    public boolean canBeCommented(CoffeeSiteDto cs);
-    public boolean canBeRateByStars(CoffeeSiteDto cs);
-    public boolean isVisible(CoffeeSiteDto cs);
+    public boolean canBeModified(CoffeeSiteDTO cs);
+    public boolean canBeActivated(CoffeeSiteDTO cs);
+    public boolean canBeDeactivated(CoffeeSiteDTO cs);
+    public boolean canBeCanceled(CoffeeSiteDTO cs);
+    public boolean canBeDeleted(CoffeeSiteDTO cs);
+    public boolean canBeCommented(CoffeeSiteDTO cs);
+    public boolean canBeRateByStars(CoffeeSiteDTO cs);
+    public boolean isVisible(CoffeeSiteDTO cs);
     
     /**
      * 
@@ -55,13 +55,13 @@ public interface CoffeeSiteService
      * @param direction - ASC nebo DESC - obvykle ASC tj. od nejmensi vzdalenosti
      * @return
      */
-    public List<CoffeeSiteDto> findAllWithinCircle(double zemSirka, double zemDelka, long meters);
+    public List<CoffeeSiteDTO> findAllWithinCircle(double zemSirka, double zemDelka, long meters);
      
     
     @PreAuthorize("isAuthenticated()")
     public CoffeeSite save(CoffeeSite cs);
     @PreAuthorize("isAuthenticated()")
-    public CoffeeSite save(CoffeeSiteDto cs);
+    public CoffeeSite save(CoffeeSiteDTO cs);
     @PreAuthorize("isAuthenticated()")
     public CoffeeSite updateCSRecordStatusAndSave(CoffeeSite cs, CoffeeSiteRecordStatusEnum newStatus);
     
@@ -86,9 +86,9 @@ public interface CoffeeSiteService
      * @param siteStatus
      * @return
      */
-    public List<CoffeeSiteDto> findAllWithinCircleWithCSStatusAndCoffeeSort(double zemSirka, double zemDelka, long meters,
+    public List<CoffeeSiteDTO> findAllWithinCircleWithCSStatusAndCoffeeSort(double zemSirka, double zemDelka, long meters,
                                                                             String cfSort, String siteStatus);
-    public List<CoffeeSiteDto> findAllWithinRangeWithRecordStatus(double zemSirka, double zemDelka, long meters,  CoffeeSiteRecordStatus csRecordStatus);
+    public List<CoffeeSiteDTO> findAllWithinRangeWithRecordStatus(double zemSirka, double zemDelka, long meters,  CoffeeSiteRecordStatus csRecordStatus);
     
-    public List<CoffeeSiteDto> findAllWithRecordStatus(CoffeeSiteRecordStatusEnum csRecordStatus);
+    public List<CoffeeSiteDTO> findAllWithRecordStatus(CoffeeSiteRecordStatusEnum csRecordStatus);
 }
