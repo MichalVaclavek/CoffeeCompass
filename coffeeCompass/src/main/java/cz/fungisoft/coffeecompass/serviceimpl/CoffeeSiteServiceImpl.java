@@ -140,9 +140,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         return modifyToTransfer(items);
     }
     
-    /**
-     *TODO - nikde se nepouziva, nebude lepsi odstranit??
-     * 
+    /** 
      * Used to get all CoffeeSites from search point with respective record status. Especially for non logged-in user
      * which can retrieve omly ACTIVE sites.
      */
@@ -181,8 +179,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     @Override
     public CoffeeSite findOneById(Long id) {
         CoffeeSite site = coffeeSiteRepo.findById(id).orElse(null);
-        if (site == null)
-        {
+        if (site == null) {
             log.error("Coffee site with id {} not found in DB.",  id);
             throw new EntityNotFoundException("Coffee site with id " + id + " not found.");
         }
@@ -389,9 +386,10 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         
         // Usporadani vysledku db dotazu (seznam CoffeeSites v danem okruhu) podle vzdalenosti od bodu hledani
         // Sama DB tyto vzdalenosti pro dane CoffeeSites nevraci
-        sites.sort((cs1, cs2) -> { //TODO zjednodusit compare pomoci 2x ? :
-            return (cs1.getDistFromSearchPoint() == cs2.getDistFromSearchPoint()) ? 0 :
-                   (cs1.getDistFromSearchPoint() < cs2.getDistFromSearchPoint()) ? -1 : 1;}
+        sites.sort((cs1, cs2) -> { 
+            return (cs1.getDistFromSearchPoint() == cs2.getDistFromSearchPoint()) ? 0
+                   : (cs1.getDistFromSearchPoint() < cs2.getDistFromSearchPoint()) ? -1
+                      : 1;}
         );
         
         return sites;
@@ -452,11 +450,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      * @return
      */
     private boolean siteUserMatch(CoffeeSiteDTO cs) {
-        if (loggedInUser != null
-               && cs.getOriginalUserName() != null)
-            return (loggedInUser.getUserName().equals(cs.getOriginalUserName())
-                       || userService.hasADMINorDBARole(loggedInUser)
-                    );
+        if (loggedInUser != null && cs.getOriginalUserName() != null)
+            return (loggedInUser.getUserName().equals(cs.getOriginalUserName()) || userService.hasADMINorDBARole(loggedInUser));
         else
             return false;
     }
@@ -473,22 +468,21 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     @Override
     public boolean canBeActivated(CoffeeSiteDTO cs) {
         return siteUserMatch(cs) // all authenticated users can modify from Created to Active or Inactive to Active
-                && 
-                (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CREATED)
-                 || cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.INACTIVE)
-                      
-                );    
+               && 
+               (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CREATED)
+                || cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.INACTIVE)
+               );    
     }
 
     @Override
     public boolean canBeDeactivated(CoffeeSiteDTO cs) {
         return siteUserMatch(cs) // all allowed users modify from Active to Inactive
-                &&
-                (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.ACTIVE)
-                  || (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CANCELED) // Admin or DBA users can modify from CANCELED to INACTIVE or Inactive to Active
-                         && userService.hasADMINorDBARole(loggedInUser)
-                     )    
-                );
+               &&
+               (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.ACTIVE)
+                || (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CANCELED) // Admin or DBA users can modify from CANCELED to INACTIVE or Inactive to Active
+                    && userService.hasADMINorDBARole(loggedInUser)
+                   )    
+               );
     }
 
     @Override

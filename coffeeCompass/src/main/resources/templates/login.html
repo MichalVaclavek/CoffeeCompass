@@ -9,43 +9,43 @@
 
 	<div th:replace="fragments/header :: header"/>
 	
-	<div class="w3-display-container">
+	<div class="w3-content w3-row"> 
 	
-	    <div class="w3-card-4 w3-display-topmiddle w3-margin w3-light-grey" style="width:20%">
+	    <div class=" w3-third w3-card-4 w3-right w3-margin w3-light-grey">
 	    
 			<div class="w3-container w3-center">
 				<h2 th:text="#{login.prompt}">Please Sign In</h2>
 			<div>
 	
-	               <form th:action="@{/login}" method="post" class="w3-container">
-	                    
-	                    <div th:if="${param.error}">
-	                        <div th:text="#{error.user.login.failed}" class="error-message">
-	                        </div>
-	                    </div>
-	                    <div th:if="${param.logout}">
-	                        <div class="alert alert-info">
-	                            You have been logged out.
-	                        </div>
-	                    </div>
-	
-	                    <div>
-	                    	<p>
-	                        <input type="text" name="username" id="username" class="w3-input"
-	                               th:placeholder="#{login.username.placeholder}" required>
-	                               <label th:text="#{login.name}" class="w3-margin-bottom">User name</label></p>
-	                    </div>
-	                    <div>
-	                    	<p>
-	                        <input type="password" name="password" id="password" class="w3-input"
-	                               th:placeholder="#{login.password.placeholder}" required>
-	                               <label th:text="#{login.passwd}">Passwd</label></p>
-	                    </div>
-	
-	                    <div class="w3-container w3-bottom-middle">
-	                       <button type="submit" name="login" th:text="#{login.button.login}" class="w3-button w3-green w3-border w3-margin">Login</button> 
-	                    </div>
-	              </form>
+            <form th:action="@{/login}" method="post" class="w3-container">
+                 
+                 <div th:if="${param.error}">
+                     <div th:text="#{error.user.login.failed}" class="error-message">
+                     </div>
+                 </div>
+                 <div th:if="${param.logout}">
+                     <div class="alert alert-info">
+                         You have been logged out.
+                     </div>
+                 </div>
+
+                 <div>
+                 	<p>
+                     <input type="text" name="username" id="username" class="w3-input"
+                            th:placeholder="#{login.username.placeholder}" required>
+                            <label th:text="#{login.name}" class="w3-margin-bottom">User name</label></p>
+                 </div>
+                 <div>
+                 	<p>
+                     <input type="password" name="password" id="password" class="w3-input"
+                            th:placeholder="#{login.password.placeholder}" required>
+                            <label th:text="#{login.passwd}">Passwd</label></p>
+                 </div>
+
+                 <div class="w3-container w3-bottom-middle">
+                    <button type="submit" name="login" th:text="#{login.button.login}" class="w3-button w3-green w3-border w3-margin">Login</button> 
+                 </div>
+           </form>
 	              
 	        </div>
 	    </div>

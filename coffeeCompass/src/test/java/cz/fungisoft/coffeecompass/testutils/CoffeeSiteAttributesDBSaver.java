@@ -62,8 +62,7 @@ public class CoffeeSiteAttributesDBSaver
      * @param csToSave
      */
     @Transactional
-    public void saveCoffeeSiteAtributesToDB(CoffeeSite csToSave)
-    {        
+    public void saveCoffeeSiteAtributesToDB(CoffeeSite csToSave) {        
         pr = csToSave.getCena();
         entityManager.persist(pr);
         
@@ -71,15 +70,13 @@ public class CoffeeSiteAttributesDBSaver
         entityManager.persist(siteType);
                
         csorts = csToSave.getCoffeeSorts();
-        for (CoffeeSort cs : csorts)
-        {
+        for (CoffeeSort cs : csorts) {
             entityManager.persist(cs);
         }
             
         cups = csToSave.getCupTypes();
         
-        for (CupType cup : cups)
-        {
+        for (CupType cup : cups) {
             entityManager.persist(cup);            
         }
         
@@ -87,23 +84,20 @@ public class CoffeeSiteAttributesDBSaver
         entityManager.persist(comp);              
         
         ntmtSet = csToSave.getNextToMachineTypes();
-        for (NextToMachineType mt : ntmtSet)
-        {
+        for (NextToMachineType mt : ntmtSet) {
             entityManager.persist(mt);
         }
        
         nabidka = csToSave.getOtherOffers();
 
-        for (OtherOffer offer : nabidka)
-        {
+        for (OtherOffer offer : nabidka) {
             entityManager.persist(offer);
         }
        
         locType = csToSave.getTypLokality();
         entityManager.persist(locType);
                 
-        for (UserProfile userProf : csToSave.getOriginalUser().getUserProfiles())
-        {
+        for (UserProfile userProf : csToSave.getOriginalUser().getUserProfiles()) {
             entityManager.persist(userProf);            
         }
         

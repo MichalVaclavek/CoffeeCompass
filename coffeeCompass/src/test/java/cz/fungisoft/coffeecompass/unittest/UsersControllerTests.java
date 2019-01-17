@@ -105,11 +105,11 @@ public class UsersControllerTests
         
         User mary = new User();
         mary.setUserName("mary");
-        UserDataDTO maryDto = mapperFacade.map(john, UserDataDTO.class);        
+        UserDataDTO maryDto = mapperFacade.map(mary, UserDataDTO.class);        
         
         User dick = new User();        
         dick.setUserName("dick");
-        UserDataDTO dickDto = mapperFacade.map(john, UserDataDTO.class);
+        UserDataDTO dickDto = mapperFacade.map(dick, UserDataDTO.class);
             
         List<UserDataDTO> allUsers = Arrays.asList(dickDto, maryDto, johnDto);
      

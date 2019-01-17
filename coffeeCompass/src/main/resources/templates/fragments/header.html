@@ -27,7 +27,7 @@
 </head>
 
 <body>
-<div th:fragment="header">
+   <div th:fragment="header">
 
        <div class="w3-container">
       
@@ -51,10 +51,15 @@
              			<button type="submit" id="submitLogoutButton" th:text="#{mainmenu.userlogout}" class="w3-button w3-white w3-border w3-round">X</button>
        	    	   </form>
            		   <a sec:authorize="isAuthenticated()" th:href="@{'/user/edit/' + ${#authentication.name}}" th:text="${#authentication.name}" class="w3-bar-item w3-button w3-blue w3-right w3-round">Edit user's account</a>
-                   
+           		   
+                   <!-- Swap between 2 languages  -->
+					<div th:with="url=${#httpServletRequest.requestURI}">
+					   <a th:if="${#locale.language} == 'cs'" th:href="@{${'~' + #httpServletRequest.requestURI}(lang=en)}" class="w3-bar-item w3-right"><span>en</span></a>
+					   <a th:if="${#locale.language} == 'en'" th:href="@{${'~' + #httpServletRequest.requestURI}(lang=cs)}" class="w3-bar-item w3-right"><span>cs</span></a>
+					</div>
            </div>
        </div>
-</div>
+  </div>
 
 </body>
 </html>

@@ -12,8 +12,10 @@
 
 	<h2 sec:authorize="NOT hasRole('ROLE_ADMIN')" th:if="${!user.isToManageItself}" class="w3-display-container w3-margin-left">NOT ALLOWED!!!</h2>
 
-	<div class="w3-display-container w3-margin" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} OR ${user.isToManageItself}">
-	<div class="w3-card-2 w3-display-topmiddle w3-border w3-sand" style="width:40%">
+	<div class="w3-content" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} OR ${user.isToManageItself}">
+		<div class="w3-row w3-margin">
+	
+		<div class="w3-half w3-right w3-card-2 w3-border w3-sand">
 		
            <h2 th:text="(${user.id} == 0) ? #{user.register.label.create} : #{user.register.label.update}" class="w3-center">Register/Update Label</h2>
            
@@ -140,10 +142,11 @@
 		          <div class="w3-bar-item w3-text-gray w3-margin-top w3-right">
 		             <label th:text="#{app.items.obligatory}" class="w3-text-gray w3-margin-top w3-small w3-right">Announcement</label>
 		          </div>
-		          
 		        </div>
           		
-			</form>
+			  </form>
+			
+			</div>
     	</div>
 	</div>
 

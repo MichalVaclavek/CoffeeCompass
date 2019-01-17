@@ -1,17 +1,19 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-130556148-1"></script>
 	<script>
-	  window.dataLayer = window.dataLayer || [];
-	  function gtag(){dataLayer.push(arguments);}
-	  gtag('js', new Date());
+	   window.dataLayer = window.dataLayer || [];
+	   function gtag(){dataLayer.push(arguments);}
+	   gtag('js', new Date());
 	
-	  gtag('config', 'UA-130556148-1');
+	   gtag('config', 'UA-130556148-1');
 	</script>
 	
     <title>Coffee Compass</title>
+    
     <div th:replace="fragments/header :: header-css"/>
 </head>
 
@@ -25,7 +27,7 @@
 	        
      <div class="w3-container">
      
-     	<!-- Used only in case User registratyion and modification is redirected to this page -->
+     	<!-- Used in case Contact me message page/controller redirects to this page -->
      	<div th:if="${param.contactmesuccess}" class="w3-pale-blue w3-display-container w3-round w3-panel">
 		    <span onclick="this.parentElement.style.display='none'"
 		  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
@@ -37,7 +39,7 @@
 		  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
 		    <p th:text="${userCreateSuccessText}" class="w3-container" > </p>
 		</div>
-		<!-- Used only in case User registratyion and modification is redirected to this page -->
+		<!-- Used only in case User registration and modification is redirected to this page -->
 		<div th:if="${userModifySuccess}" class="w3-pale-blue w3-display-container w3-round w3-panel">
 		    <span onclick="this.parentElement.style.display='none'"
 		  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>

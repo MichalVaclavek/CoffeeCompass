@@ -75,22 +75,22 @@ import cz.fungisoft.coffeecompass.testutils.CoffeeSiteAttributesDBSaver;
 @RunWith(SpringRunner.class)
 // Automaticky vytvori propojeni na H2 in-memory DB, ktera je uvedena v pom.xml dependency a nakonfigurovana v /src/test/resources/application.properties
 // to vse asi pomoci TestEntityManager
-//@DataJpaTest
+@DataJpaTest
 @ActiveProfiles("test") // pro HSQL db pouzit @ActiveProfiles("testhsql")
 @Transactional
-@SpringBootTest(classes = {CoffeeCompassApplication.class, CoffeeSiteAttributesDBSaver.class})
+//@SpringBootTest(classes = {CoffeeCompassApplication.class, CoffeeSiteAttributesDBSaver.class})
 //@SqlConfig(separator=org.springframework.jdbc.datasource.init.ScriptUtils.EOF_STATEMENT_SEPARATOR)
 //@SqlConfig(separator="/;")
 public class CoffeeSiteRepositoryTests
 {
-    /*
+    
     @Autowired
     private TestEntityManager entityManager;
-    */
     
+    /*
     @PersistenceContext
     private EntityManager entityManager;
-    
+    */
     @Autowired
     private CoffeeSiteRepository coffeeRepos;
     

@@ -180,7 +180,7 @@ public class CoffeeSiteControllerREST
      * @param rangeMeters
      * @return
      */
-    @GetMapping("/getSitesInRange/") // napr. http://localhost:8080/rest/site/getSitesInRange/?lat1=50.1669497&lon1=14.7657927&range=50000
+    @GetMapping("/getSitesInRange/") // napr. http://localhost:8080/rest/site/getSitesInRange/?lat1=50.1669497&lon1=14.7657927&range=5000
     public ResponseEntity<List<CoffeeSiteDTO>> sitesWithinRange(@RequestParam(value="lat1") double lat1, @RequestParam(value="lon1") double lon1,
                                                 @RequestParam(value="range") long rangeMeters) {
         return new ResponseEntity<List<CoffeeSiteDTO>>(coffeeSiteService.findAllWithinCircle(lat1, lon1, rangeMeters), HttpStatus.OK);
@@ -263,8 +263,7 @@ public class CoffeeSiteControllerREST
         return new ResponseEntity<CoffeeSiteDTO>(HttpStatus.NO_CONTENT);
     }
     
-    
-    /* *** Atributes for coffeesite_create.html and other Forms **** */
+    /* *** Atributes needed for client creating/editing Coffee site **** */
     
     @ModelAttribute("allOffers")
     public List<OtherOffer> populateOffers() {

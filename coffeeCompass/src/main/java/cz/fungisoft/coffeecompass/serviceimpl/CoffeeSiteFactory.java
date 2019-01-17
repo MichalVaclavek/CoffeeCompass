@@ -47,7 +47,7 @@ public class CoffeeSiteFactory
         CoffeeSiteType siteType = new CoffeeSiteType();
         CoffeeSiteRecordStatus recordStatus = new CoffeeSiteRecordStatus();
         
-        pr.setPriceRange("15 - 20 Kč"); 
+        pr.setPriceRange("15 - 25 Kč"); 
         
         siteType.setCoffeeSiteType(coffeeSiteType);
           

@@ -55,7 +55,7 @@ public class CoffeeCompassConfiguration implements WebMvcConfigurer
     
     /**
      * Interface a jeho implementace pro object, ktery se pouziva pro "mapovani" mezi zakladnimi Entity objekty
-     * a prislusnymi DTO objekty, ktere se posilaji z Repository do Serice a View/Controller vrstvy.
+     * a prislusnymi DTO objekty, ktere se posilaji z Repository do Service a View/Controller vrstvy.
      * 
      * @return
      */

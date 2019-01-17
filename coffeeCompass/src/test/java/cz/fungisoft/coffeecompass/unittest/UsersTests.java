@@ -39,6 +39,7 @@ import cz.fungisoft.coffeecompass.repository.UsersRepository;
  */
 @RunWith(SpringRunner.class)
 @DataJpaTest // automaticky vytvori propojeni na H2 in-memory DB, ktera je uvedena v pom.xml dependency
+@ActiveProfiles("test") // pro HSQL db pouzit @ActiveProfiles("testhsql")
 public class UsersTests
 {
     @Autowired
