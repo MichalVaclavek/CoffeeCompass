@@ -49,13 +49,13 @@ public class ContactMeMessageController
             cmMessage.setEmail(loggedInUser.getEmail());
         }
         
-        mav.addObject("cmMessage", cmMessage);
+        mav.addObject("contactMeMessage", cmMessage);
         mav.setViewName("contact_me_form");
         return mav;
     }
     
     @PostMapping("/contactMe") // Mapovani http POST na DB SAVE
-    public String saveAndSendContactMeMessage(@ModelAttribute("cmMessage") @Valid ContactMeMessageDTO cmMessage, final BindingResult bindingResult) {
+    public String saveAndSendContactMeMessage(@ModelAttribute("contactMeMessage") @Valid ContactMeMessageDTO cmMessage, final BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             return "contact_me_form";

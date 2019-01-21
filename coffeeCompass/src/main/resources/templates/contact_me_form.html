@@ -24,7 +24,7 @@
 	    	<div class="w3-card-4 w3-margin-top w3-light-grey w3-half" > <!-- style="width:20%" -->
 	
 			<!-- Formular pro Contact-me zpravu -->
-			<form action="#" th:object="${cmMessage}" th:action="@{/contactMe}" th:method="post">
+			<form action="#" th:object="${contactMeMessage}" th:action="@{/contactMe}" th:method="post">
 		
 		    <div class="w3-container w3-margin-top">
 	              <label for="authorName" th:text="#{contactme.message.author}">Author name</label>
@@ -55,16 +55,19 @@
 				<div>
 	        		<b><label for="message" th:text="#{contactme.message.label}">Message</label></b> *
 	        	</div>
-	        	<div th:classappend="${#fields.hasErrors('textOfMessage')} ? 'has-error':''">
-				  <!-- <textarea id="messageArea" name="messageArea" th:field="*{textOfMessage}" rows="5" cols="50" maxlength=512>  -->
-				  <textarea id="messageArea" name="messageArea"
-				            th:field="*{textOfMessage}"
-				            class="w3-input w3-border" style="resize:none" maxlength=512
-				            th:placeholder="#{contactme.message.placeholder}"></textarea>
-				            <p class="error-message"
-	                           th:each="error : ${#fields.errors('textOfMessage')}"
-	                           th:text="${error}">Validation error</p>
-				  
+	        	<div>
+				    <!-- <textarea id="messageArea" name="messageArea" th:field="*{textOfMessage}" rows="5" cols="50" maxlength=512>  -->
+				    <div th:classappend="${#fields.hasErrors('textOfMessage')} ? 'has-error':''">
+				  	    <textarea id="messageArea" name="messageArea"
+				                  th:field="*{textOfMessage}"
+				                  class="w3-input w3-border" style="resize:none" maxlength=512
+				                  th:placeholder="#{contactme.message.placeholder}">
+				        </textarea>
+				     </div>       
+		             <p class="error-message"
+                        th:each="error : ${#fields.errors('textOfMessage')}"
+                        th:text="${error}">Validation error</p>
+                  
 				</div>
 			</div>
 		
