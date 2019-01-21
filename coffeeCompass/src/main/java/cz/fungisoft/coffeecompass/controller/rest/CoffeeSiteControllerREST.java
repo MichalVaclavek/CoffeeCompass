@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -20,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import cz.fungisoft.coffeecompass.controller.CoffeeSiteSearchCriteriaModel;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
@@ -58,6 +61,7 @@ import io.swagger.annotations.Api;
 @Api // Anotace Swagger
 @RestController // Ulehcuje zpracovani HTTP/JSON pozadavku z clienta a automaticky vytvari i HTTP/JSON response odpovedi na HTTP/JSON requesty
 @RequestMapping("/rest/site") // vsechny http dotazy v kontroleru maji zacinat timto retezcem
+//@RequiredArgsConstructor //TODO dodelat s pouzitim lombok, bez Autowired na fields
 public class CoffeeSiteControllerREST
 {
     private static final Logger log = LoggerFactory.getLogger(CoffeeSiteControllerREST.class);
@@ -125,7 +129,7 @@ public class CoffeeSiteControllerREST
         log.info("All sites retrieved.");
         if (coffeeSites == null || coffeeSites.size() == 0) {
             log.error("No Coffee site found.");
-            return new ResponseEntity<List<CoffeeSiteDTO>>(coffeeSites, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<List<CoffeeSiteDTO>>(HttpStatus.NOT_FOUND);
         } 
         
         log.info("All sites retrieved.");
@@ -150,9 +154,9 @@ public class CoffeeSiteControllerREST
         CoffeeSiteDTO cs = coffeeSiteService.findByName(name);
         
         if (cs == null) {
-            return new ResponseEntity<CoffeeSiteDTO>(cs, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<CoffeeSiteDTO>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<CoffeeSiteDTO>(cs , HttpStatus.OK);
+        return new ResponseEntity<CoffeeSiteDTO>(cs, HttpStatus.OK);
     }
     
     
@@ -180,16 +184,27 @@ public class CoffeeSiteControllerREST
      * @param rangeMeters
      * @return
      */
-    @GetMapping("/getSitesInRange/") // napr. http://localhost:8080/rest/site/getSitesInRange/?lat1=50.1669497&lon1=14.7657927&range=5000
+    @GetMapping("/getSitesInRange/") 
     public ResponseEntity<List<CoffeeSiteDTO>> sitesWithinRange(@RequestParam(value="lat1") double lat1, @RequestParam(value="lon1") double lon1,
-                                                @RequestParam(value="range") long rangeMeters) {
-        return new ResponseEntity<List<CoffeeSiteDTO>>(coffeeSiteService.findAllWithinCircle(lat1, lon1, rangeMeters), HttpStatus.OK);
+                                                                @RequestParam(value="range") long rangeMeters) {
+        
+        List<CoffeeSiteDTO> result = coffeeSiteService.findAllWithinCircle(lat1, lon1, rangeMeters);
+        
+        if (result == null || result.size() == 0) {
+            return new ResponseEntity<List<CoffeeSiteDTO>>(HttpStatus.NOT_FOUND);
+        } else
+            return new ResponseEntity<List<CoffeeSiteDTO>>(result, HttpStatus.OK);
     }
     
     
     /**
      *  REST/JSON varianta obsluhu POST pozadavku z klienta, ktery obsahuje vyplnene hodnoty vyhledavacich kriterii
      *  pro vyhledavani CoffeeSites.<br>
+     *  napr. http://localhost:8080/rest/site/searchSites/?lat1=50.1669497&lon1=14.7657927&range=50000&status=Opened&sort=espresso<br>
+     *  nebo<br>
+     *  http://localhost:8080/rest/site/searchSites/?lat1=50.1669497&lon1=14.7657927&range=50000&status=V%20provozu&sort=?<br>
+     *  http://localhost:8080/rest/site/searchSites/?lat1=50.1669497&lon1=14.7657927&range=50000&sort=?
+     *  pokud se nema filtovat podle druhu kavy.
      *  
      * @param lat1
      * @param lon1
@@ -198,14 +213,23 @@ public class CoffeeSiteControllerREST
      * @param sort
      * @return
      */
-    @PostMapping("/searchSites") // napr. http://localhost:8080/rest/site/searchSites/?lat1=50.1669497&lon1=14.7657927&range=50000&status=Opened&sort=espresso
-    public ResponseEntity<List<CoffeeSiteDTO>> searchSitesWithStatusAndCoffeeSort(@RequestParam(value="lat1") double lat1,
-                                                                                  @RequestParam(value="lon1") double lon1,
+    @GetMapping("/searchSites") 
+    public ResponseEntity<List<CoffeeSiteDTO>> searchSitesWithStatusAndCoffeeSort(@RequestParam(value="lat1") double lat1, @RequestParam(value="lon1") double lon1,
                                                                                   @RequestParam(value="range") long rangeMeters,
-                                                                                  @RequestParam(value="status", defaultValue="Opened") String status,
+                                                                                  @RequestParam(value="status", defaultValue="V provozu") String status,
                                                                                   @RequestParam(value="sort", defaultValue="espresso") String sort) {
         
-        return new ResponseEntity<List<CoffeeSiteDTO>>(coffeeSiteService.findAllWithinCircleWithCSStatusAndCoffeeSort(lat1, lon1, rangeMeters, sort, status), HttpStatus.OK); // REST/JSON
+        // CoffeeSort is not intended as a filter criteria id sort=?
+        if ("?".equals(sort)) {
+            sort = "";
+        }
+        
+        List<CoffeeSiteDTO> result = coffeeSiteService.findAllWithinCircleWithCSStatusAndCoffeeSort(lat1, lon1, rangeMeters, sort, status);
+        
+        if (result == null || result.size() == 0) {
+            return new ResponseEntity<List<CoffeeSiteDTO>>(HttpStatus.NOT_FOUND); 
+        } else
+            return new ResponseEntity<List<CoffeeSiteDTO>>(result, HttpStatus.OK); 
     }
 
    
@@ -248,7 +272,7 @@ public class CoffeeSiteControllerREST
             log.error("Coffee site update failed.");
         
         return (cs != null) ? new ResponseEntity<CoffeeSiteDTO>(cs, HttpStatus.CREATED)
-                            : new ResponseEntity<CoffeeSiteDTO>(cs, HttpStatus.BAD_REQUEST);
+                            : new ResponseEntity<CoffeeSiteDTO>(HttpStatus.BAD_REQUEST);
         
     }
     

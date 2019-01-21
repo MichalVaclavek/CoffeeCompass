@@ -33,19 +33,6 @@
 		  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
 		    <p th:text="#{home.contactme.success}" class="w3-container" > </p>
 		</div>
-		<!-- Used only in case User registration and modification is redirected to this page -->
-		<div th:if="${userCreateSuccess}" class="w3-pale-blue w3-display-container w3-round w3-panel">
-		    <span onclick="this.parentElement.style.display='none'"
-		  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
-		    <p th:text="${userCreateSuccessText}" class="w3-container" > </p>
-		</div>
-		<!-- Used only in case User registration and modification is redirected to this page -->
-		<div th:if="${userModifySuccess}" class="w3-pale-blue w3-display-container w3-round w3-panel">
-		    <span onclick="this.parentElement.style.display='none'"
-		  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
-		    <p th:text="${userModifySuccessText}" class="w3-container" > </p>
-		</div>
-		
 		
 		<div class="w3-content w3-margin-top">
 			<div class="w3-row-padding">
@@ -68,7 +55,7 @@
 	        		<div class="w3-center">
 						<h5 th:text="#{home.search.text}"> </h5>
 						
-	        			<h4><a th:href="@{/searchSites}" th:text="#{home.button.search}" class="w3-button w3-brown w3-margin-top">Search sites</a></h4>
+	        			<h4><a th:href="@{/showSearch}" th:text="#{home.button.search}" class="w3-button w3-brown w3-margin-top">Search sites</a></h4>
 	        		</div>
 				
 	        	</div>

@@ -20,7 +20,7 @@ public class ContactMeMessageDTO
     private String authorName;
       
     @Email
-    @Size(min=5, max=60)
+    @Size(max=60)
     private String email;
      
     @Size(min=1, max=512)

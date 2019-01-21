@@ -55,7 +55,7 @@ public class ContactMeMessageController
     }
     
     @PostMapping("/contactMe") // Mapovani http POST na DB SAVE
-    public String createOrUpdateCoffeeSite(@ModelAttribute("cmMessage") @Valid ContactMeMessageDTO cmMessage, final BindingResult bindingResult) {
+    public String saveAndSendContactMeMessage(@ModelAttribute("cmMessage") @Valid ContactMeMessageDTO cmMessage, final BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             return "contact_me_form";
@@ -64,4 +64,5 @@ public class ContactMeMessageController
         contactMeService.saveContactMeMessage(cmMessage);
         return "redirect:/home/?contactmesuccess";
     }
+    
 }

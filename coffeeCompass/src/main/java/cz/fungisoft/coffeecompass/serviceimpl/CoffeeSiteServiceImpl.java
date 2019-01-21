@@ -351,17 +351,23 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         if (cSortAndcsStatusFilter) {
             CoffeeSort cf = coffeeSortRepo.searchByName(cSort);
             CoffeeSiteStatus csS =  coffeeSiteStatusRepo.searchByName(siteStatus);
-            coffeeSites = coffeeSiteRepo.findSitesWithCoffeeSortAndSiteStatus(zemSirka, zemDelka, meters, cf, csS, csR);
+            if ((cf != null) && (csS != null)) {
+                coffeeSites = coffeeSiteRepo.findSitesWithCoffeeSortAndSiteStatus(zemSirka, zemDelka, meters, cf, csS, csR);
+            }
         }
         
         if (cSortFilterOnlyFilter) {
             CoffeeSort cfSort = coffeeSortRepo.searchByName(cSort);
-            coffeeSites = coffeeSiteRepo.findSitesWithCoffeeSort(zemSirka, zemDelka, meters, cfSort, csR);
+            if (cfSort != null) {
+                coffeeSites = coffeeSiteRepo.findSitesWithCoffeeSort(zemSirka, zemDelka, meters, cfSort, csR);
+            }
         }
         
         if (csStatusOnlyFilter) {
             CoffeeSiteStatus csS =  coffeeSiteStatusRepo.searchByName(siteStatus);
-            coffeeSites = coffeeSiteRepo.findSitesWithStatus(zemSirka, zemDelka, meters, csS, csR);
+            if (csS != null) {
+                coffeeSites = coffeeSiteRepo.findSitesWithStatus(zemSirka, zemDelka, meters, csS, csR);
+            }
         }
         
         log.info("All Coffee sites within circle (Latit.: {} , Long.: {}, range: {}) retrieved: {}", zemSirka, zemDelka, meters, coffeeSites.size());

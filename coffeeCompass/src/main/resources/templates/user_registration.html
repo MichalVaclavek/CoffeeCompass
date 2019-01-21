@@ -13,18 +13,20 @@
 	<h2 sec:authorize="NOT hasRole('ROLE_ADMIN')" th:if="${!user.isToManageItself}" class="w3-display-container w3-margin-left">NOT ALLOWED!!!</h2>
 
 	<div class="w3-content" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} OR ${user.isToManageItself}">
+	
+		<!-- Confirm message - used in case User modification is redirected to this page -->
+		<div th:if="${userModifySuccess}" class="w3-pale-blue w3-display-container w3-round w3-panel w3-center">
+		    <span onclick="this.parentElement.style.display='none'"
+		  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
+		    <p><span th:text="#{user.user}"></span><b><span th:text="${userName}"></span></b><span th:text="#{user.modified.suffix}"></span> 
+			</p>
+		</div>
+		
 		<div class="w3-row w3-margin">
 	
 		<div class="w3-half w3-right w3-card-2 w3-border w3-sand">
 		
            <h2 th:text="(${user.id} == 0) ? #{user.register.label.create} : #{user.register.label.update}" class="w3-center">Register/Update Label</h2>
-           
-           <!-- Confirm message in case of successful User data modification -->
-           <div th:if="${param.userModifySuccess}" class="w3-pale-blue w3-display-container w3-round w3-panel">
-		      <span onclick="this.parentElement.style.display='none'"
-		  		    class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
-		      <p th:text="#{user.modified.success}" class="w3-container" > </p>
-		    </div>
            
            <form th:action="${user.id} == 0 ? @{/user/register-post} : @{/user/edit-put}" th:object="${user}" th:method="${user.id} == 0 ? POST : PUT" class="w3-margin">
             

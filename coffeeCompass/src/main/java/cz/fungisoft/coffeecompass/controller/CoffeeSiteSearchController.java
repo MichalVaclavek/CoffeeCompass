@@ -55,7 +55,7 @@ public class CoffeeSiteSearchController
      * @param model
      * @return
      */
-    @GetMapping("/searchSites") // napr. http://localhost:8080/searchSites/?lat1=50.1669497&lon1=14.7657927&range=50000&status=Opened&sort=espresso
+    @GetMapping("/showSearch") // napr. http://localhost:8080/showSearch
     public String getSitesWithStatusAndCoffeeSort(Model model) {
         CoffeeSiteSearchCriteriaModel searchCriteria = new CoffeeSiteSearchCriteriaModel();
             
@@ -64,15 +64,16 @@ public class CoffeeSiteSearchController
     }
    
     /**
-     * Zpracovani POST pozadavku ze stranky/formulare pro vyhledavani CoffeeSites podle hodnot vyhledavacich atributu
+     * Zpracovani GET pozadavku ze stranky/formulare pro vyhledavani CoffeeSites podle hodnot vyhledavacich atributu
      * CoffeeSiteSearchCriteria, ktere na strance vlozil uzivatel.<br>
      * Vraci stranky se seznamem CoffeeSites, ktere vyhovuji vyhledavacim kriteriim.
      * 
      * @param searchCriteria
      * @return
      */
-   @PostMapping("/searchSites") // napr. http://localhost:8080/getSites/?lat1=50.1669497&lon1=14.7711140&range=50000&status=Opened&sort=espresso
+   @GetMapping("/searchSites") // napr. http://localhost:8080/getSites/?lat1=50.1669497&lon1=14.7711140&range=50000&status=Opened&sort=espresso
    public ModelAndView searchSitesWithStatusAndCoffeeSort(@ModelAttribute("searchCriteria") @Valid CoffeeSiteSearchCriteriaModel searchCriteria, final BindingResult bindingResult) {
+       
        ModelAndView mav = new ModelAndView();
        
        if (bindingResult.hasErrors()) {
@@ -99,6 +100,11 @@ public class CoffeeSiteSearchController
         return mav;
    }
    
+   /**
+    * To be available for selection Coffee sort criteria in a View
+    * 
+    * @return
+    */
    @ModelAttribute("allCoffeeSorts")
    public List<CoffeeSort> populateCoffeeSorts() {
        return coffeeSortService.getAllCoffeeSorts();

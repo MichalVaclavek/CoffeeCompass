@@ -113,7 +113,7 @@ public class UserController
      * @return nova stranka potvrzuji upsesnou registraci, v tomto pripade je to home stranka
      */
     @PostMapping("/register-post")
-    public String registerUserAccount(@ModelAttribute("user") @Valid UserDataDTO userDto, BindingResult result, ModelMap model, Locale locale) {
+    public String registerUserAccount(@ModelAttribute("user") @Valid UserDataDTO userDto, BindingResult result, ModelMap model) {
 
         if (userDto.getId() == 0) // Jde o noveho usera k registraci
         { 
@@ -140,9 +140,6 @@ public class UserController
             return "user_registration";
         }
         
-        String userMessageSuffix = messageSource.getMessage("user.created.suffix", null,  " created successfully.", locale);
-        String userMessagePrefix = messageSource.getMessage("user.user", null,  "User ", locale);
-
         boolean userCreateSuccess = false;
         
         if (userDto.getId() == 0) {
@@ -151,9 +148,9 @@ public class UserController
         }
         
         model.addAttribute("userCreateSuccess", userCreateSuccess);
-        model.addAttribute("userCreateSuccessText", userMessagePrefix + userDto.getUserName() + userMessageSuffix);
+        model.addAttribute("userName", userDto.getUserName());
 
-        return "home";
+        return "login";
     }
     
     // ------------------- Update a User -------------------------------------------------------- //
@@ -200,7 +197,7 @@ public class UserController
      * @return
      */
     @PutMapping("/edit-put")
-    public String editUserAccount(@ModelAttribute("user") @Valid UserDataDTO userDto, BindingResult result, ModelMap model, RedirectAttributes attr, Locale locale) {
+    public String editUserAccount(@ModelAttribute("user") @Valid UserDataDTO userDto, BindingResult result, ModelMap model, RedirectAttributes attr) {
         // Neprihlaseny uzivatel muze byt editovany ADMINem - ten muze menit pouze Password a ROLES, pokud nejde taky o ADMIN usera. ADMIN nemuze byt editovan jinym ADMINem.
         User loggedInUser = userService.getCurrentLoggedInUser();
         
@@ -238,23 +235,16 @@ public class UserController
             return "redirect:/user/edit/" + userDto.getUserName();
         }
         
-        // Create message to confirm in a special View ("user_registration_success"), that the update of a user data succeeded
-        String userMessageSuffix = "";
-        String userMessagePrefix = "User ";
-
         boolean userModifySuccess = false;
         
         if (userDto.getId() != 0) { // should be true, this method should be called only for already created user account
             userDto = userService.updateUser(userDto); // new updated user is returned
             userModifySuccess = true;
-            userMessageSuffix = messageSource.getMessage("user.modified.suffix", null,  " modified successfully.", locale);
-            userMessagePrefix = messageSource.getMessage("user.user", null,  "User ", locale);
         }
         
-        model.addAttribute("userModifySuccess", userModifySuccess);
-        model.addAttribute("userModifySuccessText", userMessagePrefix + userDto.getUserName() + userMessageSuffix);
-
-        return "redirect:/user/edit/" + userDto.getUserName() + "?userModifySuccess";
+        attr.addFlashAttribute("userName", userDto.getUserName());
+        attr.addFlashAttribute("userModifySuccess", userModifySuccess);
+        return "redirect:/user/edit/" + userDto.getUserName();
     }
      
     // ------------------- Retrieve Single User -------------------------------------------------------- //
