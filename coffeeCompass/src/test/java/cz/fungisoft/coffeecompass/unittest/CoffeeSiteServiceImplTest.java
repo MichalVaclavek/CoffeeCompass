@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
@@ -41,7 +42,12 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus.CoffeeSiteStatusEnum;
 import cz.fungisoft.coffeecompass.entity.CupType.CupTypeEnum;
 import cz.fungisoft.coffeecompass.entity.NextToMachineType.NextToMachineTypeEnum;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
+import cz.fungisoft.coffeecompass.repository.CoffeeSiteStatusRepository;
+import cz.fungisoft.coffeecompass.repository.CoffeeSortRepository;
+import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
 import cz.fungisoft.coffeecompass.repository.UsersRepository;
+import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
+import cz.fungisoft.coffeecompass.security.IAuthenticationFacade;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import cz.fungisoft.coffeecompass.serviceimpl.CoffeeSiteBuilder;
@@ -56,29 +62,68 @@ import ma.glasnost.orika.MapperFacade;
  *
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+//@SpringBootTest
 public class CoffeeSiteServiceImplTest
 {
-    /*
-    @TestConfiguration
-    static class CoffeeSiteServiceImplTestContextConfiguration
-    { 
-        @Bean
-        public CoffeeSiteService coffeeSiteService() {
-            return new CoffeeSiteServiceImpl();
-        }
-    }
- */
+   
     @Autowired
     private CoffeeSiteService coffeeSiteService;
+   
+    
+    //TODO - Mock pro vsechny services, ktere vyuziva CoffeeSiteServiceImpl
+    
+    @MockBean
+    private static CoffeeSiteRepository coffeeSiteRepository;
+    
+    @Autowired
+    private static MapperFacade mapperFacade;
+    
+    @TestConfiguration
+    static class CoffeeSiteServiceImplTestContextConfiguration {
+  
+        @MockBean
+        private CoffeeSiteStatusRepository coffeeSiteStatusRepository;
+        
+        @MockBean
+        private CoffeeSortRepository coffeeSortRepository;
+        
+        @Bean
+        public CoffeeSiteService coffeeSiteService() {
+            return new CoffeeSiteServiceImpl(coffeeSiteRepository, coffeeSortRepository, coffeeSiteStatusRepository, mapperFacade);
+        }
+    }
+    
+    
+    @TestConfiguration
+    static class UserSiteServiceImplTestContextConfiguration {
+        
+        @MockBean
+        public static UserProfileRepository userProfileRepository;
+
+        @MockBean
+        public static IAuthenticationFacade authenticationFacade;
+        
+ 
+        @MockBean
+        CustomUserDetailsService userDetService;
+        
+        private PasswordEncoder passwordEncoder = Mockito.mock(PasswordEncoder.class);
+        
+        @MockBean
+        private MapperFacade mapperFacade;
+        
+        @MockBean
+        public static UsersRepository usersRepository;
+        
+        @Bean
+        public UserService userService() {
+            
+            return new UserServiceImpl(usersRepository, passwordEncoder, mapperFacade);
+        }
+    }
     
     // Nutne pro kontrolu CoffeeSiteDto, ktere obvykle vraci CoffeeSiteService
     // pro porovnani s pripravenym testovacim CoffeeSite coffeeS
-    @Autowired
-    private MapperFacade mapperFacade;
- 
-    @MockBean
-    private CoffeeSiteRepository coffeeSiteRepository;
     
     private CoffeeSite coffeeS;
     

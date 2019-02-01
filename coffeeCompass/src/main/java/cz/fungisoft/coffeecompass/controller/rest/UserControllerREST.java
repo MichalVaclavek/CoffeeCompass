@@ -1,5 +1,7 @@
 package cz.fungisoft.coffeecompass.controller.rest;
 
+import static org.springframework.http.HttpStatus.METHOD_FAILURE;
+
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -81,19 +83,29 @@ public class UserControllerREST
     // ------------------- Create a User -------------------------------------------------------- //
       
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ResponseEntity<Void> createUser(@RequestBody User user, UriComponentsBuilder ucBuilder) {
+    public ResponseEntity<UserDataDTO> createUser(@RequestBody User user, UriComponentsBuilder ucBuilder) {
         logger.info("Creating User " + user.getUserName());
   
         if (userService.isUserNameUnique(null, user.getUserName())) {
             logger.info("A User with name " + user.getUserName() + " already exist");
-            return new ResponseEntity<Void>(HttpStatus.CONFLICT);
+            return new ResponseEntity<UserDataDTO>(HttpStatus.CONFLICT);
         }
   
-        userService.saveUser(user);
-  
+        User savedUser = userService.saveUser(user);
+  /*
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/rest/user/{id}").buildAndExpand(user.getId()).toUri());
         return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+        */
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setLocation(ucBuilder.path("/rest/user/{id}").buildAndExpand(user.getId()).toUri());
+        ResponseEntity<UserDataDTO> response;
+        if (savedUser != null) {
+            response = new ResponseEntity<UserDataDTO>(userService.findByIdToTransfer(savedUser.getId()), HttpStatus.CREATED);
+        } else
+            response = new ResponseEntity<UserDataDTO>(HttpStatus.METHOD_FAILURE);
+        return response;
+        
     }
        
     // ------------------- Update a User -------------------------------------------------------- //

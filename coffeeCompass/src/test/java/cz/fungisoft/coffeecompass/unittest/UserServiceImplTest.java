@@ -20,47 +20,64 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
+import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
 import cz.fungisoft.coffeecompass.repository.UsersRepository;
+import cz.fungisoft.coffeecompass.repository.UsersRepositoryCustom;
+import cz.fungisoft.coffeecompass.repository.UsersRepositoryCustomImpl;
+import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
+import cz.fungisoft.coffeecompass.security.IAuthenticationFacade;
+import cz.fungisoft.coffeecompass.security.SecurityConfiguration;
+import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.UserService;
+import cz.fungisoft.coffeecompass.serviceimpl.CoffeeSiteServiceImpl;
 import cz.fungisoft.coffeecompass.serviceimpl.UserServiceImpl;
 import ma.glasnost.orika.MapperFacade;
 
 /**
  * Testuje Service vrstvu pro praci s objekty User.
  * 
- * @author Michal
+ * @author Michal Vaclavek
  *
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+//@SpringBootTest
 public class UserServiceImplTest
 {
-/*
+    
+    @MockBean
+    public static UserProfileRepository userProfileRepository;
+
+    @MockBean
+    public static IAuthenticationFacade authenticationFacade;
+    
+    @MockBean
+    CustomUserDetailsService userDetService;
+    
+    @MockBean
+    SecurityConfiguration securityConfig;
+    
     @TestConfiguration
-    static class UserServiceImplTestContextConfiguration
-    { 
+    static class UserSiteServiceImplTestContextConfiguration {
+ 
+        private PasswordEncoder passwordEncoder = Mockito.mock(PasswordEncoder.class);
+        
+        @MockBean
+        private MapperFacade mapperFacade;
+        
+        @MockBean
+        public static UsersRepository usersRepository;
+        
         @Bean
         public UserService userService() {
-            return new UserServiceImpl(usersRepository, passwordEncoder, null);
+            return new UserServiceImpl(usersRepository, passwordEncoder, mapperFacade);
         }
     }
- */
+    
     @Autowired
     private UserService userService;
  
-//    private PasswordEncoder passwordEncoder = Mockito.mock(PasswordEncoder.class);
-//    private AnotherBean anotherBean = Mockito.mock(AnotherBean.class);
     
-//    @MockBean
-    
-//    private PasswordEncoder passwordEncoder;
-    
-//    @MockBean
-//    private MapperFacade mapperFacade;
-    
-    @MockBean
-    private UsersRepository usersRepository;
-    
+       
     private UserProfile userProfUser;
     
     
@@ -84,8 +101,9 @@ public class UserServiceImplTest
         userProfiles.add(userProfUser);
         genius.setUserProfiles(userProfiles);      
                
-        Mockito.when(usersRepository.searchByUsername(genius.getUserName()))
-          .thenReturn(genius);
+        Mockito.when(UserSiteServiceImplTestContextConfiguration.usersRepository.searchByUsername(genius.getUserName()))
+               .thenReturn(genius);
+
     }
     
     @Test

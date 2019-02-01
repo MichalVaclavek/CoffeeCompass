@@ -140,7 +140,7 @@ public class UserServiceImpl implements UserService
             log.info("User with user name {} found.", userName);
         }
         
-        return user ;
+        return user;
     }
     
     @Override
