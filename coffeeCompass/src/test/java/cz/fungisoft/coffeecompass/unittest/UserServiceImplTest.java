@@ -45,16 +45,16 @@ public class UserServiceImplTest
 {
     
     @MockBean
-    public static UserProfileRepository userProfileRepository;
+    private static UserProfileRepository userProfileRepository;
 
     @MockBean
-    public static IAuthenticationFacade authenticationFacade;
+    private static IAuthenticationFacade authenticationFacade;
     
     @MockBean
-    CustomUserDetailsService userDetService;
+    private CustomUserDetailsService userDetService;
     
     @MockBean
-    SecurityConfiguration securityConfig;
+    private SecurityConfiguration securityConfig;
     
     @TestConfiguration
     static class UserSiteServiceImplTestContextConfiguration {
@@ -76,8 +76,6 @@ public class UserServiceImplTest
     @Autowired
     private UserService userService;
  
-    
-       
     private UserProfile userProfUser;
     
     

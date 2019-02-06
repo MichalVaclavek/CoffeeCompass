@@ -10,6 +10,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.stereotype.Component;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
@@ -32,14 +34,13 @@ import cz.fungisoft.coffeecompass.entity.UserProfile;
  * 
  * Vyuzivano pri testech, ktere pracuji primo s Repository, bez mockovani.
  * 
- * @author Michal V.
+ * @author Michal Vaclavek
  *
  */
-@Component("coffeeSiteAttributesDBSaver")
+//@Component("coffeeSiteAttributesDBSaver")
 public class CoffeeSiteAttributesDBSaver
 {
-    @PersistenceContext
-    private EntityManager entityManager;
+    private TestEntityManager entityManager;
     
     private static PriceRange pr = new PriceRange();
     private static Set<CoffeeSort> csorts = new HashSet<>();
@@ -52,8 +53,9 @@ public class CoffeeSiteAttributesDBSaver
     private static CoffeeSiteStatus siteStatus = new CoffeeSiteStatus();
     private static CoffeeSiteType siteType = new CoffeeSiteType();
     
-    
-    public CoffeeSiteAttributesDBSaver() {}
+    public CoffeeSiteAttributesDBSaver(TestEntityManager entityManager2) {
+        this.entityManager = entityManager2;
+    }
     
     
     /**

@@ -1,37 +1,34 @@
 package cz.fungisoft.coffeecompass.unittest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+//import static org.assertj.core.api.Assertions.assertThat;
+//import static org.hamcrest.MatcherAssert.assertThat;
+//import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.CoreMatchers.equalTo;
+//import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.contains;
 
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-/*
-import org.springframework.boot.autoconfigure.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestDatabase;
-*/
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import cz.fungisoft.coffeecompass.CoffeeCompassApplication;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
@@ -42,7 +39,6 @@ import cz.fungisoft.coffeecompass.entity.NextToMachineType;
 import cz.fungisoft.coffeecompass.entity.OtherOffer;
 import cz.fungisoft.coffeecompass.entity.PriceRange;
 import cz.fungisoft.coffeecompass.entity.SiteLocationType;
-import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus.CoffeeSiteStatusEnum;
@@ -70,17 +66,17 @@ import cz.fungisoft.coffeecompass.testutils.CoffeeSiteAttributesDBSaver;
  * podle navodu na netu ... <br>
  * HSQLDB musi byt spustena manualne prislusnym scriptem, u mne v E:\Programming\Spring\skoleni-spring\hsqldb-eshop\bin\runDatabaseCoffeeCompass.bat
  *  
- * @author Michal V.
+ * @author Michal Vaclavek
  */
 @RunWith(SpringRunner.class)
 // Automaticky vytvori propojeni na H2 in-memory DB, ktera je uvedena v pom.xml dependency a nakonfigurovana v /src/test/resources/application.properties
 // to vse asi pomoci TestEntityManager
 @DataJpaTest
 @ActiveProfiles("test") // pro HSQL db pouzit @ActiveProfiles("testhsql")
-@Transactional
 //@SpringBootTest(classes = {CoffeeCompassApplication.class, CoffeeSiteAttributesDBSaver.class})
 //@SqlConfig(separator=org.springframework.jdbc.datasource.init.ScriptUtils.EOF_STATEMENT_SEPARATOR)
 //@SqlConfig(separator="/;")
+//@AutoConfigureTestEntityManager
 public class CoffeeSiteRepositoryTests
 {
     
@@ -94,8 +90,19 @@ public class CoffeeSiteRepositoryTests
     @Autowired
     private CoffeeSiteRepository coffeeRepos;
     
-    @Autowired
+//    @Autowired
     public CoffeeSiteAttributesDBSaver attribSaver;
+    
+    /*
+    @TestConfiguration
+    static class CoffeeSiteRepositoryTestContextConfiguration {
+  
+        @Bean
+        public CoffeeSiteAttributesDBSaver employeeService() {
+            return new CoffeeSiteAttributesDBSaver(entityManager);
+        }
+    }
+    */
     
     /**
      * Tyto atributy se musi vytvorit a ulozit do DB pred praci s CoffeeSite, ktery na tyto atributy 
@@ -123,8 +130,11 @@ public class CoffeeSiteRepositoryTests
      */
     @Before
     public void setUp() {
+//        attribSaver = new CoffeeSiteAttributesDBSaver();
+        attribSaver = new CoffeeSiteAttributesDBSaver(entityManager);
+        
         // Inicializace objektů, na které se odkazuje CoffeeSite
-        pr.setPriceRange("15 - 20 Kč"); 
+        pr.setPriceRange("15 - 25 Kč"); 
         
         siteType.setCoffeeSiteType("automat");
                
@@ -179,8 +189,10 @@ public class CoffeeSiteRepositoryTests
 
     }
  
+    @Transactional
 	@Test
 	public void whenFindByName_thenReturnCoffeeSite() {
+	    
 	    CoffeeSite newCS = new CoffeeSite();
 	    
 	    newCS.setSiteName("tišnov1");
@@ -190,8 +202,6 @@ public class CoffeeSiteRepositoryTests
 	    newCS.setCupTypes(cups);
 	    newCS.setInitialComment("Ujde");
 	    
-//	    newCS.setHodnoceniKavyStars(stars);
-        
 	    newCS.setTypPodniku(siteType);
 	    newCS.setNextToMachineTypes(ntmtSet);
 	    newCS.setOtherOffers(nabidka);
@@ -222,44 +232,36 @@ public class CoffeeSiteRepositoryTests
         CoffeeSite found = coffeeRepos.searchByName("tišnov1");
      
         // then
-        assertThat(found.getSiteName())
-          .isEqualTo(newCS.getSiteName());
         
-        assertThat(found.getTypPodniku())
-          .isEqualTo(newCS.getTypPodniku());
+        assertThat(found.getSiteName(), is(newCS.getSiteName()));
         
-        assertThat(found.getOriginalUser().getUserName())
-          .isEqualTo(newCS.getOriginalUser().getUserName());
+        assertThat(found.getTypPodniku(), is(newCS.getTypPodniku()));
         
-        assertThat(found.getCena().getPriceRange())
-          .isEqualTo(newCS.getCena().getPriceRange());               
+        assertThat(found.getOriginalUser().getUserName(), is(newCS.getOriginalUser().getUserName()));
         
-        assertThat(newCS.getCoffeeSorts().equals(found.getCoffeeSorts()), is(true));
+        assertThat(found.getCena().getPriceRange(), is(newCS.getCena().getPriceRange()));
+        
+        assertThat(found.getCreatedOn(), is(newCS.getCreatedOn()));
+        
+        assertThat(found.getRecordStatus(), is(newCS.getRecordStatus()));
 
-        assertThat(newCS.getStatusZarizeni().getStatus())
-          .isEqualTo(found.getStatusZarizeni().getStatus());
-               
-        assertThat(newCS.getOriginalUser())
-          .isEqualTo(found.getOriginalUser());
+        assertThat(found.getStatusZarizeni().getStatus(), is(newCS.getStatusZarizeni().getStatus()));
         
-        assertThat(newCS.getCupTypes())
-          .isEqualTo(found.getCupTypes());
+        assertThat(found.getOriginalUser(), is(newCS.getOriginalUser()));
         
-        assertThat(newCS.getCreatedOn())
-          .isEqualTo(found.getCreatedOn());
+        // Only Apache Commons CollectionUtils is able to compare my sets correctly 
+        assertThat(CollectionUtils.isEqualCollection(found.getCoffeeSorts(), newCS.getCoffeeSorts()), is(true));
         
-        assertThat(newCS.getRecordStatus())
-          .isEqualTo(found.getRecordStatus());
+        assertThat(CollectionUtils.isEqualCollection(found.getOtherOffers(), newCS.getOtherOffers()), is(true));
         
-        assertThat(newCS.getOtherOffers())
-          .isEqualTo(found.getOtherOffers());
-               
-        assertThat(newCS.getNextToMachineTypes())
-          .isEqualTo(found.getNextToMachineTypes());        
-        
+        assertThat(CollectionUtils.isEqualCollection(found.getNextToMachineTypes(), newCS.getNextToMachineTypes()), is(true));
+
+        assertThat(CollectionUtils.isEqualCollection(found.getCupTypes(), newCS.getCupTypes()), is(true));
 	}
-	
-//	@Test
+    
+    	
+    @Ignore
+    @Test
     public void test_Stored_Procedure_Call() {
 	    double distance = 0;
 	    distance = coffeeRepos.callStoredProcedureCalculateDistance(50.1256, 14.123, 50.2356, 14.236);
@@ -270,5 +272,7 @@ public class CoffeeSiteRepositoryTests
     //TODO update of the CoffeeSite in DB
     
     //TODO delete CoffeeSite in DB
+    
+    
 
 }

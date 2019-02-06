@@ -104,8 +104,8 @@ public class UserControllerREST
             response = new ResponseEntity<UserDataDTO>(userService.findByIdToTransfer(savedUser.getId()), HttpStatus.CREATED);
         } else
             response = new ResponseEntity<UserDataDTO>(HttpStatus.METHOD_FAILURE);
-        return response;
         
+        return response;
     }
        
     // ------------------- Update a User -------------------------------------------------------- //

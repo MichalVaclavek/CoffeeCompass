@@ -50,9 +50,9 @@ import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
 import cz.fungisoft.coffeecompass.security.IAuthenticationFacade;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.UserService;
-import cz.fungisoft.coffeecompass.serviceimpl.CoffeeSiteBuilder;
 import cz.fungisoft.coffeecompass.serviceimpl.CoffeeSiteServiceImpl;
 import cz.fungisoft.coffeecompass.serviceimpl.UserServiceImpl;
+import cz.fungisoft.coffeecompass.testutils.CoffeeSiteBuilder;
 import ma.glasnost.orika.MapperFacade;
 
 /**

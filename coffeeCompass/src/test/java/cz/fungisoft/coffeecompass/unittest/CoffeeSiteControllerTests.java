@@ -45,7 +45,7 @@ import cz.fungisoft.coffeecompass.security.SecurityConfiguration;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.UserProfileService;
 import cz.fungisoft.coffeecompass.service.UserService;
-import cz.fungisoft.coffeecompass.serviceimpl.CoffeeSiteFactory;
+import cz.fungisoft.coffeecompass.testutils.CoffeeSiteFactory;
 import cz.fungisoft.coffeecompass.testutils.JsonUtil;
 import ma.glasnost.orika.MapperFacade;
 

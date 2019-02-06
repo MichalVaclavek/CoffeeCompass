@@ -1,10 +1,19 @@
-package cz.fungisoft.coffeecompass.serviceimpl;
+package cz.fungisoft.coffeecompass.testutils;
 
 import java.sql.Timestamp;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+import cz.fungisoft.coffeecompass.dto.UserDataDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
@@ -19,22 +28,35 @@ import cz.fungisoft.coffeecompass.entity.SiteLocationType;
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
+import cz.fungisoft.coffeecompass.repository.PriceRangeRepository;
+import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.impl.DefaultMapperFactory;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus.CoffeeSiteStatusEnum;
 import cz.fungisoft.coffeecompass.entity.CupType.CupTypeEnum;
 import cz.fungisoft.coffeecompass.entity.NextToMachineType.NextToMachineTypeEnum;
 
 /**
  * Pomocna trida pro vytvoreni nove instance CoffeeSite s defaultnimi hodnotami jeho atributu.
- * Pro testovaci ucely.
+ * Pro testovaci ucely, zvlastne pro Integracni testy.
  * 
  * @author Michal V.
  *
  */
+@Configuration
+@EnableJpaRepositories(basePackageClasses = PriceRangeRepository.class)
 public class CoffeeSiteFactory
 {      
     
+    // All atributes assigned to CoffeeSite instance have to be saved into DB.
+    // It should be saved as real local PostgreSQL db is used during Integration testing
+    @Autowired
+    private static PriceRangeRepository priceRepo; //TODO - this not working, pricerepo is not instantcited
+    
+    
     public static CoffeeSite getCoffeeSite(String siteName, String coffeeSiteType) {
-        PriceRange pr = new PriceRange();
+        
+//        PriceRange pr = new PriceRange();
         Set<CoffeeSort> csorts = new HashSet<>();
         Set<CupType> cups = new HashSet<>();
         Company comp = new Company();
@@ -47,7 +69,8 @@ public class CoffeeSiteFactory
         CoffeeSiteType siteType = new CoffeeSiteType();
         CoffeeSiteRecordStatus recordStatus = new CoffeeSiteRecordStatus();
         
-        pr.setPriceRange("15 - 25 Kč"); 
+        PriceRange pr = priceRepo.searchByName("15 - 25 Kč");
+//        pr.setPriceRange("15 - 25 Kč"); 
         
         siteType.setCoffeeSiteType(coffeeSiteType);
           

@@ -173,7 +173,12 @@
  		<!-- For development usage only -->
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools -->
 
-
+		<!-- For testing Collections (Sets) for equality -->
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-collections4</artifactId>
+		    <version>4.1</version>
+		</dependency>
 
         
 	</dependencies>

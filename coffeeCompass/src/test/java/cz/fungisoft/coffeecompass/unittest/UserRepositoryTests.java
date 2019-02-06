@@ -34,13 +34,13 @@ import cz.fungisoft.coffeecompass.repository.UsersRepository;
 /**
  * Testuje "Repository" vrstvu pro objektu User.
  * 
- * @author Michal
+ * @author Michal Vaclavek
  *
  */
 @RunWith(SpringRunner.class)
 @DataJpaTest // automaticky vytvori propojeni na H2 in-memory DB, ktera je uvedena v pom.xml dependency
 @ActiveProfiles("test") // pro HSQL db pouzit @ActiveProfiles("testhsql")
-public class UsersTests
+public class UserRepositoryTests
 {
     @Autowired
     private TestEntityManager entityManager;

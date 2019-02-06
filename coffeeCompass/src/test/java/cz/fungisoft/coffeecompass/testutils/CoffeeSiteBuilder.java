@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cz.fungisoft.coffeecompass.serviceimpl;
+package cz.fungisoft.coffeecompass.testutils;
 
 import java.util.HashSet;
 import java.util.Set;
