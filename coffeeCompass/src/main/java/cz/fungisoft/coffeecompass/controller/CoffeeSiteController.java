@@ -1,5 +1,6 @@
 package cz.fungisoft.coffeecompass.controller;
 
+import cz.fungisoft.coffeecompass.controller.models.StarsAndCommentModel;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.dto.CommentDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
@@ -183,7 +184,7 @@ public class CoffeeSiteController
         Integer thisSiteImageId = imageStorageService.getImageIdForSiteId(siteId);
         thisSiteImageId = (thisSiteImageId == null) ? 0 : thisSiteImageId;
         
-        mav.addObject("thisSiteImageId", thisSiteImageId);
+        mav.addObject("thisSiteImageId", thisSiteImageId); // needed in model in case of deletition request
         
         // Add new Image to model
         if (!model.containsAttribute("newImage")) { // othervise returned after validation error and model already contains newImage object 
@@ -208,7 +209,7 @@ public class CoffeeSiteController
      * 
      * @return
      */
-    @GetMapping("/mySites") // napr. http://localhost:8080/mySites
+    @GetMapping("/mySites") // napr. http://coffeecompass.cz/mySites
     public ModelAndView showMySites() {
         ModelAndView mav = new ModelAndView();
         mav.addObject("allSites", coffeeSiteService.findAllFromLoggedInUser());
@@ -218,7 +219,7 @@ public class CoffeeSiteController
     }
    
    
-    @GetMapping("/site/") // napr. http://localhost:8080/site/?name=test1
+    @GetMapping("/site/") // napr. http://coffeecompass.cz/site/?name=test1
     public CoffeeSiteDTO siteByName(@RequestParam(value="name") String name) {
         return coffeeSiteService.findByName(name);
     }
@@ -232,7 +233,7 @@ public class CoffeeSiteController
      * @param lon2
      * @return
      */
-    @GetMapping("/dist/") // napr. http://localhost:8080/dist/?lat1=50.235&lon1=14.235&lat2=50.335&lon2=14.335
+    @GetMapping("/dist/") // napr. http://coffeecompass.cz/dist/?lat1=50.235&lon1=14.235&lat2=50.335&lon2=14.335
     public double distance(@RequestParam(value="lat1") double lat1, @RequestParam(value="lon1") double lon1,
                            @RequestParam(value="lat2") double lat2, @RequestParam(value="lon2") double lon2) {
         return coffeeSiteService.getDistance(lat1, lon1, lat2, lon2);
@@ -288,7 +289,7 @@ public class CoffeeSiteController
      * Zpracuje POST request/formular ze stranky pro vytvareni/modifikaci CoffeeSite objektu.<br>
      * Po uspesnem zpracovani pozadavku na vytvoreni noveho CoffeeSite se zobrazi stranka coffeesite_detail,
      * ktera umozni aktivovat novy site nebo ho modifikovat.<br>
-     * Po uspesnem zpracovani pozadavku na modifikaci CoffeeSite se zobrazi stejna stranka tj. umozn
+     * Po uspesnem zpracovani pozadavku na modifikaci CoffeeSite se zobrazi stejna stranka tj. umoznuje
      * provest dalsi modifikace na prave editovanem CoffeeSitu.
      * 
      * @param coffeeSite - novy/modifikovany objekt CoffeeSite z modelu, ktery vrati Spring, ktery ho vytvoril z formulare

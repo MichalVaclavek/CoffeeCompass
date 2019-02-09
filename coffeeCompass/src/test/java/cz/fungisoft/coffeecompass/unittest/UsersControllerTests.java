@@ -25,6 +25,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -69,6 +70,7 @@ import ma.glasnost.orika.impl.DefaultMapperFactory;
  */
 @RunWith(SpringRunner.class)
 //@WebMvcTest(UserControllerREST.class)
+//@AutoConfigureMockMvc
 public class UsersControllerTests
 { 
     private MockMvc mvc;
@@ -77,7 +79,6 @@ public class UsersControllerTests
  
     @Mock
     private UserService userService;
-    
     
     @Autowired
     private MapperFacade mapperFacade;
@@ -143,7 +144,8 @@ public class UsersControllerTests
         // when and then
 
         mvc.perform(post("/rest/user/").contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(john)))
-            .andExpect(status().isCreated()).andExpect(jsonPath("$.userName", is(john.getUserName())));
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.userName", is(john.getUserName())));
         
         // then
         

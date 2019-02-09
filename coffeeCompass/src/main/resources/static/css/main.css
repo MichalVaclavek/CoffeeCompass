@@ -1,3 +1,4 @@
+
 footer {
     position: fixed;
     height: 30px;
@@ -6,6 +7,17 @@ footer {
     width: 100%;
     background-color: #ccc
 }
+
+body {
+   /*background-image: url("/images/kafe_orez2.JPG"); */
+   background-color: #f0e9e3;
+}
+
+/*
+.w3-content {
+   background-color: #cccccc;
+}
+*/
 
 .has-error {
     border: 1px solid red;

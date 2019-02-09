@@ -21,17 +21,22 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import cz.fungisoft.coffeecompass.controller.CoffeeSiteController;
 import cz.fungisoft.coffeecompass.controller.rest.CoffeeSiteControllerREST;
@@ -48,6 +53,8 @@ import cz.fungisoft.coffeecompass.service.UserService;
 import cz.fungisoft.coffeecompass.testutils.CoffeeSiteFactory;
 import cz.fungisoft.coffeecompass.testutils.JsonUtil;
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.impl.DefaultMapperFactory;
 
 /**
  * Testovani Controller vrstvy pro praci s CoffeeSite.
@@ -56,38 +63,70 @@ import ma.glasnost.orika.MapperFacade;
  *
  */
 @RunWith(SpringRunner.class)
-@WebMvcTest(CoffeeSiteControllerREST.class)
+//@WebMvcTest(CoffeeSiteControllerREST.class)
 public class CoffeeSiteControllerTests
 { 
-    @Autowired
     private MockMvc mvc;
+    
+    private CoffeeSiteControllerREST coffeeSiteController;
  
-    @MockBean
+    @Mock
     private CoffeeSiteService csService;
      
     @Autowired
     private MapperFacade mapperFacade;
     
+    /** 
+     * Needed for maping from created User into UserDTO object, which is returned by UserControllerREST
+     * 
+     * @return
+     */
+    @TestConfiguration
+    static class CoffeeSiteControllerTestContextConfiguration {
+        
+        @Bean
+        public MapperFacade mapperFacade() {
+            MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
+            
+            // Only userName is needed for CoffeeSiteDto object
+            mapperFactory.classMap(CoffeeSite.class, CoffeeSiteDTO.class)
+                                             .field("originalUser.userName", "originalUserName")
+                                            .field("lastEditUser.userName", "lastEditUserName")
+                                            .byDefault()
+                                            .register();
+            
+            mapperFactory.classMap(UserDataDTO.class, User.class).byDefault().register();
+
+            return mapperFactory.getMapperFacade();
+        }  
+    }
+    
     
     @Before
     public void setUp() {
+        coffeeSiteController = new CoffeeSiteControllerREST(csService);
+        
+        mvc = MockMvcBuilders.standaloneSetup(coffeeSiteController).build();
     }
  
     @Test
     public void whenPostSite_thenCreateCoffeeSite() throws Exception {
+        
         CoffeeSite cs = CoffeeSiteFactory.getCoffeeSite("ControllerTestSite", "automat");
                 
         given(csService.save(Mockito.any(CoffeeSiteDTO.class))).willReturn(cs);
 
         mvc.perform(post("/rest/site/").contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(cs)))
-        .andExpect(status().isCreated()).andExpect(jsonPath("$.siteName", is("ControllerTestSite")));
+                                       .andExpect(status().isCreated())
+                                       .andExpect(jsonPath("$.siteName", is("ControllerTestSite")));
         
         verify(csService, VerificationModeFactory.times(1)).save(Mockito.any(CoffeeSiteDTO.class));
         reset(csService);
     }
     
     @Test
-    public void givenUsers_whenGetSites_thenReturnJsonArray() throws Exception {       
+    public void givenCoffeeSites_whenGetSites_thenReturnJsonArray() throws Exception {
+        
         CoffeeSite cs1 = CoffeeSiteFactory.getCoffeeSite("ControllerTestSite1", "automat");
         CoffeeSiteDTO cs1Dto = mapperFacade.map(cs1, CoffeeSiteDTO.class);
         
@@ -99,10 +138,10 @@ public class CoffeeSiteControllerTests
         given(csService.findAll("siteName", "ASC")).willReturn(allSites);
      
         mvc.perform(get("/rest/site/allSites")
-          .contentType(MediaType.APPLICATION_JSON))
-          .andExpect(status().isOk())
-          .andExpect(jsonPath("$", hasSize(1)))
-          .andExpect(jsonPath("$[0].siteName", is(cs1.getSiteName())));
+           .contentType(MediaType.APPLICATION_JSON))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$", hasSize(1)))
+           .andExpect(jsonPath("$[0].siteName", is(cs1.getSiteName())));
         
         verify(csService, VerificationModeFactory.times(1)).findAll("siteName", "ASC");
         reset(csService);

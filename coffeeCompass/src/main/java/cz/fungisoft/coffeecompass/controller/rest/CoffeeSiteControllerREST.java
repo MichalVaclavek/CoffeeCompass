@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import cz.fungisoft.coffeecompass.controller.CoffeeSiteSearchCriteriaModel;
+import cz.fungisoft.coffeecompass.controller.models.CoffeeSiteSearchCriteriaModel;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
@@ -96,7 +96,7 @@ public class CoffeeSiteControllerREST
     private CoffeeSiteService coffeeSiteService;
     
     /**
-     * Dependency Ijection pomoci konstruktoru, neni potreba uvadet @Autowired u atributu, Spring toto umi automaticky.
+     * Dependency Injection pomoci konstruktoru, neni potreba uvadet @Autowired u atributu, Spring toto umi automaticky.
      * Lze ale uvest u konstruktoru, aby bylo jasne, ze Injection provede Spring.
      * <br><br>
      * Ale protoze techto servicu bude v tomto Controleru mnoho, bude konstruktor obsahovat pouze jeden
@@ -114,8 +114,8 @@ public class CoffeeSiteControllerREST
     /**
      * Priklady http dotazu, ktere vrati serazeny seznam CoffeeSitu jsou:
      * <br>
-     * http://localhost:8080/rest/site/allSites/?orderBy=siteName&direction=asc<br>
-     * http://localhost:8080/rest/site/allSites/?orderBy=cena&direction=asc<br>
+     * http://coffeecompass.cz/rest/site/allSites/?orderBy=siteName&direction=asc<br>
+     * http://coffeecompass.cz/rest/site/allSites/?orderBy=cena&direction=asc<br>
      * 
      * @param orderBy
      * @param direction
@@ -137,18 +137,19 @@ public class CoffeeSiteControllerREST
     }
     
 
-    @GetMapping("/{id}") // napr. http://localhost:8080/rest/site/2
+    @GetMapping("/{id}") // napr. http://coffeecompass.cz/rest/site/2
     public ResponseEntity<CoffeeSiteDTO> siteById(@PathVariable Long id) {
         
         CoffeeSiteDTO cs = coffeeSiteService.findOneToTransfer(id);
         
         if (cs == null) {
-            return new ResponseEntity<CoffeeSiteDTO>(cs, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<CoffeeSiteDTO>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<CoffeeSiteDTO>(cs, HttpStatus.OK);
     }
     
-    @GetMapping("/") // napr. http://localhost:8080/rest/site/?name=test1
+    
+    @GetMapping("/") // napr. http://coffeecompass.cz/rest/site/?name=test1
     public ResponseEntity<CoffeeSiteDTO> siteByName(@RequestParam(value="name") String name) {
         
         CoffeeSiteDTO cs = coffeeSiteService.findByName(name);

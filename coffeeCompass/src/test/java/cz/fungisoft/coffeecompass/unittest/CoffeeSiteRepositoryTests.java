@@ -237,6 +237,23 @@ public class CoffeeSiteRepositoryTests
         
         assertThat(found.getTypPodniku(), is(newCS.getTypPodniku()));
         
+        assertThat(found.getZemDelka(), is(newCS.getZemDelka()));
+        
+        assertThat(found.getZemSirka(), is(newCS.getZemSirka()));
+        
+        assertThat(found.getMesto(), is(newCS.getMesto()));
+        assertThat(found.getUliceCP(), is(newCS.getUliceCP()));
+        
+        assertThat(found.getPristupnostDny(), is(newCS.getPristupnostDny()));
+        assertThat(found.getPristupnostHod(), is(newCS.getPristupnostHod()));
+        
+        assertThat(found.getTypLokality(), is(newCS.getTypLokality()));
+        
+        assertThat(found.getNumOfCoffeeAutomatyVedleSebe(), is(newCS.getNumOfCoffeeAutomatyVedleSebe()));
+        
+        assertThat(found.getDodavatelPodnik(), is(newCS.getDodavatelPodnik()));
+        
+        assertThat(found.getOriginalUser(), is(newCS.getOriginalUser()));
         assertThat(found.getOriginalUser().getUserName(), is(newCS.getOriginalUser().getUserName()));
         
         assertThat(found.getCena().getPriceRange(), is(newCS.getCena().getPriceRange()));
@@ -246,8 +263,8 @@ public class CoffeeSiteRepositoryTests
         assertThat(found.getRecordStatus(), is(newCS.getRecordStatus()));
 
         assertThat(found.getStatusZarizeni().getStatus(), is(newCS.getStatusZarizeni().getStatus()));
-        
-        assertThat(found.getOriginalUser(), is(newCS.getOriginalUser()));
+       
+        assertThat(found.getInitialComment(), is(newCS.getInitialComment()));
         
         // Only Apache Commons CollectionUtils is able to compare my sets correctly 
         assertThat(CollectionUtils.isEqualCollection(found.getCoffeeSorts(), newCS.getCoffeeSorts()), is(true));
@@ -258,6 +275,20 @@ public class CoffeeSiteRepositoryTests
 
         assertThat(CollectionUtils.isEqualCollection(found.getCupTypes(), newCS.getCupTypes()), is(true));
 	}
+    
+    
+    @Ignore
+    @Test
+    public void whenUpdated_thenReturnUpdatedCoffeeSite() {
+        
+    }
+    
+    @Ignore
+    @Test
+    public void whenDeleted_thenCoffeeSiteNotReturned() {
+        
+    }
+    
     
     	
     @Ignore

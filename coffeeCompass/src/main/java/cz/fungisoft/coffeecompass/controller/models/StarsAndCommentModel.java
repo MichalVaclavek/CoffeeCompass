@@ -1,4 +1,4 @@
-package cz.fungisoft.coffeecompass.controller;
+package cz.fungisoft.coffeecompass.controller.models;
 
 import javax.validation.constraints.Size;
 

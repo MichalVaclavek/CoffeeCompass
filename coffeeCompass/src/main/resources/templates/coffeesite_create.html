@@ -9,9 +9,9 @@
 	<div th:replace="fragments/header :: header"/>
 	
 	<div class="w3-display-container w3-row">
-	<div class="w3-display-topmiddle w3-margin w3-card-4 w3-round-large w3-half">
+	<div class="w3-display-topmiddle w3-margin w3-card-4 w3-half">
 
-      <form th:object="${coffeeSite}" action="#" th:action="@{/createModifySite}" method="post" class="w3-container w3-light-gray">
+      <form th:object="${coffeeSite}" action="#" th:action="@{/createModifySite}" method="post" class="w3-container w3-round-large w3-light-gray">
         <input th:type="hidden" name="id" th:field="${coffeeSite.id}" />
         <input th:type="hidden" name="originalUserName" th:field="${coffeeSite.originalUserName}" />
         <input th:type="hidden" name="recordStatus" th:field="${coffeeSite.recordStatus}" />

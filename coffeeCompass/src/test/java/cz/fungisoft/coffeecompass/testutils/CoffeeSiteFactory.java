@@ -44,14 +44,14 @@ import cz.fungisoft.coffeecompass.entity.NextToMachineType.NextToMachineTypeEnum
  *
  */
 @Configuration
-@EnableJpaRepositories(basePackageClasses = PriceRangeRepository.class)
+//@EnableJpaRepositories(basePackageClasses = PriceRangeRepository.class)
 public class CoffeeSiteFactory
 {      
     
     // All atributes assigned to CoffeeSite instance have to be saved into DB.
     // It should be saved as real local PostgreSQL db is used during Integration testing
-    @Autowired
-    private static PriceRangeRepository priceRepo; //TODO - this not working, pricerepo is not instantcited
+//    @Autowired
+//    private static PriceRangeRepository priceRepo; //TODO - this not working, pricerepo is not instantcited
     
     
     public static CoffeeSite getCoffeeSite(String siteName, String coffeeSiteType) {
@@ -69,8 +69,10 @@ public class CoffeeSiteFactory
         CoffeeSiteType siteType = new CoffeeSiteType();
         CoffeeSiteRecordStatus recordStatus = new CoffeeSiteRecordStatus();
         
-        PriceRange pr = priceRepo.searchByName("15 - 25 Kč");
+//        PriceRange pr = priceRepo.searchByName("15 - 25 Kč");
 //        pr.setPriceRange("15 - 25 Kč"); 
+        PriceRange pr = new PriceRange();
+        pr.setPriceRange("15 - 25 Kč");
         
         siteType.setCoffeeSiteType(coffeeSiteType);
           
