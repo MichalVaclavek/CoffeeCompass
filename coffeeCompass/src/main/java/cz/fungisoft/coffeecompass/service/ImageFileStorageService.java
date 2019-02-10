@@ -31,4 +31,6 @@ public interface ImageFileStorageService
     public Long deleteSiteImageBySiteId(Long coffeeSiteId);
 
     public Image getImageForSiteId(Long siteId);
+
+    public byte[] getImageAsBytesForSiteId(Long siteId);
 }

@@ -6,7 +6,10 @@ package cz.fungisoft.coffeecompass.controller.rest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -19,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.Image;
@@ -79,16 +84,39 @@ public class ImageControllerREST
      * @param siteId
      * @return
      */
-    @GetMapping("/{siteId}") // napr. http://coffeecompass.cz/rest/image/2
-    public ResponseEntity<String> imageBySiteId(@PathVariable Long siteId) {
+    @GetMapping("/base64/{siteId}") // napr. http://coffeecompass.cz/rest/image/base64/2
+    public ResponseEntity<String> getImageAsBase64BySiteId(@PathVariable Long siteId) {
         
-        // Add picture object (image of this coffee site) to the model
         String picString = imageStorageService.getImageAsBase64ForSiteId(siteId);
         
         if (picString == null || picString.isEmpty()) {
             return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<String>(picString, HttpStatus.OK);
+    }
+    
+    /**
+     * Returns image of the CoffeeSite of id=siteId
+     * 
+     * @param siteId
+     * @return
+     */
+    @GetMapping("/bytes/{siteId}") // napr. http://coffeecompass.cz/rest/image/bytes/26
+    public ResponseEntity<byte[]> getImageAsBytesBySiteId(@PathVariable Long siteId) {
+        
+        byte[] pic = imageStorageService.getImageAsBytesForSiteId(siteId);
+        
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setCacheControl(CacheControl.noCache().getHeaderValue());
+        headers.setContentType(MediaType.IMAGE_PNG);
+        if (pic != null)
+            headers.setContentLength(pic.length);
+        
+        if (pic == null) {
+            return new ResponseEntity<byte[]>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(pic, headers, HttpStatus.OK);
     }
 
 }

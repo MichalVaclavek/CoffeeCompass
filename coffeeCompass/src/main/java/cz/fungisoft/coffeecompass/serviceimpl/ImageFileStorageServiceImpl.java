@@ -130,6 +130,18 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
         return convertImageToBase64(imFromDB);
     }
     
+    @Override
+    public String getImageAsBase64ForSiteId(Long siteID) {
+        return convertImageToBase64(coffeeSiteService.findOneById(siteID).getImage());
+    }
+
+    @Override
+    public byte[] getImageAsBytesForSiteId(Long siteId) {
+        Image image = getImageForSiteId(siteId);
+        
+        return (image != null) ? image.getImageBytes() : null;
+    }
+    
     /**
      * Conversion of the Image bytes into "standard" Base64 String used in web browsers
      * 
@@ -179,9 +191,6 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
     }
 
 
-    @Override
-    public String getImageAsBase64ForSiteId(Long siteID) {
-        return convertImageToBase64(coffeeSiteService.findOneById(siteID).getImage());
-    }
+    
 
 }
