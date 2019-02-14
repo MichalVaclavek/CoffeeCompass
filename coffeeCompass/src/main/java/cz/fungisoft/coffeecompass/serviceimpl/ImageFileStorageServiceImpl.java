@@ -107,7 +107,11 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
             } catch (IOException e) {
     
             }
-            image = imageResizer.resize(image);
+            try {
+                image = imageResizer.resize(image);
+            } catch (IOException e) {
+                log.warn("Error during resizing Image. File name: {}. CoffeeSite name: {}. Exception: {}", image.getFileName(), cs.getSiteName(), e.getMessage());
+            }
             imageRepo.save(image);
             cs.setImage(image);
             log.info("Image saved. File name: {}. CoffeeSite name: {}", image.getFileName(), cs.getSiteName());

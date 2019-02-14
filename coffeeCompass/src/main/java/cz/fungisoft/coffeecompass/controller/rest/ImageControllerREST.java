@@ -32,7 +32,7 @@ import io.swagger.annotations.Api;
 
 /**
  * Controller to handle operations concerning upload or delete CoffeeSite's image file.<br>
- * REST verze.
+ * REST version
  *  
  * @author Michal Vaclavek
  *
@@ -96,7 +96,7 @@ public class ImageControllerREST
     }
     
     /**
-     * Returns image of the CoffeeSite of id=siteId
+     * Returns image as byte array of the CoffeeSite of id=siteId
      * 
      * @param siteId
      * @return
