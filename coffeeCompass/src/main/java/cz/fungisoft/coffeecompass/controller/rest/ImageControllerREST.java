@@ -109,7 +109,7 @@ public class ImageControllerREST
         HttpHeaders headers = new HttpHeaders();
 
         headers.setCacheControl(CacheControl.noCache().getHeaderValue());
-        headers.setContentType(MediaType.IMAGE_PNG);
+        headers.setContentType(MediaType.IMAGE_JPEG);
         if (pic != null)
             headers.setContentLength(pic.length);
         
