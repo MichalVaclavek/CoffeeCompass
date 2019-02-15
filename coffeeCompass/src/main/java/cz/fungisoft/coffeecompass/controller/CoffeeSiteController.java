@@ -23,7 +23,7 @@ import cz.fungisoft.coffeecompass.service.CoffeeSortService;
 import cz.fungisoft.coffeecompass.service.CupTypeService;
 import cz.fungisoft.coffeecompass.service.ICommentService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
-import cz.fungisoft.coffeecompass.service.ImageFileStorageService;
+import cz.fungisoft.coffeecompass.service.ImageStorageService;
 import cz.fungisoft.coffeecompass.service.NextToMachineTypeService;
 import cz.fungisoft.coffeecompass.service.OtherOfferService;
 import cz.fungisoft.coffeecompass.service.PriceRangeService;
@@ -97,7 +97,7 @@ public class CoffeeSiteController
     private UserService userService;
     
     @Autowired
-    private ImageFileStorageService imageStorageService;
+    private ImageStorageService imageStorageService;
 
     private CoffeeSiteService coffeeSiteService;
     

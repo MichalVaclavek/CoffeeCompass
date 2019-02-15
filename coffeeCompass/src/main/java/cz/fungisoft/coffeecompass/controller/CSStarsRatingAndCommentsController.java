@@ -17,8 +17,12 @@ import io.swagger.annotations.Api;
 
 /**
  * Controller for handling addition/deletition of Comment and Stars for CoffeeSite.
- * Obsluhuje operace souvisejici s hondocenim CoffeeSitu a s vkladanim/mazanim
- * komentare ke CoffeeSitu na strance/templatu coffeesite_info.html
+ * Obsluhuje operace souvisejici s vkladanim/mazanim hodnoceni a komentare ke CoffeeSitu  
+ * na strance/templatu coffeesite_info.html
+ * <br>
+ * Pro ziskani techto informaci ke CoffeeSitu se pouziva Controler CoffeeSiteController,
+ * ktery vola prislusne Service, ktere dodaji Comments a prumerne hodnoceni k danemu
+ * CoffeeSitu
  * 
  * @author Michal Vaclavek
  *
@@ -36,7 +40,7 @@ public class CSStarsRatingAndCommentsController
     
     @Autowired
     public CSStarsRatingAndCommentsController(ICommentService commentsService, IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService,
-                                CoffeeSiteService coffeeSiteService) {
+                                              CoffeeSiteService coffeeSiteService) {
         super();
         this.commentsService = commentsService;
         this.starsForCoffeeSiteService = starsForCoffeeSiteService;
@@ -71,6 +75,7 @@ public class CSStarsRatingAndCommentsController
     /**
      * Zpracuje DELETE pozadavek na smazani komentare ze stranky zobrazujici komentare k jednomu CoffeeSitu.
      * Muze byt volano pouze ADMINEM (zarizeno v Thymeleaf View strance coffeesite_detail.html)
+     * a v Service vrstve CommentService
      * 
      * @param id of the Comment to delete
      * @return

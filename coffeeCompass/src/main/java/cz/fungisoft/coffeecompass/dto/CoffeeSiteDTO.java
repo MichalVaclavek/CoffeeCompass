@@ -102,11 +102,11 @@ public class CoffeeSiteDTO
     
     private Set<NextToMachineType> nextToMachineTypes;
    
-    
     /**
-     * Image of the coffeeSite if available
+     * To indicate if the Image is saved for this CoffeeSite.
+     * Used especialy for REST services.
      */
-//    private String base64Image;
+    private boolean isImageAvailable;
 
     /* 
      * Attributes to hold info about "editable" status of the CoffeeSite

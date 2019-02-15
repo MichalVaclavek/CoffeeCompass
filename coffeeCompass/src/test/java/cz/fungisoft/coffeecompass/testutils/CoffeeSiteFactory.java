@@ -40,7 +40,7 @@ import cz.fungisoft.coffeecompass.entity.NextToMachineType.NextToMachineTypeEnum
  * Pomocna trida pro vytvoreni nove instance CoffeeSite s defaultnimi hodnotami jeho atributu.
  * Pro testovaci ucely, zvlastne pro Integracni testy.
  * 
- * @author Michal V.
+ * @author Michal Vaclavek
  *
  */
 @Configuration
@@ -51,7 +51,7 @@ public class CoffeeSiteFactory
     // All atributes assigned to CoffeeSite instance have to be saved into DB.
     // It should be saved as real local PostgreSQL db is used during Integration testing
 //    @Autowired
-//    private static PriceRangeRepository priceRepo; //TODO - this not working, pricerepo is not instantcited
+//    private static PriceRangeRepository priceRepo; //TODO - this is not working, pricerepo is not instantcited
     
     
     public static CoffeeSite getCoffeeSite(String siteName, String coffeeSiteType) {

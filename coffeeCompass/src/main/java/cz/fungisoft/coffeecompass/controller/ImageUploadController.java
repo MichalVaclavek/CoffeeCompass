@@ -16,7 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import cz.fungisoft.coffeecompass.entity.Image;
-import cz.fungisoft.coffeecompass.service.ImageFileStorageService;
+import cz.fungisoft.coffeecompass.service.ImageStorageService;
 import io.swagger.annotations.Api;
 
 /**
@@ -29,10 +29,10 @@ import io.swagger.annotations.Api;
 @Controller
 public class ImageUploadController
 {
-    private final ImageFileStorageService imageStorageService;
+    private final ImageStorageService imageStorageService;
 
     @Autowired
-    public ImageUploadController(ImageFileStorageService storageService) {
+    public ImageUploadController(ImageStorageService storageService) {
         this.imageStorageService = storageService;
     }
 

@@ -16,10 +16,12 @@ import cz.fungisoft.coffeecompass.repository.CoffeeSiteRecordStatusRepository;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteStatusRepository;
 import cz.fungisoft.coffeecompass.repository.CoffeeSortRepository;
+import cz.fungisoft.coffeecompass.repository.ImageRepository;
 import cz.fungisoft.coffeecompass.service.CSRecordStatusService;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.CompanyService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
+import cz.fungisoft.coffeecompass.service.ImageStorageService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
@@ -68,6 +70,9 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     @Autowired
     private CoffeeSiteRecordStatusRepository csRecordStatusRepo;
     
+    @Autowired
+    private ImageStorageService imageService;
+    
     private User loggedInUser;
     
     @Autowired
@@ -87,7 +92,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      * @param site
      * @return
      */
-    private CoffeeSiteDTO evaluateUIAttributes(CoffeeSiteDTO site) {
+    @Override
+    public CoffeeSiteDTO evaluateOperationalAttributes(CoffeeSiteDTO site) {
         // Currently logged-in user needed for evaluation of available operations for CoffeeSiteDto 
         loggedInUser = userService.getCurrentLoggedInUser();
         
@@ -99,6 +105,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         site.setVisible(isVisible(site));
         site.setCanBeCommented(canBeCommented(site));
         site.setCanBeRatedByStars(canBeRateByStars(site));
+        site.setImageAvailable(isImageAvailable(site));
         
         return site;
     }
@@ -119,7 +126,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         List<CoffeeSiteDTO> sitesToTransfer = mapperFacade.mapAsList(sites, CoffeeSiteDTO.class);
         
         for (CoffeeSiteDTO site : sitesToTransfer) {
-            site = evaluateUIAttributes(site);
+            site = evaluateOperationalAttributes(site);
             site = evaluateAverageStars(site);
         }
         
@@ -170,7 +177,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         if (site != null) {
             siteDto = mapperFacade.map(site, CoffeeSiteDTO.class);
         
-            siteDto = evaluateUIAttributes(siteDto);
+            siteDto = evaluateOperationalAttributes(siteDto);
             siteDto = evaluateAverageStars(siteDto);
         }
         return siteDto;
@@ -437,18 +444,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         return site;
     }
 
-    @Override
-    public List<CoffeeSiteDTO> findByCityName(String cityName) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<CoffeeSiteDTO> findByCityAndStreetNames(String cityName, String streetName) {
-        // TODO
-        return null;
-    }
-
+   
     /**
      * A method to evaluate, if the CoffeeSite and User are "compatible"
      * i.e. if the user can modify the CoffeeSite.<br>
@@ -465,14 +461,14 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     /**
      * CoffeeSite can be modified only if it is in CREATED or INACTIVE states.
      */
-    @Override
-    public boolean canBeModified(CoffeeSiteDTO cs) {
+//    @Override
+    private boolean canBeModified(CoffeeSiteDTO cs) {
         return siteUserMatch(cs) && (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CREATED)
                                      || cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.INACTIVE));
     }
 
-    @Override
-    public boolean canBeActivated(CoffeeSiteDTO cs) {
+//    @Override
+    private boolean canBeActivated(CoffeeSiteDTO cs) {
         return siteUserMatch(cs) // all authenticated users can modify from Created to Active or Inactive to Active
                && 
                (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CREATED)
@@ -480,8 +476,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
                );    
     }
 
-    @Override
-    public boolean canBeDeactivated(CoffeeSiteDTO cs) {
+//    @Override
+    private boolean canBeDeactivated(CoffeeSiteDTO cs) {
         return siteUserMatch(cs) // all allowed users modify from Active to Inactive
                &&
                (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.ACTIVE)
@@ -491,8 +487,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
                );
     }
 
-    @Override
-    public boolean canBeCanceled(CoffeeSiteDTO cs) {
+//    @Override
+    private boolean canBeCanceled(CoffeeSiteDTO cs) {
         return siteUserMatch(cs) // all users allowed to modify are also allowed change status from Inactive to Cancel or from CREATED to Cancel
                &&
                (
@@ -505,24 +501,24 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     /**
      * Only ADMIN is allowed to Delete site permanently (from every CoffeeSite state)
      */
-    @Override
-    public boolean canBeDeleted(CoffeeSiteDTO cs) {
+//    @Override
+    private boolean canBeDeleted(CoffeeSiteDTO cs) {
         return (loggedInUser != null) ? userService.hasADMINRole(loggedInUser) : false;
     }
 
     /**
      * Evaluates if a Comment can be added to the CoffeeSite. 
      */
-    @Override
-    public boolean canBeCommented(CoffeeSiteDTO cs) {
+//    @Override
+    private boolean canBeCommented(CoffeeSiteDTO cs) {
         return (loggedInUser != null);
     }
     
     /**
      * Evaluates if Stars can be added to the CoffeeSite. 
      */
-    @Override
-    public boolean canBeRateByStars(CoffeeSiteDTO cs) {
+//    @Override
+    private boolean canBeRateByStars(CoffeeSiteDTO cs) {
         return (loggedInUser != null);
     }
 
@@ -533,8 +529,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      *  If not CANCELED, then visible
      *  If CANCELED then only loggedd-in user with ADMIN or DBA Roles can see the CoffeeSite
      */
-    @Override
-    public boolean isVisible(CoffeeSiteDTO cs) {
+//    @Override
+    private boolean isVisible(CoffeeSiteDTO cs) {
         if (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.ACTIVE))
             return true;
         else {
@@ -549,6 +545,15 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
               }
         }     
     }
+    
+    /**
+     * Based on ImageStorageService evaluates if the CoffeeSite with siteId
+     * has saved Image.
+     * @return
+     */
+    private boolean isImageAvailable(CoffeeSiteDTO cs) {
+        return imageService.isImageAvailableForSiteId(cs.getId());
+    }
 
     /**
      * Checks if the coffe site name is already used or not
@@ -557,6 +562,18 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     public boolean isSiteNameUnique(Long id, String siteName) {
         CoffeeSite site = coffeeSiteRepo.searchByName(siteName);
         return ( site == null || ((id != null) && site.getId().equals(id)));
+    }
+    
+    @Override
+    public List<CoffeeSiteDTO> findByCityName(String cityName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<CoffeeSiteDTO> findByCityAndStreetNames(String cityName, String streetName) {
+        // TODO
+        return null;
     }
 
 

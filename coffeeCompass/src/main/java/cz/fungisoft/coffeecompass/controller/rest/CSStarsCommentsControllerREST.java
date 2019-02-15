@@ -26,8 +26,11 @@ import io.swagger.annotations.Api;
 /**
  * Controller for handling addition/deletition of Comment and Stars for CoffeeSite.<br>
  * REST verze<br>
- * Obsluhuje operace souvisejici s hondocenim CoffeeSitu a s vkladanim/mazanim
- * komentare ke CoffeeSitu na strance/templatu coffeesite_info.html
+ * Obsluhuje operace souvisejici s vkladanim/mazanim hodnoceni a komentare ke CoffeeSitu  
+ * <br>
+ * Pro ziskani techto informaci ke CoffeeSitu se pouziva Controler CoffeeSiteController,
+ * ktery vola prislusne Service, ktere dodaji Comments a prumerne hodnoceni k danemu
+ * CoffeeSitu
  * 
  * @author Michal Vaclavek
  *
@@ -55,8 +58,7 @@ public class CSStarsCommentsControllerREST
 
 
     /**
-     * Zpracuje POST pozadavek ze stranky zobrazujici info o jednom CoffeeSite, z Formu, ktery umoznuje zadat
-     * hodnoceni a komentar.<br>
+     * Zpracuje POST pozadavek z REST consumera, ktery pozaduje ulozit Comment a Stars pro jeden CoffeeSite<br>
      * 
      * NOT YET USED in REST CONTROLLER
      * 
@@ -86,7 +88,7 @@ public class CSStarsCommentsControllerREST
      * @param siteId
      * @return
      */
-    @GetMapping("/{siteId}") // napr. http://localhost:8080//rest/starsAndComments/2
+    @GetMapping("/comments/{siteId}") // napr. http://localhost:8080/rest/starsAndComments/comments/2
     public ResponseEntity<List<CommentDTO>> commentsBySiteId(@PathVariable Long siteId) {
         
         // Add all comments for this coffeeSite
@@ -100,8 +102,8 @@ public class CSStarsCommentsControllerREST
     
     
     /**
-     * Zpracuje DELETE pozadavek na smazani komentare ze stranky zobrazujici komentare k jednomu CoffeeSitu.<br>
-     * Muze byt volano pouze ADMINEM (zarizeno v Thymeleaf View strance coffeesite_detail.html)<br>
+     * Zpracuje DELETE pozadavek na smazani komentare k jednomu CoffeeSitu.<br>
+     * Muze byt volano pouze ADMINEM ... <br>
      * 
      * NOT YET USED in REST CONTROLLER
      * 

@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author Michal Vaclavek
  *
  */
-public interface ImageFileStorageService
+public interface ImageStorageService
 {
     /**
      * Save Image and return db ID of the saved image
@@ -33,4 +33,6 @@ public interface ImageFileStorageService
     public Image getImageForSiteId(Long siteId);
 
     public byte[] getImageAsBytesForSiteId(Long siteId);
+
+    public boolean isImageAvailableForSiteId(Long siteId);
 }

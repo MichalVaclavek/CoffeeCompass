@@ -12,7 +12,7 @@ import cz.fungisoft.coffeecompass.entity.User;
 
 /**
 * Interface CoffeeSiteService. Predepisuje metody pro praci s CoffeeSite objekty, tj.
-* zvlaste CRUD operace. Podstatnou casti jsou vyhledavaci metody podle ryznych kriterii.
+* zvlaste CRUD operace. Podstatnou casti jsou vyhledavaci metody podle ruznych kriterii.
 * 
 * @author Michal Václavek
 */
@@ -37,6 +37,7 @@ public interface CoffeeSiteService
      * @param cs
      * @return
      */
+    /*
     public boolean canBeModified(CoffeeSiteDTO cs);
     public boolean canBeActivated(CoffeeSiteDTO cs);
     public boolean canBeDeactivated(CoffeeSiteDTO cs);
@@ -45,6 +46,20 @@ public interface CoffeeSiteService
     public boolean canBeCommented(CoffeeSiteDTO cs);
     public boolean canBeRateByStars(CoffeeSiteDTO cs);
     public boolean isVisible(CoffeeSiteDTO cs);
+    */
+    
+    /**
+     * Method, which is called before every request for CoffeeSiteDTO object.
+     * The method sets the "operational' attributes of  CoffeeSiteDTO, which
+     * determine what operations/transitions between states can be performed with
+     * the CoffeeSiteDTO object.<br>
+     * Also evaluates, if the CoffeeSite is to be visible in UI and if
+     * the CoffeeSite has saved Image assigned.
+     * 
+     * @param site
+     * @return
+     */
+    public CoffeeSiteDTO evaluateOperationalAttributes(CoffeeSiteDTO site);
     
     /**
      * 
@@ -91,4 +106,5 @@ public interface CoffeeSiteService
     public List<CoffeeSiteDTO> findAllWithinRangeWithRecordStatus(double zemSirka, double zemDelka, long meters,  CoffeeSiteRecordStatus csRecordStatus);
     
     public List<CoffeeSiteDTO> findAllWithRecordStatus(CoffeeSiteRecordStatusEnum csRecordStatus);
+    
 }

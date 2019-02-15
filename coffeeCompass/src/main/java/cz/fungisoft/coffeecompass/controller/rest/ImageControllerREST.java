@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.Image;
-import cz.fungisoft.coffeecompass.service.ImageFileStorageService;
+import cz.fungisoft.coffeecompass.service.ImageStorageService;
 import io.swagger.annotations.Api;
 
 /**
@@ -42,10 +42,10 @@ import io.swagger.annotations.Api;
 @RequestMapping("/rest/image")
 public class ImageControllerREST
 {
-    private final ImageFileStorageService imageStorageService;
+    private final ImageStorageService imageStorageService;
 
     @Autowired
-    public ImageControllerREST(ImageFileStorageService storageService) {
+    public ImageControllerREST(ImageStorageService storageService) {
         this.imageStorageService = storageService;
     }
 

@@ -12,7 +12,7 @@ import cz.fungisoft.coffeecompass.entity.Image;
 import cz.fungisoft.coffeecompass.exception.StorageFileException;
 import cz.fungisoft.coffeecompass.repository.ImageRepository;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
-import cz.fungisoft.coffeecompass.service.ImageFileStorageService;
+import cz.fungisoft.coffeecompass.service.ImageStorageService;
 import cz.fungisoft.coffeecompass.service.ImageResizerService;
 import lombok.extern.log4j.Log4j2;
 
@@ -34,7 +34,7 @@ import javax.transaction.Transactional;
  */
 @Service("imageFileStorageService")
 @Log4j2
-public class ImageFileStorageServiceImpl implements ImageFileStorageService
+public class ImageStorageServiceImpl implements ImageStorageService
 {
     // Currently not used in production (image files are stored in DB). Can be used for testing.
     private final Path fileStorageLocation;
@@ -46,7 +46,7 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
     private ImageResizerService imageResizer;
     
     @Autowired
-    public ImageFileStorageServiceImpl(FileStorageProperties fileStorageProperties, ImageRepository imageRepo, CoffeeSiteService coffeeSiteService, ImageResizerService imageResizer) {
+    public ImageStorageServiceImpl(FileStorageProperties fileStorageProperties, ImageRepository imageRepo, CoffeeSiteService coffeeSiteService, ImageResizerService imageResizer) {
         
         this.imageRepo = imageRepo;
         this.coffeeSiteService = coffeeSiteService;
@@ -189,12 +189,15 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService
         return imageRepo.getImageForSite(siteId);
     }
     
+    @Transactional
     @Override
     public Integer getImageIdForSiteId(Long siteID) {
         return imageRepo.getImageIdForSiteId(siteID);
     }
 
-
-    
+    @Override
+    public boolean isImageAvailableForSiteId(Long siteId) {
+        return imageRepo.getNumOfImagesForSiteId(siteId) > 0;
+    }
 
 }
