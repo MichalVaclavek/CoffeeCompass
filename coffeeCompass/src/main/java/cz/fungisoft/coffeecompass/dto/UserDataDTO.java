@@ -4,6 +4,9 @@ import java.sql.Timestamp;
 import java.util.Set;
 
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.validation.constraints.Email;
 
 import cz.fungisoft.coffeecompass.entity.UserProfile;
@@ -39,7 +42,8 @@ public class UserDataDTO
     private String confirmPassword;
     
     private Set<UserProfile> userProfiles;
-     
+    
+    @JsonFormat(pattern = "dd. MM. yyyy HH:mm")
     private Timestamp createdOn;
     
     private Integer createdSites;

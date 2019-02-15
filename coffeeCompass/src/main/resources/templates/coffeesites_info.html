@@ -59,8 +59,7 @@
 
 			  <td th:text="${site.siteName}">SiteName</td>
 			  <td th:text="${site.statusZarizeni.status}">SiteStatus</td>
-			  <!--<td th:text="${site.createdOn}">CreatedOn</td>  -->
-			  <td th:text="${#dates.format(site.createdOn, 'dd.MM. yyyy , HH:mm')}"></td> 
+			  <td th:text="${#dates.format(site.createdOn, 'dd. MM. yyyy , HH:mm')}"></td> 
 			  <td th:text="${site.typPodniku.coffeeSiteType}">TypPodniku</td>
 			  <td th:text="${site.otherOffers}">Offer</td>
 			  <td th:text="${site.coffeeSorts}">CoffeeSorts</td>

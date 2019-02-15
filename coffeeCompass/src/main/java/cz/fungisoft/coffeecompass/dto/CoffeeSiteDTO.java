@@ -38,7 +38,7 @@ public class CoffeeSiteDTO
     @Size(min=3, max=50)
     private String siteName;
     
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+    @JsonFormat(pattern = "dd. MM. yyyy HH:mm")
     private Date createdOn;
     
     private Set<CoffeeSort> coffeeSorts;

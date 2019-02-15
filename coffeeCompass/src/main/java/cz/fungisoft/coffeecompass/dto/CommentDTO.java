@@ -2,6 +2,8 @@ package cz.fungisoft.coffeecompass.dto;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
 
 /**
@@ -20,11 +22,12 @@ public class CommentDTO
     
     private String text;
     
+    @JsonFormat(pattern = "dd. MM. yyyy HH:mm")
     private Date created;
     
     private Integer coffeeSiteID;
             
     private String userName;
     
-    private boolean canBeDeleted = false;
+    private boolean canBeDeleted = false; // default value
 }

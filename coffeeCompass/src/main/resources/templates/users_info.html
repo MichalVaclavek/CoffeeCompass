@@ -31,7 +31,7 @@
 		  <td th:text="${user.lastName}">LastName</td>
 		  <td th:text="${user.email}">Email</td>
 		  <td th:text="${user.userProfiles}">Profiles</td>
-		  <td th:text="${user.createdOn}">CreatedOn</td>
+		  <td th:text="${#dates.format(user.createdOn, 'dd. MM. yyyy , HH:mm')}"></td> 
 		  <td th:text="${user.createdSites}">NumOfCreatedSites</td>		
 		  
 		  <td sec:authorize="hasRole('ROLE_ADMIN')">
