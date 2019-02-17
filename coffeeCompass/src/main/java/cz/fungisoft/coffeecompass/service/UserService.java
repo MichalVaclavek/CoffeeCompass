@@ -40,6 +40,7 @@ public interface UserService
     
     boolean hasADMINRole(User user);
     boolean hasADMINorDBARole(User user);
+    boolean hasDBARole(User user);
     
     /**
      * A method to return true, if the logged-in subscriber is same
@@ -57,4 +58,6 @@ public interface UserService
     boolean isADMINloggedIn();
 
     User getCurrentLoggedInUser();
+
+    
 }

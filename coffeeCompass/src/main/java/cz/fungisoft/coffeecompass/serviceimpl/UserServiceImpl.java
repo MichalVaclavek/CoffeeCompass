@@ -319,12 +319,20 @@ public class UserServiceImpl implements UserService
     public boolean hasADMINRole(User user) {
         return user.getUserProfiles().stream().anyMatch(p -> p.getType().equals(UserProfileTypeEnum.ADMIN.getUserProfileType()));
     }
+    
+    @Override
+    public boolean hasDBARole(User user) {
+        return user.getUserProfiles().stream().anyMatch(p -> p.getType().equals(UserProfileTypeEnum.DBA.getUserProfileType()));
+    }
 
     @Override
     public boolean hasADMINorDBARole(User user) {
+        return hasADMINRole(user) || hasDBARole(user);
+        /*
         return user.getUserProfiles().stream().anyMatch(p -> p.getType().equals(UserProfileTypeEnum.DBA.getUserProfileType())
                                                              || p.getType().equals(UserProfileTypeEnum.ADMIN.getUserProfileType())
                                                         );
+                                                        */
     }
 
     /**

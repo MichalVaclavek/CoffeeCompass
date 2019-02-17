@@ -31,24 +31,6 @@ public interface CoffeeSiteService
     public boolean isSiteNameUnique(Long siteId, String siteName);
     
     /**
-     * Methods to evaluate if the CoffeSite can be modified according its current status
-     * and according loggedin user type.
-     * 
-     * @param cs
-     * @return
-     */
-    /*
-    public boolean canBeModified(CoffeeSiteDTO cs);
-    public boolean canBeActivated(CoffeeSiteDTO cs);
-    public boolean canBeDeactivated(CoffeeSiteDTO cs);
-    public boolean canBeCanceled(CoffeeSiteDTO cs);
-    public boolean canBeDeleted(CoffeeSiteDTO cs);
-    public boolean canBeCommented(CoffeeSiteDTO cs);
-    public boolean canBeRateByStars(CoffeeSiteDTO cs);
-    public boolean isVisible(CoffeeSiteDTO cs);
-    */
-    
-    /**
      * Method, which is called before every request for CoffeeSiteDTO object.
      * The method sets the "operational' attributes of  CoffeeSiteDTO, which
      * determine what operations/transitions between states can be performed with

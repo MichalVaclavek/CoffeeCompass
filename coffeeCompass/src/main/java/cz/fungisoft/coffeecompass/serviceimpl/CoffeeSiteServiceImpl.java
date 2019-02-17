@@ -461,13 +461,11 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     /**
      * CoffeeSite can be modified only if it is in CREATED or INACTIVE states.
      */
-//    @Override
     private boolean canBeModified(CoffeeSiteDTO cs) {
         return siteUserMatch(cs) && (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CREATED)
                                      || cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.INACTIVE));
     }
 
-//    @Override
     private boolean canBeActivated(CoffeeSiteDTO cs) {
         return siteUserMatch(cs) // all authenticated users can modify from Created to Active or Inactive to Active
                && 
@@ -476,7 +474,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
                );    
     }
 
-//    @Override
     private boolean canBeDeactivated(CoffeeSiteDTO cs) {
         return siteUserMatch(cs) // all allowed users modify from Active to Inactive
                &&
@@ -487,9 +484,15 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
                );
     }
 
-//    @Override
+    /**
+     * 
+     * According new definition (from 17.2. 2017), DBA user cannot Cancel Coffee Site
+     * 
+     * @param cs
+     * @return
+     */
     private boolean canBeCanceled(CoffeeSiteDTO cs) {
-        return siteUserMatch(cs) // all users allowed to modify are also allowed change status from Inactive to Cancel or from CREATED to Cancel
+        return siteUserMatch(cs) && !userService.hasDBARole(loggedInUser) // all users allowed to modify are also allowed change status from Inactive to Cancel or from CREATED to Cancel, except those with DBA role
                &&
                (
                   cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.INACTIVE)
@@ -501,7 +504,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     /**
      * Only ADMIN is allowed to Delete site permanently (from every CoffeeSite state)
      */
-//    @Override
     private boolean canBeDeleted(CoffeeSiteDTO cs) {
         return (loggedInUser != null) ? userService.hasADMINRole(loggedInUser) : false;
     }
@@ -509,7 +511,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     /**
      * Evaluates if a Comment can be added to the CoffeeSite. 
      */
-//    @Override
     private boolean canBeCommented(CoffeeSiteDTO cs) {
         return (loggedInUser != null);
     }
@@ -517,7 +518,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     /**
      * Evaluates if Stars can be added to the CoffeeSite. 
      */
-//    @Override
     private boolean canBeRateByStars(CoffeeSiteDTO cs) {
         return (loggedInUser != null);
     }
@@ -529,7 +529,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      *  If not CANCELED, then visible
      *  If CANCELED then only loggedd-in user with ADMIN or DBA Roles can see the CoffeeSite
      */
-//    @Override
     private boolean isVisible(CoffeeSiteDTO cs) {
         if (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.ACTIVE))
             return true;
