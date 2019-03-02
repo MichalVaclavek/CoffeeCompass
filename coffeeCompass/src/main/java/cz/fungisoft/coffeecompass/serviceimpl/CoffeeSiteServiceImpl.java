@@ -75,6 +75,11 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     
     private User loggedInUser;
     
+    /**
+     * Base part of the CoffeeSite's image URL
+     */
+    private final String BASE_IMAGE_URL = "http://coffeecompass.cz/rest/image/bytes/";
+    
     @Autowired
     public CoffeeSiteServiceImpl(CoffeeSiteRepository coffeeSiteRepository,
                                  CoffeeSortRepository coffeeSortRepository,
@@ -105,7 +110,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         site.setVisible(isVisible(site));
         site.setCanBeCommented(canBeCommented(site));
         site.setCanBeRatedByStars(canBeRateByStars(site));
-        site.setImageAvailable(isImageAvailable(site));
+        site.setMainImageURL(getMainImageURL(site));
         
         return site;
     }
@@ -548,10 +553,11 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     /**
      * Based on ImageStorageService evaluates if the CoffeeSite with siteId
      * has saved Image.
-     * @return
+     * 
+     * @return URL of the CoffeeSite's image if available, otherwise empty String
      */
-    private boolean isImageAvailable(CoffeeSiteDTO cs) {
-        return imageService.isImageAvailableForSiteId(cs.getId());
+    private String getMainImageURL(CoffeeSiteDTO cs) {
+        return (imageService.isImageAvailableForSiteId(cs.getId())) ? BASE_IMAGE_URL + cs.getId() : "";
     }
 
     /**
@@ -562,6 +568,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         CoffeeSite site = coffeeSiteRepo.searchByName(siteName);
         return ( site == null || ((id != null) && site.getId().equals(id)));
     }
+    
     
     @Override
     public List<CoffeeSiteDTO> findByCityName(String cityName) {

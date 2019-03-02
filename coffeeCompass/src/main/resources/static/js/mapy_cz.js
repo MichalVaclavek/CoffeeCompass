@@ -35,7 +35,7 @@ createMap = function(lat1, lon1) {
 	    node[SMap.LAYER_MARKER].style.cursor = "";
 	    var coords = e.target.getCoords();
 	
-	 	/* Vypsani do document */
+	 	/* Vypsani aktualni polohy do fomulare/documentu */
 	    latSearch.value = coords.toWGS84()[1];
 	 	lonSearch.value = coords.toWGS84()[0];
 	 }
@@ -80,14 +80,34 @@ map.insertSites = function(foundSites)
 			// prirazeni id jednotlivemu markeru - vlastni id, jinak se generuje nahodne
 			var znacka = new SMap.Marker(c, site.id, options);
 			var card = new SMap.Card();
-			card.setSize(200, 170);
-			card.getHeader().innerHTML = "<strong>" + site.siteName + "</strong>";
-			var textVizitka = site.typPodniku.coffeeSiteType + "<br>" 
-							  + site.typLokality.locationType + "<br>"
+			
+			var headerText = "<b><span style='display:block;text-align:center; margin-bottom:10px;'>" + site.siteName + "</span></b>";
+			
+			card.getHeader().innerHTML = headerText;
+			
+			var siteId = site.id.toString();
+			
+			var bodyImage = "";
+			
+			if (!(site.mainImageURL === "")) { 
+			
+				bodyImage = "<img class='photoShow' style='height:240px;' src='http://coffeecompass.cz/rest/image/bytes/";
+				bodyImage += siteId + "'/>";
+				bodyImage += "<br>" + "<br>" + "<br>"; // to fill space, because of rotated image
+			}
+			
+			var textVizitka = bodyImage 
+							  + site.typPodniku.coffeeSiteType + ", " + site.typLokality.locationType + "<br>" 
 							  + site.statusZarizeni.status + "<br>"
 							  + "vzdálenost: " + site.distFromSearchPoint + " m <br>"
 							  + "hodnoceni: " + site.averageStarsWithNumOfHodnoceni.common;
+			
 			card.getBody().innerHTML = textVizitka;
+			
+			var footerText = "<a href='http://coffeecompass.cz/showSite/";
+			footerText += siteId + "'>Další detaily ...</a>";
+			
+			card.getFooter().innerHTML = footerText;
 	
 			znacka.decorate(SMap.Marker.Feature.Card, card);
 			
@@ -118,6 +138,7 @@ map.insertSites = function(foundSites)
 	}
 
 }
+
 
 map.enable = function() {
 	layer.enable();
