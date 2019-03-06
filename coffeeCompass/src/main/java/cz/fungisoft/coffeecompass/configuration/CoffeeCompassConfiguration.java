@@ -33,6 +33,11 @@ import ma.glasnost.orika.impl.DefaultMapperFactory;
 public class CoffeeCompassConfiguration implements WebMvcConfigurer
 {  
     
+    /**
+     * Implementace rozhrani pro nastaveni Locale, zmenu jazyka
+     * 
+     * @return
+     */
     @Bean
     public LocaleResolver localeResolver() {
         SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
@@ -51,11 +56,12 @@ public class CoffeeCompassConfiguration implements WebMvcConfigurer
     @Override
     public void addInterceptors(InterceptorRegistry ir) {
         ir.addInterceptor(localeChangeInterceptor());
-    }   
+    } 
+    
     
     /**
-     * Interface a jeho implementace pro object, ktery se pouziva pro "mapovani" mezi zakladnimi Entity objekty
-     * a prislusnymi DTO objekty, ktere se posilaji z Repository do Service a View/Controller vrstvy.
+     * Implementace rozhrani pro "mapovani" mezi zakladnimi Entity objekty a prislusnymi DTO objekty,
+     * ktere se posilaji ze Service do View/Controller vrstvy.
      * 
      * @return
      */
@@ -86,7 +92,8 @@ public class CoffeeCompassConfiguration implements WebMvcConfigurer
                                         .register();
      
         return mapperFactory.getMapperFacade();
-    }      
+    }    
+    
     
     @Bean
     public MessageSource messageSource() {

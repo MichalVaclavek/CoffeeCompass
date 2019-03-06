@@ -1,12 +1,10 @@
 package cz.fungisoft.coffeecompass.dto;
 
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Set;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -18,7 +16,6 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSiteType;
 import cz.fungisoft.coffeecompass.entity.CoffeeSort;
 import cz.fungisoft.coffeecompass.entity.Company;
 import cz.fungisoft.coffeecompass.entity.CupType;
-import cz.fungisoft.coffeecompass.entity.Image;
 import cz.fungisoft.coffeecompass.entity.NextToMachineType;
 import cz.fungisoft.coffeecompass.entity.OtherOffer;
 import cz.fungisoft.coffeecompass.entity.PriceRange;
@@ -106,8 +103,6 @@ public class CoffeeSiteDTO
      * To indicate if the Image is saved for this CoffeeSite.
      * Used especialy for REST services.
      */
-//    private boolean isImageAvailable;
-    
     private String mainImageURL = ""; // default value for image URL. Means, no image available if empty, oterwise URL of the image inserted by CoffeeSite service evaluateOperationalAttributes() method
 
     /* 

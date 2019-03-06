@@ -49,7 +49,7 @@ import cz.fungisoft.coffeecompass.service.StarsQualityService;
 import io.swagger.annotations.Api;
 
 /**
- * Zatím jen pomocná, nevyužitá třída/kontroler, který bude použit v případě využití REST rozhraní<br>
+ * Třída/kontroler, který lze použit v případě využití REST rozhraní<br>
  * 
  * Základní Controller pro obsluhu požadavků, které se týkají práce s hlavním objektem CoffeeSite.<br>
  * Tj. pro základní CRUD operace a pro vyhledávání CoffeeSites.<br>

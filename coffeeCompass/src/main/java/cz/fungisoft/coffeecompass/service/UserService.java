@@ -58,6 +58,5 @@ public interface UserService
     boolean isADMINloggedIn();
 
     User getCurrentLoggedInUser();
-
     
 }

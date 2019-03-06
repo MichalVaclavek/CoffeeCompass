@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Standardní vstupní bod aplikace.
+ * Standardní vstupní bod Spring aplikace.
  * 
  * @author Michal Václavek
  */

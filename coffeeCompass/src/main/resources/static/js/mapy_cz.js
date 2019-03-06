@@ -90,10 +90,9 @@ map.insertSites = function(foundSites)
 			var bodyImage = "";
 			
 			if (!(site.mainImageURL === "")) { 
-			
 				bodyImage = "<img class='photoShow' style='height:240px;' src='http://coffeecompass.cz/rest/image/bytes/";
 				bodyImage += siteId + "'/>";
-				bodyImage += "<br>" + "<br>" + "<br>"; // to fill space, because of rotated image
+				bodyImage += "<br><br><br>"; // to create space, because of rotated image
 			}
 			
 			var textVizitka = bodyImage 
@@ -116,7 +115,7 @@ map.insertSites = function(foundSites)
 		});
 	
 		
-		var cz = m.computeCenterZoom(souradnice); /* Spočítat pozici mapy tak, aby značky byly vidět */
+		var cz = m.computeCenterZoom(souradnice); /* Spočítat pozici mapy tak, aby v3echny značky byly vidět */
 		m.setCenterZoom(cz[0], cz[1]);
 		
 	

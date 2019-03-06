@@ -11,7 +11,7 @@ import lombok.Data;
  * Pro mapovani na tuto tridu se pouziva zakladni trida/entita Comment<br>
  * Tento objekt je obohacen napr. o informaci o tom, jestli lze dany komentar, nacteny z DB, v aktualnim kontextu smazat nebo ne.<br>
  * Tato trida je pouzita nasledne CoffeeSiteControllerem pro zobrazeni detailnich informaci o CoffeeSitu, kdy pripoji<br>
- * prislusne komentar.
+ * prislusny komentar.
  * 
  * @author Michal Vaclavek
  */
