@@ -29,7 +29,7 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
     @Query("select cs from CoffeeSite cs where siteName=?1")
     public CoffeeSite searchByName(String name);
 
-    @Query(nativeQuery = true, value = "select count(*) from coffee_site") // SQL
+    @Query(nativeQuery = true, value = "SELECT count(*) FROM coffee_site") // SQL
     public long countItems();
     
     @Query("select cs from CoffeeSite cs where originalUser.id=?1")
@@ -46,6 +46,14 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
     
     @Query("select count(id) from CoffeeSite cs where date(cs.createdOn) > (current_date - 7)")
     public Long getNumOfSitesCreatedLast7Days();
+    
+    /**
+     * Gets latest ACTIVE CoffeeSites not older then 60 days
+     * Created usi
+     * @return
+     */
+    @Query(nativeQuery = true, value = "SELECT * FROM coffeecompass.coffee_site AS cs WHERE cs.status_zaznamu_id=1 AND cs.created_on BETWEEN LOCALTIMESTAMP - INTERVAL '180 days' AND LOCALTIMESTAMP ORDER BY cs.created_on DESC LIMIT ?1")
+    public List<CoffeeSite> getLatestSites(int numOfLatestSites);
     
     
     /*

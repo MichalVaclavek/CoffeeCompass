@@ -139,27 +139,6 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
         return sites.getResultList();
     }
     
-    /*
-    @Override
-    public List<CoffeeSite> findSitesWithCoffeeSortAndSiteStatus(double sirka, double delka, long rangeMeters, CoffeeSort sort, CoffeeSiteStatus siteStatus)
-    {
-        String selectQuery = "SELECT *, poloha_gps_sirka, poloha_gps_delka"
-                + " FROM coffeecompass.coffee_site AS cs, coffeecompass.coffee_site_to_druhy_kavy AS cs_dk"
-                + " JOIN coffeecompass.druhy_kavy AS dk ON dk.id=?5"
-                + " WHERE cs_dk.druhy_kavy_id=?5 AND cs.id=cs_dk.coffee_site_id AND status_zarizeni_id=?4 AND (distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
-                      
-        Query sites = em.createNativeQuery(selectQuery, CoffeeSite.class);
-        
-        sites.setParameter(1, sirka);
-        sites.setParameter(2, delka);
-        sites.setParameter(3, rangeMeters);
-        
-        sites.setParameter(4, siteStatus.getId());
-        sites.setParameter(5, sort.getId()); 
-        
-        return sites.getResultList();
-    }
-   */
     
     /**
      * Implementace metody pro vyhledani CoffeeSites v danem geo. rangi s danym typem kavy - CoffeeSort
@@ -249,13 +228,16 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
     }
 
     
+    /**
+     * Returns names of 5 city names with the heighest number of CoffeeSites in ACTIVE state (cs.status_zaznamu_id=1)
+     */
     @Override
-      public List<DBReturnPair> getTop5CityNames() {
+    public List<DBReturnPair> getTop5CityNames() {
         
-        String selectQuery = "SELECT DISTINCT poloha_mesto, COUNT(*) as NumOfSites FROM coffeecompass.coffee_site AS cs WHERE cs.status_zaznamu_id=1 GROUP BY poloha_mesto ORDER BY NumOfSites DESC LIMIT 5";
+        String selectQuery = "SELECT DISTINCT poloha_mesto, COUNT(*) AS NumOfSites FROM coffeecompass.coffee_site AS cs WHERE cs.status_zaznamu_id=1 GROUP BY poloha_mesto ORDER BY NumOfSites DESC LIMIT 5";
         Query sites = em.createNativeQuery(selectQuery);
-//        Query sites = em.createQuery(selectQuery, Map.class);
-//        sites.setMaxResults(5);
+    //        Query sites = em.createQuery(selectQuery, Map.class);
+    //        sites.setMaxResults(5);
         
         List<Object[]> results = sites.getResultList();
         

@@ -28,6 +28,41 @@ public interface CoffeeSiteService
     public List<CoffeeSiteDTO> findByCityName(String cityName);
     public List<CoffeeSiteDTO> findByCityAndStreetNames(String cityName, String streetName);
     
+    /**
+     * Returns "numOfSites" number of latest created and ACTIVE CoffeeSites, not older then 60 days (created from now to 60 days before)
+     * Used in "welcome" page, in the Statistics and News section
+     * 
+     * @return
+     */
+    public List<CoffeeSiteDTO> getLatestCoffeeSites(int numOfSites);
+    
+    /*
+     * Lze zadat mnoho kombinaci vyhledavacich kriterii ... vzdy se take budou vrace jen ty CoffeeSites, ktere jsou casove otevrene
+     * a v provozu ... Ma smysl vytvaret metodu, ktera akceptuje vsechny mozna criteria?
+     * jako CoffeeSort, CoffeeSiteType, Company, Offer, NextToMachineType, ... 
+     */
+    
+    /**
+     * 
+     * @param zemSirka
+     * @param zemDelka
+     * @param meters
+     * @param cfSort
+     * @param siteStatus
+     * @return
+     */
+    public List<CoffeeSiteDTO> findAllWithinCircleWithCSStatusAndCoffeeSort(double zemSirka, double zemDelka, long meters,
+                                                                            String cfSort, String siteStatus);
+    public List<CoffeeSiteDTO> findAllWithinRangeWithRecordStatus(double zemSirka, double zemDelka, long meters,  CoffeeSiteRecordStatus csRecordStatus);
+    public List<CoffeeSiteDTO> findAllWithRecordStatus(CoffeeSiteRecordStatusEnum csRecordStatus);
+    
+    /**
+     * Checks if the CoffeeSite name is already used or not
+     * 
+     * @param siteId
+     * @param siteName
+     * @return
+     */
     public boolean isSiteNameUnique(Long siteId, String siteName);
     
     /**
@@ -68,25 +103,6 @@ public interface CoffeeSiteService
     // Pomocna metoda pro otestovani, ze funguje volani Stored procedure v DB
     public double getDistance(double zemSirka1, double zemDelka1, double zemSirka2, double zemDelka2);
     
-    /*
-     * Lze zadat mnoho kombinaci vyhledavacich kriterii ... vzdy se take budou vrace jen ty CoffeeSites, ktere jsou casove otevrene
-     * a v provozu ... Ma smysl vytvaret metodu, ktera akceptuje vsechny mozna criteria?
-     * jako CoffeeSort, CoffeeSiteType, Company, Offer, NextToMachineType, ... 
-     */
     
-    /**
-     * 
-     * @param zemSirka
-     * @param zemDelka
-     * @param meters
-     * @param cfSort
-     * @param siteStatus
-     * @return
-     */
-    public List<CoffeeSiteDTO> findAllWithinCircleWithCSStatusAndCoffeeSort(double zemSirka, double zemDelka, long meters,
-                                                                            String cfSort, String siteStatus);
-    public List<CoffeeSiteDTO> findAllWithinRangeWithRecordStatus(double zemSirka, double zemDelka, long meters,  CoffeeSiteRecordStatus csRecordStatus);
-    
-    public List<CoffeeSiteDTO> findAllWithRecordStatus(CoffeeSiteRecordStatusEnum csRecordStatus);
     
 }

@@ -1,11 +1,15 @@
 package cz.fungisoft.coffeecompass.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.StatisticsToShow;
+import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.StatisticsInfoService;
 
 /**
@@ -20,19 +24,26 @@ public class BasicController
 {   
     private StatisticsInfoService statsService;
     
+    private CoffeeSiteService coffeeSiteService;
+    
     @Autowired
-    public BasicController(StatisticsInfoService statsService) {
+    public BasicController(StatisticsInfoService statsService, CoffeeSiteService coffeeSiteService) {
         super();
         this.statsService = statsService;
+        this.coffeeSiteService = coffeeSiteService;
     }
 
 
     @GetMapping(value= {"/home", "/"})
     public ModelAndView home() {
-        // Get and show statistical info
+        // Gets and shows statistical info
         ModelAndView mav = new ModelAndView("home");
         StatisticsToShow stats = statsService.getCurrentStatisticalInfoToShow();
         mav.addObject("stats", stats);
+        // Gets and shows latest created and ACTIVE CoffeeSites
+        List<CoffeeSiteDTO> latestSites = coffeeSiteService.getLatestCoffeeSites(4); 
+        mav.addObject("latestSites", latestSites);
+        
         return mav;
     }
     

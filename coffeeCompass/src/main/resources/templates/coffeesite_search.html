@@ -42,7 +42,7 @@
 				    <p th:text="#{site.search.manual.point5}">	5) klik do tab. pro detaily</p>
 			    </div>
 	    
-			    <div class="w3-container w3-border w3-round w3-card-4  w3-light-gray" > <!-- style="width:30%" -->
+			    <div class="w3-container w3-border w3-round w3-card-4 w3-light-gray" > <!-- style="width:30%" -->
 			
 			      <form action="#" th:action="@{/searchSites}" th:object="${searchCriteria}" method="GET">
 			    
@@ -154,8 +154,10 @@
 						  <td th:text="${site.siteName}">SiteName</td>
 						  <td th:text="${site.statusZarizeni.status}">SiteStatus</td>
 						  <td th:text="${site.typPodniku.coffeeSiteType}">TypPodniku</td>
-						  <td th:text="${site.coffeeSorts}">CoffeeSorts</td>
-						  <td th:text="${site.otherOffers}">Offer</td>
+						  <!-- <td th:text="${site.coffeeSorts}">CoffeeSorts</td>  -->
+						  <td><span th:each="sort, iterStat : ${site.coffeeSorts}" th:text="!${iterStat.last} ? ${sort}+', ' : ${sort}">Coffee Sorts</span></td>
+			              <td><span th:each="offer, iterStat : ${site.otherOffers}" th:text="!${iterStat.last} ? ${offer}+', ' : ${offer}">Other Offer</span></td>
+						  <!-- <td th:text="${site.otherOffers}">Offer</td>  -->
 						  <td th:text="${site.distFromSearchPoint}">Distance</td>
 			  			  <td th:text="${site.averageStarsWithNumOfHodnoceni.common}">Stars</td>
 						  <!-- <td th:text="${site.averageStars}">Stars</td> -->	

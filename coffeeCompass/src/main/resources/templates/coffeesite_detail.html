@@ -65,12 +65,14 @@
 					  
 					<tr>
 					   <td th:text="#{site.coffeeSorts}">CoffeeSorts</td>
-					   <td class="w3-right-align w3-sand" th:text="${coffeeSite.coffeeSorts}" style="font-weight: bold">CoffeeSorts</td>
+					   <!-- <td class="w3-right-align w3-sand" th:text="${coffeeSite.coffeeSorts}" style="font-weight: bold">CoffeeSorts</td>  -->
+					   <td style="font-weight: bold" class="w3-right-align w3-sand"><span th:each="sort, iterStat : ${coffeeSite.coffeeSorts}" th:text="!${iterStat.last} ? ${sort}+', ' : ${sort}">Coffee Sort</span></td>
 					</tr>
 					  
 					<tr>
 					   <td th:text="#{site.otherOffers}">Offer</td>	
-					   <td class="w3-right-align w3-sand" th:text="${coffeeSite.otherOffers}" style="font-weight: bold">Other Offer</td>
+					   <!--<td class="w3-right-align w3-sand" th:text="${coffeeSite.otherOffers}" style="font-weight: bold">Other Offer</td> -->
+					   <td class="w3-right-align w3-sand" style="font-weight: bold"><span th:each="offer, iterStat : ${coffeeSite.otherOffers}" th:text="!${iterStat.last} ? ${offer}+', ' : ${offer}">Other Offer</span></td>
 					</tr>
 					  
 					<tr>
@@ -80,7 +82,8 @@
 			
 					<tr>
 					   <td th:text="#{site.cupTypes}">Cup Types</td>
-					   <td class="w3-right-align w3-sand" th:text="${coffeeSite.cupTypes}" style="font-weight: bold">Cup Types</td>
+					  <!-- <td class="w3-right-align w3-sand" th:text="${coffeeSite.cupTypes}" style="font-weight: bold">Cup Types</td>  -->
+					  <td class="w3-right-align w3-sand" style="font-weight: bold"><span th:each="cupType, iterStat : ${coffeeSite.cupTypes}" th:text="!${iterStat.last} ? ${cupType}+', ' : ${cupType}">Cup Types</span></td> 
 					 </tr>
 			
 					<tr>
@@ -95,7 +98,7 @@
 					  
 					<tr>
 					  <td th:text="#{site.nextToMachineTypes}">Other neighbering machines types</td>
-					  <td class="w3-right-align w3-sand" th:text="${coffeeSite.nextToMachineTypes}" style="font-weight: bold">Other neighbering machines types</td>
+					  <td class="w3-right-align w3-sand" style="font-weight: bold"><span th:each="ntmType, iterStat : ${coffeeSite.nextToMachineTypes}" th:text="!${iterStat.last} ? ${ntmType}+', ' : ${ntmType}">Other neighbering machines types</span></td>
 					</tr>
 					  
 					<tr>
@@ -236,7 +239,10 @@
 				    <!-- Picture of the CoffeeSite, if available -->
 				    <div class="w3-display-middle" style="width:110%"> 
 				         <!-- Element pro vlozeni obrazku situ -->
-				         <img th:src="${pic}" alt="" class="photo w3-image"/>
+				         <img th:src="${pic}" alt="" class="photo w3-image w3-round"/>
+			        </div>
+			        <div th:if="${coffeeSite.mainImageURL == ''}" th:text="#{site.noImage}" class="w3-display-middle w3-small" style="font-style: italic"> 
+				         No imagge.
 			        </div>
 			         
 				    <!-- Element with Forms to upload or delete image of the Site -->
@@ -335,6 +341,7 @@
 			    <!--  Every comment has button Delete in case of ADMIN user is logged-in -->
 			    <div class="w3-container"> 
 					<b><h3 th:text="#{site.listOfComments}" class="w3-border-bottom w3-bottombar  w3-margin-top">Comments: </h3></b>
+					<div class="w3-margin-top w3-small" style="font-style: italic" th:if="${#lists.isEmpty(comments)}" th:text="#{site.noComments}"></div>
 					<div class="w3-container w3-margin-top" th:if="${NOT #lists.isEmpty(comments)}">
 						<div th:each="comment : ${comments}" class="w3-border-bottom w3-margin-top">
 							<div class="w3-right"> <!--  to move user and date to the right side -->

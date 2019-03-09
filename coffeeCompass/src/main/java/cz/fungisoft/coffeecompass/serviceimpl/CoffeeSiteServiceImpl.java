@@ -78,7 +78,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     /**
      * Base part of the CoffeeSite's image URL
      */
-    private final String BASE_IMAGE_URL = "http://coffeecompass.cz/rest/image/bytes/";
+    private final String BASE_IMAGE_URL = "http://localhost:8080/rest/image/bytes/";
     
     @Autowired
     public CoffeeSiteServiceImpl(CoffeeSiteRepository coffeeSiteRepository,
@@ -384,6 +384,13 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         
         log.info("All Coffee sites within circle (Latit.: {} , Long.: {}, range: {}) retrieved: {}", zemSirka, zemDelka, meters, coffeeSites.size());
         return countDistancesAndSortByDist(modifyToTransfer(coffeeSites), zemSirka, zemDelka);
+    }
+    
+    @Override
+    public List<CoffeeSiteDTO> getLatestCoffeeSites(int numOfLatestSites) {
+        List<CoffeeSite> items = coffeeSiteRepo.getLatestSites(numOfLatestSites);
+        log.info("Five newest Coffee sites retrieved: " + items.size());
+        return modifyToTransfer(items);
     }
   
     /**

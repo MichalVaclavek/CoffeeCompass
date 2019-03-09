@@ -4,6 +4,8 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.jpa.repository.Query;
+
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
@@ -71,7 +73,6 @@ public interface CoffeeSiteRepositoryCustom
      * 
      * @return
      */
-//    public Map<String, BigInteger> getTop5CityNames();
      public List<DBReturnPair> getTop5CityNames();
-
+     
 }

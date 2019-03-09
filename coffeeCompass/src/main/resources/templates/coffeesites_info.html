@@ -61,8 +61,10 @@
 			  <td th:text="${site.statusZarizeni.status}">SiteStatus</td>
 			  <td th:text="${#dates.format(site.createdOn, 'dd. MM. yyyy , HH:mm')}"></td> 
 			  <td th:text="${site.typPodniku.coffeeSiteType}">TypPodniku</td>
-			  <td th:text="${site.otherOffers}">Offer</td>
-			  <td th:text="${site.coffeeSorts}">CoffeeSorts</td>
+			  <td><span th:each="offer, iterStat : ${site.otherOffers}" th:text="!${iterStat.last} ? ${offer}+', ' : ${offer}">Other Offer</span></td>
+			  <!-- <td th:text="${site.otherOffers}">Offer</td>  -->
+			  <td><span th:each="sort, iterStat : ${site.coffeeSorts}" th:text="!${iterStat.last} ? ${sort}+', ' : ${sort}">Coffee Sorts</span></td>
+			  <!-- <td th:text="${site.coffeeSorts}">CoffeeSorts</td>  -->
 			  <td th:text="${site.mesto}">City</td>	  
 			  <td th:text="${site.uliceCP}">Street</td>	
 			  <td th:text="${site.zemDelka}">Delka</td>	  
@@ -87,9 +89,9 @@
 	              <button type="submit" id="submitButton" th:text="#{site.delete}" class="w3-btn w3-red w3-round">X</button>
 	            </form>
 	          </td>
-	          
 		   </tr>
-		   </tbody>
+		   
+		</tbody>
 	</table>
 	</div>
 	
