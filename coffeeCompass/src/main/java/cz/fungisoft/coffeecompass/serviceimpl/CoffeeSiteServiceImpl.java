@@ -12,6 +12,7 @@ import cz.fungisoft.coffeecompass.entity.OtherOffer;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
 import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
+import cz.fungisoft.coffeecompass.pojo.LatLong;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRecordStatusRepository;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteStatusRepository;
@@ -34,6 +35,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.OptionalDouble;
 
 /**
  * Implementace CoffeeSiteService. Implementuje vsechny metody, ktere pracuji s CoffeeSite objekty, tj.
@@ -78,7 +80,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     /**
      * Base part of the CoffeeSite's image URL
      */
-    private final String BASE_IMAGE_URL = "http://localhost:8080/rest/image/bytes/";
+    private final String BASE_IMAGE_URL = "http://coffeecompass.cz/rest/image/bytes/";
     
     @Autowired
     public CoffeeSiteServiceImpl(CoffeeSiteRepository coffeeSiteRepository,
@@ -389,9 +391,18 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     @Override
     public List<CoffeeSiteDTO> getLatestCoffeeSites(int numOfLatestSites) {
         List<CoffeeSite> items = coffeeSiteRepo.getLatestSites(numOfLatestSites);
-        log.info("Five newest Coffee sites retrieved: " + items.size());
+        log.info("Newest Coffee sites retrieved: " + items.size());
         return modifyToTransfer(items);
     }
+    
+    
+    @Override
+    public List<CoffeeSiteDTO> findByCityName(String cityName) {
+        List<CoffeeSite> items = coffeeSiteRepo.getAllSitesInCity(cityName);
+        log.info("All Coffee sites of '{}' retrieved: {}", cityName, items.size());
+        return modifyToTransfer(items);
+    }
+
   
     /**
      * Pomocna metoda pro vypocet vzdalenosti vsech CoffeeSite v seznamu od bodu zemSirka, zemDelka
@@ -575,20 +586,15 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         CoffeeSite site = coffeeSiteRepo.searchByName(siteName);
         return ( site == null || ((id != null) && site.getId().equals(id)));
     }
-    
-    
-    @Override
-    public List<CoffeeSiteDTO> findByCityName(String cityName) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
     @Override
-    public List<CoffeeSiteDTO> findByCityAndStreetNames(String cityName, String streetName) {
-        // TODO
-        return null;
+    public LatLong getAverageLocation(List<CoffeeSiteDTO> coffeeSites) {
+        OptionalDouble avgLat = coffeeSites.stream().mapToDouble(cs -> cs.getZemSirka()).average();
+        OptionalDouble avgLong = coffeeSites.stream().mapToDouble(cs -> cs.getZemDelka()).average();
+        return new LatLong(avgLat.orElse(0), avgLong.orElse(0));
+        
     }
-
+    
 
     //TODO dalsi vyhledavaci metody podle ruznych kriterii?
     // CriteriaQuery a CriteriaQueryBuilder

@@ -41,15 +41,36 @@ public class ImageStorageServiceImpl implements ImageStorageService
     
     private ImageRepository imageRepo;
     
+    private ImageResizerService imageResizer;
+
+    
     private CoffeeSiteService coffeeSiteService;
     
-    private ImageResizerService imageResizer;
-    
+    /**
+     * Used setter injection to avoid circular dependency
+     * 
+     * @param coffeeSiteService
+     */
     @Autowired
-    public ImageStorageServiceImpl(FileStorageProperties fileStorageProperties, ImageRepository imageRepo, CoffeeSiteService coffeeSiteService, ImageResizerService imageResizer) {
+    public void setCoffeeSiteService(CoffeeSiteService coffeeSiteService) {
+        this.coffeeSiteService = coffeeSiteService;
+    }
+    
+    public CoffeeSiteService getCoffeeSiteService() {
+        return coffeeSiteService;
+    }
+
+    /**
+     * Constructor to inser some of the services required.
+     * 
+     * @param fileStorageProperties
+     * @param imageRepo
+     * @param imageResizer
+     */
+    @Autowired
+    public ImageStorageServiceImpl(FileStorageProperties fileStorageProperties, ImageRepository imageRepo, ImageResizerService imageResizer) {
         
         this.imageRepo = imageRepo;
-        this.coffeeSiteService = coffeeSiteService;
         this.imageResizer = imageResizer;
         
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())

@@ -5,7 +5,7 @@
 
 	<groupId>cz.fungisoft</groupId>
 	<artifactId>coffeecompass</artifactId>
-	<version>0.9.3-SNAPSHOT</version>
+	<version>0.9.5-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Coffee Compass</name>
@@ -179,10 +179,7 @@
 		</dependency>
 
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-		</dependency>
+		
 	</dependencies>
 
 	<!-- Plugin, ktery umi, mimo jine, pracovat napr. s -->

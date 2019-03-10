@@ -9,6 +9,7 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
 import cz.fungisoft.coffeecompass.entity.User;
+import cz.fungisoft.coffeecompass.pojo.LatLong;
 
 /**
 * Interface CoffeeSiteService. Predepisuje metody pro praci s CoffeeSite objekty, tj.
@@ -26,7 +27,8 @@ public interface CoffeeSiteService
     public CoffeeSite findOneById(Long id);
     public CoffeeSiteDTO findByName(String siteName);
     public List<CoffeeSiteDTO> findByCityName(String cityName);
-    public List<CoffeeSiteDTO> findByCityAndStreetNames(String cityName, String streetName);
+    
+    public LatLong getAverageLocation(List<CoffeeSiteDTO> coffeeSites);
     
     /**
      * Returns "numOfSites" number of latest created and ACTIVE CoffeeSites, not older then 60 days (created from now to 60 days before)

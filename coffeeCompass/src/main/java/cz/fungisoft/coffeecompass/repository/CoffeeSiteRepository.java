@@ -48,12 +48,20 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
     public Long getNumOfSitesCreatedLast7Days();
     
     /**
-     * Gets latest ACTIVE CoffeeSites not older then 60 days
-     * Created usi
+     * Retrieves all CoffeeSites with ACTIVE record staus in given city name
+     * @param cityName
      * @return
      */
-    @Query(nativeQuery = true, value = "SELECT * FROM coffeecompass.coffee_site AS cs WHERE cs.status_zaznamu_id=1 AND cs.created_on BETWEEN LOCALTIMESTAMP - INTERVAL '180 days' AND LOCALTIMESTAMP ORDER BY cs.created_on DESC LIMIT ?1")
-    public List<CoffeeSite> getLatestSites(int numOfLatestSites);
+    @Query("select cs from CoffeeSite cs where cs.mesto=?1 AND cs.recordStatus.status='ACTIVE'")
+    public List<CoffeeSite> getAllSitesInCity(String cityName);  
+    
+    /**
+     * Gets latest ACTIVE CoffeeSites not older then 60 days
+     * 
+     * @return
+     */
+    @Query(nativeQuery = true, value = "SELECT * FROM coffeecompass.coffee_site AS cs WHERE cs.status_zaznamu_id=1 AND cs.created_on BETWEEN LOCALTIMESTAMP - INTERVAL '60 days' AND LOCALTIMESTAMP ORDER BY cs.created_on DESC LIMIT ?1")
+    public List<CoffeeSite> getLatestSites(int maxNumOfLatestSites);
     
     
     /*

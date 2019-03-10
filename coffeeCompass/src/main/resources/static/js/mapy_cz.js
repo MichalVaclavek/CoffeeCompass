@@ -4,9 +4,12 @@ var layer;
 var latSearch;
 var lonSearch;
 
+var souradnice = []; /* souradnice vsech bodu/znacek v mape */
+
 createMap = function(lat1, lon1) {
    
 	 var center = SMap.Coords.fromWGS84(lon1, lat1);
+	 
 	 m = new SMap(JAK.gel("map"), center, 8);
 	 m.addDefaultLayer(SMap.DEF_BASE).enable();
 	 m.addDefaultControls();
@@ -43,6 +46,8 @@ createMap = function(lat1, lon1) {
 	 var signals = m.getSignals();
 	 signals.addListener(window, "marker-drag-stop", stop);
 	 signals.addListener(window, "marker-drag-start", start);
+	 
+	 souradnice.push(center);
 }
 
 
@@ -66,13 +71,13 @@ map.insertSites = function(foundSites)
 {
 	if (foundSites != null && foundSites.length > 0)
 	{	     		     	
-		var souradnice = [];
-		// vytvoreni markeru
+		
+		// vytvoreni markeru pro kazdy site
 		foundSites.forEach(function(site) {
 			var c = SMap.Coords.fromWGS84(site.zemDelka, site.zemSirka); /* Souřadnice značky, z textového formátu souřadnic */
 		  
 			var options = {
-				url: "images/cup.png", /* cesta k /src/resources/images/cup.png  v mych resourcech */
+				url: "http://coffeecompass.cz/images/cup.png", /* cesta k /src/resources/images/cup.png v resourcech */
 				title: site.siteName, 
 				anchor: {left:10, bottom: 1}  /* Ukotvení značky za bod uprostřed dole */
 			}
@@ -85,13 +90,10 @@ map.insertSites = function(foundSites)
 			
 			card.getHeader().innerHTML = headerText;
 			
-			var siteId = site.id.toString();
-			
 			var bodyImage = "";
 			
 			if (!(site.mainImageURL === "")) { 
-				bodyImage = "<img class='photoShow' style='height:240px;' src='http://coffeecompass.cz/rest/image/bytes/";
-				bodyImage += siteId + "'/>";
+				bodyImage = "<img class='photoShow' style='height:240px;' src='" + site.mainImageURL + "'/>";
 				bodyImage += "<br><br><br>"; // to create space, because of rotated image
 			}
 			
@@ -104,7 +106,7 @@ map.insertSites = function(foundSites)
 			card.getBody().innerHTML = textVizitka;
 			
 			var footerText = "<a href='http://coffeecompass.cz/showSite/";
-			footerText += siteId + "'>Další detaily ...</a>";
+			footerText += site.id + "'>Další detaily ...</a>";
 			
 			card.getFooter().innerHTML = footerText;
 	

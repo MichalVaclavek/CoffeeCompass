@@ -1,5 +1,6 @@
 package cz.fungisoft.coffeecompass.controller;
 
+import cz.fungisoft.coffeecompass.controller.models.CoffeeSiteSearchCriteriaModel;
 import cz.fungisoft.coffeecompass.controller.models.StarsAndCommentModel;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.dto.CommentDTO;
@@ -214,6 +215,30 @@ public class CoffeeSiteController
         ModelAndView mav = new ModelAndView();
         mav.addObject("allSites", coffeeSiteService.findAllFromLoggedInUser());
         mav.setViewName("coffeesites_info");
+    
+        return mav;   
+    }
+    
+    /**
+     * Method to handle request to show CoffeeSites of one city. Basicly used on home.html
+     * 
+     * @return
+     */
+    @GetMapping("/showCitySites/") // napr. http://coffeecompass.cz/?cityName=Tišnov
+    public ModelAndView showCitySites(@RequestParam(value="cityName") String cityName) {
+        
+        ModelAndView mav = new ModelAndView();
+        List<CoffeeSiteDTO> foundSites = coffeeSiteService.findByCityName(cityName);
+        mav.addObject("foundSites", foundSites);
+        
+        CoffeeSiteSearchCriteriaModel searchCriteria = new CoffeeSiteSearchCriteriaModel();
+        
+        searchCriteria.setLon1(coffeeSiteService.getAverageLocation(foundSites).getLongitude());
+        searchCriteria.setLat1(coffeeSiteService.getAverageLocation(foundSites).getLatitude());
+        
+        mav.addObject("searchCriteria", searchCriteria);
+        
+        mav.setViewName("coffeesite_search");
     
         return mav;   
     }

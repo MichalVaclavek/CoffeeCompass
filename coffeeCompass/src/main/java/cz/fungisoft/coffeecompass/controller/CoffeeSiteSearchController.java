@@ -63,6 +63,9 @@ public class CoffeeSiteSearchController
         model.addAttribute("searchCriteria", searchCriteria);
         return "coffeesite_search";
     }
+    
+   
+    
    
     /**
      * Zpracovani GET pozadavku ze stranky/formulare pro vyhledavani CoffeeSites podle hodnot vyhledavacich atributu
@@ -81,25 +84,27 @@ public class CoffeeSiteSearchController
            mav.setViewName("coffeesite_search");
            return mav;
        }
-        // CoffeeSort is not intended to be filter now
-        if (!searchCriteria.getSortSelected())
-            searchCriteria.setCoffeeSort("");
+       // CoffeeSort is not intended to be filter now
+       if (!searchCriteria.getSortSelected())
+           searchCriteria.setCoffeeSort("");
            
-        List<CoffeeSiteDTO> foundSites = coffeeSiteService.findAllWithinCircleWithCSStatusAndCoffeeSort(searchCriteria.getLat1(),
+       List<CoffeeSiteDTO> foundSites = coffeeSiteService.findAllWithinCircleWithCSStatusAndCoffeeSort(searchCriteria.getLat1(),
                                                                                                         searchCriteria.getLon1(),
                                                                                                         searchCriteria.getRange(),
                                                                                                         searchCriteria.getCoffeeSort(),
                                                                                                         searchCriteria.getCoffeeSiteStatus());
         
-        mav.addObject("foundSites", foundSites);
-        if (foundSites == null || foundSites.size() == 0)
-            mav.addObject("emptyResult", true);
+       mav.addObject("foundSites", foundSites);
+       if (foundSites == null || foundSites.size() == 0)
+           mav.addObject("emptyResult", true);
         
-        searchCriteria.setSortSelected(false); // set deault value before next searching
+       searchCriteria.setSortSelected(false); // set deault value before next searching
         
-        mav.setViewName("coffeesite_search");
-        return mav;
+       mav.setViewName("coffeesite_search");
+       return mav;
    }
+   
+   
    
    /**
     * To be available for selection Coffee sort criteria in a View

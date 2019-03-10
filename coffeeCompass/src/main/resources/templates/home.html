@@ -96,8 +96,12 @@
 				        		<div class="w3-half w3-justify w3-container w3-margin-top">
 					        		<b><h4 th:text="#{home.statistics.topcities.label}" >Cities with most active sites: </h4></b>
 					        		<div class="w3-margin-top">
-					        			<div th:each="city : ${stats.top5CitiesMostCoffeeSites}" 
-					        				 th:text="${city}"></div> 
+					        			<!-- <div th:each="city : ${stats.top5CitiesMostCoffeeSites}" 
+					        				 th:text="${city}">  -->
+					        				 <div th:each="city : ${stats.top5CitiesMostCoffeeSites}" >
+					        				 	<a th:text="${city.strVal}" th:href="@{'/showCitySites/?cityName='+${city.strVal}}"></a><span th:text="' ('+${city.intVal}+')'">Number of sites</span>
+					        				 </div> 
+					        				 
 					        		</div>
 					        	</div>	
 					        	<div class="w3-half w3-justify w3-container w3-margin-top">
@@ -113,21 +117,20 @@
 		        </div>
 		        
 		        <!-- Show images and links to latest CoffeeSites -->
-		        <!-- "<img class='photoShow' style='height:240px;' src='http://coffeecompass.cz/rest/image/bytes/" <img th:src="${pic}" alt="" class="photo w3-image"/> -->
 		        <div class="w3-content">
 		        	<div class="w3-margin-top w3-container">
 			        	<h3 th:text="#{home.latestSites.label}" class="w3-margin-top">Latest sites:</h3>
 			        	
 			        	<div class="w3-row-padding">
-				        	<div th:each="site : ${latestSites}" class="w3-col l3 m4"> <!-- class="w3-col l2 m4"  -->
-	    						<br> <!-- To create space bellow label -->
+				        	<div th:each="site, iterStat : ${latestSites}" class="w3-col l3 m4" th:classappend="!${iterStat.last} ? w3-border-right"> <!-- class="w3-col l2 m4"  -->
+	    						<br> <!-- To create space bellow main label -->
 		        				<div th:if="${site.mainImageURL == ''}" th:text="#{site.noImage}" class="w3-center w3-small" style="font-style: italic"> No imagge</div>
 				        		<div th:unless="${site.mainImageURL == ''}" class="w3-center">
-				        			<a th:href="@{'/showSite/'+${site.id}}"><img class="photoShow w3-round" th:src="${site.mainImageURL}" style="height:140px"></a>
+				        			<a th:href="@{'/showSite/'+${site.id}}"><img class="photoShow w3-round" th:src="${site.mainImageURL}" style="height: 140px"></a>
 				        		</div>
-				        		<br> <!-- To create space above label -->
+				        		<br> <!-- To create space above site name label -->
 				        		<div class="w3-center">
-		      						<a th:href="@{'/showSite/'+${site.id}}"><h5 th:text="${site.siteName}"></h5></a>
+		      						<a th:href="@{'/showSite/'+${site.id}}"><span th:text="${site.siteName}"></span></a>
 	    						</div>
 				        	</div>
 			        	</div>
@@ -136,8 +139,10 @@
 		        
 		  </div>
 	</div>
-        
+    
+    <!-- 
 	<div th:replace="fragments/footer :: footer"/>
-
+ 	-->
+ 
 </body>
 </html>
