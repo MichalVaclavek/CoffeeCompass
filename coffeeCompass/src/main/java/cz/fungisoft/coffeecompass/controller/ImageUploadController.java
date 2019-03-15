@@ -81,24 +81,4 @@ public class ImageUploadController
         return mav;
     }
     
-    /**
-     * Zpracuje DELETE pozadavek na smazani obrazku/Image ze stranky zobrazujici detaily k jednomu CoffeeSitu.<br>
-     * Muze byt volano pouze ADMINEM resp. zakladatelem coffee situ (zarizeno v Thymeleaf View strance coffeesite_detail.html)
-     * 
-     * @param id of the Image to delete
-     * @return
-     */
-    /*
-    @DeleteMapping("/deleteImage/{siteId}") 
-    public ModelAndView deleteImageForSiteId(@PathVariable Long siteId) {
-        // Smazat Image daneho coffeeSite - need to have site Id to give it to /showSite Controller
-        imageStorageService.deleteSiteImageBySiteId(siteId);
-        
-        // Show same coffee site with deleted Image
-        ModelAndView mav = new ModelAndView("redirect:/showSite/" + siteId);
-        
-        return mav;
-    }
-    */
-
 }

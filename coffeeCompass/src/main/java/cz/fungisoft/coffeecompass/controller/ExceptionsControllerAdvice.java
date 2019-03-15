@@ -5,7 +5,6 @@ import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
@@ -19,7 +18,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 /**
  * Centralizovane zachycovani vyjimek a prirazovani textu a View vsem druhum vyjimek.
  */
-//@RestControllerAdvice
 @ControllerAdvice
 public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
 {
@@ -88,8 +86,7 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
         logger.error("Chyba {}", e.getMessage());
         
         ModelAndView model = new ModelAndView();
-        model.addObject("error", "Sorry vole, error!");
-//        model.addObject("status", status);
+        model.addObject("error", "Sorry user, error!");
         model.addObject("errorMessage", e.getMessage());
         model.setViewName("error");
         return model;

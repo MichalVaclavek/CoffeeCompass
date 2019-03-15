@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,10 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import cz.fungisoft.coffeecompass.controller.models.CoffeeSiteSearchCriteriaModel;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
@@ -136,7 +133,12 @@ public class CoffeeSiteControllerREST
         return new ResponseEntity<List<CoffeeSiteDTO>>(coffeeSites, HttpStatus.OK);
     }
     
-
+    /**
+     * Serves request to return CoffeeSite of the given id
+     * 
+     * @param id - id of the CoffeeSite to be returned
+     * @return found CoffeeSiteDTO with requested id
+     */
     @GetMapping("/{id}") // napr. http://coffeecompass.cz/rest/site/2
     public ResponseEntity<CoffeeSiteDTO> siteById(@PathVariable Long id) {
         
@@ -148,7 +150,13 @@ public class CoffeeSiteControllerREST
         return new ResponseEntity<CoffeeSiteDTO>(cs, HttpStatus.OK);
     }
     
-    
+
+    /**
+     * Serves request to return CoffeeSite of the given name
+     * 
+     * @param name - name of CoffeeSite to return
+     * @return found CoffeeSiteDTO
+     */
     @GetMapping("/") // napr. http://coffeecompass.cz/rest/site/?name=test1
     public ResponseEntity<CoffeeSiteDTO> siteByName(@RequestParam(value="name") String name) {
         

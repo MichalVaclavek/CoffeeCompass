@@ -23,7 +23,6 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 
-
 /**
  * Místo pro defaultní Configuration Beans Springu.
  * 
@@ -32,7 +31,6 @@ import ma.glasnost.orika.impl.DefaultMapperFactory;
 @Configuration
 public class CoffeeCompassConfiguration implements WebMvcConfigurer
 {  
-    
     /**
      * Implementace rozhrani pro nastaveni Locale, zmenu jazyka
      * 

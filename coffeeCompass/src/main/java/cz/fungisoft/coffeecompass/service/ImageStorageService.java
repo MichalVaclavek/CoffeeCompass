@@ -35,4 +35,6 @@ public interface ImageStorageService
     public byte[] getImageAsBytesForSiteId(Long siteId);
 
     public boolean isImageAvailableForSiteId(Long siteId);
+
+    public String getBaseImageURL();
 }

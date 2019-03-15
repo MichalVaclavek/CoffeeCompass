@@ -7,7 +7,7 @@ import lombok.Data;
  * Used especialy for counting average values of CofeeSites lists in case of
  * more coffeeSite are to be displayed in one map together and with "search from point"
  * 
- * @author Michal Vavlavek
+ * @author Michal Václavek
  *
  */
 @Data
@@ -21,6 +21,4 @@ public class LatLong
         this.latitude = latitude;
         this.longitude = longitude;
     }
-    
-    
 }

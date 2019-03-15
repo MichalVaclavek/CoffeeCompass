@@ -11,6 +11,12 @@ import cz.fungisoft.coffeecompass.entity.StatisticsToShow;
 import cz.fungisoft.coffeecompass.service.StatisticsInfoService;
 import io.swagger.annotations.Api;
 
+/**
+ * REST varianta zakladniho Controleru
+ * 
+ * @author Michal Vaclavek
+ *
+ */
 @Api // Anotace Swagger
 @RestController // Ulehcuje zpracovani HTTP/JSON pozadavku z clienta a automaticky vytvari i HTTP/JSON response odpovedi na HTTP/JSON requesty
 @RequestMapping("/rest") // uvadi se, pokud vsechny dotazy v kontroleru maji zacinat timto retezcem

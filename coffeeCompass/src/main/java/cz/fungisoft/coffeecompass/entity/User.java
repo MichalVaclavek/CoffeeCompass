@@ -214,4 +214,5 @@ public class User implements Serializable
     public void setDeletedSites(Integer deleted_sites) {
         this.deletedSites = deleted_sites;
     }
+    
 }

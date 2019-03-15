@@ -9,12 +9,15 @@ import lombok.Data;
 
 /**
  * Object pro View model pro Search operaci pri hledani CoffeeSite podle:<br>
- * latitude<br>
- * longitude<br>
- * range (meters)<br>
- * 
- *{@link CoffeeSiteStatus}<br>
- *{@link CoffeeSort}<br>
+ *  
+ *  latitude<br>
+ *  longitude<br>
+ *  range (meters)<br>
+ *  {@link CoffeeSiteStatus}<br>
+ *  {@link CoffeeSort}<br>
+ *  
+ *  Trida tedy sdruzuje parametry, podle kterych lze vyhledavat CoffeeSite.
+ *  Pouzito prevazne ve View coffeesite_search.html
  * 
  * @author Michal Václavek
  */

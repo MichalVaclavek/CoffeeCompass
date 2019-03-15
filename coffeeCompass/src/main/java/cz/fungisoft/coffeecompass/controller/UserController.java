@@ -1,7 +1,6 @@
 package cz.fungisoft.coffeecompass.controller;
 
 import java.util.List;
-import java.util.Locale;
 
 import javax.validation.Valid;
 
@@ -33,6 +32,13 @@ import cz.fungisoft.coffeecompass.service.UserProfileService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import io.swagger.annotations.Api;
 
+/**
+ * Controller to serve all the requests for login, creating, modifying of a Users, mainly on the
+ * user_registration.html, users_info.html pages
+ * 
+ * @author Michal Václavek
+ *
+ */
 @Api // Anotace Swagger
 @RequestMapping("/user") // uvadi se, pokud vsechny dotazy/url requesty v kontroleru maji zacinat timto retezcem
 @Controller
@@ -136,7 +142,7 @@ public class UserController
                     result.rejectValue("confirmPassword", "error.user.password.confirm", "Confirmation password does not match password.");
         }
         
-        if (result.hasErrors()) { // In case of error, show the user_reg. page again //TODO what about redirection?
+        if (result.hasErrors()) { // In case of error, show the user_reg. page again
             return "user_registration";
         }
         
@@ -181,8 +187,7 @@ public class UserController
      * nebo ADMIN, ktery edituje jiny, non ADMIN ucet.
      * <br>
      * V obou pripadech je potreba provest kontrolu password, ktera je vypnuta (v UserDataDto nema anotaci @NotEmpty, ani jinou).
-     * V pripade modifikace stavajiciho uzivatele totiz mohou byt obe polozky prazdne. Znamena to, ze heslo
-     * se nepozaduje menit. 
+     * V pripade modifikace stavajiciho uzivatele totiz mohou byt obe polozky prazdne. Znamena to, ze heslo se nepozaduje menit. 
      * <br>
      * Pokud ADMIN meni jineho non ADMIN usera, muze menit pouze jeho password a ROLES.
      * <br>
@@ -190,10 +195,10 @@ public class UserController
      * <br>
      * Pokud User, s jakoukoliv roli, meni svuj ucet, muze menit vsechny udaje, krome ROLES, vyjma ADMINa, ktery muze menit sve ROLES.
      * 
-     * @param userDto
-     * @param result
+     * @param userDto UserDTO object to be modified in DB
+     * @param result binding result from View to UserDTO (performed by Thymeleaf?)
      * @param model
-     * @param attr pro vlozeni chybovych atributu, pokud se presmerovava pomoci redirect na GET strnku pro zobrazeni validacnich chyb
+     * @param attr pro vlozeni chybovych atributu, pokud se presmerovava pomoci redirect na GET stranku pro zobrazeni validacnich chyb
      * @return
      */
     @PutMapping("/edit-put")
@@ -229,7 +234,7 @@ public class UserController
         }
         
         if (result.hasErrors()) { // In case of error, show the user edit page again with errors          
-            // Pokud se maji predat bindingResult ktery obsahuje chyby do dalsiho redirect View, musi se prenest timto zpusobem
+            // Pokud se maji predat bindingResult, ktery obsahuje chyby do dalsiho redirect View, musi se prenest timto zpusobem
             attr.addFlashAttribute("org.springframework.validation.BindingResult.user", result);
             attr.addFlashAttribute("user", userDto);
             return "redirect:/user/edit/" + userDto.getUserName();

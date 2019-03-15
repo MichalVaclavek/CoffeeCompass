@@ -8,20 +8,16 @@
 
 <!-- this is footer -->
         <footer>
-            <div class="w3-container">
-                   
+            <div>
                 <div sec:authorize="isAuthenticated()">  
-		            <span  class="w3-left">
+		            <div  class="w3-left w3-small w3-container">
 	                    <span th:text="#{app.footer.loggedinuser}" ></span> <span sec:authentication="name">User name</span> |
-	                    
 	                    <span th:text="#{user.created_sites} + ${loggedInUser.createdSites}">Number of sites created by logged-in user</span>
-	                    
-	    	        </span>
+	    	        </div>
 				</div>
 				
-				<div class="w3-right">
-					<span th:text="#{app.info.version}"></span> | 
-		            <span th:text="#{app.info.author}"></span>
+				<div class="w3-right w3-small w3-container">
+					<span th:text="#{app.info.version}"></span> | <span th:text="#{app.info.author}"></span>
 				</div>
 				
 			</div>

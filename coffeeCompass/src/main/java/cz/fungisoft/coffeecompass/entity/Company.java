@@ -31,7 +31,7 @@ public class Company
     
     @Size(max = 85) // Validace vstupu, pocet znaku
     @Column(name = "jmeno_podniku_dodavatele", unique = true)
-    private String nameOfCompany; // defaultni hodnota?
+    private String nameOfCompany;
     
     @Override
     public String toString() {

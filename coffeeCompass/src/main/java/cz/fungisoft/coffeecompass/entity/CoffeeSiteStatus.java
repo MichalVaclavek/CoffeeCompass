@@ -17,10 +17,10 @@ import lombok.Data;
 
 /**
  * Status coffee situ.<br>
- * INSERVICE("V provozu")<br>
- * CANCELED("Zrušeno")<br>
- * TEMP_CANCELED("Dočasně zrušeno")<br>
- * TEMP_OPENED("Dočasně otevřeno")<br>
+ *  INSERVICE("V provozu")<br>
+ *  CANCELED("Zrušeno")<br>
+ *  TEMP_CANCELED("Dočasně zrušeno")<br>
+ *  TEMP_OPENED("Dočasně otevřeno")<br>
  * 
  * @author Michal Vaclavek
  *

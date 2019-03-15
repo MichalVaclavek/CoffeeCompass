@@ -70,4 +70,5 @@ public class OtherOffer
     public String toString() {
         return offer;
     }
+    
 }

@@ -1,8 +1,6 @@
 package cz.fungisoft.coffeecompass.repository;
 
-import java.math.BigInteger;
 import java.util.List;
-import java.util.Map;
 
 import cz.fungisoft.coffeecompass.entity.StatisticsToShow.DBReturnPair;
 

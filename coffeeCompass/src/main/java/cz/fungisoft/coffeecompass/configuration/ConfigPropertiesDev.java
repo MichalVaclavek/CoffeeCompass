@@ -1,29 +1,16 @@
 package cz.fungisoft.coffeecompass.configuration;
 
-import javax.validation.constraints.Email;
-
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
-
-import lombok.Data;
 
 /**
  * Obsahuje dalsi specificke konfiguracni parametry aplikace, ktere lze nacist z src/main/resources/configprops.properties souboru
  * 
  * @author Michal Vaclavek
  */
-@Profile("default")
 @Configuration
+@Profile("dev")
 @PropertySource("classpath:configprops-${spring.profiles.active}.properties")
-@Data
-public class ConfigProperties
-{   
-    @Email
-    @Value("${contactme.mail.to}")
-    private String contactMeEmailTo;
-    
-    @Value("${site.image.baseurl.rest}")
-    private String baseURLforImages;
-}
+public class ConfigPropertiesDev extends ConfigProperties
+{}

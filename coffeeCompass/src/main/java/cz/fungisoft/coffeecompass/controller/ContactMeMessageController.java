@@ -1,6 +1,5 @@
 package cz.fungisoft.coffeecompass.controller;
 
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,12 @@ public class ContactMeMessageController
         this.userService = userService;
     }
 
-
+    /**
+     * Serves request to show page/form for Contact me message
+     * 
+     * @param cmMessage
+     * @return
+     */
     @GetMapping("/contactMe") 
     public ModelAndView getForm(final ContactMeMessageDTO cmMessage) {
    
@@ -54,6 +58,15 @@ public class ContactMeMessageController
         return mav;
     }
     
+    /**
+     * Serves the POST request from Contact me form/page<br>
+     * Calls service level methods to save and send the contact me message.<br>
+     * Returns home page with atribute indication that Contact me message post request was processed succeessfuly
+     * 
+     * @param cmMessage
+     * @param bindingResult
+     * @return home page with indication that ContactMe message was sent
+     */
     @PostMapping("/contactMe") // Mapovani http POST na DB SAVE
     public String saveAndSendContactMeMessage(@ModelAttribute("contactMeMessage") @Valid ContactMeMessageDTO cmMessage, final BindingResult bindingResult) {
 

@@ -64,4 +64,5 @@ public class StarsForCoffeeSiteAndUser
         this.user = user;
         this.stars = stars;
     }
+    
 }

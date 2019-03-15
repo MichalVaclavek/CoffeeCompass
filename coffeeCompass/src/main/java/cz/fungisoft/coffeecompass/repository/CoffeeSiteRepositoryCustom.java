@@ -1,10 +1,6 @@
 package cz.fungisoft.coffeecompass.repository;
 
-import java.math.BigInteger;
 import java.util.List;
-import java.util.Map;
-
-import org.springframework.data.jpa.repository.Query;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
@@ -13,7 +9,7 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSort;
 import cz.fungisoft.coffeecompass.entity.StatisticsToShow.DBReturnPair;
 
 /**
- * Pomocny interface pro definici metody, ktera umozni volat interni Stored procedure, ktera vraci ResultList,
+ * Pomocny interface pro definici metod, ktera umozni volat interni Stored procedure, ktera vraci ResultList,
  * pomoci JpaRepository. JpaRepository ma problem s mapovanim parametru pro NamedStoredProceduresQuery.
  * Umoznuje dodatecnou deklaraci a posleze definici i dalsich slozitejsich metod, ktere napr. vyuzivaji CriteriaQuery
  * <br> 
@@ -48,8 +44,8 @@ public interface CoffeeSiteRepositoryCustom
     
     /**
      * Vyhledani vsech CoffeeSites od bodu sirka, delka v rozmezi meters a s typem kavy,
-     *  vse s pomoci NamedQuery a EntityManageru.
-    *  
+     * vse s pomoci NamedQuery a EntityManageru.
+     *  
      * @param sirka
      * @param delka
      * @param rangeMeters

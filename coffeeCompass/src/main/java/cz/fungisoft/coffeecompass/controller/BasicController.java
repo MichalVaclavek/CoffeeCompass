@@ -13,7 +13,8 @@ import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.StatisticsInfoService;
 
 /**
- * Controller pro obsluhu zakladnich odkazu.
+ * Controller pro obsluhu zakladnich odkazu, prevazne z home.html stranky.
+ * Obsluhuje i zakladni chybove odkazy, jako /403, /404 a /500
  * <br>
  * Vrací základní html stránky uložené v src/main/resources/templates
  * 
@@ -46,7 +47,6 @@ public class BasicController
         
         return mav;
     }
-    
     
     
     @GetMapping("/about")

@@ -23,4 +23,5 @@ public enum UserProfileTypeEnum implements Serializable
     public String getUserProfileType() {
         return userProfileType;
     }
+    
 }

@@ -61,23 +61,18 @@ public class StarsQualityDescription
             case ONE:
                 numOfStars = 1;
                 break;
-                
             case TWO:
                 numOfStars = 2;
                 break;
-                
             case THREE:
                 numOfStars = 3;
                 break;
-                
             case FOUR:
                 numOfStars = 4;
                 break;
-                
             case FIVE:
                 numOfStars = 5;
                 break;    
-    
             default:
                 break;
         }

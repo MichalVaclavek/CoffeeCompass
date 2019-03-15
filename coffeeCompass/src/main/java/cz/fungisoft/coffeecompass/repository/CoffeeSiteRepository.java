@@ -13,14 +13,14 @@ import java.util.List;
  * Zakladni Repository trida pro CoffeeSite objekt.
  * 
  * Specialni verze vyhledavacich metod, pokud nejsou k dispozici zakladni
- * z org.springframework.data.jpa.repository.JpaRepositor, ale ktere lze zapsat
+ * z {@code org.springframework.data.jpa.repository.JpaRepository}, ale ktere lze zapsat
  * pomoci jednoduchych SELECTu s anotaci @Query
  * <br>
- * Tuto lze rozsirit pomoci dalsich Interfacu a jejich metod, ktere se pak implemetuji v konkretni tride
- * oznacene Repository anotaci. Zde se pak deklaruji a definuji metody pro slozitejsi dotazy napr.
- * pomoci CriteriaQuery.
+ * Tato trida muze rozsirovat dalsi Interface, ktery deklaruje dalsi specialni metody (implementovaner v konkretni tride
+ * oznacene Repository anotaci). V tomto interfacu resp. v jeho implementaci se pak deklaruji a definuji metody pro slozitejsi
+ * dotazy napr. pomoci CriteriaQuery.
  * <br>
- * Zde rozsireno o interface CoffeeSiteRepositoryCustom, ktery ma jmeno odvozene od jmena tohoto zakladniho interfacu
+ * Zde rozsiren interface CoffeeSiteRepositoryCustom, ktery ma jmeno odvozene od jmena tohoto zakladniho interfacu
  * tj. CoffeeSiteRepository na CoffeeSiteRepositoryCustom
  * 
  */

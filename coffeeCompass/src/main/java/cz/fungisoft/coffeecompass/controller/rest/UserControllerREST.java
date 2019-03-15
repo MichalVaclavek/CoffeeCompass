@@ -1,13 +1,10 @@
 package cz.fungisoft.coffeecompass.controller.rest;
 
-import static org.springframework.http.HttpStatus.METHOD_FAILURE;
-
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +20,12 @@ import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.service.UserService;
 import io.swagger.annotations.Api;
 
+/**
+ * REST varianta Controlleru, ktery obsluhuje http pozadavky na praci s User objektem 
+ * 
+ * @author Michal Vaclavek
+ *
+ */
 @Api // Anotace Swagger
 @RequestMapping("/rest/user") // uvadi se, pokud vsechny dotazy v kontroleru maji zacinat timto retezcem
 @RestController
@@ -64,7 +67,6 @@ public class UserControllerREST
         logger.info("All users retrieved: {}", users.size());
         return new ResponseEntity<List<UserDataDTO>>(users,  HttpStatus.OK);
     }
-  
   
     // ------------------- Retrieve Single User -------------------------------------------------------- //
       

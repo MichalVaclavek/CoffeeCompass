@@ -103,7 +103,7 @@ public class CoffeeSiteDTO
      * To indicate if the Image is saved for this CoffeeSite.
      * Used especialy for REST services.
      */
-    private String mainImageURL = ""; // default value for image URL. Means, no image available if empty, oterwise URL of the image inserted by CoffeeSite service evaluateOperationalAttributes() method
+    private String mainImageURL = ""; // default value for image URL. Means, no image available if empty, otherwise URL of the image inserted by CoffeeSite service evaluateOperationalAttributes() method
 
     /* 
      * Attributes to hold info about "editable" status of the CoffeeSite

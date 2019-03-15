@@ -15,7 +15,7 @@ import lombok.Data;
 /**
  * Status zaznamu o Coffee situ.
  * 
- * @author Michal
+ * @author Michal Václavek
  *
  */
 @Data

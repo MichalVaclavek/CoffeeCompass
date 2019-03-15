@@ -37,4 +37,5 @@ public class PriceRange
     public String toString() {
         return priceRange;
     }
+    
 }

@@ -21,7 +21,6 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
- *
  * Class representing User's comment to the CoffeeSite.
  * 
  * @author Michal Václavek

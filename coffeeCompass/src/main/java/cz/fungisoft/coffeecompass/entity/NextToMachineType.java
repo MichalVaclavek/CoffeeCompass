@@ -15,8 +15,6 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 
-//import org.hibernate.annotations.Table;
-
 /**
  * Druh automatu, ktere stoji vedle kavoveho automatu.
  * 
@@ -94,4 +92,5 @@ public class NextToMachineType
     public String toString() {
         return type;
     }
+    
 }

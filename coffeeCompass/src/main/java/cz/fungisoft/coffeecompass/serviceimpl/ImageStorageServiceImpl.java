@@ -1,11 +1,10 @@
 package cz.fungisoft.coffeecompass.serviceimpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
-
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
 import cz.fungisoft.coffeecompass.configuration.FileStorageProperties;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.Image;
@@ -43,22 +42,16 @@ public class ImageStorageServiceImpl implements ImageStorageService
     
     private ImageResizerService imageResizer;
 
-    
     private CoffeeSiteService coffeeSiteService;
     
-    /**
-     * Used setter injection to avoid circular dependency
-     * 
-     * @param coffeeSiteService
-     */
     @Autowired
-    public void setCoffeeSiteService(CoffeeSiteService coffeeSiteService) {
-        this.coffeeSiteService = coffeeSiteService;
-    }
+    private ConfigProperties config;
     
-    public CoffeeSiteService getCoffeeSiteService() {
-        return coffeeSiteService;
-    }
+    /**
+     * Base part of the CoffeeSite's image URL, get from Config
+     */
+    private String baseImageURL;
+    
 
     /**
      * Constructor to inser some of the services required.
@@ -74,13 +67,28 @@ public class ImageStorageServiceImpl implements ImageStorageService
         this.imageResizer = imageResizer;
         
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
-                .toAbsolutePath().normalize();
-
+                                        .toAbsolutePath().normalize();
+        
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception ex) {
-            throw new StorageFileException("Could not create the directory where the uploaded files will be stored.", ex);
+            throw new StorageFileException("Could not create the directory for storing uploaded files.", ex);
         }
+    }
+    
+    /**
+     * Used setter injection for {@code CoffeeSiteService} to avoid circular dependency
+     * 
+     * @param coffeeSiteService
+     */
+    @Autowired
+    public void setCoffeeSiteService(CoffeeSiteService coffeeSiteService) {
+        this.coffeeSiteService = coffeeSiteService;
+        
+    }
+    
+    public CoffeeSiteService getCoffeeSiteService() {
+        return coffeeSiteService;
     }
 
     /*
@@ -219,6 +227,11 @@ public class ImageStorageServiceImpl implements ImageStorageService
     @Override
     public boolean isImageAvailableForSiteId(Long siteId) {
         return imageRepo.getNumOfImagesForSiteId(siteId) > 0;
+    }
+    
+    @Override
+    public String getBaseImageURL() {
+        return baseImageURL = config.getBaseURLforImages();
     }
 
 }

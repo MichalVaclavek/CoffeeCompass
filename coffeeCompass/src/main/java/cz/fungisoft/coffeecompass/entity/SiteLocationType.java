@@ -36,4 +36,5 @@ public class SiteLocationType
     public String toString() {
         return locationType;
     }
+    
 }

@@ -14,7 +14,8 @@ import lombok.Data;
 
 /**
  * Typ kelimku
- * @author Michal
+ * 
+ * @author Michal Václavek
  *
  */
 @Data

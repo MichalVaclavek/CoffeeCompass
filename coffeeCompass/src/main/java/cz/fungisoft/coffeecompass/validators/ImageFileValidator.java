@@ -17,8 +17,7 @@ import cz.fungisoft.coffeecompass.configuration.FileStorageProperties;
  */
 public class ImageFileValidator implements ConstraintValidator<ImageFileValidatorConstraint, MultipartFile>
 {
- 
-    private Long maxFileSize = 10_000_000L; 
+    private Long maxFileSize = 5_000_000L; 
     
     private FileStorageProperties properties;
     

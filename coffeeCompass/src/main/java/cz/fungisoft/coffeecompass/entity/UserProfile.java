@@ -13,6 +13,8 @@ import javax.persistence.Table;
 @Table(name="user_profile", schema = "coffeecompass")
 public class UserProfile implements Serializable
 {
+    private static final long serialVersionUID = 5515645036753999883L;
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id; 
  
@@ -77,4 +79,5 @@ public class UserProfile implements Serializable
     public String toString() {
         return type;
     }
+    
 }

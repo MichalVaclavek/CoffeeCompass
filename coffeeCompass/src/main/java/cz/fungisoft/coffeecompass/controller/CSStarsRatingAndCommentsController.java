@@ -16,13 +16,12 @@ import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import io.swagger.annotations.Api;
 
 /**
- * Controller for handling addition/deletition of Comment and Stars for CoffeeSite.
- * Obsluhuje operace souvisejici s vkladanim/mazanim hodnoceni a komentare ke CoffeeSitu  
- * na strance/templatu coffeesite_info.html
+ * Controller for handling addition/deletition of Comment and Stars for CoffeeSite.<br>
+ * Obsluhuje operace souvisejici s vkladanim/mazanim hodnoceni a komentare ke CoffeeSitu<br>  
+ * na strance/templatu coffeesite_info.html<br>
  * <br>
- * Pro ziskani techto informaci ke CoffeeSitu se pouziva Controler CoffeeSiteController,
- * ktery vola prislusne Service, ktere dodaji Comments a prumerne hodnoceni k danemu
- * CoffeeSitu
+ * Pro ziskani techto informaci ke CoffeeSitu se pouziva Controler CoffeeSiteController,<br>
+ * ktery vola prislusne Service, ktere dodaji Comments a prumerne hodnoceni k danemu CoffeeSitu
  * 
  * @author Michal Vaclavek
  *
@@ -73,9 +72,10 @@ public class CSStarsRatingAndCommentsController
     }
     
     /**
-     * Zpracuje DELETE pozadavek na smazani komentare ze stranky zobrazujici komentare k jednomu CoffeeSitu.
-     * Muze byt volano pouze ADMINEM (zarizeno v Thymeleaf View strance coffeesite_detail.html)
-     * a v Service vrstve CommentService
+     * Zpracuje DELETE pozadavek na smazani komentare ze stranky zobrazujici komentare k jednomu CoffeeSitu.<br>
+     * Muze byt volano pouze ADMINEM nebo autorem komentare (zarizeno v Thymeleaf View strance coffeesite_detail.html,<br>
+     * ktery zobrazi delete tlacitko jen pokud jsou tyto podminky splneny). Zda muze byt Comment smazan se nastavi<br>
+     * v Service vrstve CommentService
      * 
      * @param id of the Comment to delete
      * @return

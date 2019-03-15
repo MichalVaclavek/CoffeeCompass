@@ -17,7 +17,6 @@ import cz.fungisoft.coffeecompass.repository.CoffeeSiteRecordStatusRepository;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteStatusRepository;
 import cz.fungisoft.coffeecompass.repository.CoffeeSortRepository;
-import cz.fungisoft.coffeecompass.repository.ImageRepository;
 import cz.fungisoft.coffeecompass.service.CSRecordStatusService;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.CompanyService;
@@ -77,10 +76,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     
     private User loggedInUser;
     
-    /**
-     * Base part of the CoffeeSite's image URL
-     */
-    private final String BASE_IMAGE_URL = "http://coffeecompass.cz/rest/image/bytes/";
     
     @Autowired
     public CoffeeSiteServiceImpl(CoffeeSiteRepository coffeeSiteRepository,
@@ -575,7 +570,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      * @return URL of the CoffeeSite's image if available, otherwise empty String
      */
     private String getMainImageURL(CoffeeSiteDTO cs) {
-        return (imageService.isImageAvailableForSiteId(cs.getId())) ? BASE_IMAGE_URL + cs.getId() : "";
+        return (imageService.isImageAvailableForSiteId(cs.getId())) ? imageService.getBaseImageURL() + cs.getId() : "";
     }
 
     /**

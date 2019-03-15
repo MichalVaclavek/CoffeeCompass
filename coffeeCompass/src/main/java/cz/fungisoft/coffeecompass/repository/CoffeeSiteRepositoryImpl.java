@@ -1,26 +1,16 @@
 package cz.fungisoft.coffeecompass.repository;
 
 import java.math.BigInteger;
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.persistence.EntityManager;
 import javax.persistence.ParameterMode;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.StoredProcedureQuery;
-import javax.persistence.TemporalType;
 import javax.transaction.Transactional;
 
-import org.hibernate.cfg.annotations.ResultsetMappingSecondPass;
 import org.springframework.stereotype.Repository;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;

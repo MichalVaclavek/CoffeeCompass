@@ -4,7 +4,6 @@ import java.util.List;
 
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 
- 
 public interface UserProfileService
 {
     public UserProfile findById(Integer id);

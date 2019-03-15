@@ -75,8 +75,7 @@ public class Image implements Serializable
 	
 	public Image() {}
 	
-	public Image(CoffeeSite cfSite, MultipartFile imageFile) throws IOException
-	{
+	public Image(CoffeeSite cfSite, MultipartFile imageFile) throws IOException {
 		setCoffeeSite(cfSite);
 		setFileName(imageFile.getOriginalFilename());
 		setImageBytes(imageFile.getBytes());

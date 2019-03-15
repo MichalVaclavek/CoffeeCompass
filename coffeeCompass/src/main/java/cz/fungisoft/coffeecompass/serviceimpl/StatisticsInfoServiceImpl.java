@@ -1,9 +1,6 @@
 package cz.fungisoft.coffeecompass.serviceimpl;
 
-import java.math.BigInteger;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -73,7 +70,6 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService
     @Override
     public void saveDiagnosticData(DiagnosticData diagData) {
         // TODO Auto-generated method stub
-
     }
 
 }

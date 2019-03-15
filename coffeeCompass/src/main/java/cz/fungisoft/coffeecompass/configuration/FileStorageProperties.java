@@ -7,18 +7,19 @@ import org.springframework.context.annotation.PropertySource;
 import lombok.Data;
 
 /**
+ * Class to store configuration parameters of the image File<br>
+ * <br>
  * Can be used in case uploaded image files are saved to file system, not to DB.
- * But used also for validation/limitation of the image file size.
+ * and for validation/limitation of the image file size.
  * 
  * @author Michal Vaclavek
  *
  */
 @Configuration
-@PropertySource("classpath:configprops.properties")
+@PropertySource("classpath:configprops-${spring.profiles.active}.properties")
 @Data
 public class FileStorageProperties
 {
-    
     /**
      * Directory to save images to
      */
@@ -27,5 +28,4 @@ public class FileStorageProperties
     
     @Value("${image.upload.max-file-size}")
     private Long maxUploadFileByteSize;
-    
 }
