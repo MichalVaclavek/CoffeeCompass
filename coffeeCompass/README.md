@@ -3,7 +3,8 @@
 This is Coffee compass web application - application for creating, searching, updating database of the Coffee sites - i.e. places where you can get a coffee to go - especially coffee machines, but also bistros, cafes and similar.
 The main purpose is to allow user to find the nearest coffee sites according user's actual position. User will be allowed to create/update/delete a new coffee site, too.
 
-Backend of the project is based on Spring Boot and Hibernate. Frontend is expected to be in Angular and in Android for mobile devices. Currently, the Front-end is developed in Thymeleaf for prototyping purposes. 
+Backend of the project is based on Spring Boot and Hibernate. Frontend is expected to be in Angular and in Android for mobile devices. Currently, the Front-end is developed in Thymeleaf for prototyping purposes.
+Newest version is running on www.coffeecompass.cz
 
 ## Getting Started
 
