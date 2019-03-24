@@ -39,7 +39,7 @@
 			    </p>
 			</div>
 	    
-		    <div class="w3-container w3-margin w3-cell" style="width:30%"> <!--  style="width:30%" -->
+		    <div class="w3-container w3-margin w3-cell" style="width:30%"> <!-- style="width:30%" -->
 		    
 			    <table class="w3-table w3-card-4 w3-bordered w3-border">
 			        
@@ -156,6 +156,7 @@
 				</table>
 			</div>
 			
+			<!-- div element containing group of buttons and picture -->
  			<div class="w3-display-container w3-cell w3-margin" style="width:25%">
 				<div>
 					 <!-- Group of buttons for modifying CoffeeSite status -->
@@ -239,6 +240,7 @@
 				    <!-- Picture of the CoffeeSite, if available -->
 				    <div class="w3-display-middle" style="width:110%"> 
 				         <!-- Element pro vlozeni obrazku situ -->
+				         <!-- Inserted like base64 image to the model of this view, not as URL to REST api -->
 				         <img th:src="${pic}" alt="" class="photo w3-image w3-round"/>
 			        </div>
 			        <div th:if="${coffeeSite.mainImageURL == ''}" th:text="#{site.noImage}" class="w3-display-middle w3-small" style="font-style: italic"> 
@@ -250,8 +252,8 @@
 				    
 					     <div class="w3-right" th:if="${thisSiteImageId > 0} AND ${coffeeSite.canBeModified}">
 					        <form action="#" th:object="${thisSiteImageId}"
-					               th:action="@{'/deleteImage/' + ${thisSiteImageId}}" 
-					               th:method="DELETE">
+					              th:action="@{'/deleteImage/' + ${thisSiteImageId}}" 
+					              th:method="DELETE">
 					            <input type="hidden" name="_method" value="delete" />
 					            <button type="submit" id="submitDeleteFileButton" th:text="#{image.delete}" class="w3-button w3-red w3-round w3-tiny">Delete image</button>
 					        </form>
@@ -269,22 +271,22 @@
 								       th:action="@{/imageUpload(${_csrf.parameterName}=${_csrf.token})}"
 								       th:object="${newImage}"> 
 								       
-								       <input th:type="hidden" name="siteId" th:field="*{coffeeSiteID}"/>
-								      
-									    <div class="w3-row">
-							                <div th:classappend="${#fields.hasErrors('file')} ? 'has-error' : ''">
-							                    <input class= "w3-border" 
-							                           name="file" id="fileNameInput"
-							                           type="file" th:field="*{file}"
-							                           th:text="#{image.selectfile.button}"
-							                           th:placeholder="#{image.selectfile.placeholder}"/>
-							                </div>
-						                	<div class="error-message" th:if="${#fields.hasErrors('file')}" th:errors="*{file}">Validation error messages</div>
+							       <input th:type="hidden" name="siteId" th:field="*{coffeeSiteID}"/>
+							      
+								    <div class="w3-row">
+						                <div th:classappend="${#fields.hasErrors('file')} ? 'has-error' : ''">
+						                    <input class= "w3-border" 
+						                           name="file" id="fileNameInput"
+						                           type="file" th:field="*{file}"
+						                           th:text="#{image.selectfile.button}"
+						                           th:placeholder="#{image.selectfile.placeholder}"/>
 						                </div>
-						            
-							            <div class="w3-right">
-								            <button type="submit" id="saveImage" th:text="#{image.upload}" class="w3-button w3-light-blue w3-round w3-small w3-margin-bottom"  disabled>Upload image</button>    
-							            </div>
+					                	<div class="error-message" th:if="${#fields.hasErrors('file')}" th:errors="*{file}">Validation error messages</div>
+					                </div>
+					            
+						            <div class="w3-right">
+							            <button type="submit" id="saveImage" th:text="#{image.upload}" class="w3-button w3-light-blue w3-round w3-small w3-margin-bottom"  disabled>Upload image</button>    
+						            </div>
 						            
 						        </form>
 					      	</div> 
@@ -386,7 +388,6 @@
 	        	} else
 	        		saveImageButton.disabled = false;
             }
-     	
      </script>
   
 </html> 

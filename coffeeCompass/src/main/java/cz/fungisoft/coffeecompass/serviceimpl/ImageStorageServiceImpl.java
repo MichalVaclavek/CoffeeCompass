@@ -44,17 +44,16 @@ public class ImageStorageServiceImpl implements ImageStorageService
 
     private CoffeeSiteService coffeeSiteService;
     
-    @Autowired
     private ConfigProperties config;
     
     /**
-     * Base part of the CoffeeSite's image URL, get from Config
+     * Base part of the CoffeeSite's image URL, loaded from ConfigProperties, provided by this ImageService impl.
      */
     private String baseImageURL;
     
 
     /**
-     * Constructor to inser some of the services required.
+     * Constructor to insert some of the services, repositories and config properties required.
      * 
      * @param fileStorageProperties
      * @param imageRepo
@@ -84,11 +83,17 @@ public class ImageStorageServiceImpl implements ImageStorageService
     @Autowired
     public void setCoffeeSiteService(CoffeeSiteService coffeeSiteService) {
         this.coffeeSiteService = coffeeSiteService;
-        
     }
-    
-    public CoffeeSiteService getCoffeeSiteService() {
-        return coffeeSiteService;
+
+    /**
+     * Setter for ConfigProperties attribute. If it was injected using @Autowired on attribute and
+     * used within Constructor, then it was null.
+     * 
+     * @param config
+     */
+    @Autowired
+    public void setConfig(ConfigProperties config) {
+        this.config = config;
     }
 
     /*
@@ -187,13 +192,13 @@ public class ImageStorageServiceImpl implements ImageStorageService
         
         if (image != null) {
             imageString.append("data:image/png;base64,");
-            imageString.append(Base64.getEncoder().encodeToString(image.getImageBytes())); //bytes will be image byte[] come from DB 
+            imageString.append(Base64.getEncoder().encodeToString(image.getImageBytes())); //bytes are image byte[] coming from DB 
         }
         return imageString.toString();
     }
 
     /**
-     * @return id of the CoffeeSites this image belonged to before deletition
+     * @return id of the CoffeeSites this image was belonging to before delete
      */
     @Transactional
     @Override

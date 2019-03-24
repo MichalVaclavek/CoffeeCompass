@@ -142,7 +142,7 @@ public class UserController
                     result.rejectValue("confirmPassword", "error.user.password.confirm", "Confirmation password does not match password.");
         }
         
-        if (result.hasErrors()) { // In case of error, show the user_reg. page again
+        if (result.hasErrors()) { // In case of error, show the user_reg. page again with error labels
             return "user_registration";
         }
         
@@ -266,7 +266,6 @@ public class UserController
         UserDataDTO user = userService.findByIdToTransfer(id);
         if (user == null) {
             logger.info("User with id " + id + " not found");
-//            return new ResponseEntity<UserDataDto>(HttpStatus.NOT_FOUND);
             throw new EntityNotFoundException("User with id " + id + " not found");
         }
         return new ResponseEntity<UserDataDTO>(user, HttpStatus.OK);

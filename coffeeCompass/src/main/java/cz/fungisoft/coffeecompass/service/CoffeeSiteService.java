@@ -26,7 +26,22 @@ public interface CoffeeSiteService
     public CoffeeSiteDTO findOneToTransfer(Long siteId);
     public CoffeeSite findOneById(Long id);
     public CoffeeSiteDTO findByName(String siteName);
-    public List<CoffeeSiteDTO> findByCityName(String cityName);
+    
+    /**
+     * Finds all CoffeeSites, whose "mesto" filed is equal to 'cityName' string
+     * 
+     * @param cityName
+     * @return
+     */
+    public List<CoffeeSiteDTO> findAllByCityNameExactly(String cityName);
+    
+    /**
+     * Finds all CoffeeSites, whose "mesto" filed starts by 'cityName' string
+     * 
+     * @param cityName
+     * @return
+     */
+    public List<CoffeeSiteDTO> findAllByCityNameAtStart(String cityName);
     
     public LatLong getAverageLocation(List<CoffeeSiteDTO> coffeeSites);
     

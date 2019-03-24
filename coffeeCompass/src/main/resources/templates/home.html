@@ -36,112 +36,112 @@
 		
 		<div class="w3-content w3-margin-top"> 
 			
-				<div class="w3-row-padding">
+			<div class="w3-row-padding">
+			
+				<div class="w3-third" th:classappend="${#authorization.expression('isAuthenticated()')} ? 'w3-half'">
+				<div class="w3-container w3-padding-16 w3-sand w3-card-2 w3-round">
 				
-					<div class="w3-third" th:classappend="${#authorization.expression('isAuthenticated()')} ? 'w3-half'">
-					<div class="w3-container w3-padding-16 w3-sand w3-card-2 w3-round">
+					<div class="w3-center" >
+						<h5 th:text="#{home.about.text}"> </h5>
 					
-						<div class="w3-center" >
-							<h5 th:text="#{home.about.text}"> </h5>
-						
-		        			<h4><a th:href="@{/about}" th:text="#{home.button.info}" class="w3-button w3-brown w3-margin-top">Informace o těchto stránkách.</a></h4>
-		        		</div>
-		        		
-		        	</div>	
-		        	</div>
-		        	
-		        	<div class="w3-third" th:classappend="${#authorization.expression('isAuthenticated()')} ? 'w3-half'">
-					<div class="w3-container w3-padding-16 w3-sand w3-card-2 w3-round">
-		        	
-		        		<div class="w3-center">
-							<h5 th:text="#{home.search.text}"> </h5>
-							
-		        			<h4><a th:href="@{/showSearch}" th:text="#{home.button.search}" class="w3-button w3-brown w3-margin-top">Search sites</a></h4>
-		        		</div>
-					
-		        	</div>
-		        	</div>
-		        	
-		        	<div sec:authorize="NOT isAuthenticated()" class="w3-third">
-					<div class="w3-container w3-padding-16 w3-sand w3-card-2 w3-round">
-	
-		        		<div class="w3-center" >
-							<h5 th:text="#{home.register.text}" > </h5>
-							<a th:href="@{/user/register}" th:text="#{mainmenu.registeruser}">User login</a>
-		        			<h4><a th:href="@{/login}" th:text="#{home.button.login}" class="w3-button w3-brown">User login</a> </h4>
-		        		</div>
-		
-		        	</div>
-		        	</div>
+	        			<h4><a th:href="@{/about}" th:text="#{home.button.info}" class="w3-button w3-brown w3-margin-top">Informace o těchto stránkách.</a></h4>
+	        		</div>
+	        		
+	        	</div>	
 	        	</div>
-        	
-        		<br>
-        
-		        <!-- News and statistics info -->
-		        <div class="w3-content">
-		        	<div class="w3-container w3-margin-top w3-margin-bottom">
-			        	<h3 th:text="#{home.statistics.label}" class="w3-margin-top">Statistics and news:</h3>
-			        		<div class="w3-center">
-					        	<span th:text="#{home.statistics.allsites.label}" class="w3-left" >Number of all sites: </span><span class="w3-right" th:text="${stats.numOfAllSites}"></span><br>
-					        	<span th:text="#{home.statistics.todaysites.label}" class="w3-left" >Number of sites created today: </span><span class="w3-right" th:text="${stats.numOfNewSitesToday}"></span><br>
-					        	<span th:text="#{home.statistics.last7daysites.label}" class="w3-left" >Number of sites created within last 7 days: </span><span class="w3-right" th:text="${stats.numOfNewSitesLast7Days}"></span><br>
-					        	<br>
-					        	<span th:text="#{home.statistics.allUsers.label}" class="w3-left" >Number of all users: </span><span class="w3-right" th:text="${stats.numOfAllUsers}"></span><br>
-					        	<span th:text="#{home.statistics.last7dayusers.label}" class="w3-left" >Number of users registered within last 7 days: </span><span class="w3-right" th:text="${stats.numOfNewUsersThisWeek}"></span><br>
-					        	
-				        	</div>
+	        	
+	        	<div class="w3-third" th:classappend="${#authorization.expression('isAuthenticated()')} ? 'w3-half'">
+				<div class="w3-container w3-padding-16 w3-sand w3-card-2 w3-round">
+	        	
+	        		<div class="w3-center">
+						<h5 th:text="#{home.search.text}"> </h5>
+						
+	        			<h4><a th:href="@{/showSearch}" th:text="#{home.button.search}" class="w3-button w3-brown w3-margin-top">Search sites</a></h4>
+	        		</div>
+				
+	        	</div>
+	        	</div>
+	        	
+	        	<div sec:authorize="NOT isAuthenticated()" class="w3-third">
+				<div class="w3-container w3-padding-16 w3-sand w3-card-2 w3-round">
+
+	        		<div class="w3-center" >
+						<h5 th:text="#{home.register.text}" > </h5>
+						<a th:href="@{/user/register}" th:text="#{mainmenu.registeruser}">User login</a>
+	        			<h4><a th:href="@{/login}" th:text="#{home.button.login}" class="w3-button w3-brown">User login</a> </h4>
+	        		</div>
+	
+	        	</div>
+	        	</div>
+        	</div>
+       	
+       		<br>
+       
+	        <!-- News and statistics info -->
+	        <div class="w3-content">
+	        	<div class="w3-container w3-margin-top w3-margin-bottom">
+		        	<h3 th:text="#{home.statistics.label}" class="w3-margin-top">Statistics and news:</h3>
+		        		<div class="w3-center">
+				        	<span th:text="#{home.statistics.allsites.label}" class="w3-left" >Number of all sites: </span><span class="w3-right" th:text="${stats.numOfAllSites}"></span><br>
+				        	<span th:text="#{home.statistics.todaysites.label}" class="w3-left" >Number of sites created today: </span><span class="w3-right" th:text="${stats.numOfNewSitesToday}"></span><br>
+				        	<span th:text="#{home.statistics.last7daysites.label}" class="w3-left" >Number of sites created within last 7 days: </span><span class="w3-right" th:text="${stats.numOfNewSitesLast7Days}"></span><br>
+				        	<br>
+				        	<span th:text="#{home.statistics.allUsers.label}" class="w3-left" >Number of all users: </span><span class="w3-right" th:text="${stats.numOfAllUsers}"></span><br>
+				        	<span th:text="#{home.statistics.last7dayusers.label}" class="w3-left" >Number of users registered within last 7 days: </span><span class="w3-right" th:text="${stats.numOfNewUsersThisWeek}"></span><br>
 				        	
-				        	<div class=" w3-margin-top w3-border-top w3-border-brown">
-				        	<div class="w3-row w3-container">
-				        		<div class="w3-half w3-justify w3-container w3-margin-top">
-					        		<b><h4 th:text="#{home.statistics.topcities.label}" >Cities with most active sites: </h4></b>
-					        		<div class="w3-margin-top">
-					        			<!-- <div th:each="city : ${stats.top5CitiesMostCoffeeSites}" 
-					        				 th:text="${city}">  -->
-					        				 <div th:each="city : ${stats.top5CitiesMostCoffeeSites}" >
-					        				 	<a th:text="${city.strVal}" th:href="@{'/showCitySites/?cityName='+${city.strVal}}"></a><span th:text="' ('+${city.intVal}+')'">Number of sites</span>
-					        				 </div> 
-					        				 
-					        		</div>
-					        	</div>	
-					        	<div class="w3-half w3-justify w3-container w3-margin-top">
-					        		<b><h4 th:text="#{home.statistics.topusers.label}">Users with most active sites: </h4></b>
-					        			<div class="w3-margin-top">
-					        				<div th:each="user : ${stats.top5UserNamesMostCreatedSites}"
-					        					 th:text="${user}" ></div>
-					        			</div>
-					        	</div>	
-				            </div>
-				            </div>
-			        </div>
-		        </div>
-		        
-		        <!-- Show images and links to latest CoffeeSites -->
-		        <div class="w3-content">
-		        	<div class="w3-margin-top w3-container w3-margin-bellow">
-			        	<h3 th:text="#{home.latestSites.label}" class="w3-margin-top">Latest sites:</h3>
-			        	
-			        	<div class="w3-row-padding">
-				        	<div th:each="site, iterStat : ${latestSites}" class="w3-col l3 m4" th:classappend="!${iterStat.last} ? w3-border-right"> <!-- class="w3-col l2 m4"  -->
-	    						<br> <!-- To create space bellow main label -->
-		        				<div th:if="${site.mainImageURL == ''}" th:text="#{site.noImage}" class="w3-center w3-small" style="font-style: italic"> No imagge</div>
-				        		<div th:unless="${site.mainImageURL == ''}" class="w3-center">
-				        			<a th:href="@{'/showSite/'+${site.id}}"><img class="photoShow w3-round" th:src="${site.mainImageURL}" style="height: 140px"></a>
-				        		</div>
-				        		<br> <!-- To create space above site name label -->
-				        		<div class="w3-center">
-		      						<a th:href="@{'/showSite/'+${site.id}}"><span th:text="${site.siteName}"></span></a>
-	    						</div>
-				        	</div>
 			        	</div>
-			        </div>
+			        	
+			        	<div class=" w3-margin-top w3-border-top w3-border-brown">
+			        	<div class="w3-row w3-container">
+			        		<div class="w3-half w3-justify w3-container w3-margin-top">
+				        		<b><h4 th:text="#{home.statistics.topcities.label}" >Cities with most active sites: </h4></b>
+				        		<div class="w3-margin-top">
+				        			<!-- <div th:each="city : ${stats.top5CitiesMostCoffeeSites}" 
+				        				 th:text="${city}">  -->
+			        				 <div th:each="city : ${stats.top5CitiesMostCoffeeSites}" >
+			        				 	<a th:text="${city.strVal}" th:href="@{'/showCitySites/?cityName='+${city.strVal}}"></a><span th:text="' ('+${city.intVal}+')'">Number of sites</span>
+			        				 </div> 
+				        				 
+				        		</div>
+				        	</div>	
+				        	<div class="w3-half w3-justify w3-container w3-margin-top">
+				        		<b><h4 th:text="#{home.statistics.topusers.label}">Users with most active sites: </h4></b>
+				        			<div class="w3-margin-top">
+				        				<div th:each="user : ${stats.top5UserNamesMostCreatedSites}"
+				        					 th:text="${user}" ></div>
+				        			</div>
+				        	</div>	
+			            </div>
+			            </div>
 		        </div>
+	        </div>
+	        
+	        <!-- Show images and links to latest CoffeeSites -->
+	        <div class="w3-content w3-margin-top w3-margin-bellow">
+	        	<div class="w3-container">
+		        	<h3 th:text="#{home.latestSites.label}" class="w3-margin-top">Latest sites:</h3>
+		        	
+		        	<div class="w3-row-padding">
+			        	<div th:each="site, iterStat : ${latestSites}" class="w3-col l3 m4" th:classappend="!${iterStat.last} ? w3-border-right"> <!-- class="w3-col l2 m4"  -->
+    						<br> <!-- To create space bellow main label -->
+	        				<div th:if="${site.mainImageURL == ''}" th:text="#{site.noImage}" class="w3-center w3-small" style="font-style: italic"> No imagge</div>
+			        		<div th:unless="${site.mainImageURL == ''}" class="w3-center">
+			        			<a th:href="@{'/showSite/'+${site.id}}"><img class="photoShow w3-round" th:src="${site.mainImageURL}" style="height: 140px"></a>
+			        		</div>
+			        		<br> <!-- To create space above site name label -->
+			        		<div class="w3-center">
+	      						<a th:href="@{'/showSite/'+${site.id}}"><span th:text="${site.siteName}"></span></a>
+    						</div>
+			        	</div>
+		        	</div>
+		        </div>
+	        </div>
 		        
-		  </div>
+		 </div>
 	</div>
     
     <br>
-	<div th:replace="fragments/footer :: footer"/>
+	<!-- <div th:replace="fragments/footer :: footer"/> -->
  
 </body>
 </html>

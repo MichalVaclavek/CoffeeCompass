@@ -35,87 +35,119 @@
 	    	
 	    		<div class="w3-padding w3-topbar w3-border-yellow w3-pale-yellow w3-margin-bottom"> <!-- Navod pro obsluhu -->
 				    <p th:text="#{site.search.manual.label}" style="text-decoration: underline; font-weight: bold;"><b>Navod k obsluze: </b></p>
-				    <p th:text="#{site.search.manual.point1}">	1) klik do mapy - vyber stredu hledani</p>
-				    <p th:text="#{site.search.manual.point2}">	2) okruh hledani - vzdalenost v metrech</p>
-				    <p th:text="#{site.search.manual.point3}">	3) tlacitko hledat</p>
-				    <p th:text="#{site.search.manual.point4}">	4) klik na znacku v mape pro dalsi info</p>
-				    <p th:text="#{site.search.manual.point5}">	5) klik do tab. pro detaily</p>
+				    <p th:text="#{site.search.manual.point.1a}"> 1a) Vyber střed hledání v mapě (přesuň značku)</p>
+				    <p th:text="#{site.search.manual.point.1b}"> 1b) Zadej okruh hledání (vzdálenost v metrech od středu hledání)</p>
+				    <p th:text="#{site.search.manual.or}">	nebo</p>
+				    <p th:text="#{site.search.manual.point.1}">	1) Zadej jméno města</p>
+				    <p th:text="#{site.search.manual.point.2}">	2) Klik na tlačítko Hledat</p>
+				    <p th:text="#{site.search.manual.point.3}">	3) klik na znacku v mape pro dalsi info</p>
+				    <p th:text="#{site.search.manual.point.4}">	4) klik do tab. pro detaily</p>
 			    </div>
+	    
+	    		<label for="Location">
+					 <b><span th:text="#{sitesearch.location}">City</span></b>
+				</label>
 	    
 			    <div class="w3-container w3-border w3-round w3-card-4 w3-light-gray" > <!-- style="width:30%" -->
 			
-			      <form action="#" th:action="@{/searchSites}" th:object="${searchCriteria}" method="GET">
+			    	<form action="#" th:action="@{/searchSites}" th:object="${searchCriteria}" method="GET">
 			    
-			          <div class="w3-cell-row w3-margin-top"> <!-- row for Latitude and Longitude -->
+			        	<div class="w3-cell-row w3-margin-top"> <!-- row for Latitude and Longitude -->
 			          
-				          <div class="w3-cell">
-				            <label for="Latitude">
-				              <span th:text="#{sitesearch.latitude}">Latitude</span>
-				            </label>
+				        	<div class="w3-cell">
+				            	<label for="Latitude">
+				              		<span th:text="#{sitesearch.latitude}">Latitude</span>
+				            	</label>
 				            <div th:classappend="${#fields.hasErrors('lat1')} ? 'has-error' : ''">
 				            	<input type="number" step="any" th:field="*{lat1}" th:errorclass="fieldError" class="w3-input w3-border w3-round" id="lat1"/>
 				            </div>
-				          
-				              <p class="error-message"
-					             th:each="error: ${#fields.errors('lat1')}"
-					             th:text="${error}">Validation error</p>
-					      </div>
+				            <p class="error-message"
+					           th:each="error: ${#fields.errors('lat1')}"
+					           th:text="${error}">Validation error</p>
+					      	</div>
 							 
-						  <div class="w3-container w3-cell">
-				            <label for="Longitude">
-				              <span th:text="#{sitesearch.longitude}">Longitude</span>
-				            </label>
+						  	<div class="w3-container w3-cell">
+				            	<label for="Longitude">
+				              		<span th:text="#{sitesearch.longitude}">Longitude</span>
+				            	</label>
 				            <div th:classappend="${#fields.hasErrors('lon1')} ? 'has-error' : ''">
 				               <input type="number" step="any" th:field="*{lon1}" th:errorclass="fieldError" class="w3-input w3-border w3-round" id="lon1"/>
 				            </div>
-				          
 				            <p class="error-message"
 					           th:each="error: ${#fields.errors('lon1')}"
 					           th:text="${error}">Validation error</p>
 					      </div>
 					             
-			          </div>
+			          	</div>
 			          
-			          <div class="w3-margin-top" style="width:50%"> 
-			            <label for="SearchRange">
-			              <span th:text="#{sitesearch.range}">Range meters</span>
-			            </label>
+			          	<div class="w3-margin-top" style="width:50%"> 
+			          		<label for="SearchRange">
+			            		<span th:text="#{sitesearch.range}">Range meters</span>
+			            	</label>
 			            <div th:classappend="${#fields.hasErrors('range')} ? 'has-error' : ''">
-			               <input type="number" th:field="*{range}"
-			                      th:errorclass="fieldError" class="w3-input w3-border w3-round"
-			                      th:placeholder="#{search.range.placeholder}"/>
+			            	<input type="number" th:field="*{range}"
+			                       th:errorclass="fieldError" class="w3-input w3-border w3-round"
+			                       th:placeholder="#{search.range.placeholder}"/>
 			            </div>
 			            <p class="error-message"
 					             th:each="error: ${#fields.errors('range')}"
 					             th:text="${error}">Validation error</p>
-			          </div>
+			          	</div>
 			          
-			          <div class="w3-margin-top">
+			          	<div class="w3-margin-top">
 			          	
-			              <label for="CoffeeSort" th:text="#{sitesearch.coffeeSort}">Coffee sorts</label>
-			              <input id="selectSortCheckBox"
-			                     type="checkbox"
-			                     th:checked="*{sortSelected}"
-			                     th:field="*{sortSelected}"
-			                     class="w3-check"/>
-			              <div>
-			                <select id="selectSort"  style="visibility:hidden; width:50%" th:field="*{coffeeSort}" disabled class="w3-select">
-			                  <option th:each="coffeeSort : ${allCoffeeSorts}" 
-			                          th:value="${coffeeSort}"
-			                          th:text="${coffeeSort}">Site status</option>
-			                </select>
-			              </div>
+			            	<label for="CoffeeSort" th:text="#{sitesearch.coffeeSort}">Coffee sorts</label>
+			              	<input id="selectSortCheckBox"
+			                	   type="checkbox"
+			                       th:checked="*{sortSelected}"
+			                       th:field="*{sortSelected}"
+			                       class="w3-check"/>
+			                <div>
+			                	<select id="selectSort"  style="visibility:hidden; width:50%" th:field="*{coffeeSort}" disabled class="w3-select">
+			                  	<option th:each="coffeeSort : ${allCoffeeSorts}" 
+			                    	    th:value="${coffeeSort}"
+			                        	th:text="${coffeeSort}">Site status</option>
+			                	</select>
+			              	</div>
 			             
 			          </div>
 			                      
-				      <div class="w3-margin">
+				      <div class="w3-margin-bottom">
 			            <button type="submit" name="search" th:text="#{site.button.search}" class="w3-button w3-blue w3-round">Search Coffee sites</button>    
 			          </div>
 			        
-			      </form>
+			      	</form>
 			    </div> <!-- div for search form  -->
 
-				
+				<div class="w3-margin-top">
+					<!-- Search CoffeeSites in city Form -->
+			    	<label for="City">
+		               <b><span th:text="#{sitesearch.city}">City</span></b>
+		            </label>
+		        
+		        	<div>
+				        <form action="#" th:action="@{/searchSitesInCityForm}" th:object="${cityName}" method="GET">
+				         
+					 		<div class="w3-card-4 w3-light-gray w3-round">
+					  			<div class="w3-row" >
+						          	<div class="w3-threequarter">
+							            <div th:classappend="${#fields.hasErrors('input')} ? 'has-error' : ''">
+							            	<input th:field="*{input}" th:errorclass="fieldError" class="w3-input w3-border w3-round" id="cityName"/>
+							            </div>
+							      	</div>
+							      
+							      	<div class="w3-quarter">
+					            		<button type="submit" name="searchCity" th:text="#{site.button.search}" class="w3-button w3-blue w3-round">Search Coffee sites in city</button>    
+					          	  	</div>
+				          		</div>
+					 		</div>
+					 		<p class="error-message"
+							   th:each="error: ${#fields.errors('input')}"
+							   th:text="${error}">City name Validation error</p>
+			 		
+			 			</form>
+		 			</div>
+				</div>	
 		
 		    </div> <!-- <div class="w3-col l3 w3-container"> -->
     
@@ -124,15 +156,17 @@
 	        	<div  id="map" class="w3-round w3-card-4 w3-margin-left" style="height: 600px; width: 100%;"></div> <!-- "height: 600px; width: 800px;" -->
 	    	</div>
 	    	
-	    	<div class="w3-container w3-threequarter w3-margin-top" > 
+	    	<!-- Short text result of the search request -->
+	    	<div class="w3-container w3-threequarter w3-margin-top w3-center" > 
 	        	<br>
 	        	<b><span th:if="${NOT #lists.isEmpty(foundSites)}" th:text="#{sitesearch.sitesFound} + ' ' + ${#lists.size(foundSites)}"></span></b> <!-- Show number of found sites -->
 	        	<span th:if="${emptyResult}" th:text="#{sitesearch.nothingfound}" style="color: red;"></span> <!-- Or nothing found label -->
 	    	</div>
 	    	
 	    	
-		    <!--  Table containing the results of search -->
-			<div th:if="${NOT #lists.isEmpty(foundSites)}" class="w3-container w3-center">
+		    <!--  Table containing the results of search. Table row is clickable and opens CoffeeSite detailes page -->
+			<!-- <div th:if="${NOT #lists.isEmpty(foundSites)}" class="w3-container w3-center"> -->
+			<div th:if="${NOT #lists.isEmpty(foundSites)}" class="w3-container w3-threequarter w3-right">
 			
 			    <table class="w3-table-all w3-hoverable  w3-margin-top">
 			    	<thead>
@@ -165,6 +199,7 @@
 				    </tbody>
 				</table>
 			</div>
+			
 		
 		</div> <!-- <div class="w3-row w3-content"> -->
 	

@@ -85,4 +85,5 @@ public class ContactMeMessageServiceImpl implements IContactMeMessageService
         cmmToSave.setCreatedTime(new Timestamp(new Date().getTime()));
         return saveContactMeMessage(cmmToSave);
     }
+    
 }

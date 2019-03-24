@@ -196,6 +196,7 @@ public class CoffeeSiteController
         }
         
         // Add picture object (image of this coffee site) to the model
+        // Here inserted on the server, not as URL REST link to be loaded from browser  
         String picString = imageStorageService.getImageAsBase64ForSiteId(cs.getId());
         mav.addObject("pic", picString);
         

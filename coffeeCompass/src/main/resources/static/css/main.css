@@ -1,7 +1,7 @@
 
 footer {
     position: fixed;
-    height: 25px;
+    height: 25px; /* Height of the footer */
     bottom: 0;
     left: 0;
     width: 100%;
@@ -11,13 +11,9 @@ footer {
 body {
    /*background-image: url("/images/kafe_orez2.JPG"); */
    background-color: #eeeae8;
+   /* padding:10px; */
+   padding-bottom:30px; /* Height of the footer + 5px marging */
 }
-
-/*
-.w3-content {
-   background-color: #cccccc;
-}
-*/
 
 .has-error {
     border: 1px solid red;
@@ -41,12 +37,6 @@ table {
     border-collapse: collapse;
 }
 
-/*
-table, th, td {
-    border: 1px solid black;
-}
-*/
-
 .photo {
 	-ms-transform: rotate(90deg); /* IE 9 */
 	-webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
@@ -60,6 +50,4 @@ table, th, td {
 	transform: rotate(90deg);
 	-webkit-transform-origin: 50% 50%;
 	position : relative;
-
 }
-

@@ -1,5 +1,6 @@
 package cz.fungisoft.coffeecompass.serviceimpl;
 
+import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
@@ -74,6 +75,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     @Autowired
     private ImageStorageService imageService;
     
+    private ConfigProperties config;
+    
     private User loggedInUser;
     
     
@@ -86,6 +89,11 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         this.coffeeSortRepo = coffeeSortRepository;
         this.coffeeSiteStatusRepo = coffeeSiteStatusRepo;
         this.mapperFacade = mapperFacade;
+    }
+    
+    @Autowired
+    public void setConfig(ConfigProperties config) {
+        this.config = config;
     }
     
     /**
@@ -385,16 +393,23 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     
     @Override
     public List<CoffeeSiteDTO> getLatestCoffeeSites(int numOfLatestSites) {
-        List<CoffeeSite> items = coffeeSiteRepo.getLatestSites(numOfLatestSites);
+        List<CoffeeSite> items = coffeeSiteRepo.getLatestSites(numOfLatestSites, config.getDaysBackForNewestSites());
         log.info("Newest Coffee sites retrieved: " + items.size());
         return modifyToTransfer(items);
     }
     
     
     @Override
-    public List<CoffeeSiteDTO> findByCityName(String cityName) {
+    public List<CoffeeSiteDTO> findAllByCityNameExactly(String cityName) {
+        List<CoffeeSite> items = coffeeSiteRepo.getAllSitesInCityExactly(cityName);
+        log.info("All Coffee sites of '{}' city retrieved: {}", cityName, items.size());
+        return modifyToTransfer(items);
+    }
+    
+    @Override
+    public List<CoffeeSiteDTO> findAllByCityNameAtStart(String cityName) {
         List<CoffeeSite> items = coffeeSiteRepo.getAllSitesInCity(cityName);
-        log.info("All Coffee sites of '{}' retrieved: {}", cityName, items.size());
+        log.info("All Coffee sites in city name starting with '{}' retrieved: {}", cityName, items.size());
         return modifyToTransfer(items);
     }
 
@@ -589,7 +604,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         return new LatLong(avgLat.orElse(0), avgLong.orElse(0));
         
     }
-    
+
 
     //TODO dalsi vyhledavaci metody podle ruznych kriterii?
     // CriteriaQuery a CriteriaQueryBuilder

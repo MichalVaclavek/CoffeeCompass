@@ -48,20 +48,32 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
     public Long getNumOfSitesCreatedLast7Days();
     
     /**
-     * Retrieves all CoffeeSites with ACTIVE record staus in given city name
-     * @param cityName
+     * Retrieves all CoffeeSites with ACTIVE record staus in city which starts with cityName parameter value
+     *
+     * @param cityName - the name (of city) which is in the beginning of the CoffeeSite.mesto field
      * @return
      */
-    @Query("select cs from CoffeeSite cs where cs.mesto=?1 AND cs.recordStatus.status='ACTIVE'")
+    @Query("select cs from CoffeeSite cs where lower(cs.mesto) like lower(CONCAT(?1,'%')) AND cs.recordStatus.status='ACTIVE'")
     public List<CoffeeSite> getAllSitesInCity(String cityName);  
     
     /**
-     * Gets latest ACTIVE CoffeeSites not older then 60 days
-     * 
+     * Retrieves all CoffeeSites with ACTIVE record staus in given city name.
+     *
+     * @param cityName - the name of city which is equal to CoffeeSite.mesto field
      * @return
      */
-    @Query(nativeQuery = true, value = "SELECT * FROM coffeecompass.coffee_site AS cs WHERE cs.status_zaznamu_id=1 AND cs.created_on BETWEEN LOCALTIMESTAMP - INTERVAL '60 days' AND LOCALTIMESTAMP ORDER BY cs.created_on DESC LIMIT ?1")
-    public List<CoffeeSite> getLatestSites(int maxNumOfLatestSites);
+    @Query("select cs from CoffeeSite cs where cs.mesto=?1 AND cs.recordStatus.status='ACTIVE'")
+    public List<CoffeeSite> getAllSitesInCityExactly(String cityName);  
+    
+    /**
+     * 
+     * @param maxNumOfLatestSites - max. number of CoffeeSites to be returned by this request
+     * @param daysAgo - how many days ago from now is the latest day of CoffeeSite creation 
+     * @return
+     */
+//    @Query(nativeQuery = true, value = "SELECT * FROM coffeecompass.coffee_site AS cs WHERE cs.status_zaznamu_id=1 AND cs.created_on BETWEEN LOCALTIMESTAMP - INTERVAL '?2 days' AND LOCALTIMESTAMP ORDER BY cs.created_on DESC LIMIT ?1")
+    @Query(nativeQuery = true, value = "SELECT * FROM coffeecompass.coffee_site AS cs WHERE cs.status_zaznamu_id=1 AND cs.created_on BETWEEN LOCALTIMESTAMP - ?2 * INTERVAL '1 day' AND LOCALTIMESTAMP ORDER BY cs.created_on DESC LIMIT ?1")
+    public List<CoffeeSite> getLatestSites(int maxNumOfLatestSites, int daysAgo);
     
     
     /*
