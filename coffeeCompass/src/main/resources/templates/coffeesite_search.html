@@ -126,7 +126,7 @@
 		            </label>
 		        
 		        	<div>
-				        <form action="#" th:action="@{/searchSitesInCityForm}" th:object="${cityName}" method="GET">
+				        <form action="#" th:action="@{/searchSitesInCityForm/}" th:object="${cityName}" method="GET">
 				         
 					 		<div class="w3-card-4 w3-light-gray w3-round">
 					  			<div class="w3-row" >
@@ -172,6 +172,7 @@
 			    	<thead>
 			        <tr>
 			           <th th:text="#{site.siteName}" class="w3-brown"></th>
+			           <th th:text="#{site.city}" class="w3-brown"></th>
 			           <th th:text="#{site.siteStatus}" class="w3-brown"></th>
 			           <th th:text="#{site.type}" class="w3-brown"></th>
 			           <th th:text="#{site.coffeeSorts}" class="w3-brown"></th> 
@@ -186,12 +187,12 @@
 				        	th:onclick="'javascript:rowClicked(\'' + ${site.id} + '\');'"> <!-- Reference na js /showSite/{site.id} viz nize -->
 			
 						  <td th:text="${site.siteName}">SiteName</td>
+						  <td th:text="${site.mesto}">City name</td>
 						  <td th:text="${site.statusZarizeni.status}">SiteStatus</td>
 						  <td th:text="${site.typPodniku.coffeeSiteType}">TypPodniku</td>
 						  <!-- <td th:text="${site.coffeeSorts}">CoffeeSorts</td>  -->
 						  <td><span th:each="sort, iterStat : ${site.coffeeSorts}" th:text="!${iterStat.last} ? ${sort}+', ' : ${sort}">Coffee Sorts</span></td>
 			              <td><span th:each="offer, iterStat : ${site.otherOffers}" th:text="!${iterStat.last} ? ${offer}+', ' : ${offer}">Other Offer</span></td>
-						  <!-- <td th:text="${site.otherOffers}">Offer</td>  -->
 						  <td th:text="${site.distFromSearchPoint}">Distance</td>
 			  			  <td th:text="${site.averageStarsWithNumOfHodnoceni.common}">Stars</td>
 						  <!-- <td th:text="${site.averageStars}">Stars</td> -->	

@@ -43,7 +43,28 @@ public interface CoffeeSiteService
      */
     public List<CoffeeSiteDTO> findAllByCityNameAtStart(String cityName);
     
+    /**
+     * Counts average longitude and latitude of all List<CoffeeSiteDTO> locations
+     * 
+     * @param coffeeSites
+     * @return
+     */
     public LatLong getAverageLocation(List<CoffeeSiteDTO> coffeeSites);
+    
+    /**
+     * Gets longitude and latitude of the "search From" point for CoffeeSiteDTO location.
+     * Used in case the only one CoffeeSite is to be shown on map and it was not found
+     * based on location (but based on city name etc.).
+     * The default distance of the returned search point from coffeeSiteDTO's location
+     * is 500 m, but the distance can be defined by "distance" parameter, whose
+     * values can be from 50 m to 5000 m. Therefore, only simplified method
+     * to count coordinates can be used as the curvature of earth is not significant for such short distance.
+     * 
+     * @param coffeeSiteDTO
+     * @param distance
+     * @return
+     */
+    public LatLong getSearchFromLocation(CoffeeSiteDTO coffeeSiteDTO, int distance);
     
     /**
      * Returns "numOfSites" number of latest created and ACTIVE CoffeeSites, not older then 60 days (created from now to 60 days before)
@@ -119,7 +140,5 @@ public interface CoffeeSiteService
     
     // Pomocna metoda pro otestovani, ze funguje volani Stored procedure v DB
     public double getDistance(double zemSirka1, double zemDelka1, double zemSirka2, double zemDelka2);
-    
-    
     
 }

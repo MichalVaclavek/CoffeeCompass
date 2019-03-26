@@ -347,8 +347,8 @@
 					<div class="w3-container w3-margin-top" th:if="${NOT #lists.isEmpty(comments)}">
 						<div th:each="comment : ${comments}" class="w3-border-bottom w3-margin-top">
 							<div class="w3-right"> <!--  to move user and date to the right side -->
-								<span th:text="${comment.userName}" style="font-weight: bold; font-style: italic" class="w3-small">User</span>
-								- <span th:text="${#dates.format(comment.created, 'dd.MM. yyyy , HH:mm')}" class="w3-small" style="font-style: italic">Date of comment</span> <!-- style="font-weight: bold" -->
+								<span th:text="${comment.userName}" style="font-weight: bold; font-style: italic" class="w3-small">User name</span> - 
+								<span th:text="${#dates.format(comment.created, 'dd.MM. yyyy - HH:mm')}" class="w3-small" style="font-style: italic">Date of comment</span> <!-- style="font-weight: bold" -->
 							</div>
 							<div class="w3-cell-row">
 							  <div th:text="${comment.text}" class="w3-margin-left w3-cell"></div>

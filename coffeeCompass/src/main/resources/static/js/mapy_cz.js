@@ -76,8 +76,10 @@ map.insertSites = function(foundSites)
 		foundSites.forEach(function(site) {
 			var c = SMap.Coords.fromWGS84(site.zemDelka, site.zemSirka); /* Souřadnice značky, z textového formátu souřadnic */
 		  
+			var base_url = window.location.origin;
+			
 			var options = {
-				url: "http://coffeecompass.cz/images/cup.png", /* cesta k /src/resources/images/cup.png v resourcech */
+				url: base_url + "/images/cup.png", /* cesta k /src/resources/images/cup.png v resourcech */	
 				title: site.siteName, 
 				anchor: {left:10, bottom: 1}  /* Ukotvení značky za bod uprostřed dole */
 			}
@@ -105,7 +107,8 @@ map.insertSites = function(foundSites)
 			
 			card.getBody().innerHTML = textVizitka;
 			
-			var footerText = "<a href='http://coffeecompass.cz/showSite/";
+			
+			var footerText = "<a href='" + base_url + "/showSite/"; 
 			footerText += site.id + "'>Další detaily ...</a>";
 			
 			card.getFooter().innerHTML = footerText;

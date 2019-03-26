@@ -1,5 +1,7 @@
 package cz.fungisoft.coffeecompass.controller.models;
 
+import javax.validation.constraints.NotEmpty;
+
 import lombok.Data;
 
 /**
@@ -11,5 +13,6 @@ import lombok.Data;
 @Data
 public class OneStringModel
 {
+    @NotEmpty
     private String input;
 }

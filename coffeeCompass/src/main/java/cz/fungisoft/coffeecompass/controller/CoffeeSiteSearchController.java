@@ -3,6 +3,9 @@
  */
 package cz.fungisoft.coffeecompass.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -25,9 +28,12 @@ import cz.fungisoft.coffeecompass.controller.models.OneStringModel;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSort;
+import cz.fungisoft.coffeecompass.pojo.LatLong;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.CoffeeSortService;
+import cz.fungisoft.coffeecompass.serviceimpl.CoffeeSiteServiceImpl;
 import io.swagger.annotations.Api;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Obsluha požadavků na stránce pro vyhledavani CoffeeSites a jejich zobrazovani v mape na coffeesites_search.html<br>
@@ -42,19 +48,13 @@ import io.swagger.annotations.Api;
  */
 @Api // Anotace Swagger
 @Controller
+@Log4j2
 public class CoffeeSiteSearchController
 {
     private CoffeeSiteService coffeeSiteService;
     
     private CoffeeSortService coffeeSortService;
     
-    /**
-     * To save current city for search CoffeeSites in, which is inserted by Form on coffeesites_search.html
-     * or by link on home.html (link on statistics list of cities with most number of active CoffeeSites).
-     * Needed for processing Get requests with validation error of city name 
-     */
-    private String currentSearchCity = "";
-    private boolean searchCityExactly = false; // default mode for searching according city name
     
     /**
      * Dependency Injection pomoci konstruktoru, neni potreba uvadet @Autowired u atributu, Spring toto umi automaticky.
@@ -85,8 +85,6 @@ public class CoffeeSiteSearchController
         model.addAttribute("searchCriteria", searchCriteria);
         
         OneStringModel cityName = new OneStringModel();
-        cityName.setInput(currentSearchCity);
-        
         model.addAttribute("cityName", cityName);
             
         return "coffeesite_search";
@@ -142,144 +140,114 @@ public class CoffeeSiteSearchController
    
    
    /**
-    * Method to handle request to show all CoffeeSites of one city. Basicaly used from home.html links of the list of "top" cities<br>
-    * cityName should be always valid as it comes from href resp. from DB request output used for building respective href on home.html links<br>
-    * Returns ModelAndView for coffeesite_search.html page, but with redirection to "/showCitySearch" link, which serves like basic entry point in case of refreshing the page or
-    * during language swap.
+    * Method to handle request to show all CoffeeSites of one city. This URI is used from home.html links of the list of "top" cities<br>
+    * cityName should be always valid as it comes from href resp. from DB request output used for building the href on home.html links<br>
+    * Returns ModelAndView for coffeesite_search.html page, but with redirection to "/searchSitesInCityForm" link, which serves like basic
+    * entry point for "city" searching Form on coffeesite_search.html page.
     * 
     * @param cityName - jmeno mesta z home.html ze statistiky mest s nejvetsim poctem aktivnich CoffeeSites
-    * @param redirectAttributes - parametr nutny pro vlozeni prislusnych atributu modelu, ktere se maji prenest pri redirection.
-    * @return opet ModelAndView pro vyhledavaci stranku, s presmerovanim na "/showCitySearch", doplneny o vyhledane CoffeeSites nebo o "flag", ktery oznacuje, ze nebylo nalezeno nic
+    * @return opet ModelAndView pro vyhledavaci stranku, s presmerovanim na "/searchSitesInCityForm" s parametry "cityName" a "searchCityNameExactly", ktery urcuje, ze se CoffeeSites maji hledat, tak aby jejich atribut mesto byl presne shodny s "cityName"
     */
    @GetMapping("/showCitySites/") // napr. http://coffeecompass.cz/showCitySites/?cityName=Tišnov
-   public ModelAndView  showCitySites(@RequestParam(value="cityName") String cityName, RedirectAttributes redirectAttributes) {
-       return redirectAndShowSitesInCity(cityName, true,  redirectAttributes);
-   }
-   
-   /**
-    * Method to handle request to show all CoffeeSites of one city. Used to process a Form on coffeesite_search.html page.<br>
-    * Must contain also model and BindingResult for the second form on the coffeesite_search.html page, otherwise Spring throws error.<br>
-    * 
-    * Returns ModelAndView for coffeesite_search.html page, but with redirection to "/showCitySearch" link, which serves like basic entry point in case of refreshing the page or
-    * during language swap.
-    * 
-    * @param searchCriteria - model vyhledavacich kriterii s daty ktere vlozil uzivatel a ktere do modelu spravne namapoval Thymeleaf.<br>
-    *        Zde se ale neoveruje, ani nevyuziva, protoze tento odkaz zpracovava pouze click na tlac. ve formulari pro vyhledavani podle jmena mesta. 
-    * @param bindingResultSearchCriteria - vysledek vytvoreni searchCriteria modelu z dat ve formulari pro vyhledani podle souradnic
-    * @param cityName - model pro vyhledavani podle mesta. Obsahuje pouze retezec se jmenem mesta. 
-    * @param bindingResultCityName - vysledek vytvoreni OneStringModel modelu z dat ve formulari pro vyhledani podle jmena mesta
-    * 
-    * @param redirectAttributes - parametr nutny pro vlozeni prislusnych atributu modelu, ktere se maji prenest pri redirection.
-    * 
-    * @return opet ModelAndView pro vyhledavaci stranku, s presmerovanim na "/showCitySearch", doplneny o vyhledane CoffeeSites nebo o "flag", ktery oznacuje, ze nebylo nalezeno nic
-    */
-   @GetMapping("/searchSitesInCityForm") 
-   public ModelAndView  showCitySitesFromForm(@ModelAttribute("cityName") OneStringModel cityName, final BindingResult bindingResultCityName,
-                                              @ModelAttribute("searchCriteria") CoffeeSiteSearchCriteriaModel searchCriteria, final BindingResult bindingResultSearchCriteria,
-                                              RedirectAttributes redirectAttributes) {
+   public ModelAndView  showCitySites(@RequestParam(value="cityName", defaultValue="") String cityName) {
        
-       ModelAndView mav = new ModelAndView("coffeesite_search");
+       String encodedCityName = "";
+        try {
+            encodedCityName = URLEncoder.encode(cityName, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            log.warn("City name URL encoding error. City name {}.", cityName);
+        }
+        
+       ModelAndView mav = new ModelAndView(new RedirectView("/searchSitesInCityForm/?cityName=" + encodedCityName + "&searchCityNameExactly=true", true));
        
-       if (cityName.getInput() != null) {
-           currentSearchCity = cityName.getInput(); // currentSearchCity is used in case the page is refreshed when selecting another language and current url is still valid i.e. in case of previous validation failure
-       } else
-           cityName.setInput(currentSearchCity);
+       CoffeeSiteSearchCriteriaModel searchCriteria = new CoffeeSiteSearchCriteriaModel();
+       mav.addObject("searchCriteria", searchCriteria);
        
-       if (bindingResultCityName.hasErrors()) {
-           return mav;
-       } else { // Check if the cityName is valid city/town name
-                // i.e. at least 2 characters at the beginning and " " (space) or "-" allowed in between.
-           if (!currentSearchCity.matches("^([\\p{IsAlphabetic}]{2})[\\p{IsAlphabetic} -]+$")) {
-               bindingResultCityName.rejectValue("input", "error.city.name.wrong", "Not valid city name.");
-               return mav;
-           }
-       }
-       
-       return redirectAndShowSitesInCity(currentSearchCity, false, redirectAttributes);
-   }
-   
-   /**
-    * Pomocna metoda, ktera zdruzuje spolecne akce pri presmerovani z odkazu vyse "/searchSitesInCityForm" a "/showCitySites/"
-    * Preda atributy nutne pro vyhledani podle jmena mesta ze dvou ruznych odkazu, tj. jmeno mesta a zpusob hledani podle mesta.
-    * 
-    * @param cityName - jmeno mesta, kde se maji hledat CoffeeSites
-    * @param searchExactly - jak se maji hledat CoffeeSites - dana polzka "mesto" daneho CoffeeSite se musi presne shodovat s cityName (true)
-    *                       nebo se hledaji vsechny CoffeeSites, jejich field "mesto" zacina na  cityName (false)
-    * @param redirectAttributes - object pro ulozeni parametru, ktere se maji prenest do dalsi metody, ktere zpracovavaji presmerovany odkaz "/showCitySearch"
-    * 
-    * @return  ModelAndView which performs redirection to "/showCitySearch"
-    */
-   private ModelAndView  redirectAndShowSitesInCity(String cityName, boolean searchExactly, RedirectAttributes redirectAttributes) {
-       ModelAndView mav = new ModelAndView("redirect:/showCitySearch");
-       
-       redirectAttributes.addFlashAttribute("cityNameString", cityName);
-       redirectAttributes.addFlashAttribute("searchExactlyCityName", searchExactly);
+       OneStringModel cityNameModel = new OneStringModel();
+       cityNameModel.setInput(cityName);
+       mav.addObject("cityName", cityNameModel);
        
        return mav;
    }
    
+   
    /**
-    * Method to process redirected GET request from:<br>
+    * Method to handle request to show all CoffeeSites of one city. Used to process a Form on coffeesite_search.html page or parametrized URL request.<br>
+    * Must contain also model and BindingResult for the second form on the coffeesite_search.html page, otherwise Spring throws error.<br>
     * 
-    * {@link #showCitySitesFromForm()} and <br>
-    * {@link #showCitySites()} <br>
+    * Returns ModelAndView for coffeesite_search.html page.
     * 
-    * methods.
-    * <br>
-    * Creates and returns correct ModelMap for both Forms on coffeesite_search.html with "List<CoffeeSiteDTO> foundSites" created according requests on<br>
-    * "/searchSitesInCityForm" and  "/showCitySites/" links i.e. according city name.<br>
-    * If the "/searchSitesInCityForm" was invoked, then all the CoffeeSites whose "mesto" begins with "currentSearchCity" are found,<br>
-    * if the "/showCitySites/" was invoked, then all the CoffeeSites whose "mesto" is exactly equal to "currentSearchCity" are found.<br>
-    * Can be invoked repeatable (in case of refresh or language change) as it saves current city name and "mode" for searching CoffeeSites in city.
+    * @param cityName - jmeno mesta, ve kterem se maji hledat CoffeeSites, inserted like URL parameter. Aktualne pouzito pri redirectu z predchozi metody resp. z URL "/showCitySites/?cityName=xxx" volane z home.html
+    * @param searchExactly - parameter urcujici, zda se CoffeeSites maji hledat tak, ze jejich field "mesto" se presne shoduje s cityName nebo se maji hledat vsechny CoffeeSites, jejich filed mesto zacina retezcem "cityName"
     * 
-    * @param model - ModelMap for coffeesite_search.html page. Contains CoffeeSites to be shown on a map and all attributes for both Forms on the coffeesite_search.html page
-    * @return vrati opet model pro vyhledavaci stranku, doplneny o vyhledane CoffeeSites nebo o "flag", ktery oznacuje, ze nebylo nalezeno nic.
+    * @param searchCriteria - model vyhledavacich kriterii s daty, ktere vlozil uzivatel a ktere do modelu spravne namapoval Thymeleaf.<br>
+    *        Zde se ale neoveruje, ani nevyuziva, protoze tento odkaz zpracovava pouze click na tlac. ve formulari pro vyhledavani podle jmena mesta.
+    *        Pro spravnou funkcnost Springu je vsak treba uvest, protoze na strance "coffeesite_search.html" jsou 2 formulare se dvema modely.
+    * @param bindingResultSearchCriteria - vysledek vytvoreni searchCriteria modelu z dat ve formulari pro vyhledani podle souradnic
+    * @param cityNameModel - model pro vyhledavani podle mesta, vlozeno z formulare na strance "coffeesite_search.html". Obsahuje pouze retezec se jmenem mesta. 
+    * @param bindingResultCityName - vysledek vytvoreni OneStringModel modelu z dat ve formulari pro vyhledani podle jmena mesta
+    * 
+    * @return opet ModelAndView pro vyhledavaci stranku, s presmerovanim na "/showCitySearch", doplneny o vyhledane CoffeeSites nebo o "flag", ktery oznacuje, ze nebylo nalezeno nic
     */
-   //@ModelAttribute("cityNameString") Object cityName
-   @GetMapping("/showCitySearch") 
-   private ModelAndView  createModelAndShowSitesInCity(ModelMap model) {
+   @GetMapping("/searchSitesInCityForm/") // napr.  http://coffeecompass.cz/searchSitesInCityForm/?cityName=Tišnov&searchCityNameExactly=true
+   public ModelAndView  showCitySitesFromForm(@RequestParam(value="cityName", defaultValue="") String cityName,
+                                              @RequestParam(value="searchCityNameExactly", defaultValue="false") boolean searchExactly,
+                                              @ModelAttribute("cityName") OneStringModel cityNameModel, final BindingResult bindingResultCityName,
+                                              @ModelAttribute("searchCriteria") CoffeeSiteSearchCriteriaModel searchCriteria, final BindingResult bindingResultSearchCriteria
+                                             ) {
        
-       ModelAndView mav = new ModelAndView();
+       ModelAndView mav = new ModelAndView("coffeesite_search");
        
-       CoffeeSiteSearchCriteriaModel searchCriteria = new CoffeeSiteSearchCriteriaModel();
+       if (bindingResultCityName.hasErrors()) {
+           return mav;
+       } 
        
-       List<CoffeeSiteDTO> foundSites = null;
+       String currentSearchCity = cityName;
        
-       // City name and search mode are global variables for this Controller as it needs to be saved in case
-       // the search page is refreshed or lang is changed
-       searchCityExactly = (boolean) model.getOrDefault("searchExactlyCityName", searchCityExactly);
-       currentSearchCity = (String) model.getOrDefault("cityNameString", currentSearchCity);
+       if (currentSearchCity.isEmpty() && cityNameModel.getInput() != null ) { // city name inserted by user in Form, not by calling /searchSitesInCityForm/?cityName=XXXX&searchCityNameExactly=true link
+           currentSearchCity = cityNameModel.getInput(); 
+       } 
        
-       if (searchCityExactly) {
-           foundSites = coffeeSiteService.findAllByCityNameExactly(currentSearchCity);
-       } else {
-           foundSites = coffeeSiteService.findAllByCityNameAtStart(currentSearchCity);
+       // Check if the cityName is valid city/town name
+       // i.e. at least 2 characters at the beginning and " " (space) or "-" allowed in between.
+       if (currentSearchCity.isEmpty() || !currentSearchCity.matches("^([\\p{IsAlphabetic}]{2})[\\p{IsAlphabetic} -]+$")) {
+           bindingResultCityName.rejectValue("input", "error.city.name.wrong", "Not a valid city name.");
+           return mav;
        }
        
-       //TODO handle the case that only one CoffeeSite was found. In such case, the searchCriteria lat. , long. must be changed
+       List<CoffeeSiteDTO> foundSites = new ArrayList<>();
        
-       if (foundSites != null) {
+       if (!currentSearchCity.isEmpty()) {
+           
+           foundSites = (searchExactly) ? coffeeSiteService.findAllByCityNameExactly(currentSearchCity)
+                                        : coffeeSiteService.findAllByCityNameAtStart(currentSearchCity);
+           
            if ( foundSites.size() == 0) {
                mav.addObject("emptyResult", true); // nothing found, let to know to model
-           } else {
+           } 
+           
+           if ( foundSites.size() == 1) {
+               LatLong avgSitesLocation = coffeeSiteService.getSearchFromLocation(foundSites.get(0), 200);
+               searchCriteria.setLon1(avgSitesLocation.getLongitude());
+               searchCriteria.setLat1(avgSitesLocation.getLatitude());
+           }
+           else {
                /**
-                * Initial request to find CoffeeSites was not based on location (city name was the search parameter),
+                * Initial request to find CoffeeSites was not based on location (but the city name was the search parameter),
                 * therefore the CoffeeSiteSearchCriteriaModel must be filled-up using found CoffeeSites.
                 * Average longitude and latitude of found CoffeeSites is used.
                 */
-               searchCriteria.setLon1(coffeeSiteService.getAverageLocation(foundSites).getLongitude());
-               searchCriteria.setLat1(coffeeSiteService.getAverageLocation(foundSites).getLatitude());
+               LatLong avgSitesLocation = coffeeSiteService.getAverageLocation(foundSites);
+               searchCriteria.setLon1(avgSitesLocation.getLongitude());
+               searchCriteria.setLat1(avgSitesLocation.getLatitude());
            }
        }
        
        mav.addObject("foundSites", foundSites);
        mav.addObject("searchCriteria", searchCriteria);
        
-       OneStringModel cityNameModel = new OneStringModel();
        cityNameModel.setInput(currentSearchCity);
        mav.addObject("cityName", cityNameModel);
-       
-       mav.setViewName("coffeesite_search");
        
        return mav;
    }

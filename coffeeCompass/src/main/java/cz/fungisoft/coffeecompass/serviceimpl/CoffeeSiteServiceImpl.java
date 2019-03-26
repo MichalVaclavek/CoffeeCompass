@@ -602,9 +602,39 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         OptionalDouble avgLat = coffeeSites.stream().mapToDouble(cs -> cs.getZemSirka()).average();
         OptionalDouble avgLong = coffeeSites.stream().mapToDouble(cs -> cs.getZemDelka()).average();
         return new LatLong(avgLat.orElse(0), avgLong.orElse(0));
-        
     }
+    
+    /**
+     * Counts and returns the latitude and longitude of the "search point", which is
+     * in "distance" from coffeeSiteDTO's location. The "search point" location
+     * is counted in ratio 3/4/5 to south and west i.e. 5 is a distance, 4 is
+     * the distance to the west and 3 is distance to the south. Only flat surface
+     * pythagorian theorem is used, curvature of Eartch is not taken into account
+     * as the limits from {distance is only from 50 to 5000 m.
+     * 
+     * @param coffeeSiteDTO - the site from it's location the new location is counted
+     * @param distance - distance in meters of returned location from coffeeSiteDTO's location. Allowed values are from 50 to 5000, otherwise default 500 is set. 
+     */
+    @Override
+    public LatLong getSearchFromLocation(CoffeeSiteDTO coffeeSiteDTO, int distance) {
+        
+        if (distance < 50 || distance > 5000) {
+            distance = 500;
+        }
+        
+        double distanceNaDruhou = distance * distance;
+        double distSouth = Math.sqrt(distanceNaDruhou - Math.pow(4/12d * distance, 2));
+        double distWest = Math.sqrt(distanceNaDruhou - Math.pow(3/12d * distance, 2));
 
+        long eRadius = 6372000;
+        double obvodZeme = 2 * Math.PI * eRadius;
+        double stupneNaMetr = 360d / obvodZeme; // one meter on Earth as part of the whole circle degrees (360 deggrees) 
+        
+        double searchPointLat = coffeeSiteDTO.getZemSirka() - distSouth * stupneNaMetr;
+        double searchPointLong = coffeeSiteDTO.getZemDelka() - distWest * stupneNaMetr;
+        
+        return new LatLong(searchPointLat, searchPointLong);
+    }
 
     //TODO dalsi vyhledavaci metody podle ruznych kriterii?
     // CriteriaQuery a CriteriaQueryBuilder
