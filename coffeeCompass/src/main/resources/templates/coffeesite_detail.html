@@ -18,291 +18,295 @@
 
 	<div th:replace="fragments/header :: header"/>
 	
-	    <div class="w3-light-grey w3-margin-bottom w3-center">
-	       <h1 th:text="#{app.site-details}" class="w3-margin">Details</h1>
-   		</div>
+    <div class="w3-light-grey w3-margin-bottom w3-center">
+       <h1 th:text="#{app.site-details}" class="w3-margin">Details label</h1>
+  	</div>
    
-   		<div class="w3-container w3-margin-bottom"> 
+   	<div class="w3-container w3-margin-bottom"> 
    
-		    <div th:if="${param.createSuccess} OR ${param.modifySuccess}" class="w3-panel w3-pale-blue w3-display-container w3-round">
-		   		<span onclick="this.parentElement.style.display='none'"
-			  		  class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
-		   		<p th:text="${param.createSuccess} ? #{app.site.created.success} : #{app.site.modified.success}" class="w3-container" >
-		   		</p>
-		    </div>
-		    
-		    <!-- Confirmation messages - used in case coffeeSite was Activated susccessfuly -->
-		   	<div th:if="${param.activationSuccess}" class="w3-pale-blue w3-display-container w3-round w3-panel">
-			    <span onclick="this.parentElement.style.display='none'"
-			  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
-			    <p><span th:text="#{site.activated.success}"></span><b><span th:text="${coffeeSite.siteName}"></span></b>
-			    </p>
-			</div>
+	    <div th:if="${param.createSuccess} OR ${param.modifySuccess}" class="w3-panel w3-pale-blue w3-display-container w3-round">
+	   		<span onclick="this.parentElement.style.display='none'"
+		  		  class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
+	   		<p th:text="${param.createSuccess} ? #{app.site.created.success} : #{app.site.modified.success}" class="w3-container" >
+	   		</p>
+	    </div>
 	    
-		    <div class="w3-container w3-margin w3-cell" style="width:30%"> <!-- style="width:30%" -->
+	    <!-- Confirmation messages - used in case coffeeSite was Activated susccessfuly -->
+	   	<div th:if="${param.activationSuccess}" class="w3-pale-blue w3-display-container w3-round w3-panel">
+		    <span onclick="this.parentElement.style.display='none'"
+		  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
+		    <p><span th:text="#{site.activated.success}"></span><b><span th:text="${coffeeSite.siteName}"></span></b>
+		    </p>
+		</div>
+	    
+	    <div class="w3-row-padding" >
+	    
+	    	<div class="w3-padding-16 w3-card-4 w3-round w3-half" > <!-- DIV containing CoffeeSite detail table, modification byttons and picture section -->
+	    	
+		    	<div class="w3-container w3-margin w3-cell" style="width:30%"> <!-- style="width:30%" -->
 		    
-			    <table class="w3-table w3-card-4 w3-bordered w3-border">
-			        
-				    <tr>
-					  <td th:text="#{site.siteName}" class="w3-brown">SiteName</td>
-					  <td class="w3-right-align w3-brown w3-text-amber" style="font-weight: bold" th:text="${coffeeSite.siteName}">SiteName</td>
-				    </tr>
-				    	 
-				    <tr>
-					  <td th:text="#{site.createdon}">CreatedOn</td>
-					  <td class="w3-right-align w3-sand" th:text="${#dates.format(coffeeSite.createdOn, 'dd.MM. yyyy , HH:mm')}" style="font-weight: bold">CreatedOn</td>
-				    </tr>
-				    
-					<tr>
-					   <td th:text="#{site.siteStatus}">Site status</td>
-					   <td class="w3-right-align w3-sand" th:text="${coffeeSite.statusZarizeni.status}" style="font-weight: bold">Site status</td>
-					</tr>
-				    
-					<tr>
-					   <td th:text="#{site.type}">TypPodniku</td>
-					   <td class="w3-right-align w3-sand" th:text="${coffeeSite.typPodniku.coffeeSiteType}" style="font-weight: bold">TypPodniku</td>
-					</tr>
-					  
-					<tr>
-					   <td th:text="#{site.coffeeSorts}">CoffeeSorts</td>
-					   <!-- <td class="w3-right-align w3-sand" th:text="${coffeeSite.coffeeSorts}" style="font-weight: bold">CoffeeSorts</td>  -->
-					   <td style="font-weight: bold" class="w3-right-align w3-sand"><span th:each="sort, iterStat : ${coffeeSite.coffeeSorts}" th:text="!${iterStat.last} ? ${sort}+', ' : ${sort}">Coffee Sort</span></td>
-					</tr>
-					  
-					<tr>
-					   <td th:text="#{site.otherOffers}">Offer</td>	
-					   <!--<td class="w3-right-align w3-sand" th:text="${coffeeSite.otherOffers}" style="font-weight: bold">Other Offer</td> -->
-					   <td class="w3-right-align w3-sand" style="font-weight: bold"><span th:each="offer, iterStat : ${coffeeSite.otherOffers}" th:text="!${iterStat.last} ? ${offer}+', ' : ${offer}">Other Offer</span></td>
-					</tr>
-					  
-					<tr>
-					   <td th:text="#{site.pricerange}">Price range</td>
-					   <td class="w3-right-align w3-sand" th:text="${coffeeSite.cena.priceRange}" style="font-weight: bold">Price range</td>
-					</tr>
+				    <table class="w3-table w3-bordered" style="border:2px solid brown;">
+					    <tr>
+						  <td th:text="#{site.siteName}" class="w3-brown">SiteName</td>
+						  <td class="w3-right-align w3-brown w3-text-amber" style="font-weight: bold" th:text="${coffeeSite.siteName}">SiteName</td>
+					    </tr>
+					    	 
+					    <tr>
+						  <td th:text="#{site.createdon}">CreatedOn</td>
+						  <td class="w3-right-align w3-sand" th:text="${#dates.format(coffeeSite.createdOn, 'dd.MM. yyyy , HH:mm')}" style="font-weight: bold">CreatedOn</td>
+					    </tr>
+					    
+						<tr>
+						   <td th:text="#{site.siteStatus}">Site status</td>
+						   <td class="w3-right-align w3-sand" th:text="${coffeeSite.statusZarizeni.status}" style="font-weight: bold">Site status</td>
+						</tr>
+					    
+						<tr>
+						   <td th:text="#{site.type}">TypPodniku</td>
+						   <td class="w3-right-align w3-sand" th:text="${coffeeSite.typPodniku.coffeeSiteType}" style="font-weight: bold">TypPodniku</td>
+						</tr>
+						  
+						<tr>
+						   <td th:text="#{site.coffeeSorts}">CoffeeSorts</td>
+						   <!-- <td class="w3-right-align w3-sand" th:text="${coffeeSite.coffeeSorts}" style="font-weight: bold">CoffeeSorts</td>  -->
+						   <td style="font-weight: bold" class="w3-right-align w3-sand"><span th:each="sort, iterStat : ${coffeeSite.coffeeSorts}" th:text="!${iterStat.last} ? ${sort}+', ' : ${sort}">Coffee Sort</span></td>
+						</tr>
+						  
+						<tr>
+						   <td th:text="#{site.otherOffers}">Offer</td>	
+						   <!--<td class="w3-right-align w3-sand" th:text="${coffeeSite.otherOffers}" style="font-weight: bold">Other Offer</td> -->
+						   <td class="w3-right-align w3-sand" style="font-weight: bold"><span th:each="offer, iterStat : ${coffeeSite.otherOffers}" th:text="!${iterStat.last} ? ${offer}+', ' : ${offer}">Other Offer</span></td>
+						</tr>
+						  
+						<tr>
+						   <td th:text="#{site.pricerange}">Price range</td>
+						   <td class="w3-right-align w3-sand" th:text="${coffeeSite.cena.priceRange}" style="font-weight: bold">Price range</td>
+						</tr>
+				
+						<tr>
+						   <td th:text="#{site.cupTypes}">Cup Types</td>
+						  <!-- <td class="w3-right-align w3-sand" th:text="${coffeeSite.cupTypes}" style="font-weight: bold">Cup Types</td>  -->
+						  <td class="w3-right-align w3-sand" style="font-weight: bold"><span th:each="cupType, iterStat : ${coffeeSite.cupTypes}" th:text="!${iterStat.last} ? ${cupType}+', ' : ${cupType}">Cup Types</span></td> 
+						 </tr>
+				
+						<tr>
+						  <td th:text="#{site.numOfCoffeeMachines}">Number of coffee machines together</td>
+						  <td class="w3-right-align w3-sand" th:text="${coffeeSite.numOfCoffeeAutomatyVedleSebe}" style="font-weight: bold">Number of coffee machines together</td>
+						</tr>
+						  
+						<tr>
+						   <td th:text="#{site.supplier}">Supplier</td>
+						   <td class="w3-right-align w3-sand" th:text="${coffeeSite.dodavatelPodnik.nameOfCompany}" style="font-weight: bold">Supplier</td>
+						</tr>
+						  
+						<tr>
+						  <td th:text="#{site.nextToMachineTypes}">Other neighbering machines types</td>
+						  <td class="w3-right-align w3-sand" style="font-weight: bold"><span th:each="ntmType, iterStat : ${coffeeSite.nextToMachineTypes}" th:text="!${iterStat.last} ? ${ntmType}+', ' : ${ntmType}">Other neighbering machines types</span></td>
+						</tr>
+						  
+						<tr>
+						   <td th:text="#{site.openingDaysHours}">Location type</td>
+						   <td class="w3-right-align w3-sand" th:text="${coffeeSite.pristupnostDny} + ', ' + ${coffeeSite.pristupnostHod}" style="font-weight: bold">Opening days/hours</td>
+						</tr>
+						  
+						<tr>
+						   <td th:text="#{site.locationtype}">Location type</td>
+						   <td class="w3-right-align w3-sand" th:text="${coffeeSite.typLokality.locationType}" style="font-weight: bold">Location type</td>
+						</tr>
+						  
+						<tr>
+						  <td th:text="#{site.city}">City</td>		  		
+						  <td class="w3-right-align w3-sand" th:text="${coffeeSite.mesto}" style="font-weight: bold">City</td>
+						</tr>
+						  
+						<tr>	  
+						   <td th:text="#{site.street}">Street</td>
+						   <td class="w3-right-align w3-sand" th:text="${coffeeSite.uliceCP}" style="font-weight: bold">Street</td>
+						</tr>
+						  
+						<tr>
+						   <td th:text="#{site.longitude}">Zemepisna delka</td>	
+						   <td class="w3-right-align w3-sand" th:text="${coffeeSite.zemDelka}" style="font-weight: bold">Zemepisna delka</td>
+						</tr>
+						  
+						<tr>
+						   <td th:text="#{site.latitude}">Zemepisna sirka</td>	  
+						   <td class="w3-right-align w3-sand" th:text="${coffeeSite.zemSirka}" style="font-weight: bold">Zemepisna sirka</td>
+						</tr>
+						<tr>
+						   <td th:text="#{site.user}">Original user name</td>
+						   <td class="w3-right-align w3-sand" th:text="${coffeeSite.originalUserName}" style="font-weight: bold">Original user name</td>
+						</tr>
+						  
+						<tr>
+						   <td th:text="#{site.stars}">Stars</td>			  
+						   <td class="w3-right-align w3-sand">
+						      <span th:text="${coffeeSite.averageStarsWithNumOfHodnoceni.avgStars}" style="font-weight: bold"></span>
+						      <span th:if="${coffeeSite.averageStarsWithNumOfHodnoceni.numOfHodnoceni} > 0" th:text="' (' + ${coffeeSite.averageStarsWithNumOfHodnoceni.numOfHodnoceni} + ')'"></span>
+						   </td>
+	    				</tr>
+						  
+						<tr>
+						   <td th:text="#{site.initialComment}">Author's comment</td>			  
+						   <td class="w3-right-align w3-sand" th:text="${coffeeSite.initialComment}">Author's comment</td>
+						</tr>
+						  
+						<tr sec:authorize="isAuthenticated()">
+						  <td th:text="#{site.recordStatus}">Initial comment</td>			  
+						  <td class="w3-right-align w3-sand" th:text="${coffeeSite.recordStatus.status}" style="font-weight: bold">Status of record</td>
+						</tr>
+						  
+					</table>
+				</div>
 			
-					<tr>
-					   <td th:text="#{site.cupTypes}">Cup Types</td>
-					  <!-- <td class="w3-right-align w3-sand" th:text="${coffeeSite.cupTypes}" style="font-weight: bold">Cup Types</td>  -->
-					  <td class="w3-right-align w3-sand" style="font-weight: bold"><span th:each="cupType, iterStat : ${coffeeSite.cupTypes}" th:text="!${iterStat.last} ? ${cupType}+', ' : ${cupType}">Cup Types</span></td> 
-					 </tr>
-			
-					<tr>
-					  <td th:text="#{site.numOfCoffeeMachines}">Number of coffee machines together</td>
-					  <td class="w3-right-align w3-sand" th:text="${coffeeSite.numOfCoffeeAutomatyVedleSebe}" style="font-weight: bold">Number of coffee machines together</td>
-					</tr>
-					  
-					<tr>
-					   <td th:text="#{site.supplier}">Supplier</td>
-					   <td class="w3-right-align w3-sand" th:text="${coffeeSite.dodavatelPodnik.nameOfCompany}" style="font-weight: bold">Supplier</td>
-					</tr>
-					  
-					<tr>
-					  <td th:text="#{site.nextToMachineTypes}">Other neighbering machines types</td>
-					  <td class="w3-right-align w3-sand" style="font-weight: bold"><span th:each="ntmType, iterStat : ${coffeeSite.nextToMachineTypes}" th:text="!${iterStat.last} ? ${ntmType}+', ' : ${ntmType}">Other neighbering machines types</span></td>
-					</tr>
-					  
-					<tr>
-					   <td th:text="#{site.openingDaysHours}">Location type</td>
-					   <td class="w3-right-align w3-sand" th:text="${coffeeSite.pristupnostDny} + ', ' + ${coffeeSite.pristupnostHod}" style="font-weight: bold">Opening days/hours</td>
-					</tr>
-					  
-					<tr>
-					   <td th:text="#{site.locationtype}">Location type</td>
-					   <td class="w3-right-align w3-sand" th:text="${coffeeSite.typLokality.locationType}" style="font-weight: bold">Location type</td>
-					</tr>
-					  
-					<tr>
-					  <td th:text="#{site.city}">City</td>		  		
-					  <td class="w3-right-align w3-sand" th:text="${coffeeSite.mesto}" style="font-weight: bold">City</td>
-					</tr>
-					  
-					<tr>	  
-					   <td th:text="#{site.street}">Street</td>
-					   <td class="w3-right-align w3-sand" th:text="${coffeeSite.uliceCP}" style="font-weight: bold">Street</td>
-					</tr>
-					  
-					<tr>
-					   <td th:text="#{site.longitude}">Zemepisna delka</td>	
-					   <td class="w3-right-align w3-sand" th:text="${coffeeSite.zemDelka}" style="font-weight: bold">Zemepisna delka</td>
-					</tr>
-					  
-					<tr>
-					   <td th:text="#{site.latitude}">Zemepisna sirka</td>	  
-					   <td class="w3-right-align w3-sand" th:text="${coffeeSite.zemSirka}" style="font-weight: bold">Zemepisna sirka</td>
-					</tr>
-					<tr>
-					   <td th:text="#{site.user}">Original user name</td>
-					   <td class="w3-right-align w3-sand" th:text="${coffeeSite.originalUserName}" style="font-weight: bold">Original user name</td>
-					</tr>
-					  
-					<tr>
-					   <td th:text="#{site.stars}">Stars</td>			  
-					   <td class="w3-right-align w3-sand">
-					      <span th:text="${coffeeSite.averageStarsWithNumOfHodnoceni.avgStars}" style="font-weight: bold"></span>
-					      <span th:if="${coffeeSite.averageStarsWithNumOfHodnoceni.numOfHodnoceni} > 0" th:text="' (' + ${coffeeSite.averageStarsWithNumOfHodnoceni.numOfHodnoceni} + ')'"></span>
-					   </td>
-    				</tr>
-					  
-					<tr>
-					   <td th:text="#{site.initialComment}">Author's comment</td>			  
-					   <td class="w3-right-align w3-sand" th:text="${coffeeSite.initialComment}">Author's comment</td>
-					</tr>
-					  
-					<tr sec:authorize="isAuthenticated()">
-					  <td th:text="#{site.recordStatus}">Initial comment</td>			  
-					  <td class="w3-right-align w3-sand" th:text="${coffeeSite.recordStatus.status}" style="font-weight: bold">Status of record</td>
-					</tr>
-					  
-				</table>
-			</div>
-			
-			<!-- div element containing group of buttons and picture -->
- 			<div class="w3-display-container w3-cell w3-margin" style="width:25%">
-				<div>
-					 <!-- Group of buttons for modifying CoffeeSite status -->
-					 <!-- Buttons for modification of the CoffeeSite and for changing status of CS  -->
-					 <div class="w3-display-topleft w3-card-2 w3-light-grey w3-round" th:if="${coffeeSite.canBeModified} OR ${coffeeSite.canBeDeactivated}">
-					 
-						 <!-- Tlacitko pro Modifikaci pro uzivatele, ktery site vytvoril nebo pro DBA a ADMIN -->
-				         <!-- Available only for logged-in user who created the site or for DBA or ADMIN user -->
-				         <table class="w3-table">
-					         <tr>
-						         <td>
-						         <div>
-						             <form th:if="${coffeeSite.canBeModified} OR ${coffeeSite.canBeDeactivated}"
-						             	   action="#"
-						             	   th:action="@{'/modifySite/' + ${coffeeSite.id}}"
-						             	   th:method="GET" >
-							             <input type="hidden" name="_method" value="get" />
-							             <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.modify}" class="w3-btn w3-light-blue w3-border w3-round">X</button>
-							         </form>
-						         </div>	
-						         </td>
-					         </tr>
-						 	 <!-- Sada tlacitek pro zmenu stavu CoffeeSitu. Tj. Activate/Deactivate/Delete/Cancel -->
-						 	 <tr>
-						 	 	 <td>
-						         <div>
-						            <form th:if="${coffeeSite.canBeActivated} OR ${coffeeSite.canBeDeactivated} "
-						                  action="#" 
-						                  th:action="@{'/activateSite/' + ${coffeeSite.id}}" 
-						                  th:method="PUT" >
-						               <input type="hidden" name="_method" value="put" />
-						               <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.status.activate}" class="w3-btn w3-light-green w3-border w3-round">X</button>
-						            </form>
-						         </div>
-						         </td>						
-						         <td>
-						         <div>
-						            <form th:if="${coffeeSite.canBeActivated} OR ${coffeeSite.canBeDeactivated}"
-						                  action="#" 
-						                  th:action="@{'/deactivateSite/' + ${coffeeSite.id}}" 
-						                  th:method="PUT">
-						               <input type="hidden" name="_method" value="put" />
-						               <button  th:disabled="${coffeeSite.canBeActivated}" type="submit" id="submitButton" th:text="#{site.status.deactivate}" class="w3-btn w3-amber w3-border w3-round">X</button>
-						            </form> 
-						         </div>
-						         </td>
-					         </tr>
+				<!-- div element containing group of buttons and picture -->
+	 			<div class="w3-display-container w3-cell w3-margin" style="width:25%">
+					<div>
+						 <!-- Group of buttons for modifying CoffeeSite status -->
+						 <!-- Buttons for modification of the CoffeeSite and for changing status of CS  -->
+						 <div class="w3-display-topleft w3-card-2 w3-light-grey w3-round" th:if="${coffeeSite.canBeModified} OR ${coffeeSite.canBeDeactivated}">
+						 
+							 <!-- Tlacitko pro Modifikaci pro uzivatele, ktery site vytvoril nebo pro DBA a ADMIN -->
+					         <!-- Available only for logged-in user who created the site or for DBA or ADMIN user -->
+					         <table class="w3-table">
+						         <tr>
+							         <td>
+							         <div>
+							             <form th:if="${coffeeSite.canBeModified} OR ${coffeeSite.canBeDeactivated}"
+							             	   action="#"
+							             	   th:action="@{'/modifySite/' + ${coffeeSite.id}}"
+							             	   th:method="GET" >
+								             <input type="hidden" name="_method" value="get" />
+								             <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.modify}" class="w3-btn w3-light-blue w3-border w3-round">X</button>
+								         </form>
+							         </div>	
+							         </td>
+						         </tr>
+							 	 <!-- Sada tlacitek pro zmenu stavu CoffeeSitu. Tj. Activate/Deactivate/Delete/Cancel -->
+							 	 <tr>
+							 	 	 <td>
+							         <div>
+							            <form th:if="${coffeeSite.canBeActivated} OR ${coffeeSite.canBeDeactivated} "
+							                  action="#" 
+							                  th:action="@{'/activateSite/' + ${coffeeSite.id}}" 
+							                  th:method="PUT" >
+							               <input type="hidden" name="_method" value="put" />
+							               <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.status.activate}" class="w3-btn w3-light-green w3-border w3-round">X</button>
+							            </form>
+							         </div>
+							         </td>						
+							         <td>
+							         <div>
+							            <form th:if="${coffeeSite.canBeActivated} OR ${coffeeSite.canBeDeactivated}"
+							                  action="#" 
+							                  th:action="@{'/deactivateSite/' + ${coffeeSite.id}}" 
+							                  th:method="PUT">
+							               <input type="hidden" name="_method" value="put" />
+							               <button  th:disabled="${coffeeSite.canBeActivated}" type="submit" id="submitButton" th:text="#{site.status.deactivate}" class="w3-btn w3-amber w3-border w3-round">X</button>
+							            </form> 
+							         </div>
+							         </td>
+						         </tr>
+						         
+						         <!-- Zmena record statusu na Cancel. Ne finalni delete, to muze provest pouze ADMIN -->
+						         <tr>
+							         <td>
+							         <div >
+							            <form th:if="${coffeeSite.canBeCanceled} OR ${coffeeSite.canBeDeactivated}" 
+							                  action="#" 
+							                  th:action="@{'/cancelStatusSite/' + ${coffeeSite.id}}" 
+							                  th:method="PUT" > 
+							               <input type="hidden" name="_method" value="put" />
+							               <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.status.cancel}" class="w3-btn w3-red w3-border w3-round">X</button>
+			    			            </form>
+							         </div>
+							         </td>
+						         
+							         <!-- Form to generate DELETE http request with Delete button. For ADMIN only. -->
+							         <td>
+							         <div>
+										<form th:if="${coffeeSite.canBeDeleted}" 
+							                  action="#" 
+							                  th:action="@{'/finalDeleteSite/' + ${coffeeSite.id}}" 
+							                  th:method="DELETE">
+							               <input type="hidden" name="_method" value="delete" />
+							               <button type="submit" id="submitButton" th:text="#{site.delete}" class="w3-btn w3-red w3-border w3-round">X</button>
+							            </form>
+							         </div>
+							         </td>
+						         </tr>
+						         
+					         </table>
 					         
-					         <!-- Zmena record statusu na Cancel. Ne finalni delete, to muze provest pouze ADMIN -->
-					         <tr>
-						         <td>
-						         <div >
-						            <form th:if="${coffeeSite.canBeCanceled} OR ${coffeeSite.canBeDeactivated}" 
-						                  action="#" 
-						                  th:action="@{'/cancelStatusSite/' + ${coffeeSite.id}}" 
-						                  th:method="PUT" > 
-						               <input type="hidden" name="_method" value="put" />
-						               <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.status.cancel}" class="w3-btn w3-red w3-border w3-round">X</button>
-		    			            </form>
-						         </div>
-						         </td>
-					         
-						         <!-- Form to generate DELETE http request with Delete button. For ADMIN only. -->
-						         <td>
-						         <div>
-									<form th:if="${coffeeSite.canBeDeleted}" 
-						                  action="#" 
-						                  th:action="@{'/finalDeleteSite/' + ${coffeeSite.id}}" 
-						                  th:method="DELETE">
-						               <input type="hidden" name="_method" value="delete" />
-						               <button type="submit" id="submitButton" th:text="#{site.delete}" class="w3-btn w3-red w3-border w3-round">X</button>
-						            </form>
-						         </div>
-						         </td>
-					         </tr>
-					         
-				         </table>
+					    </div>
+					    
+					    <!-- Picture of the CoffeeSite, if available -->
+					    <div class="w3-display-middle" style="width:110%"> 
+					         <!-- Element pro vlozeni obrazku situ -->
+					         <!-- Inserted like base64 image to the model of this view, not as URL to REST api -->
+					         <img th:src="${pic}" alt="" class="photo w3-image w3-round"/>
+				        </div>
+				        <div th:if="${coffeeSite.mainImageURL == ''}" th:text="#{site.noImage}" class="w3-display-middle w3-small" style="font-style: italic"> 
+					         No imagge.
+				        </div>
+				         
+					    <!-- Element with Forms to upload or delete image of the Site -->
+					    <div th:if="${coffeeSite.canBeModified}" class="w3-display-bottommiddle">
+					    
+						     <div class="w3-right" th:if="${thisSiteImageId > 0} AND ${coffeeSite.canBeModified}">
+						        <form action="#" th:object="${thisSiteImageId}"
+						              th:action="@{'/deleteImage/' + ${thisSiteImageId}}" 
+						              th:method="DELETE">
+						            <input type="hidden" name="_method" value="delete" />
+						            <button type="submit" id="submitDeleteFileButton" th:text="#{image.delete}" class="w3-button w3-red w3-round w3-tiny">Delete image</button>
+						        </form>
+						     </div> 
+						    
+						     <div style="visibility: hidden"> <!-- Hidden H1 lines to move above delete image button up, closer to image itself -->
+						    	<h3>Move up delete button</h3>
+						     </div>
+						     <!-- <div class="w3-cell-bottom">  -->
+					         <!-- Element with Forms to upload or delete image of the Site -->
+					         <h5 th:text="#{image.insert.label}">Insert photo here</h5>
+					         <div class="w3-border w3-container">
+					         	<div>
+						         	<form method="POST" enctype="multipart/form-data" action="#" th:method="post"
+									       th:action="@{/imageUpload(${_csrf.parameterName}=${_csrf.token})}"
+									       th:object="${newImage}"> 
+									       
+								       <input th:type="hidden" name="siteId" th:field="*{coffeeSiteID}"/>
+								      
+									    <div class="w3-row">
+							                <div th:classappend="${#fields.hasErrors('file')} ? 'has-error' : ''">
+							                    <input class= "w3-border" 
+							                           name="file" id="fileNameInput"
+							                           type="file" th:field="*{file}"
+							                           th:text="#{image.selectfile.button}"
+							                           th:placeholder="#{image.selectfile.placeholder}"/>
+							                </div>
+						                	<div class="error-message" th:if="${#fields.hasErrors('file')}" th:errors="*{file}">Validation error messages</div>
+						                </div>
+						            
+							            <div class="w3-right">
+								            <button type="submit" id="saveImage" th:text="#{image.upload}" class="w3-button w3-light-blue w3-round w3-small w3-margin-bottom"  disabled>Upload image</button>    
+							            </div>
+							            
+							        </form>
+						      	</div> 
+					         </div>
+				         </div>
 				         
 				    </div>
 				    
-				    <!-- Picture of the CoffeeSite, if available -->
-				    <div class="w3-display-middle" style="width:110%"> 
-				         <!-- Element pro vlozeni obrazku situ -->
-				         <!-- Inserted like base64 image to the model of this view, not as URL to REST api -->
-				         <img th:src="${pic}" alt="" class="photo w3-image w3-round"/>
-			        </div>
-			        <div th:if="${coffeeSite.mainImageURL == ''}" th:text="#{site.noImage}" class="w3-display-middle w3-small" style="font-style: italic"> 
-				         No imagge.
-			        </div>
-			         
-				    <!-- Element with Forms to upload or delete image of the Site -->
-				    <div th:if="${coffeeSite.canBeModified}" class="w3-display-bottommiddle">
-				    
-					     <div class="w3-right" th:if="${thisSiteImageId > 0} AND ${coffeeSite.canBeModified}">
-					        <form action="#" th:object="${thisSiteImageId}"
-					              th:action="@{'/deleteImage/' + ${thisSiteImageId}}" 
-					              th:method="DELETE">
-					            <input type="hidden" name="_method" value="delete" />
-					            <button type="submit" id="submitDeleteFileButton" th:text="#{image.delete}" class="w3-button w3-red w3-round w3-tiny">Delete image</button>
-					        </form>
-					     </div> 
-					    
-					     <div style="visibility: hidden"> <!-- Hidden H1 lines to move above delete image button up, closer to image itself -->
-					    	<h3>Move up delete button</h3>
-					     </div>
-					     <!-- <div class="w3-cell-bottom">  -->
-				         <!-- Element with Forms to upload or delete image of the Site -->
-				         <h5 th:text="#{image.insert.label}">Insert photo here</h5>
-				         <div class="w3-border w3-container">
-				         	<div>
-					         	<form method="POST" enctype="multipart/form-data" action="#" th:method="post"
-								       th:action="@{/imageUpload(${_csrf.parameterName}=${_csrf.token})}"
-								       th:object="${newImage}"> 
-								       
-							       <input th:type="hidden" name="siteId" th:field="*{coffeeSiteID}"/>
-							      
-								    <div class="w3-row">
-						                <div th:classappend="${#fields.hasErrors('file')} ? 'has-error' : ''">
-						                    <input class= "w3-border" 
-						                           name="file" id="fileNameInput"
-						                           type="file" th:field="*{file}"
-						                           th:text="#{image.selectfile.button}"
-						                           th:placeholder="#{image.selectfile.placeholder}"/>
-						                </div>
-					                	<div class="error-message" th:if="${#fields.hasErrors('file')}" th:errors="*{file}">Validation error messages</div>
-					                </div>
-					            
-						            <div class="w3-right">
-							            <button type="submit" id="saveImage" th:text="#{image.upload}" class="w3-button w3-light-blue w3-round w3-small w3-margin-bottom"  disabled>Upload image</button>    
-						            </div>
-						            
-						        </form>
-					      	</div> 
-				         </div>
-				         
-			         </div>
-			    </div>
+		    	</div>
 		    </div>
 		    
 		    <!-- A common container for entering new Stars and comments and to show other already entered comments -->
-		    <div class="w3-container w3-cell w3-border-left">   
-		    
+		    <div class="w3-container w3-half ">  
 		        <!-- A panel for entering Stars and comment  -->
 		        <div th:if="${coffeeSite.canBeCommented} OR ${coffeeSite.canBeRatedByStars}">
 		        	
-			        <div class="w3-container w3-border w3-round w3-card-4">
+			        <div class="w3-container w3-border w3-round w3-card-2">
 			        	<h4 th:text="#{commentAndStars.insert.label}" class="w3-margin-bottom w3-center">Your rating and/or comment</h4>
 						<!-- Formular pro zadani hodnoceni - Stars. Muze zadat pouze prihlaseny uzivatel. -->
 						<form action="#"
@@ -348,7 +352,7 @@
 						<div th:each="comment : ${comments}" class="w3-border-bottom w3-margin-top">
 							<div class="w3-right"> <!--  to move user and date to the right side -->
 								<span th:text="${comment.userName}" style="font-weight: bold; font-style: italic" class="w3-small">User name</span> - 
-								<span th:text="${#dates.format(comment.created, 'dd.MM. yyyy - HH:mm')}" class="w3-small" style="font-style: italic">Date of comment</span> <!-- style="font-weight: bold" -->
+								<span th:text="${#dates.format(comment.created, 'dd.MM. yyyy, HH:mm')}" class="w3-small" style="font-style: italic">Date of comment</span> <!-- style="font-weight: bold" -->
 							</div>
 							<div class="w3-cell-row">
 							  <div th:text="${comment.text}" class="w3-margin-left w3-cell"></div>
@@ -369,6 +373,8 @@
 			</div>
 			
 		 </div>
+	 </div>
+	  
 	 <!-- <div th:replace="fragments/footer :: footer"/>  -->
 	 
 </body>
