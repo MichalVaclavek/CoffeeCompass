@@ -79,7 +79,7 @@ map.insertSites = function(foundSites)
 			var base_url = window.location.origin;
 			
 			var options = {
-				url: base_url + "/images/cup.png", /* cesta k /src/resources/images/cup.png v resourcech */	
+				url: base_url + "/images/cup_basic.png", /* cesta k /src/resources/images/cup.png v resourcech */	
 				title: site.siteName, 
 				anchor: {left:10, bottom: 1}  /* Ukotvení značky za bod uprostřed dole */
 			}
