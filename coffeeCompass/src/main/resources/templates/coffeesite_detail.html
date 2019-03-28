@@ -105,7 +105,7 @@
 						</tr>
 						  
 						<tr>
-						   <td th:text="#{site.openingDaysHours}">Location type</td>
+						   <td th:text="#{site.openingDaysHours}">Opening days/hours</td>
 						   <td class="w3-right-align w3-sand" th:text="${coffeeSite.pristupnostDny} + ', ' + ${coffeeSite.pristupnostHod}" style="font-weight: bold">Opening days/hours</td>
 						</tr>
 						  
@@ -123,7 +123,29 @@
 						   <td th:text="#{site.street}">Street</td>
 						   <td class="w3-right-align w3-sand" th:text="${coffeeSite.uliceCP}" style="font-weight: bold">Street</td>
 						</tr>
+						
+						<tr>
+						   <td th:text="#{site.location}">Poloha</td>	
+						   <td class="w3-left-align w3-sand" style="font-weight: bold">
+						   		<div >
+						   			<div class="w3-cell w3-panel">
+						   				<p th:text="#{site.longitude.veryshort}+' '+${coffeeSite.zemDelka}"></p>
+						   				<p th:text="#{site.latitude.veryshort}+' '+${coffeeSite.zemSirka}"></p>
+						   			</div>
+						   			<div class="w3-cell w3-cell-middle w3-panel w3-border-left">
+						   				<form 
+							             	   action="#"
+							             	   th:action="@{'/showSiteInMap/' + ${coffeeSite.id}}"
+							             	   th:method="GET" >
+								             <input type="hidden" name="_method" value="get" />
+								             <button type="submit" id="submitButton" th:text="#{site.show.map}" class="w3-btn w3-light-blue w3-border w3-round">Mapa</button>
+								         </form>
+						   			</div>
+						   		</div>
+						   </td>
+						</tr>
 						  
+						<!--    
 						<tr>
 						   <td th:text="#{site.longitude}">Zemepisna delka</td>	
 						   <td class="w3-right-align w3-sand" th:text="${coffeeSite.zemDelka}" style="font-weight: bold">Zemepisna delka</td>
@@ -133,6 +155,8 @@
 						   <td th:text="#{site.latitude}">Zemepisna sirka</td>	  
 						   <td class="w3-right-align w3-sand" th:text="${coffeeSite.zemSirka}" style="font-weight: bold">Zemepisna sirka</td>
 						</tr>
+						-->
+						
 						<tr>
 						   <td th:text="#{site.user}">Original user name</td>
 						   <td class="w3-right-align w3-sand" th:text="${coffeeSite.originalUserName}" style="font-weight: bold">Original user name</td>

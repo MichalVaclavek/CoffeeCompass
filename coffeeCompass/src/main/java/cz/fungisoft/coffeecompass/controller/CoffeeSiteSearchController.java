@@ -127,7 +127,6 @@ public class CoffeeSiteSearchController
                                                                                                        searchCriteria.getCoffeeSort(),
                                                                                                        searchCriteria.getCoffeeSiteStatus());
         
-       //TODO handle the case that only one CoffeeSite was found. In such case, the searchCriteria lat. , long. must be changed
        mav.addObject("foundSites", foundSites);
        if (foundSites == null || foundSites.size() == 0)
            mav.addObject("emptyResult", true); // nothing found, let to know to model
@@ -138,12 +137,45 @@ public class CoffeeSiteSearchController
        return mav;
    }
    
+   /**
+    * Processes request to show one CoffeeSite in a map on the 'coffeesite_search.html' page, which then allows further searching.
+    * 
+    * @param siteId
+    * @return
+    */
+   @GetMapping("/showSiteInMap/{siteId}") // napr. http://coffeecompass.cz/showSiteInMap/2
+   public ModelAndView  showSiteInMap(@PathVariable Long siteId) {
+       
+       ModelAndView mav = new ModelAndView("coffeesite_search");
+       
+       CoffeeSiteDTO coffeeSite = coffeeSiteService.findOneToTransfer(siteId);
+       
+       CoffeeSiteSearchCriteriaModel searchCriteria = new CoffeeSiteSearchCriteriaModel();
+       OneStringModel cityNameModel = new OneStringModel();
+       List<CoffeeSiteDTO> foundSites = new ArrayList<>();
+       
+       if ( coffeeSite == null) {
+           mav.addObject("emptyResult", true); // nothing found, let to know to model
+       } else {
+           foundSites.add(coffeeSite);
+           LatLong searchFromLoc = coffeeSiteService.getSearchFromLocation(coffeeSite, 200);
+           searchCriteria.setLon1(searchFromLoc.getLongitude());
+           searchCriteria.setLat1(searchFromLoc.getLatitude());
+           cityNameModel.setInput(coffeeSite.getMesto());
+       }
+       
+       mav.addObject("foundSites", foundSites);
+       mav.addObject("searchCriteria", searchCriteria);
+       mav.addObject("cityName", cityNameModel);
+       
+       return mav;
+   }
    
    /**
     * Method to handle request to show all CoffeeSites of one city. This URI is used from home.html links of the list of "top" cities<br>
     * cityName should be always valid as it comes from href resp. from DB request output used for building the href on home.html links<br>
     * Returns ModelAndView for coffeesite_search.html page, but with redirection to "/searchSitesInCityForm" link, which serves like basic
-    * entry point for "city" searching Form on coffeesite_search.html page.
+    * entry point for "city" searching Form on 'coffeesite_search.html' page.
     * 
     * @param cityName - jmeno mesta z home.html ze statistiky mest s nejvetsim poctem aktivnich CoffeeSites
     * @return opet ModelAndView pro vyhledavaci stranku, s presmerovanim na "/searchSitesInCityForm" s parametry "cityName" a "searchCityNameExactly", ktery urcuje, ze se CoffeeSites maji hledat, tak aby jejich atribut mesto byl presne shodny s "cityName"
@@ -222,14 +254,14 @@ public class CoffeeSiteSearchController
            foundSites = (searchExactly) ? coffeeSiteService.findAllByCityNameExactly(currentSearchCity)
                                         : coffeeSiteService.findAllByCityNameAtStart(currentSearchCity);
            
-           if ( foundSites.size() == 0) {
-               mav.addObject("emptyResult", true); // nothing found, let to know to model
+           if ( foundSites.size() == 0) { // nothing found, let to know to model
+               mav.addObject("emptyResult", true); 
            } 
            
-           if ( foundSites.size() == 1) {
-               LatLong avgSitesLocation = coffeeSiteService.getSearchFromLocation(foundSites.get(0), 200);
-               searchCriteria.setLon1(avgSitesLocation.getLongitude());
-               searchCriteria.setLat1(avgSitesLocation.getLatitude());
+           if ( foundSites.size() == 1) { // only one CoffeeSite found in city, define searchFrom point for this CoffeeSite
+               LatLong searchFromLoc = coffeeSiteService.getSearchFromLocation(foundSites.get(0), 200);
+               searchCriteria.setLon1(searchFromLoc.getLongitude());
+               searchCriteria.setLat1(searchFromLoc.getLatitude());
            }
            else {
                /**
