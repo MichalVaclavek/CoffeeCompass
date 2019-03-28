@@ -14,14 +14,14 @@ import java.util.List;
  * 
  * Specialni verze vyhledavacich metod, pokud nejsou k dispozici zakladni
  * z {@code org.springframework.data.jpa.repository.JpaRepository}, ale ktere lze zapsat
- * pomoci jednoduchych SELECTu s anotaci @Query
+ * pomoci jednoduchych SELECTu s anotaci @Query.
  * <br>
  * Tato trida muze rozsirovat dalsi Interface, ktery deklaruje dalsi specialni metody (implementovaner v konkretni tride
  * oznacene Repository anotaci). V tomto interfacu resp. v jeho implementaci se pak deklaruji a definuji metody pro slozitejsi
  * dotazy napr. pomoci CriteriaQuery.
  * <br>
- * Zde rozsiren interface CoffeeSiteRepositoryCustom, ktery ma jmeno odvozene od jmena tohoto zakladniho interfacu
- * tj. CoffeeSiteRepository na CoffeeSiteRepositoryCustom
+ * Zde rozsiren interface {@code CoffeeSiteRepositoryCustom}, ktery ma jmeno odvozene od jmena tohoto zakladniho interfacu
+ * tj. {@code CoffeeSiteRepository} na {@code CoffeeSiteRepositoryCustom}
  * 
  */
 public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, CoffeeSiteRepositoryCustom
@@ -71,7 +71,6 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
      * @param daysAgo - how many days ago from now is the latest day of CoffeeSite creation 
      * @return
      */
-//    @Query(nativeQuery = true, value = "SELECT * FROM coffeecompass.coffee_site AS cs WHERE cs.status_zaznamu_id=1 AND cs.created_on BETWEEN LOCALTIMESTAMP - INTERVAL '?2 days' AND LOCALTIMESTAMP ORDER BY cs.created_on DESC LIMIT ?1")
     @Query(nativeQuery = true, value = "SELECT * FROM coffeecompass.coffee_site AS cs WHERE cs.status_zaznamu_id=1 AND cs.created_on BETWEEN LOCALTIMESTAMP - ?2 * INTERVAL '1 day' AND LOCALTIMESTAMP ORDER BY cs.created_on DESC LIMIT ?1")
     public List<CoffeeSite> getLatestSites(int maxNumOfLatestSites, int daysAgo);
     
@@ -90,6 +89,19 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
     @Query(nativeQuery = true, name = "getSitesWithinRange") // varianta, kdy je Query nadefinovano v jine tride pomoci @NamedNativeQuery anotace, v tomto pripade v CoffeeSite tride
     public List<CoffeeSite> findSitesWithinRange(double sirka, double delka, long rangeMeters);  
     
+    /**
+     * Vrati pocet CoffeeSites v danem okruhu "rangeMeters" od zadanych souradnic "sirka" a "delka".<br>
+     * Vyuziva se predevsim pro urceni, zda dana lokace/souradnice neni uz obsazena jinym CoffeeSite.
+     *   
+     * @param sirka - zemepisna sirka bodu od ktereho se vyhledava
+     * @param delka - zemepisna delka od ktereho se vyhledava
+     * @param rangeMeters - vzdalenost/okruh v metrech od bodu s polohou  "sirka" a "delka", kde se maji spocitat jiz vytvorene CoffeeSite. Defaultne cca 5m.
+     * 
+     * @return pocet CoffeeSites v danem okruhu "rangeMeters" od zadanych souradnic.
+     */
+    @Query(nativeQuery = true, name = "numberOfSitesWithinRange") // varianta, kdy je Query, se jmenem "numberOfSitesWithinRange", nadefinovano v jine tride pomoci @NamedNativeQuery anotace, v tomto pripade v CoffeeSite tride
+    public Long getNumberOfSitesWithinRange(double sirka, double delka, long rangeMeters);  
+    
     /** 
      * Pomocna metoda pro otestovani, ze funguje volani Stored procedure v DB.
      * Stored procedure distance je nadefinovana ve tride CoffeeSite jako @NamedStoredProcedureQuery
@@ -106,4 +118,5 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
     @Procedure(name = "distance")
     public long callStoredProcedureCalculateDistance(@Param("lat1") double sirkaFrom, @Param("lon1") double delkaFrom,
                                                      @Param("lat2") double sirkaTo, @Param("lon2") double delkaTo);
+    
 }

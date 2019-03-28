@@ -337,6 +337,15 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     }
     
     /**
+     * True, if there is already created a CoffeeSite on 'zemSirka', 'zemDelka' location within meters range,
+     * otherwise false.
+     */
+    @Override
+    public boolean isLocationAlreadyOccupied(double zemSirka, double zemDelka, long meters) {
+        return coffeeSiteRepo.getNumberOfSitesWithinRange(zemSirka, zemDelka, meters) > 0;
+    }
+    
+    /**
      * Najde vsechny CoffeeSites v okruhu meters od polohy zemSirka a zemDelka.
      * Vzdy se bude vracet ve vzestupnem poradi podle vzdalenosti od bodu vyhledavani.
      * <br>
@@ -635,6 +644,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         
         return new LatLong(searchPointLat, searchPointLong);
     }
+
 
     //TODO dalsi vyhledavaci metody podle ruznych kriterii?
     // CriteriaQuery a CriteriaQueryBuilder

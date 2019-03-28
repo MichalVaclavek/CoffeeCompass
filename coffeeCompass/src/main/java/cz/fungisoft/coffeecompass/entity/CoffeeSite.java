@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.persistence.StoredProcedureParameter;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -21,6 +22,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.NamedStoredProcedureQueries;
 import javax.persistence.ParameterMode;
+import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -66,17 +68,17 @@ import java.util.Set;
                 @StoredProcedureParameter(mode = ParameterMode.IN, type = Double.class), 
                 @StoredProcedureParameter(mode = ParameterMode.IN, type = Double.class),
                 @StoredProcedureParameter(mode = ParameterMode.IN, type = Long.class), 
-                
             }
         )
  })
-/** Jde o variantu definice SQL dotazu pro zpracovani JPA Springem. Na jmeno "getSitesWithinRange" se pak lze odkazovat 
- * pomoci @Query(nativeQuery = true, name = "getSitesWithinRange") v napr. Repository tride.
+
+/** Jde o variantu definice SQL dotazu pro zpracovani JPA Springem. Na jmeno "getSitesWithinRange" esp. "numberOfSitesWithinRange" se pak lze odkazovat 
+ * pomoci @Query(nativeQuery = true, name = "getSitesWithinRange") v napr. Repository tride.<br>
  * Vysledek tohoto Query by melo byt mozne pouzit jako vstup do dalsich dotazu, Repository metod, ktere filtruji podle dalsich kriterii
  * jako napr. oteviraci doba nebo nabidka kavy, celkova nabidka apod.
  * <br>
  * Mela by ale jit pouzit varianta CriteriaQuery a "function" neboli ulozena procedura viz
- *  https://vladmihalcea.com/hibernate-sql-function-jpql-criteria-api-query/ 
+ * https://vladmihalcea.com/hibernate-sql-function-jpql-criteria-api-query/ 
  */
 @NamedNativeQueries({
     @NamedNativeQuery(
@@ -85,8 +87,19 @@ import java.util.Set;
                               " FROM coffeecompass.coffee_site" +
                               " WHERE distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3",
             resultClass = CoffeeSite.class
+    ),
+    @NamedNativeQuery( // Counts number of already created CoffeeSites on selected location within defined meters range from the location  
+            name = "numberOfSitesWithinRange",
+            query = "SELECT COUNT(*) AS cnt FROM (SELECT id, poloha_gps_sirka, poloha_gps_delka FROM coffeecompass.coffee_site WHERE distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3) AS items", 
+            resultSetMapping = "LongResult"
     )
 })
+/**
+ * Result mapping for "numberOfSitesWithinRange" named query.
+ */
+@SqlResultSetMapping(name="LongResult",
+    columns={@ColumnResult(name="cnt", type = Long.class)}
+)
 public class CoffeeSite
 {
     @Id

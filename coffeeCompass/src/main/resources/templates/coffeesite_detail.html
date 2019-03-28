@@ -41,7 +41,7 @@
 	    
 	    <div class="w3-row-padding" >
 	    
-	    	<div class="w3-padding-16 w3-card-4 w3-round w3-half" > <!-- DIV containing CoffeeSite detail table, modification byttons and picture section -->
+	    	<div class="w3-padding-16 w3-card-2 w3-round w3-half" > <!-- DIV containing CoffeeSite detail table, modification byttons and picture section -->
 	    	
 		    	<div class="w3-container w3-margin w3-cell" style="width:30%"> <!-- style="width:30%" -->
 		    
@@ -241,6 +241,7 @@
 					    </div>
 					    
 					    <!-- Picture of the CoffeeSite, if available -->
+					    
 					    <div class="w3-display-middle" style="width:110%"> 
 					         <!-- Element pro vlozeni obrazku situ -->
 					         <!-- Inserted like base64 image to the model of this view, not as URL to REST api -->
@@ -249,6 +250,7 @@
 				        <div th:if="${coffeeSite.mainImageURL == ''}" th:text="#{site.noImage}" class="w3-display-middle w3-small" style="font-style: italic"> 
 					         No imagge.
 				        </div>
+				       
 				         
 					    <!-- Element with Forms to upload or delete image of the Site -->
 					    <div th:if="${coffeeSite.canBeModified}" class="w3-display-bottommiddle">
@@ -295,7 +297,6 @@
 						      	</div> 
 					         </div>
 				         </div>
-				         
 				    </div>
 				    
 		    	</div>

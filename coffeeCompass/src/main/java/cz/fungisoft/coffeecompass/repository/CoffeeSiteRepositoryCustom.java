@@ -9,14 +9,14 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSort;
 import cz.fungisoft.coffeecompass.entity.StatisticsToShow.DBReturnPair;
 
 /**
- * Pomocny interface pro definici metod, ktera umozni volat interni Stored procedure, ktera vraci ResultList,
- * pomoci JpaRepository. JpaRepository ma problem s mapovanim parametru pro NamedStoredProceduresQuery.
- * Umoznuje dodatecnou deklaraci a posleze definici i dalsich slozitejsich metod, ktere napr. vyuzivaji CriteriaQuery
- * <br> 
- * Podle https://stackoverflow.com/questions/46786528/error-in-namedstoredprocedurequery-in-spring-jpa-found-named-stored-procedure/46942745
+ * Pomocny interface pro definici metod, ktera umozni volat interni Stored procedure, ktera vraci {@code ResultList},
+ * pomoci {@code JpaRepository}. {@code JpaRepository} ma problem s mapovanim parametru pro NamedStoredProceduresQuery.<br>
+ * Umoznuje dodatecnou deklaraci a posleze definici i dalsich slozitejsich metod, ktere napr. vyuzivaji {@code CriteriaQuery}.
+ * <br><br>
+ * Vytvoreno podle https://stackoverflow.com/questions/46786528/error-in-namedstoredprocedurequery-in-spring-jpa-found-named-stored-procedure/46942745
  * a podle dokumentace na strankach spring.io projektu Spring.
  * <br> 
- * Jmeno interfacu vychazi ze zakladniho  CoffeeSiteRepository doplnenim o Custom
+ * Jmeno interfacu vychazi ze zakladniho {@link CoffeeSiteRepository} doplnenim o slovo Custom.
  *  
  * @author Michal Vaclavek
  */
@@ -60,7 +60,7 @@ public interface CoffeeSiteRepositoryCustom
     public List<CoffeeSite> findSitesWithRecordStatus(double sirka, double delka, long rangeMeters, CoffeeSiteRecordStatus csRecordStatus);
 
     public List<CoffeeSite> findSitesWithCoffeeSortAndSiteStatus(double sirka, double delka, long rangeMeters, CoffeeSort sort,
-                                                                 CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus);  
+                                                                 CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus);
     
     public Long getNumOfSitesInGivenState(CoffeeSiteRecordStatus csRecordStatus);
     

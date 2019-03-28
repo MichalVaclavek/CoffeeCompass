@@ -287,15 +287,20 @@ public class CoffeeSiteController
      * Po uspesnem zpracovani pozadavku na modifikaci CoffeeSite se zobrazi stejna stranka tj. umoznuje
      * provest dalsi modifikace na prave editovanem CoffeeSitu.
      * 
-     * @param coffeeSite - novy/modifikovany objekt CoffeeSite z modelu, ktery vrati Spring, ktery ho vytvoril z formulare
-     * pro vytvoreni/modifikaci CoffeeSite
+     * @param coffeeSite - novy/modifikovany objekt CoffeeSite z modelu, ktery vrati Spring/Thymeleaf, ktery ho vytvoril z formulare
+     *                     pro vytvoreni/modifikaci CoffeeSite
      * @return
      */
     @PostMapping("/createModifySite") // Mapovani http POST na DB SAVE/UPDATE
     public String createOrUpdateCoffeeSite(@ModelAttribute("coffeeSite") @Valid CoffeeSiteDTO coffeeSite, final BindingResult bindingResult) {
-        //Overeni jmena, nesmi se shodovat s jinym jmenem. Pokud jde o modifikaci stavajiciho situ, nekontrolovat
+        //Overeni jmena, nesmi se shodovat s jinym jmenem.
         if (!coffeeSiteService.isSiteNameUnique(coffeeSite.getId(), coffeeSite.getSiteName())) {
             bindingResult.rejectValue("siteName", "error.site.name.used", "Name already used.");
+        }
+        // Overeni, zda zadana pozice CoffeeSitu neni jiz pouzita.
+        if (coffeeSiteService.isLocationAlreadyOccupied(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5)) {
+            bindingResult.rejectValue("zemSirka", "error.site.coordinate.latitude", "Location already occupied.");
+            bindingResult.rejectValue("zemDelka", "error.site.coordinate.longitude", "Location already occupied.");
         }
         
         if (bindingResult.hasErrors()) {

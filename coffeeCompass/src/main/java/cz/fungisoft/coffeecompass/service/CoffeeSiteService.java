@@ -28,7 +28,7 @@ public interface CoffeeSiteService
     public CoffeeSiteDTO findByName(String siteName);
     
     /**
-     * Finds all CoffeeSites, whose "mesto" filed is equal to 'cityName' string
+     * Finds all CoffeeSites, whose "mesto" field is equal to 'cityName' string
      * 
      * @param cityName
      * @return
@@ -121,11 +121,23 @@ public interface CoffeeSiteService
      * @param zemSirka - zemepisna sirka bodu od ktereho se ma vyhledatvat
      * @param zemDelka - zemepisna delka bodu od ktereho se ma vyhledatvat
      * @param meters - vzdalenost v metrech od vyhledavaciho bodu, kde se maji vyhledat CoffeeSites
-     * @param orderBy - podle ktereho atributu se ma poskladat vysledny List - bude to vzdalenost od vyhledavaciho bodu
-     * @param direction - ASC nebo DESC - obvykle ASC tj. od nejmensi vzdalenosti
+
      * @return
      */
     public List<CoffeeSiteDTO> findAllWithinCircle(double zemSirka, double zemDelka, long meters);
+    
+    
+    /**
+     * Checks if thre is a CoffeeSites already created within meters circle from 'zemSirka' and 'zemDelka'.<br>
+     * Used especially when creating a new CoffeeSite to check if it's location is not already occupied by another CoffeeSite.
+     * 
+     * @param zemSirka - zemepisna sirka bodu od ktereho se ma vyhledatvat
+     * @param zemDelka - zemepisna delka bodu od ktereho se ma vyhledatvat
+     * @param meters - vzdalenost v metrech od vyhledavaciho bodu, kde se maji vyhledat CoffeeSites
+
+     * @return - true, if the location is already occupied by another CoffeeSite, otherwise false.
+     */
+    public boolean isLocationAlreadyOccupied(double zemSirka, double zemDelka, long meters);
      
     
     @PreAuthorize("isAuthenticated()")

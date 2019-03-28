@@ -34,7 +34,7 @@ import lombok.extern.log4j.Log4j2;
  * 
  * NOTE 
  * Mela by ale jit pouzit varianta CriteriaQuery a "function" neboli ulozena procedura viz
- *  https://vladmihalcea.com/hibernate-sql-function-jpql-criteria-api-query/ 
+ * https://vladmihalcea.com/hibernate-sql-function-jpql-criteria-api-query/ 
  * 
  * @author Michal Vaclavek
  *
@@ -77,6 +77,7 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
         
         return sitesInRange.getResultList();
     }
+    
 
     /**
      * Pomocna/cvicna implementace metody, ktera je "defaultne" implementovana v CoffeeSiteRepository interfacu pomoci @Query
@@ -104,17 +105,20 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
         
         return sitesInRangeQuery.getResultList(); 
     }
-
+    
+    /**
+     * Zakladni varianta vyhledavaciho dotazu pro ziskani seznamu CoffeeSites podle polohy, druhu kavy {@code CoffeeSort} a statusu situ {@code CoffeeSiteStatus} a statusu DB zaznam {@code CoffeeSiteRecordStatus}
+     */
     @Override
     public List<CoffeeSite> findSitesWithCoffeeSortAndSiteStatus(double sirka, double delka, long rangeMeters, CoffeeSort sort, CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus) {
         String selectQuery = "SELECT *, poloha_gps_sirka, poloha_gps_delka"
-                + " FROM coffeecompass.coffee_site AS cs, coffeecompass.coffee_site_to_druhy_kavy AS cs_dk"
-                + " JOIN coffeecompass.druhy_kavy AS dk ON dk.id=?5"
-                + " WHERE cs_dk.druhy_kavy_id=?5"
-                + " AND cs.id=cs_dk.coffee_site_id"
-                + " AND status_zarizeni_id=?4"
-                + " AND status_zaznamu_id=?6"
-                + " AND (distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
+                            + " FROM coffeecompass.coffee_site AS cs, coffeecompass.coffee_site_to_druhy_kavy AS cs_dk"
+                            + " JOIN coffeecompass.druhy_kavy AS dk ON dk.id=?5"
+                            + " WHERE cs_dk.druhy_kavy_id=?5"
+                            + " AND cs.id=cs_dk.coffee_site_id"
+                            + " AND status_zarizeni_id=?4"
+                            + " AND status_zaznamu_id=?6"
+                            + " AND (distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
                       
         Query sites = em.createNativeQuery(selectQuery, CoffeeSite.class);
         
@@ -137,11 +141,11 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
     public List<CoffeeSite> findSitesWithCoffeeSort(double sirka, double delka, long rangeMeters, CoffeeSort sort, CoffeeSiteRecordStatus csRecordStatus) {
 
         String selectQuery = "SELECT *, poloha_gps_sirka, poloha_gps_delka"
-                + " FROM coffeecompass.coffee_site AS cs, coffeecompass.coffee_site_to_druhy_kavy AS cs_dk"
-                + " JOIN coffeecompass.druhy_kavy AS dk ON dk.id=?4"
-                + " WHERE cs_dk.druhy_kavy_id=?4 AND cs.id=cs_dk.coffee_site_id"
-                + " AND status_zaznamu_id=?5"
-                + " AND (distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
+                          + " FROM coffeecompass.coffee_site AS cs, coffeecompass.coffee_site_to_druhy_kavy AS cs_dk"
+                          + " JOIN coffeecompass.druhy_kavy AS dk ON dk.id=?4"
+                          + " WHERE cs_dk.druhy_kavy_id=?4 AND cs.id=cs_dk.coffee_site_id"
+                          + " AND status_zaznamu_id=?5"
+                          + " AND (distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
                       
         Query sites = em.createNativeQuery(selectQuery, CoffeeSite.class);
         
@@ -163,10 +167,10 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
     public List<CoffeeSite> findSitesWithStatus(double sirka, double delka, long rangeMeters, CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus) {
 
         String selectQuery = "SELECT *, poloha_gps_sirka, poloha_gps_delka"
-                                + " FROM coffeecompass.coffee_site AS cs"
-                                + " WHERE status_zarizeni_id=?4 "
-                                + " AND status_zaznamu_id=?5"
-                                + " AND (distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
+                          + " FROM coffeecompass.coffee_site AS cs"
+                          + " WHERE status_zarizeni_id=?4 "
+                          + " AND status_zaznamu_id=?5"
+                          + " AND (distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
                       
         Query sites = em.createNativeQuery(selectQuery, CoffeeSite.class);
         
@@ -180,18 +184,16 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
         return sites.getResultList();
     }
 
-    //TODO - vsechny vyse uvedene metody by mely byt provedeny i ve tvaru s parametrem RecordStatus, protoze pro nap. neprihlaseneho usera
-    //ma smysl hledat pouze ACTIVE sity. Prihlaseny user pouze ACTIVE a vsechny co sam vytvoril. Pouze pro ADMIN a DB usera se nahravaji 
-    // vsechny Record statusy
+
     /**
-     * Implementace metody pro vyhledani CoffeeSites v danem geo. rangi s danym statusem situ - CoffeeSiteStatus
+     * Implementace metody pro vyhledani CoffeeSites v danem geo. rangi s danym statusem DB zaznamu {@code CoffeeSiteRecordStatus}
      */
     @Override
     public List<CoffeeSite> findSitesWithRecordStatus(double sirka, double delka, long rangeMeters, CoffeeSiteRecordStatus csRecordStatus) {
 
         String selectQuery = "SELECT *, poloha_gps_sirka, poloha_gps_delka"
-                                + " FROM coffeecompass.coffee_site AS cs"
-                                + " WHERE status_zaznamu_id=?4 AND (distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
+                          + " FROM coffeecompass.coffee_site AS cs"
+                          + " WHERE status_zaznamu_id=?4 AND (distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
                       
         Query sites = em.createNativeQuery(selectQuery, CoffeeSite.class);
         
@@ -207,10 +209,10 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
     @Override
     public Long getNumOfSitesInGivenState(CoffeeSiteRecordStatus csRecordStatus) {
         String selectQuery = "SELECT COUNT(*)"
-                + " FROM coffeecompass.coffee_site AS cs"
-                + " WHERE status_zaznamu_id=?1";
+                          + " FROM coffeecompass.coffee_site AS cs"
+                          + " WHERE status_zaznamu_id=?1";
       
-        Query sites = em.createNativeQuery(selectQuery, CoffeeSite.class);
+        Query sites = em.createNativeQuery(selectQuery, Long.class);
         
         sites.setParameter(1, csRecordStatus.getId());
         
@@ -219,15 +221,18 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
 
     
     /**
-     * Returns names of 5 city names with the heighest number of CoffeeSites in ACTIVE state (cs.status_zaznamu_id=1)
+     * Returns 5 city names with the heighest number of CoffeeSites in ACTIVE state (cs.status_zaznamu_id=1)
      */
     @Override
     public List<DBReturnPair> getTop5CityNames() {
         
-        String selectQuery = "SELECT DISTINCT poloha_mesto, COUNT(*) AS NumOfSites FROM coffeecompass.coffee_site AS cs WHERE cs.status_zaznamu_id=1 GROUP BY poloha_mesto ORDER BY NumOfSites DESC LIMIT 5";
+        String selectQuery = "SELECT DISTINCT poloha_mesto, COUNT(*) AS NumOfSites"
+                          + " FROM coffeecompass.coffee_site AS cs WHERE cs.status_zaznamu_id=1"
+                          + " GROUP BY poloha_mesto"
+                          + " ORDER BY NumOfSites"
+                          + " DESC LIMIT 5";
+        
         Query sites = em.createNativeQuery(selectQuery);
-    //        Query sites = em.createQuery(selectQuery, Map.class);
-    //        sites.setMaxResults(5);
         
         List<Object[]> results = sites.getResultList();
         
