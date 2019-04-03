@@ -37,14 +37,14 @@
 		  <td sec:authorize="hasRole('ROLE_ADMIN')">
 	         <form action="#" th:action="@{'/user/edit/' + ${user.userName}}" th:method="GET" >
 	            <input type="hidden" name="_method" value="get" />
-	            <button type="submit" id="submitButton" th:text="#{user.edit}" class="w3-button w3-blue w3-round">X</button>
+	            <button type="submit" id="submitButton" th:text="#{user.edit}" class="w3-btn w3-blue w3-round w3-small">X</button>
 	         </form>
 	      </td>
 	      
 		  <td sec:authorize="hasRole('ROLE_ADMIN')" th:if="${!user.hasADMINRole}">
 	         <form action="#" th:action="@{'/user/delete/' + ${user.id}}" th:method="DELETE">
 	            <input type="hidden" name="_method" value="delete" />
-	            <button type="submit" id="submitButton" th:text="#{user.delete}" class="w3-button w3-red w3-round" >X</button>
+	            <button type="submit" id="submitButton" th:text="#{user.delete}" class="w3-btn w3-red w3-round w3-small" >X</button>
 	         </form>
 	      </td>
 		    		  

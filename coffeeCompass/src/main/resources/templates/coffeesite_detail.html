@@ -128,11 +128,11 @@
 						   <td th:text="#{site.location}">Poloha</td>	
 						   <td class="w3-left-align w3-sand" style="font-weight: bold">
 						   		<div >
-						   			<div class="w3-cell w3-panel">
+						   			<div class="w3-cell w3-container">
 						   				<p th:text="#{site.longitude.veryshort}+' '+${coffeeSite.zemDelka}"></p>
 						   				<p th:text="#{site.latitude.veryshort}+' '+${coffeeSite.zemSirka}"></p>
 						   			</div>
-						   			<div class="w3-cell w3-cell-middle w3-panel w3-border-left">
+						   			<div class="w3-cell w3-cell-middle w3-container w3-border-left">
 						   				<form 
 							             	   action="#"
 							             	   th:action="@{'/showSiteInMap/' + ${coffeeSite.id}}"
@@ -201,7 +201,7 @@
 							             	   th:action="@{'/modifySite/' + ${coffeeSite.id}}"
 							             	   th:method="GET" >
 								             <input type="hidden" name="_method" value="get" />
-								             <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.modify}" class="w3-btn w3-light-blue w3-border w3-round">X</button>
+								             <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.modify}" class="w3-btn w3-light-blue w3-border w3-round w3-small">X</button>
 								         </form>
 							         </div>	
 							         </td>
@@ -215,7 +215,7 @@
 							                  th:action="@{'/activateSite/' + ${coffeeSite.id}}" 
 							                  th:method="PUT" >
 							               <input type="hidden" name="_method" value="put" />
-							               <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.status.activate}" class="w3-btn w3-light-green w3-border w3-round">X</button>
+							               <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.status.activate}" class="w3-btn w3-light-green w3-border w3-round w3-small">X</button>
 							            </form>
 							         </div>
 							         </td>						
@@ -226,7 +226,7 @@
 							                  th:action="@{'/deactivateSite/' + ${coffeeSite.id}}" 
 							                  th:method="PUT">
 							               <input type="hidden" name="_method" value="put" />
-							               <button  th:disabled="${coffeeSite.canBeActivated}" type="submit" id="submitButton" th:text="#{site.status.deactivate}" class="w3-btn w3-amber w3-border w3-round">X</button>
+							               <button  th:disabled="${coffeeSite.canBeActivated}" type="submit" id="submitButton" th:text="#{site.status.deactivate}" class="w3-btn w3-amber w3-border w3-round w3-small">X</button>
 							            </form> 
 							         </div>
 							         </td>
@@ -241,7 +241,7 @@
 							                  th:action="@{'/cancelStatusSite/' + ${coffeeSite.id}}" 
 							                  th:method="PUT" > 
 							               <input type="hidden" name="_method" value="put" />
-							               <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.status.cancel}" class="w3-btn w3-red w3-border w3-round">X</button>
+							               <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.status.cancel}" class="w3-btn w3-red w3-border w3-round w3-small">X</button>
 			    			            </form>
 							         </div>
 							         </td>
@@ -254,7 +254,7 @@
 							                  th:action="@{'/finalDeleteSite/' + ${coffeeSite.id}}" 
 							                  th:method="DELETE">
 							               <input type="hidden" name="_method" value="delete" />
-							               <button type="submit" id="submitButton" th:text="#{site.delete}" class="w3-btn w3-red w3-border w3-round">X</button>
+							               <button type="submit" id="submitButton" th:text="#{site.delete}" class="w3-btn w3-red w3-border w3-round w3-small">X</button>
 							            </form>
 							         </div>
 							         </td>

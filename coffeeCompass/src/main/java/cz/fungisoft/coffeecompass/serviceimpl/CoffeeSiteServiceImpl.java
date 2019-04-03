@@ -631,8 +631,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      * pythagorian theorem is used, curvature of Eartch is not taken into account
      * as the limits from {distance is only from 50 to 5000 m.
      * 
-     * @param coffeeSiteDTO - the site from it's location the new location is counted
-     * @param distance - distance in meters of returned location from coffeeSiteDTO's location. Allowed values are from 50 to 5000, otherwise default 500 is set. 
+     * @param coffeeSiteDTO - the site from it's location the new "search location" is counted
+     * @param distance - distance in meters of returned "search location" from coffeeSiteDTO's location. Allowed values are from 50 to 5000, otherwise default 500 is set. 
      */
     @Override
     public LatLong getSearchFromLocation(CoffeeSiteDTO coffeeSiteDTO, int distance) {

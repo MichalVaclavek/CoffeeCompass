@@ -102,11 +102,12 @@ map.insertSites = function(foundSites)
 			var textVizitka = bodyImage 
 							  + site.typPodniku.coffeeSiteType + ", " + site.typLokality.locationType + "<br>" 
 							  + site.statusZarizeni.status + "<br>"
-							  + "vzdálenost: " + site.distFromSearchPoint + " m <br>"
-							  + "hodnoceni: " + site.averageStarsWithNumOfHodnoceni.common;
+							  + "hodnoceni: " + site.averageStarsWithNumOfHodnoceni.common + "<br>";
+			if (site.distFromSearchPoint > 0) {
+				textVizitka += "vzdálenost: " + site.distFromSearchPoint + " m";
+			}
 			
 			card.getBody().innerHTML = textVizitka;
-			
 			
 			var footerText = "<a href='" + base_url + "/showSite/"; 
 			footerText += site.id + "'>Další detaily ...</a>";

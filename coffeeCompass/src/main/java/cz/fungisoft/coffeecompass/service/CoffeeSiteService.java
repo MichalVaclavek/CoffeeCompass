@@ -84,14 +84,14 @@ public interface CoffeeSiteService
      * 
      * @param zemSirka
      * @param zemDelka
-     * @param meters
+     * @param rangeMeters
      * @param cfSort
      * @param siteStatus
      * @return
      */
-    public List<CoffeeSiteDTO> findAllWithinCircleWithCSStatusAndCoffeeSort(double zemSirka, double zemDelka, long meters,
+    public List<CoffeeSiteDTO> findAllWithinCircleWithCSStatusAndCoffeeSort(double zemSirka, double zemDelka, long rangeMeters,
                                                                             String cfSort, String siteStatus);
-    public List<CoffeeSiteDTO> findAllWithinRangeWithRecordStatus(double zemSirka, double zemDelka, long meters,  CoffeeSiteRecordStatus csRecordStatus);
+    public List<CoffeeSiteDTO> findAllWithinRangeWithRecordStatus(double zemSirka, double zemDelka, long rangeMeters,  CoffeeSiteRecordStatus csRecordStatus);
     public List<CoffeeSiteDTO> findAllWithRecordStatus(CoffeeSiteRecordStatusEnum csRecordStatus);
     
     /**
@@ -120,11 +120,11 @@ public interface CoffeeSiteService
      * 
      * @param zemSirka - zemepisna sirka bodu od ktereho se ma vyhledatvat
      * @param zemDelka - zemepisna delka bodu od ktereho se ma vyhledatvat
-     * @param meters - vzdalenost v metrech od vyhledavaciho bodu, kde se maji vyhledat CoffeeSites
+     * @param rangeMeters - vzdalenost v metrech od vyhledavaciho bodu, kde se maji vyhledat CoffeeSites
 
      * @return
      */
-    public List<CoffeeSiteDTO> findAllWithinCircle(double zemSirka, double zemDelka, long meters);
+    public List<CoffeeSiteDTO> findAllWithinCircle(double zemSirka, double zemDelka, long rangeMeters);
     
     
     /**
@@ -133,12 +133,12 @@ public interface CoffeeSiteService
      * 
      * @param zemSirka - zemepisna sirka bodu od ktereho se ma vyhledatvat (obvykle zem. sirka noveho/modifikovaneho CoffeeSite)
      * @param zemDelka - zemepisna delka bodu od ktereho se ma vyhledatvat (obvykle zem. delka noveho/modifikovaneho CoffeeSite)
-     * @param meters - vzdalenost v metrech od vyhledavaciho bodu, kde se maji vyhledat CoffeeSites
+     * @param rangeMeters - vzdalenost v metrech od vyhledavaciho bodu, kde se maji vyhledat CoffeeSites
      * @param siteId - id of the CoffeeSites whose location is to be checked
 
      * @return - true, if the location is already occupied by another CoffeeSite, otherwise false.
      */
-    public boolean isLocationAlreadyOccupied(double zemSirka, double zemDelka, long meters, Long siteId);
+    public boolean isLocationAlreadyOccupied(double zemSirka, double zemDelka, long rangeMeters, Long siteId);
      
     
     @PreAuthorize("isAuthenticated()")

@@ -77,7 +77,7 @@
 	          <td  th:if="${site.canBeModified}">
 	            <form action="#" th:action="@{'/modifySite/' + ${site.id}}" th:method="GET" >
 	              <input type="hidden" name="_method" value="get" />
-	              <button type="submit" id="submitButton" th:text="#{site.modify}" class="w3-btn w3-blue w3-round">X</button>
+	              <button type="submit" id="submitButton" th:text="#{site.modify}" class="w3-btn w3-blue w3-round w3-small">X</button>
 	            </form>
 	          </td>
 	          
@@ -86,7 +86,7 @@
 	          <td  th:if="${site.canBeDeleted}">
 	            <form action="#" th:action="@{'/finalDeleteSite/' + ${site.id}}" th:method="DELETE" >
 	              <input type="hidden" name="_method" value="delete" />
-	              <button type="submit" id="submitButton" th:text="#{site.delete}" class="w3-btn w3-red w3-round">X</button>
+	              <button type="submit" id="submitButton" th:text="#{site.delete}" class="w3-btn w3-red w3-round w3-small">X</button>
 	            </form>
 	          </td>
 		   </tr>
