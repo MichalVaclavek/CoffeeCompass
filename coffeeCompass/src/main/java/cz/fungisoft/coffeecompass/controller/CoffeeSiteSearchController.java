@@ -187,7 +187,7 @@ public class CoffeeSiteSearchController
         try {
             encodedCityName = URLEncoder.encode(cityName, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            log.warn("City name URL encoding error. City name {}.", cityName);
+            log.warn("City name URL encoding error. City name '{}'.", cityName);
         }
         
        ModelAndView mav = new ModelAndView(new RedirectView("/searchSitesInCityForm/?cityName=" + encodedCityName + "&searchCityNameExactly=true", true));
@@ -255,6 +255,7 @@ public class CoffeeSiteSearchController
                                         : coffeeSiteService.findAllByCityNameAtStart(currentSearchCity);
            
            if ( foundSites.size() == 0) { // nothing found, let to know to model
+               searchCriteria.resetSearchFromLocation();
                mav.addObject("emptyResult", true); 
            } 
            

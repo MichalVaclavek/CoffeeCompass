@@ -48,4 +48,12 @@ public class CoffeeSiteSearchCriteriaModel
     
     private String coffeeSort = CoffeeSortEnum.ESPRESSO.getCoffeeType();
     
+    /**
+     * Reset search criteria model in case another Form was used for searching
+     */
+    public void resetSearchFromLocation() {
+       this.lat1 = 49.8250401;
+       this.lon1 = 15.4190817;
+    }
+    
 }
