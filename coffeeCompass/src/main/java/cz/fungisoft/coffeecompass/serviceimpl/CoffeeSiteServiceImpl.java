@@ -379,36 +379,61 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         boolean noFilter = !csStatusFilter && !cSortFilter;
         
         // only ACTIVE sites are relevant for distance searching - all users (even non-registered, not loggedd-in) can search, so only ACTIVE are interesting
-        CoffeeSiteRecordStatus csR = csRecordStatusRepo.searchByName(CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum.ACTIVE.toString());
+        CoffeeSiteRecordStatus csRS = csRecordStatusRepo.searchByName(CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum.ACTIVE.toString());
 
         if (noFilter)
-            coffeeSites = coffeeSiteRepo.findSitesWithRecordStatus(zemSirka, zemDelka, meters, csR);
+            coffeeSites = coffeeSiteRepo.findSitesWithRecordStatus(zemSirka, zemDelka, meters, csRS);
         
         if (cSortAndcsStatusFilter) {
             CoffeeSort cf = coffeeSortRepo.searchByName(cSort);
             CoffeeSiteStatus csS =  coffeeSiteStatusRepo.searchByName(siteStatus);
             if ((cf != null) && (csS != null)) {
-                coffeeSites = coffeeSiteRepo.findSitesWithCoffeeSortAndSiteStatus(zemSirka, zemDelka, meters, cf, csS, csR);
+                coffeeSites = coffeeSiteRepo.findSitesWithCoffeeSortAndSiteStatus(zemSirka, zemDelka, meters, cf, csS, csRS);
             }
         }
         
         if (cSortFilterOnlyFilter) {
             CoffeeSort cfSort = coffeeSortRepo.searchByName(cSort);
             if (cfSort != null) {
-                coffeeSites = coffeeSiteRepo.findSitesWithCoffeeSort(zemSirka, zemDelka, meters, cfSort, csR);
+                coffeeSites = coffeeSiteRepo.findSitesWithCoffeeSort(zemSirka, zemDelka, meters, cfSort, csRS);
             }
         }
         
         if (csStatusOnlyFilter) {
             CoffeeSiteStatus csS =  coffeeSiteStatusRepo.searchByName(siteStatus);
             if (csS != null) {
-                coffeeSites = coffeeSiteRepo.findSitesWithStatus(zemSirka, zemDelka, meters, csS, csR);
+                coffeeSites = coffeeSiteRepo.findSitesWithStatus(zemSirka, zemDelka, meters, csS, csRS);
             }
         }
         
-        log.info("All Coffee sites within circle (Latit.: {} , Long.: {}, range: {}) retrieved: {}", zemSirka, zemDelka, meters, coffeeSites.size());
+        log.info("Coffee sites within circle (Latit.: {} , Long.: {}, range: {}) retrieved: {}", zemSirka, zemDelka, meters, coffeeSites.size());
         return countDistancesAndSortByDist(modifyToTransfer(coffeeSites), zemSirka, zemDelka);
     }
+    
+    /**
+     * @param sirka
+     * @param delka
+     * @param rangeMeters
+     * @param cfSortStr - muze byt prazde nebo null
+     * @param siteStatus - muze byt prazde nebo null
+     * @param csRecordStatus - muze byt prazde nebo null
+     * @param cityName - muze byt prazde nebo null
+     */
+    @Override
+    public List<CoffeeSiteDTO> findAllWithinCircleAndCityWithCSStatusAndCoffeeSort(double zemSirka, double zemDelka, long rangeMeters,
+                                                                                   String cfSortStr, String siteStatus, String cityName) {
+        
+        CoffeeSiteRecordStatus csRS = csRecordStatusRepo.searchByName(CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum.ACTIVE.toString());
+        CoffeeSort cfSort = coffeeSortRepo.searchByName(cfSortStr);
+        CoffeeSiteStatus csStatus =  coffeeSiteStatusRepo.searchByName(siteStatus);
+        
+        List<CoffeeSite> coffeeSites = new ArrayList<CoffeeSite>();
+        coffeeSites = coffeeSiteRepo.findSitesWithSortAndSiteStatusAndRangeAndCity(zemSirka, zemDelka, rangeMeters, cfSort, csStatus, csRS, cityName);
+        
+        log.info("Coffee sites within circle (Latit.: {} , Long.: {}, range: {}) and city {} retrieved: {}", zemSirka, zemDelka, rangeMeters, cityName, coffeeSites.size());
+        return countDistancesAndSortByDist(modifyToTransfer(coffeeSites), zemSirka, zemDelka);
+    }
+    
     
     @Override
     public List<CoffeeSiteDTO> getLatestCoffeeSites(int numOfLatestSites) {

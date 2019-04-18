@@ -181,14 +181,7 @@ public class UserServiceImpl implements UserService
         User entity = usersRepository.findById(user.getId()).orElse(null);
         
         if (entity != null) {
-            String newUserName = entity.getUserName();
-            
-            // User name can be empty, if ADMIN is editing another user
-            if (user.getUserName() != null && !user.getUserName().isEmpty()) {
-                newUserName = user.getUserName();
-                entity.setUserName(newUserName);
-            }
-           
+            String newUserName = entity.getUserName(); // current user name, can be changed and bocomes newUserName
             String newPasswd = entity.getPassword();
             
             if (user.getPassword() != null && !user.getPassword().isEmpty() ) {
@@ -229,8 +222,13 @@ public class UserServiceImpl implements UserService
             entity.setUserProfiles(newUserProfiles);
             entity.setUpdatedOn(new Timestamp(new Date().getTime()));
             
+            // User name can be empty, if ADMIN is editing another user
+            if (user.getUserName() != null && !user.getUserName().isEmpty()) {
+                newUserName = user.getUserName();
+            }
+            
             // logged-in User updated own data - Spring authentication object has to be updated too
-            if (isLoggedInUserToManageItself(user)) { 
+            if (isLoggedInUserToManageItself(entity)) { 
                 Authentication authentication = authenticationFacade.getAuthentication();
                 
                 if (authentication != null) {
@@ -240,6 +238,9 @@ public class UserServiceImpl implements UserService
                     authenticationFacade.getContext().setAuthentication(newAuthentication);                 
                 }
             }
+            // User name must be updated (saved) after Spring authentication object update, otherwise isLoggedInUserToManageItself(entity) resolves that 
+            // another user (ADMIN) is updating this 'user' as user name was already updated in DB.
+            entity.setUserName(newUserName);
         }
         
         log.info("User name {} updated.", user.getUserName());

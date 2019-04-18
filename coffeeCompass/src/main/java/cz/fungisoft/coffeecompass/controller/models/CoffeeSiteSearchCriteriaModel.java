@@ -15,6 +15,7 @@ import lombok.Data;
  *  range (meters)<br>
  *  {@link CoffeeSiteStatus}<br>
  *  {@link CoffeeSort}<br>
+ *  city name.<br>
  *  
  *  Trida tedy sdruzuje parametry, podle kterych lze vyhledavat CoffeeSite.
  *  Pouzito prevazne ve View coffeesite_search.html
@@ -24,12 +25,12 @@ import lombok.Data;
 @Data
 public class CoffeeSiteSearchCriteriaModel
 {
-    @NotNull
+//    @NotNull
     @DecimalMax(value="180.0")
     @DecimalMin(value="-180.0")
     private Double lat1 = 49.8250401; // defaultni hodnoty, stred CR
     
-    @NotNull
+//    @NotNull
     @DecimalMax(value="180.0")
     @DecimalMin(value="-180.0")
     private Double lon1 = 15.4190817; // defaultni hodnoty, stred CR
@@ -37,7 +38,7 @@ public class CoffeeSiteSearchCriteriaModel
     @NotNull
     @DecimalMax(value="50000") // Max. 50 km. (50 000 m)
     @DecimalMin(value="10")
-    private Long range = 500L; // default value 500 m
+    private Long range = 5000L; // default value 5000 m (5 km)
     
     private String coffeeSiteStatus;
     
@@ -47,6 +48,8 @@ public class CoffeeSiteSearchCriteriaModel
     private Boolean sortSelected = false; // defaultni hodnota false, nevybira se podle CoffeeSort
     
     private String coffeeSort = CoffeeSortEnum.ESPRESSO.getCoffeeType();
+    
+    private String cityName = "";
     
     /**
      * Reset search criteria model in case another Form was used for searching

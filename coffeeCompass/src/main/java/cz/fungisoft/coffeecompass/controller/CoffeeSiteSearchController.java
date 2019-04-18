@@ -83,9 +83,6 @@ public class CoffeeSiteSearchController
         CoffeeSiteSearchCriteriaModel searchCriteria = new CoffeeSiteSearchCriteriaModel();
             
         model.addAttribute("searchCriteria", searchCriteria);
-        
-        OneStringModel cityName = new OneStringModel();
-        model.addAttribute("cityName", cityName);
             
         return "coffeesite_search";
     }
@@ -106,36 +103,72 @@ public class CoffeeSiteSearchController
      *  
      * @return vrati opet ModelAndView objekt pro vyhledavaci stranku, doplneny o vyhledane CoffeeSites nebo o "flag", ktery oznacuje, ze nebylo nalezeno nic
      */
-   @GetMapping("/searchSites") 
-   public ModelAndView searchSitesWithStatusAndCoffeeSort(@ModelAttribute("searchCriteria") @Valid CoffeeSiteSearchCriteriaModel searchCriteria, final BindingResult bindingResultSearchCriteria,
-                                                          @ModelAttribute("cityName") OneStringModel cityName, final BindingResult bindingResultCityName) {
+    @GetMapping("/searchSites") 
+    public ModelAndView searchSitesWithStatusAndCoffeeSort(@ModelAttribute("searchCriteria") @Valid CoffeeSiteSearchCriteriaModel searchCriteria,
+                                                          final BindingResult bindingResultSearchCriteria
+                                                          ) {
        
-       ModelAndView mav = new ModelAndView();
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("coffeesite_search");
        
-       if (bindingResultSearchCriteria.hasErrors()) {
-           mav.setViewName("coffeesite_search");
-           return mav;
-       }
-       // CoffeeSort is not intended to be in filter now
-       if (!searchCriteria.getSortSelected()) {
-           searchCriteria.setCoffeeSort("");
-       }
+        if (bindingResultSearchCriteria.hasErrors()) {
+            searchCriteria.resetSearchFromLocation();
+            return mav;
+        }
+        // CoffeeSort is not intended to be in filter now
+        if (!searchCriteria.getSortSelected()) {
+            searchCriteria.setCoffeeSort("");
+        }
+       
+        String currentSearchCity = searchCriteria.getCityName();
+       
+        // Check if the cityName is valid city/town name
+        // i.e. at least 2 characters at the beginning and " " (space) or "-" or "," are allowed in between.
+        if (currentSearchCity.length() > 1 && !currentSearchCity.matches("^([\\p{IsAlphabetic}]{2})[\\p{IsAlphabetic}\\s-,]+$")) {
+            bindingResultSearchCriteria.rejectValue("cityName", "error.city.name.wrong", "Not a valid city name.");
+            return mav;
+        }
+       
+        // City name muze pochazet z mapy.cz a tedy obsahovat i oznaceni okresu a kraje.
+        // pro vyhledavani v DB ale staci jen mesto , ktere je v tomto mapy.cz oznaceni pred prvni carkou
+        int indexOfCarka = currentSearchCity.indexOf(",");
+        if (indexOfCarka != -1) {
+            currentSearchCity = currentSearchCity.substring(0, indexOfCarka);
+        }
+       
+        List<CoffeeSiteDTO> foundSites = null;
+       
+        if (searchCriteria.getLat1() != null && searchCriteria.getLon1() != null && searchCriteria.getRange() != null) {
+            foundSites = coffeeSiteService.findAllWithinCircleAndCityWithCSStatusAndCoffeeSort(searchCriteria.getLat1(),
+                                                                                                searchCriteria.getLon1(),
+                                                                                                searchCriteria.getRange(),
+                                                                                                searchCriteria.getCoffeeSort(),
+                                                                                                searchCriteria.getCoffeeSiteStatus(),
+                                                                                                currentSearchCity);
+        } else {
+            String encodedCityName = "";
+            try {
+                encodedCityName = URLEncoder.encode(currentSearchCity, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                log.warn("City name URL encoding error. City name '{}'.", currentSearchCity);
+            }
+            ModelAndView mavRedirect = new ModelAndView(new RedirectView("/searchSitesInCityForm/?cityName=" + encodedCityName + "&searchCityNameExactly=false", true));
            
-       List<CoffeeSiteDTO> foundSites = coffeeSiteService.findAllWithinCircleWithCSStatusAndCoffeeSort(searchCriteria.getLat1(),
-                                                                                                       searchCriteria.getLon1(),
-                                                                                                       searchCriteria.getRange(),
-                                                                                                       searchCriteria.getCoffeeSort(),
-                                                                                                       searchCriteria.getCoffeeSiteStatus());
+            mavRedirect.addObject("searchCriteria", searchCriteria);
+            return mavRedirect;
+        }
         
-       mav.addObject("foundSites", foundSites);
-       if (foundSites == null || foundSites.size() == 0)
-           mav.addObject("emptyResult", true); // nothing found, let to know to model
+        mav.addObject("foundSites", foundSites);
+        if (foundSites == null || foundSites.size() == 0)
+            mav.addObject("emptyResult", true); // nothing found, let to know to model
         
-       searchCriteria.setSortSelected(false); // set deault value before next searching
+        searchCriteria.setSortSelected(false); // set deault value before next searching
+        searchCriteria.setCityName(currentSearchCity); // set city name used for searching
         
-       mav.setViewName("coffeesite_search");
-       return mav;
+        mav.setViewName("coffeesite_search");
+        return mav;
    }
+   
    
    /**
     * Processes request to show one CoffeeSite in a map on the 'coffeesite_search.html' page, which then allows further searching.
@@ -195,10 +228,6 @@ public class CoffeeSiteSearchController
        CoffeeSiteSearchCriteriaModel searchCriteria = new CoffeeSiteSearchCriteriaModel();
        mav.addObject("searchCriteria", searchCriteria);
        
-       OneStringModel cityNameModel = new OneStringModel();
-       cityNameModel.setInput(cityName);
-       mav.addObject("cityName", cityNameModel);
-       
        return mav;
    }
    
@@ -224,26 +253,21 @@ public class CoffeeSiteSearchController
    @GetMapping("/searchSitesInCityForm/") // napr.  http://coffeecompass.cz/searchSitesInCityForm/?cityName=Tišnov&searchCityNameExactly=true
    public ModelAndView  showCitySitesFromForm(@RequestParam(value="cityName", defaultValue="") String cityName,
                                               @RequestParam(value="searchCityNameExactly", defaultValue="false") boolean searchExactly,
-                                              @ModelAttribute("cityName") OneStringModel cityNameModel, final BindingResult bindingResultCityName,
                                               @ModelAttribute("searchCriteria") CoffeeSiteSearchCriteriaModel searchCriteria, final BindingResult bindingResultSearchCriteria
                                              ) {
        
        ModelAndView mav = new ModelAndView("coffeesite_search");
        
-       if (bindingResultCityName.hasErrors()) {
-           return mav;
-       } 
-       
        String currentSearchCity = cityName;
        
-       if (currentSearchCity.isEmpty() && cityNameModel.getInput() != null ) { // city name inserted by user in Form, not by calling /searchSitesInCityForm/?cityName=XXXX&searchCityNameExactly=true link
-           currentSearchCity = cityNameModel.getInput(); 
+       if (currentSearchCity.isEmpty() && searchCriteria.getCityName() != null ) { // city name inserted by user in Form, not by calling /searchSitesInCityForm/?cityName=XXXX&searchCityNameExactly=true link
+           currentSearchCity = searchCriteria.getCityName(); 
        } 
        
        // Check if the cityName is valid city/town name
        // i.e. at least 2 characters at the beginning and " " (space) or "-" allowed in between.
-       if (currentSearchCity.isEmpty() || !currentSearchCity.matches("^([\\p{IsAlphabetic}]{2})[\\p{IsAlphabetic} -]+$")) {
-           bindingResultCityName.rejectValue("input", "error.city.name.wrong", "Not a valid city name.");
+       if (currentSearchCity.length() > 1 && !currentSearchCity.matches("^([\\p{IsAlphabetic}]{2})[\\p{IsAlphabetic}\\s-]+$")) {
+           bindingResultSearchCriteria.rejectValue("cityName", "error.city.name.wrong", "Not a valid city name.");
            return mav;
        }
        
@@ -255,32 +279,28 @@ public class CoffeeSiteSearchController
                                         : coffeeSiteService.findAllByCityNameAtStart(currentSearchCity);
            
            if ( foundSites.size() == 0) { // nothing found, let to know to model
-               searchCriteria.resetSearchFromLocation();
                mav.addObject("emptyResult", true); 
-           } 
-           
-           if ( foundSites.size() == 1) { // only one CoffeeSite found in city, define searchFrom point for this CoffeeSite
-               LatLong searchFromLoc = coffeeSiteService.getSearchFromLocation(foundSites.get(0), 200);
-               searchCriteria.setLon1(searchFromLoc.getLongitude());
-               searchCriteria.setLat1(searchFromLoc.getLatitude());
-           }
-           else {
-               /**
-                * Initial request to find CoffeeSites was not based on location (but the city name was the search parameter),
-                * therefore the CoffeeSiteSearchCriteriaModel must be filled-up using found CoffeeSites.
-                * Average longitude and latitude of found CoffeeSites is used.
-                */
-               LatLong avgSitesLocation = coffeeSiteService.getAverageLocation(foundSites);
-               searchCriteria.setLon1(avgSitesLocation.getLongitude());
-               searchCriteria.setLat1(avgSitesLocation.getLatitude());
+           } else {
+               if ( foundSites.size() == 1) { // only one CoffeeSite found in city, define searchFrom point for this CoffeeSite
+                   LatLong searchFromLoc = coffeeSiteService.getSearchFromLocation(foundSites.get(0), 200);
+                   searchCriteria.setLon1(searchFromLoc.getLongitude());
+                   searchCriteria.setLat1(searchFromLoc.getLatitude());
+               }
+               else {
+                   /**
+                    * Initial request to find CoffeeSites was not based on location (but the city name was the search parameter),
+                    * therefore the CoffeeSiteSearchCriteriaModel must be filled-up using found CoffeeSites.
+                    * Average longitude and latitude of found CoffeeSites is used.
+                    */
+                   LatLong avgSitesLocation = coffeeSiteService.getAverageLocation(foundSites);
+                   searchCriteria.setLon1(avgSitesLocation.getLongitude());
+                   searchCriteria.setLat1(avgSitesLocation.getLatitude());
+               }
            }
        }
        
        mav.addObject("foundSites", foundSites);
        mav.addObject("searchCriteria", searchCriteria);
-       
-       cityNameModel.setInput(currentSearchCity);
-       mav.addObject("cityName", cityNameModel);
        
        return mav;
    }

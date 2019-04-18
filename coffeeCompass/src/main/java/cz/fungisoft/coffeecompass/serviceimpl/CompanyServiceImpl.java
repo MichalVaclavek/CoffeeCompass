@@ -11,6 +11,12 @@ import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.repository.CompanyRepository;
 import cz.fungisoft.coffeecompass.service.CompanyService;
 
+/**
+ * Class to service Company/Dodavatel of the cofee machines names
+ * 
+ * @author Michal V8clavek
+ *
+ */
 @Service("companyService")
 @Transactional
 public class CompanyServiceImpl implements CompanyService
@@ -23,11 +29,16 @@ public class CompanyServiceImpl implements CompanyService
         this.companyRepo = companyRepo;
     }
 
+    /**
+     * Tries to finds and return Company, based on it's name.
+     * If not found, returns null.
+     * 
+     */
     @Override
     public Company findCompanyByName(String companyName) {
         Company comp = companyRepo.searchByName(companyName);
-        if (comp == null)
-            throw new EntityNotFoundException("Company with name " + companyName + " not found.");
+//        if (comp == null) // Cannot throw Exception as, calling classes checks for null 
+//            throw new EntityNotFoundException("Company with name " + companyName + " not found.");
         return comp;
     }
 
@@ -43,4 +54,5 @@ public class CompanyServiceImpl implements CompanyService
         company.setNameOfCompany(companyName);
         return companyRepo.saveAndFlush(company);
     }
+    
 }

@@ -91,7 +91,12 @@ public interface CoffeeSiteService
      */
     public List<CoffeeSiteDTO> findAllWithinCircleWithCSStatusAndCoffeeSort(double zemSirka, double zemDelka, long rangeMeters,
                                                                             String cfSort, String siteStatus);
+    
+    public List<CoffeeSiteDTO> findAllWithinCircleAndCityWithCSStatusAndCoffeeSort(double zemSirka, double zemDelka, long rangeMeters,
+                                                                                   String cfSort, String siteStatus, String cityName);
+    
     public List<CoffeeSiteDTO> findAllWithinRangeWithRecordStatus(double zemSirka, double zemDelka, long rangeMeters,  CoffeeSiteRecordStatus csRecordStatus);
+    
     public List<CoffeeSiteDTO> findAllWithRecordStatus(CoffeeSiteRecordStatusEnum csRecordStatus);
     
     /**
@@ -143,8 +148,10 @@ public interface CoffeeSiteService
     
     @PreAuthorize("isAuthenticated()")
     public CoffeeSite save(CoffeeSite cs);
+    
     @PreAuthorize("isAuthenticated()")
     public CoffeeSite save(CoffeeSiteDTO cs);
+    
     @PreAuthorize("isAuthenticated()")
     public CoffeeSite updateCSRecordStatusAndSave(CoffeeSite cs, CoffeeSiteRecordStatusEnum newStatus);
     

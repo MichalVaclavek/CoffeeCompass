@@ -61,6 +61,25 @@ public interface CoffeeSiteRepositoryCustom
 
     public List<CoffeeSite> findSitesWithCoffeeSortAndSiteStatus(double sirka, double delka, long rangeMeters, CoffeeSort sort,
                                                                  CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus);
+    /**
+     * Varianta predchoziho dotazu, kdy se k zakladnim vyhledavacim parametrum, jako je poloha, pridava jeste vyhledavani podle jmena.
+     * Vyuzito pro vyhledavani v mape, kdy uzivatel zada vyhledavani podle mesta. Z mapy.cz API se ziskaji souradnice tohoto mesta
+     * a lze pak podle souradnic najit i ty CoffeeSite zaznamy, ktere nemaji vyplneno pole 'mesto' nebo je toto pole zadane spatne.
+     *  
+     * @param sirka
+     * @param delka
+     * @param rangeMeters
+     * @param sort
+     * @param siteStatus
+     * @param csRecordStatus
+     * @param cityName
+     * @return
+     */
+    public List<CoffeeSite> findSitesWithSortAndSiteStatusAndRangeAndCity(double sirka, double delka, long rangeMeters,
+                                                                          CoffeeSort sort,
+                                                                          CoffeeSiteStatus siteStatus,
+                                                                          CoffeeSiteRecordStatus csRecordStatus,
+                                                                          String cityName);
     
     public Long getNumOfSitesInGivenState(CoffeeSiteRecordStatus csRecordStatus);
     
@@ -70,5 +89,7 @@ public interface CoffeeSiteRepositoryCustom
      * @return
      */
      public List<DBReturnPair> getTop5CityNames();
+
+    
      
 }

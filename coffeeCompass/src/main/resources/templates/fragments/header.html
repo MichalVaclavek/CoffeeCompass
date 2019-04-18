@@ -50,7 +50,7 @@
                 
             	   <form sec:authorize="isAuthenticated()" action="#" th:action="@{/logout}" method="post" class="w3-right">
         	   			<input type="hidden" name="_method" value="post"/>
-          			<button type="submit" id="submitLogoutButton" th:text="#{mainmenu.userlogout}" class="w3-button w3-white w3-border w3-round">X</button>
+          				<button type="submit" id="submitLogoutButton" th:text="#{mainmenu.userlogout}" class="w3-button w3-white w3-border w3-round">X</button>
     	    	   </form>
         		   <a sec:authorize="isAuthenticated()" th:href="@{'/user/edit/' + ${#authentication.name}}" th:text="${#authentication.name}" class="w3-bar-item w3-button w3-blue w3-right w3-round">Edit user's account</a>
         		   
