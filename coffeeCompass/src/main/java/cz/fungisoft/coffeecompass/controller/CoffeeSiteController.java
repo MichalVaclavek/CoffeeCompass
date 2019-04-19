@@ -298,9 +298,11 @@ public class CoffeeSiteController
             bindingResult.rejectValue("siteName", "error.site.name.used", "Name already used.");
         }
         // Overeni, zda zadana pozice CoffeeSitu neni jiz pouzita.
-        if (coffeeSiteService.isLocationAlreadyOccupied(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5, coffeeSite.getId())) {
-            bindingResult.rejectValue("zemSirka", "error.site.coordinate.latitude", "Location already occupied.");
-            bindingResult.rejectValue("zemDelka", "error.site.coordinate.longitude", "Location already occupied.");
+        if (coffeeSite.getZemSirka() != null && coffeeSite.getZemDelka() != null) {
+            if (coffeeSiteService.isLocationAlreadyOccupied(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5, coffeeSite.getId())) {
+                bindingResult.rejectValue("zemSirka", "error.site.coordinate.latitude", "Location already occupied.");
+                bindingResult.rejectValue("zemDelka", "error.site.coordinate.longitude", "Location already occupied.");
+            }
         }
         
         if (bindingResult.hasErrors()) {

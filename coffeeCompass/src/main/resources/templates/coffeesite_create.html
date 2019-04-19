@@ -47,6 +47,9 @@
               <label for="dodavatelPodnik.nameOfCompany">
                 <span th:text="#{site.supplier}">Supplier</span>
               </label>
+              <i><label for="dodavatelPodnik.nameOfCompany.additionalinfo">
+                <span th:text="#{site.supplier.additionalinfo}" class="w3-text-gray w3-small">Supplier</span>
+              </label></i>
               <div th:classappend="${#fields.hasErrors('dodavatelPodnik.nameOfCompany')} ? 'has-error' : ''">
                  <input type="text" 
                         th:field="*{dodavatelPodnik.nameOfCompany}"
@@ -160,7 +163,8 @@
 	            <div th:classappend="${#fields.hasErrors('pristupnostDny')} ? 'has-error' : ''">
 	               <input type="text"
 	                      th:field="*{pristupnostDny}"
-	                      class="w3-input w3-border w3-round"/>
+	                      class="w3-input w3-border w3-round"
+	                      th:placeholder="#{site.accessDays.placeholder}" />
 	            </div>
 	            <p class="error-message"
 	               th:each="error: ${#fields.errors('pristupnostDny')}"
@@ -174,7 +178,8 @@
 	            <div th:classappend="${#fields.hasErrors('pristupnostHod')} ? 'has-error' : ''">
 	               <input type="text"
 	                      th:field="*{pristupnostHod}"
-	                      class="w3-input w3-border w3-round"/>
+	                      class="w3-input w3-border w3-round"
+	                      th:placeholder="#{site.accessHours.placeholder}" />
 	            </div>
 	            <p class="error-message"
 	               th:each="error: ${#fields.errors('pristupnostHod')}"
@@ -291,12 +296,12 @@
 	               		   th:text="${error}">Validation error</p>
           	</div>
     
-    	  <div class="w3-bar">
-	          <div class="w3-margin w3-bar-item">
+    	  <div class="w3-bar w3-margin-top">
+	          <div class="w3-bar-item">
 	             <button type="submit" name="save" th:text="(${coffeeSite.id} == 0) ? #{site.button.create} : #{site.button.update}" class="w3-button w3-blue w3-round">Save/Modify Coffee site</button>    
 	          </div>
 	          
-	          <div class="w3-margin w3-bar-item">
+	          <div class="w3-bar-item">
 	          	 <a  th:if="${coffeeSite.id} != 0" th:href="@{'/showSite/' + ${coffeeSite.id}}" th:text="#{site.edit.cancel}" class="w3-button">Cancel update site</a>
 	          	 <a  th:if="${coffeeSite.id} == 0" th:href="@{'/home'}" th:text="#{site.edit.cancel}" class="w3-button">Cancel creation of the site</a>
 		      </div>

@@ -1,9 +1,21 @@
 package cz.fungisoft.coffeecompass.serviceimpl;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.OptionalDouble;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
+import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSort;
 import cz.fungisoft.coffeecompass.entity.Company;
@@ -11,7 +23,6 @@ import cz.fungisoft.coffeecompass.entity.CupType;
 import cz.fungisoft.coffeecompass.entity.NextToMachineType;
 import cz.fungisoft.coffeecompass.entity.OtherOffer;
 import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
 import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.pojo.LatLong;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRecordStatusRepository;
@@ -26,16 +37,6 @@ import cz.fungisoft.coffeecompass.service.ImageStorageService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.OptionalDouble;
 
 /**
  * Implementace CoffeeSiteService. Implementuje vsechny metody, ktere pracuji s CoffeeSite objekty, tj.

@@ -168,13 +168,9 @@ map.enable = function() {
 
 var cityName;
 
-/* map.findCoordinatesAndInsertToForm = function(city, alatSearchInput, alonSearchInput) { */
 map.findCoordinatesAndInsertToForm = function(city) {
    cityName = city;
    
-   /* latSearchInput = alatSearchInput; */
-   /* lonSearchInput = alonSearchInput; */
- 
    var geocode = new SMap.Geocoder(cityName, odpoved, {
 	    // parametry pro omezeni mista - bounding box ceske republiky dle https://wiki.openstreetmap.org/wiki/WikiProject_Czech_Republic
 	   bbox: [SMap.Coords.fromWGS84(12.09, 51.06), SMap.Coords.fromWGS84(18.87, 48.55)]

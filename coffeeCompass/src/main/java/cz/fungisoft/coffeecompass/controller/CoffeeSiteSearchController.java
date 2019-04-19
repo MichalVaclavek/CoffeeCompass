@@ -115,10 +115,6 @@ public class CoffeeSiteSearchController
             searchCriteria.resetSearchFromLocation();
             return mav;
         }
-        // CoffeeSort is not intended to be in filter now
-        if (!searchCriteria.getSortSelected()) {
-            searchCriteria.setCoffeeSort("");
-        }
        
         String currentSearchCity = searchCriteria.getCityName();
        
@@ -126,7 +122,12 @@ public class CoffeeSiteSearchController
         // i.e. at least 2 characters at the beginning and " " (space) or "-" or "," are allowed in between.
         if (currentSearchCity.length() > 1 && !currentSearchCity.matches("^([\\p{IsAlphabetic}]{2})[\\p{IsAlphabetic}\\s-,]+$")) {
             bindingResultSearchCriteria.rejectValue("cityName", "error.city.name.wrong", "Not a valid city name.");
+            searchCriteria.resetSearchFromLocation();
             return mav;
+        }
+        
+        if (!searchCriteria.getSortSelected()) { // CoffeeSort is not intended to be in filter now
+            searchCriteria.setCoffeeSort("");
         }
        
         // City name muze pochazet z mapy.cz a tedy obsahovat i oznaceni okresu a kraje.

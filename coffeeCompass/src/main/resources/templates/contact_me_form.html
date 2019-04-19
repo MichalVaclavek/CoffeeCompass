@@ -19,8 +19,6 @@
 		   <p th:text="#{contactme.page.info.s2}"></p>
 		</div>
 
-		<div class="w3-row">
-				
 	    	<div class="w3-card-4 w3-margin-top w3-light-grey w3-half w3-round w3-padding-16" > <!-- style="width:20%" -->
 	
 			<!-- Formular pro Contact-me zpravu -->
@@ -30,7 +28,7 @@
 	              <label for="authorName" th:text="#{contactme.message.author}">Author name</label>
 	              <div th:classappend="${#fields.hasErrors('authorName')} ? 'has-error':''"> 
 	                   <input id="cmMessage"
-	                	      class="w3-input w3-border"
+	                	      class="w3-input w3-border w3-round"
 	                   	      th:field="*{authorName}"/>
 	              </div>
 	              <p class="error-message"
@@ -42,7 +40,7 @@
 	              <label for="email" th:text="#{contactme.message.email}">E-mail</label>
 	              <div  th:classappend="${#fields.hasErrors('email')} ? 'has-error':''">
 	                 <input id="email" 
-	                        class="w3-input w3-border"
+	                        class="w3-input w3-border w3-round"
 	                        th:field="*{email}"
 	                        th:placeholder="#{contactme.email.placeholder}"/>
 	              </div>
@@ -60,7 +58,7 @@
 				    <div th:classappend="${#fields.hasErrors('textOfMessage')} ? 'has-error':''">
 				  	    <textarea id="messageArea" name="messageArea"
 				                  th:field="*{textOfMessage}"
-				                  class="w3-input w3-border" style="resize:none" maxlength=512
+				                  class="w3-input w3-border w3-round" style="resize:none" maxlength=512
 				                  th:placeholder="#{contactme.message.placeholder}">
 				        </textarea>
 				     </div>       
@@ -70,16 +68,22 @@
                   
 				</div>
 			</div>
-		
-			<div>
-	        	<input type="hidden" name="_method" value="post" />
-	            <button type="submit" id="submitButton" th:text="#{contactme.submitMessage}" class="w3-btn w3-blue w3-border w3-margin" >X</button>
-	        </div>
+			
+			<div class="w3-bar w3-margin-top">
+				<div class="w3-bar-item">
+		        	<input type="hidden" name="_method" value="post" />
+		            <button type="submit" id="submitButton" th:text="#{contactme.submitMessage}" class="w3-btn w3-blue w3-border w3-round" >X</button>
+		        </div>
+		        
+		        <div class="w3-bar-item">
+	          	 	<a th:href="@{'/home'}" th:text="#{contactme.form.cancel}" class="w3-button">Cancel entering contact-me message</a>
+		      	</div>
+	        
+	         </div>
         
        </form>
 	   </div>
 	   
-	</div>
 	</div>
 	
 	<div th:replace="fragments/footer :: footer"/>
