@@ -1,8 +1,18 @@
 <html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
 <meta charset="UTF-8"/>
 <head>
+
     <div th:fragment="header-css">
     
+	    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+		<!-- <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.js"></script>  -->
+		<script>
+			$(window).load(function() {
+				// Animate loader off screen
+				$(".se-pre-con").fadeOut("fast");;
+			});
+		</script>
+     
 		<meta charset="UTF-8"/>
 		<meta name="description" content="Vyhledávání kávy s sebou.">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -31,14 +41,21 @@
 <body>
    <div th:fragment="header">
    
+    <div class="se-pre-con"></div> 
+   
        <div class="w3-container">
       
            <div class="w3-bar w3-border w3-black">  
                 <a th:href="@{/home}" th:text="#{mainmenu.home}" class="w3-bar-item w3-button w3-brown" >Home</a>
                 <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/user/all}" th:text="#{mainmenu.allusers}" class="w3-bar-item w3-button">Users</a>
-                <a sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('DBA')" th:href="@{/allSites}" th:text="#{mainmenu.allsites}" class="w3-bar-item w3-button">Coffee sites</a>
+                
+                <!-- link to show all sites, for admin user user, with loader image after click -->
+                <!-- <a sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('DBA')" th:href="@{/allSites}" th:text="#{mainmenu.allsites}" class="w3-bar-item w3-button">Coffee sites</a> -->
+				<div sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('DBA')"  th:onclick="'javascript:referenceClickedWithLoaderImage(\'' + '/allSites' + '\');'" th:text="#{mainmenu.allsites}" class="w3-bar-item w3-button">Coffee sites of the user</div> 
 				<!-- link to show sites created by logged-in user -->
-                <a sec:authorize="isAuthenticated()" th:href="@{/mySites}" th:text="#{mainmenu.mysites}" class="w3-bar-item w3-button">Coffee sites of the user</a>
+                <!-- <a sec:authorize="isAuthenticated()" th:href="@{/mySites}" th:text="#{mainmenu.mysites}" class="w3-bar-item w3-button">Coffee sites of the user</a> -->
+                <div sec:authorize="isAuthenticated()" th:onclick="'javascript:referenceClickedWithLoaderImage(\'' + '/mySites' + '\');'" th:text="#{mainmenu.mysites}" class="w3-bar-item w3-button">Coffee sites of the user</div>
+                
                 <a th:href="@{/createSite}" th:text="#{mainmenu.createsite}" class="w3-bar-item w3-button">New site</a>
                 <a th:href="@{/showSearch}" th:text="#{mainmenu.searchsites}" class="w3-bar-item w3-button">Search sites</a>
                 <!--<a sec:authorize="isAuthenticated()" th:href="@{'/user/edit/' + ${#authentication.name}}" th:text="#{mainmenu.user.editaccount}" class="w3-bar-item w3-button">Edit user's account</a>-->
@@ -61,7 +78,17 @@
 				</div>
            </div>
        </div>
+       <!-- Reference click with loader image --> 
+	<script>
+       function referenceClickedWithLoaderImage(value) {
+    	   
+          location.href = value;
+          $(".se-pre-con").fadeIn("fast");
+       }
+    </script>
   </div>
+  
+  
 
 </body>
 </html>

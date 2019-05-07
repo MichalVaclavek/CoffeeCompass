@@ -200,6 +200,7 @@ function odpoved(geocoder) { /* Odpověď */
 		latSearchInput.value = ""; // Coordinates not known, try to find against cityName only in CoffeeSites's 'poloha_mesto' column
 		lonSearchInput.value = "";
 		
+		$(".se-pre-con").fadeIn("fast");
     	document.getElementById("searchByCoordinatesForm").submit();
         return;
     }
@@ -215,6 +216,8 @@ function odpoved(geocoder) { /* Odpověď */
 		/* data.push(item.label + " (" + item.coords.toWGS84(2).reverse().join(", ") + ")"); */
 		/* document.getElementById("cityName").value = item.label; */
 		cityNameInput.value = item.label;
+		
+		$(".se-pre-con").fadeIn("fast");
 		document.getElementById("searchByCoordinatesForm").submit();
     	
     } else  if (vysledky.length > 1) { // More then 1 result returned from mapy.cz, select options has to be shown to user

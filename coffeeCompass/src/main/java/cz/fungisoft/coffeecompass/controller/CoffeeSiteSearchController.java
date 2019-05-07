@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 
 import javax.validation.Valid;
 
@@ -55,6 +56,8 @@ public class CoffeeSiteSearchController
     
     private CoffeeSortService coffeeSortService;
     
+    private String allowedCityNamePattern = "^([\\p{IsAlphabetic}]{2})[\\p{IsAlphabetic}\\s-.,]+$";
+    
     
     /**
      * Dependency Injection pomoci konstruktoru, neni potreba uvadet @Autowired u atributu, Spring toto umi automaticky.
@@ -97,9 +100,6 @@ public class CoffeeSiteSearchController
      * 
      * @param searchCriteria - model vyhledavacich kriterii s daty ktere vlozil uzivatel a ktere do modelu spravne namapoval Thymeleaf 
      * @param bindingResultSearchCriteria - vysledek vytvoreni searchCriteria modelu z dat ve formulari pro vyhledani podle souradnic
-     * @param cityName - model pro vyhledavani podle mesta. Obsahuje pouze retezec se jmenem mesta.<br>
-     *                   Zde se ale neoveruje, ani nevyuziva, protoze tento odkaz zpracovava pouze click na tlac. ve formulari pro vyhledavani podle souradnic.
-     * @param bindingResultCityName - vysledek vytvoreni OneStringModel modelu z dat ve formulari pro vyhledani podle jmena mesta
      *  
      * @return vrati opet ModelAndView objekt pro vyhledavaci stranku, doplneny o vyhledane CoffeeSites nebo o "flag", ktery oznacuje, ze nebylo nalezeno nic
      */
@@ -120,7 +120,7 @@ public class CoffeeSiteSearchController
        
         // Check if the cityName is valid city/town name
         // i.e. at least 2 characters at the beginning and " " (space) or "-" or "," are allowed in between.
-        if (currentSearchCity.length() > 1 && !currentSearchCity.matches("^([\\p{IsAlphabetic}]{2})[\\p{IsAlphabetic}\\s-,]+$")) {
+        if (currentSearchCity.length() > 1 && !currentSearchCity.matches(allowedCityNamePattern)) {
             bindingResultSearchCriteria.rejectValue("cityName", "error.city.name.wrong", "Not a valid city name.");
             searchCriteria.resetSearchFromLocation();
             return mav;
@@ -246,8 +246,6 @@ public class CoffeeSiteSearchController
     *        Zde se ale neoveruje, ani nevyuziva, protoze tento odkaz zpracovava pouze click na tlac. ve formulari pro vyhledavani podle jmena mesta.
     *        Pro spravnou funkcnost Springu je vsak treba uvest, protoze na strance "coffeesite_search.html" jsou 2 formulare se dvema modely.
     * @param bindingResultSearchCriteria - vysledek vytvoreni searchCriteria modelu z dat ve formulari pro vyhledani podle souradnic
-    * @param cityNameModel - model pro vyhledavani podle mesta, vlozeno z formulare na strance "coffeesite_search.html". Obsahuje pouze retezec se jmenem mesta. 
-    * @param bindingResultCityName - vysledek vytvoreni OneStringModel modelu z dat ve formulari pro vyhledani podle jmena mesta
     * 
     * @return opet ModelAndView pro vyhledavaci stranku, s presmerovanim na "/showCitySearch", doplneny o vyhledane CoffeeSites nebo o "flag", ktery oznacuje, ze nebylo nalezeno nic
     */
@@ -266,8 +264,8 @@ public class CoffeeSiteSearchController
        } 
        
        // Check if the cityName is valid city/town name
-       // i.e. at least 2 characters at the beginning and " " (space) or "-" allowed in between.
-       if (currentSearchCity.length() > 1 && !currentSearchCity.matches("^([\\p{IsAlphabetic}]{2})[\\p{IsAlphabetic}\\s-]+$")) {
+       // i.e. at least 2 characters at the beginning and " " (space) or "-" or "," are allowed in between.
+       if (currentSearchCity.length() > 1 && !currentSearchCity.matches(allowedCityNamePattern)) {
            bindingResultSearchCriteria.rejectValue("cityName", "error.city.name.wrong", "Not a valid city name.");
            return mav;
        }

@@ -309,6 +309,7 @@
 	     		}
 	     		
 	     		if (cityNameInput.value.length === 0) {
+	     			$(".se-pre-con").fadeIn("fast");
 	     			document.getElementById("searchByCoordinatesForm").submit();
 	     		}
      		} else if (selectCity.style.display == "block") { // user selected city from previously found options 
@@ -319,6 +320,7 @@
      			latInput.value = selectedCityOption.dataset[selectCity.selectedIndex+'1'];
      			latLabel.innerHTML = latInput.value;
      			lonLabel.innerHTML = lonInput.value;
+     			$(".se-pre-con").fadeIn("fast");
      			document.getElementById("searchByCoordinatesForm").submit();
      		}
      	}

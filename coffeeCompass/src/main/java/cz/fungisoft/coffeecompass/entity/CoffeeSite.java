@@ -226,10 +226,10 @@ public class CoffeeSite
      * si uzivatel zobrazi informace o jednom CoffeeSite.
      * Nebude se tedy ziskavat cely seznam commentu pri kazdem dotazu na CoffeeSite.???
      * */
-    @OneToMany(mappedBy="coffeeSite", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy="coffeeSite", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
     
-    @OneToMany(mappedBy="coffeeSite", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy="coffeeSite", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<StarsForCoffeeSiteAndUser> ratings = new ArrayList<>();
     
 }
