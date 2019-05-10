@@ -173,7 +173,8 @@ map.findCoordinatesAndInsertToForm = function(city) {
    
    var geocode = new SMap.Geocoder(cityName, odpoved, {
 	    // parametry pro omezeni mista - bounding box ceske republiky dle https://wiki.openstreetmap.org/wiki/WikiProject_Czech_Republic
-	   bbox: [SMap.Coords.fromWGS84(12.09, 51.06), SMap.Coords.fromWGS84(18.87, 48.55)]
+	   /* bbox: [SMap.Coords.fromWGS84(12.09, 51.06), SMap.Coords.fromWGS84(18.87, 48.55)] */
+	   locality:"Česko"
    });
 }
 
