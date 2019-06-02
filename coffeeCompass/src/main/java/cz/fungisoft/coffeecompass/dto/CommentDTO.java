@@ -2,6 +2,8 @@ package cz.fungisoft.coffeecompass.dto;
 
 import java.util.Date;
 
+import javax.validation.constraints.Size;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
@@ -20,6 +22,7 @@ public class CommentDTO
 {
     private Integer id;
     
+    @Size(max=512)
     private String text;
     
     @JsonFormat(pattern = "dd. MM. yyyy HH:mm")
