@@ -184,8 +184,8 @@
 				        </div>
 				       
 				         
-					    <!-- Element with Forms to upload or delete image of the Site -->
-					    <div th:if="${coffeeSite.canBeModified}" class="w3-display-bottommiddle">
+					    <!-- Element with Form to upload or delete image of the Site -->
+					    <div th:if="${coffeeSite.canBeModified}" class="w3-display-bottommiddle" style="width:100%">
 					    
 						     <div class="w3-right" th:if="${thisSiteImageId > 0} AND ${coffeeSite.canBeModified}">
 						        <form action="#" th:object="${thisSiteImageId}"
@@ -196,10 +196,10 @@
 						        </form>
 						     </div> 
 						    
-						     <div style="visibility: hidden"> <!-- Hidden H1 lines to move above delete image button up, closer to image itself -->
+						     <div style="visibility: hidden"> <!-- Hidden H3 lines to move above delete image button up, closer to image itself -->
 						    	<h3>Move up delete button</h3>
 						     </div>
-						     <!-- <div class="w3-cell-bottom">  -->
+						     
 					         <!-- Element with Forms to upload or delete image of the Site -->
 					         <h5 th:text="#{image.insert.label}">Insert photo here</h5>
 					         <div class="w3-border w3-container">
@@ -210,9 +210,10 @@
 									       
 								       <input th:type="hidden" name="siteId" th:field="*{coffeeSiteID}"/>
 								      
-									    <div class="w3-row">
+									   <div>
 							                <div th:classappend="${#fields.hasErrors('file')} ? 'has-error' : ''">
 							                    <input class= "w3-border" 
+							                    	   style="width:100%"
 							                           name="file" id="fileNameInput"
 							                           type="file" th:field="*{file}"
 							                           th:text="#{image.selectfile.button}"
@@ -233,10 +234,9 @@
 				    
 		    	</div>
 		    	
+		    	<!-- Group of buttons for modifying CoffeeSite status -->
+		 		<!-- Buttons for modification of the CoffeeSite and for changing status of CS  -->
 		    	<div class="w3-container w3-margin" th:if="${coffeeSite.canBeModified} OR ${coffeeSite.canBeDeactivated}"> 
-		 
-		 			<!-- Group of buttons for modifying CoffeeSite status -->
-		 			<!-- Buttons for modification of the CoffeeSite and for changing status of CS  -->
 		 
 			 		<!-- Tlacitko pro Modifikaci pro uzivatele, ktery site vytvoril nebo pro DBA a ADMIN -->
 	         		<!-- Available only for logged-in user who created the site or for DBA or ADMIN user -->

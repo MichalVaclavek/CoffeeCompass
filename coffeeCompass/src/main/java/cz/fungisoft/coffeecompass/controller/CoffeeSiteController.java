@@ -294,9 +294,9 @@ public class CoffeeSiteController
     @PostMapping("/createModifySite") // Mapovani http POST na DB SAVE/UPDATE
     public String createOrUpdateCoffeeSite(@ModelAttribute("coffeeSite") @Valid CoffeeSiteDTO coffeeSite, final BindingResult bindingResult) {
         //Overeni jmena, nesmi se shodovat s jinym jmenem.
-        if (!coffeeSiteService.isSiteNameUnique(coffeeSite.getId(), coffeeSite.getSiteName())) {
-            bindingResult.rejectValue("siteName", "error.site.name.used", "Name already used.");
-        }
+//        if (!coffeeSiteService.isSiteNameUnique(coffeeSite.getId(), coffeeSite.getSiteName())) {
+//            bindingResult.rejectValue("siteName", "error.site.name.used", "Name already used.");
+//        }
         // Overeni, zda zadana pozice CoffeeSitu neni jiz pouzita.
         if (coffeeSite.getZemSirka() != null && coffeeSite.getZemDelka() != null) {
             if (coffeeSiteService.isLocationAlreadyOccupied(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5, coffeeSite.getId())) {

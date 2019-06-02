@@ -45,13 +45,18 @@
 		        <div class="w3-margin-bottom">
 			        <h3 th:text="#{about.page.p3.label}"></h3>
 			        <p th:text="#{about.page.p3.s1}" class="w3-margin-bottom"></p>
-			        
 			        <p th:text="#{about.page.p3.s2}" class="w3-margin-bottom"></p>
 		        </div>
 		        
 		        <div class="w3-margin-bottom">
 			        <h3 th:text="#{about.page.p4.label}"></h3>
-			        <p th:text="#{about.page.p4.s1}" class="w3-margin-bottom"></p>
+			        <p>
+			        	<span th:text="#{about.page.p4.s1.start}"></span>
+			        	<b><span th:text="#{about.page.p4.s1.kavassebou.label}"></span></b>
+			        	<span th:text="#{about.page.p4.s1.next1}"></span>
+			        	<a th:href="@{#{about.page.info.aboutAuthor.linkto.gplay.kavassebou}}" th:text="#{about.page.p4.s1.googleplay}" class="w3-text-blue"></a>
+			        	<span th:text="#{about.page.p4.s1.end}"></span>
+			        </p>
 			        <p th:text="#{about.page.p4.s2}" class="w3-margin-bottom"></p>
 		        </div>
 		        

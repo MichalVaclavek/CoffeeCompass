@@ -91,7 +91,7 @@ public class CoffeeSiteDTO
     
     @DecimalMax(value="9")
     @DecimalMin(value="0")
-    private int numOfCoffeeAutomatyVedleSebe = 1;
+    private int numOfCoffeeAutomatyVedleSebe = 0;
 
     private SiteLocationType typLokality;
     

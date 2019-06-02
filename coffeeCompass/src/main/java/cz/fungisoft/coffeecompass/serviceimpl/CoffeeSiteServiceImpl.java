@@ -344,8 +344,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     @Override
     public boolean isLocationAlreadyOccupied(double zemSirka, double zemDelka, long meters, Long siteId) {
         long numOfSites = coffeeSiteRepo.getNumberOfSitesWithinRange(zemSirka, zemDelka, meters);
-        // If only one site is found in the neighborhood, check if it is different site or this site
-        // if it is this site, then the location is considered to be available. Means only move of the CoffeeSite to correct new position with no other neighbors
+        // If only one site is found in the neighborhood, check if it is a new site or curently modified site
+        // if it is current modified site, then the location is considered to be available. Means only move of the CoffeeSite to correct new position with no other neighbors
         if (numOfSites == 1 && siteId > 0) {
             CoffeeSite neighborSite = findOneById(siteId);
             if (neighborSite != null) {
