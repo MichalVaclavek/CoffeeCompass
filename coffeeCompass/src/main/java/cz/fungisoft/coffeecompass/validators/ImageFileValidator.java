@@ -17,7 +17,7 @@ import cz.fungisoft.coffeecompass.configuration.FileStorageProperties;
  */
 public class ImageFileValidator implements ConstraintValidator<ImageFileValidatorConstraint, MultipartFile>
 {
-    private Long maxFileSize = 5_000_000L; 
+    private Long maxFileSize = 5_242_880L; // 5 MB
     
     private FileStorageProperties properties;
     
@@ -46,32 +46,33 @@ public class ImageFileValidator implements ConstraintValidator<ImageFileValidato
         
         boolean result = true;
 
-        if (!fileToUpload.isEmpty()) {
+        if (fileToUpload != null) {
+            if (!fileToUpload.isEmpty()) {
+            
+                String contentType = fileToUpload.getContentType();
+                if (!isSupportedContentType(contentType)) {
+                    cxt.disableDefaultConstraintViolation();
+                    cxt.buildConstraintViolationWithTemplate("{ImageFileValidatorConstraint.Image.file.type}") // retrieve message from Validation Messages source defined in CoffeeCompassConfiguration
+                       .addConstraintViolation();
         
-            String contentType = fileToUpload.getContentType();
-            if (!isSupportedContentType(contentType)) {
-                cxt.disableDefaultConstraintViolation();
-                cxt.buildConstraintViolationWithTemplate("{ImageFileValidatorConstraint.Image.file.type}") // retrieve message from Validation Messages source defined in CoffeeCompassConfiguration
+                    result = false;
+                }
+                
+                if (!isAcceptableSize(fileToUpload)) {
+                    cxt.disableDefaultConstraintViolation();
+                    cxt.buildConstraintViolationWithTemplate("{ImageFileValidatorConstraint.Image.file.size}") // retrieve message from Validation Messages source defined in CoffeeCompassConfiguration
                        .addConstraintViolation();
-    
-                result = false;
-            }
-            
-            if (!isAcceptableSize(fileToUpload)) {
+        
+                    result = false;
+                }
+                
+            } else {
                 cxt.disableDefaultConstraintViolation();
-                cxt.buildConstraintViolationWithTemplate("{ImageFileValidatorConstraint.Image.file.size}") // retrieve message from Validation Messages source defined in CoffeeCompassConfiguration
-                       .addConstraintViolation();
-    
-                result = false;
-            }
-            
-        } else
-        {
-            cxt.disableDefaultConstraintViolation();
-            cxt.buildConstraintViolationWithTemplate("{error.image.empty}")
+                cxt.buildConstraintViolationWithTemplate("{ImageFileValidatorConstraint.Image.file.empty}")
                    .addConstraintViolation();
-
-            result = false;
+    
+                result = false;
+            }
         }
 
         return result;
@@ -84,7 +85,7 @@ public class ImageFileValidator implements ConstraintValidator<ImageFileValidato
     }
     
     private boolean isAcceptableSize(MultipartFile file) {
-        return file.getSize() < maxFileSize;
+        return file.getSize() <= maxFileSize;
     }
  
 }

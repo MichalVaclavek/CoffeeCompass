@@ -26,7 +26,6 @@ import io.swagger.annotations.Api;
  * @author Michal Vaclavek
  *
  */
-@Api // Anotace Swagger
 @Controller 
 public class CSStarsRatingAndCommentsController
 {

@@ -33,6 +33,10 @@ public class Company
     @Column(name = "jmeno_podniku_dodavatele", unique = true)
     private String nameOfCompany;
     
+    public void setNameOfCompany(String dodavatelPodnik) {
+        this.nameOfCompany = dodavatelPodnik.trim();
+    }
+    
     @Override
     public String toString() {
         return nameOfCompany;

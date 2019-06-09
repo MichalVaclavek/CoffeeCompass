@@ -12,7 +12,7 @@ import cz.fungisoft.coffeecompass.exception.StorageFileException;
 import cz.fungisoft.coffeecompass.repository.ImageRepository;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.ImageStorageService;
-import cz.fungisoft.coffeecompass.service.ImageResizerService;
+import cz.fungisoft.coffeecompass.service.ImageResizeAndRotateService;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
@@ -24,6 +24,7 @@ import java.util.Base64;
 import java.util.Date;
 
 import javax.transaction.Transactional;
+import javax.validation.ValidationException;
 
 /**
  * Sluzba pro praci s objekty Image, obrazek CoffeeSitu. Ukladani, mazani, konverze na Base64String
@@ -40,7 +41,7 @@ public class ImageStorageServiceImpl implements ImageStorageService
     
     private ImageRepository imageRepo;
     
-    private ImageResizerService imageResizer;
+    private ImageResizeAndRotateService imageResizer;
 
     private CoffeeSiteService coffeeSiteService;
     
@@ -60,7 +61,7 @@ public class ImageStorageServiceImpl implements ImageStorageService
      * @param imageResizer
      */
     @Autowired
-    public ImageStorageServiceImpl(FileStorageProperties fileStorageProperties, ImageRepository imageRepo, ImageResizerService imageResizer) {
+    public ImageStorageServiceImpl(FileStorageProperties fileStorageProperties, ImageRepository imageRepo, ImageResizeAndRotateService imageResizer) {
         
         this.imageRepo = imageRepo;
         this.imageResizer = imageResizer;
@@ -94,6 +95,9 @@ public class ImageStorageServiceImpl implements ImageStorageService
     @Autowired
     public void setConfig(ConfigProperties config) {
         this.config = config;
+        if (this.config != null) {
+            baseImageURL = config.getBaseURLforImages();
+        }
     }
 
     /*
@@ -121,6 +125,9 @@ public class ImageStorageServiceImpl implements ImageStorageService
     }
     */
     
+    /**
+     * Saves the image file into DB and creates Image object for CoffeeSite with siteID
+     */
     @Override
     @Transactional
     public Integer storeImageFile(Image image, MultipartFile file, Long siteID) {
@@ -155,8 +162,22 @@ public class ImageStorageServiceImpl implements ImageStorageService
         return retVal;
     }
     
+    /**
+     * Saves already created Image object.
+     * If there is already assigned Image to CoffeeSite, delete old image first
+     */
     @Override
     @Transactional
+    public void saveImageToDB(Image image) {
+        try {
+            image.setSavedOn(new Timestamp(new Date().getTime()));
+            imageRepo.save(image);
+         } catch (ValidationException ex) {
+            log.error("Failed to validate: {}", ex); 
+         }
+    }
+    
+    @Override
     public Image getImageById(Integer imageID) {
         return imageRepo.getOne(imageID);
     }
@@ -236,7 +257,7 @@ public class ImageStorageServiceImpl implements ImageStorageService
     
     @Override
     public String getBaseImageURL() {
-        return baseImageURL = config.getBaseURLforImages();
+        return baseImageURL;
     }
 
 }

@@ -1,6 +1,8 @@
 package cz.fungisoft.coffeecompass.serviceimpl;
 
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -17,7 +19,7 @@ import javax.imageio.stream.ImageOutputStream;
 import org.springframework.stereotype.Service;
 
 import cz.fungisoft.coffeecompass.entity.Image;
-import cz.fungisoft.coffeecompass.service.ImageResizerService;
+import cz.fungisoft.coffeecompass.service.ImageResizeAndRotateService;
 
 /**
  * Service to change the size of the Image to "standard" width and lenghth.<br>
@@ -29,8 +31,8 @@ import cz.fungisoft.coffeecompass.service.ImageResizerService;
  * @author Michal Vaclavek, based on code taken from stackoverflow.com and other internet sites
  *
  */
-@Service("imageResizer")
-public class ImageResizerServiceImpl implements ImageResizerService
+@Service("imageResizeAndRotate")
+public class ImageResizeAndRotateServiceImpl implements ImageResizeAndRotateService
 {
     /**
      * Default ratio 4/3
@@ -120,4 +122,68 @@ public class ImageResizerServiceImpl implements ImageResizerService
         return resize(image, sizeRatio);
     }
 
+    private Image rotate(Image image, int angle) {
+        
+        BufferedImage inputImage;
+        ByteArrayInputStream bais = new ByteArrayInputStream(image.getImageBytes());
+        try {
+            inputImage = ImageIO.read(bais);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        
+        
+        double rads = Math.toRadians(angle);
+        double sin = Math.abs(Math.sin(rads)), cos = Math.abs(Math.cos(rads));
+        int w = this.defWidth;
+        int h = this.defHeight;
+        int newWidth = (int) Math.floor(w * cos + h * sin);
+        int newHeight = (int) Math.floor(h * cos + w * sin);
+ 
+        BufferedImage rotated = new BufferedImage(newWidth, newHeight, inputImage.getType());
+        Graphics2D g2d = rotated.createGraphics();
+        AffineTransform at = new AffineTransform();
+        at.translate((newWidth - w) / 2, (newHeight - h) / 2);
+
+        int x = w / 2;
+        int y = h / 2;
+
+        at.rotate(rads, x, y);
+        g2d.setTransform(at);
+        g2d.drawImage(inputImage, 0, 0, this.defWidth, this.defHeight, null);
+        g2d.dispose();
+
+        // creates output Stream for getting byte[] of image
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        
+        try {
+            // Save as jpeg
+            ImageWriter imgWriter = ImageIO.getImageWritersByFormatName("jpg").next();
+            ImageOutputStream ioStream = ImageIO.createImageOutputStream(baos);
+            imgWriter.setOutput(ioStream);
+    
+            imgWriter.write(rotated);
+    
+            ioStream.flush();
+            ioStream.close();
+            imgWriter.dispose();
+            
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        
+        image.setImageBytes(baos.toByteArray());
+        return image;
+    }
+
+    @Override
+    public Image rotate90DegreeLeft(Image image) {
+        return rotate(image, -90);
+    }
+
+    @Override
+    public Image rotate90DegreeRight(Image image) {
+        return rotate(image, 90);
+    }
+    
 }

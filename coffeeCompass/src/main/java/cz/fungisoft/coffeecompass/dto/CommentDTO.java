@@ -25,6 +25,10 @@ public class CommentDTO
     @Size(max=512)
     private String text;
     
+    public void setText(String text) {
+        this.text = text.trim();
+    }
+    
     @JsonFormat(pattern = "dd. MM. yyyy HH:mm")
     private Date created;
     

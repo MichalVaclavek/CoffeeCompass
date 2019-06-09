@@ -24,7 +24,7 @@ import lombok.Data;
 /**
  * Class representing an image assigned to CoffeeSite. Contains {@link CoffeeSite} atribute to link the Image and respective CoffeeSite.
  *
- * @author Michal Václavek - added JPA Hibernate
+ * @author Michal Václavek
  */
 @Entity
 @Table(name="images", schema="coffeecompass")

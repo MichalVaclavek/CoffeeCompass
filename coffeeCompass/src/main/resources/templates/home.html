@@ -126,7 +126,8 @@
     						<br> <!-- To create space bellow main label -->
 	        				<div th:if="${site.mainImageURL == ''}" th:text="#{site.noImage}" class="w3-center w3-small" style="font-style: italic"> No imagge</div>
 			        		<div th:unless="${site.mainImageURL == ''}" class="w3-center">
-			        			<a th:href="@{'/showSite/'+${site.id}}"><img class="photoShow w3-round" th:src="${site.mainImageURL}" style="height: 140px"></a>
+			        			<!-- <a th:href="@{'/showSite/'+${site.id}}"><img class="photoShow w3-round" th:src="${site.mainImageURL}" style="height: 140px"></a> -->
+			        			<a th:href="@{'/showSite/'+${site.id}}"><img class="w3-round" th:src="${site.mainImageURL}" style="height: 192px"></a> <!-- 192 = 1280/10 * 1.5 -->
 			        		</div>
 			        		<br> <!-- To create space above site name label -->
 			        		<div class="w3-center">

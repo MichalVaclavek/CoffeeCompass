@@ -56,7 +56,6 @@ import java.util.List;
  * 
  * @author Michal Václavek
  */
-@Api // Anotace Swagger
 @Controller
 public class CoffeeSiteController
 {

@@ -25,7 +25,6 @@ import io.swagger.annotations.Api;
  * @author Michal Vaclavek
  *
  */
-@Api // Anotace Swagger
 @Controller
 public class ImageUploadController
 {
@@ -58,7 +57,7 @@ public class ImageUploadController
         
        imageStorageService.storeImageFile(newImage, newImage.getFile(), siteId);
        redirectAttributes.addFlashAttribute("savedFileName", newImage.getFile().getOriginalFilename());
-       redirectAttributes.addFlashAttribute("uploadSuccessMessage", "You successfully uploaded " + newImage.getFileName() + "!");
+       redirectAttributes.addFlashAttribute("uploadSuccessMessage", "You have successfully uploaded " + newImage.getFileName() + "!");
 
        return "redirect:/showSite/" + siteId;
     }

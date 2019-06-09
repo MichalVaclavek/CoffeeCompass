@@ -9,32 +9,32 @@ footer {
 }
 
 body {
-   /*background-image: url("/images/kafe_orez2.JPG"); */
-   background-color: #eeeae8;
-   /* padding:10px; */
-   padding-bottom:30px; /* Height of the footer + 5px marging */
+   	/*background-image: url("/images/kafe_orez2.JPG"); */
+   	background-color: #eeeae8;
+   	/* padding:10px; */
+	padding-bottom:30px; /* Height of the footer + 5px marging */
 }
 
 .has-error {
-    border: 1px solid red;
+	border: 1px solid red;
 }
 
 .fieldError {
-    border: 1px solid red;
+	border: 1px solid red;
 }
 
 .error-message {
-    color: red;
-    font-size: 15px;
+	color: red;
+	font-size: 15px;
 }
 
 .user{
-    color: blue;
-    font-size: 15px;
+	color: blue;
+	font-size: 15px;
 }
 
 table {
-    border-collapse: collapse;
+	border-collapse: collapse;
 }
 
 .photo {

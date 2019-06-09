@@ -110,8 +110,8 @@ map.insertSites = function(foundSites)
 			var bodyImage = "";
 			
 			if (!(site.mainImageURL === "")) { 
-				bodyImage = "<img class='photoShow' style='height:240px;' src='" + site.mainImageURL + "'/>";
-				bodyImage += "<br><br><br>"; // to create space, because of rotated image
+				bodyImage = "<img style='height:240px;' src='" + site.mainImageURL + "'/>";
+				bodyImage += "<br><br>"; // to create space above text, because of rotated image
 			}
 			
 			var textVizitka = bodyImage 

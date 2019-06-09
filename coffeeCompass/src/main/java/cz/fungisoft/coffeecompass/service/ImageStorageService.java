@@ -21,6 +21,8 @@ public interface ImageStorageService
      * @return id of the saved Image
      */
     public Integer storeImageFile(Image image, MultipartFile file, Long siteID);
+    
+    public void saveImageToDB(Image image);
 
     public Image getImageById(Integer imageID);
     public String getImageAsBase64(Integer imageID);

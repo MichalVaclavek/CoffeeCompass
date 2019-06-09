@@ -23,7 +23,8 @@ import cz.fungisoft.coffeecompass.entity.SiteLocationType;
 import lombok.Data;
 
 /**
- * Trida pro prenos vybranych informaci o objektu CoffeeSite na clienta. Tzv. DTO objekt.
+ * Trida pro prenos vybranych informaci o objektu CoffeeSite na clienta, tzv. DTO objekt.
+ * A pro mapovani dat z Formulare. 
  * 
  * @author Michal Vaclavek
  */
@@ -34,6 +35,10 @@ public class CoffeeSiteDTO
 
     @Size(min=3, max=50)
     private String siteName;
+    
+    public void setSiteName(String siteName) {
+        this.siteName = siteName.trim();
+    }
     
     @JsonFormat(pattern = "dd. MM. yyyy HH:mm")
     private Date createdOn;
@@ -76,18 +81,38 @@ public class CoffeeSiteDTO
     
     @Size(max=60)
     private String mesto;
+    
+    public void setMesto(String mesto) {
+        this.mesto = mesto.trim();
+    }
 
     @Size(max=60)
     private String uliceCP;
     
+    public void setUliceCP(String uliceCP) {
+        this.uliceCP = uliceCP.trim();
+    }
+    
     @Size(max=50)
     private String pristupnostDny;
+    
+    public void setPristupnostDny(String pristupnostDny) {
+        this.pristupnostDny = pristupnostDny.trim();
+    }
     
     @Size(max=50)
     private String pristupnostHod;
     
+    public void setPristupnostHod(String pristupnostHod) {
+        this.pristupnostHod = pristupnostHod.trim();
+    }
+    
     @Size(max=240)
     private String initialComment;
+    
+    public void setinItialComment(String initialComment) {
+        this.initialComment = initialComment.trim();
+    }
     
     @DecimalMax(value="9")
     @DecimalMin(value="0")

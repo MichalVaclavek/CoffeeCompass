@@ -7,11 +7,12 @@ import cz.fungisoft.coffeecompass.entity.Image;
 /**
  * Service to resize the uploaded Image of the CoffeeSite to standard size,
  * before saving into DB.
+ * Also to or rotate image +-90 degrees, if required by user
  * 
  * @author Michal Václavek
  *
  */
-public interface ImageResizerService
+public interface ImageResizeAndRotateService
 {
     /**
      * Sets the default image size. All images are to be resized to this Width and Height.
@@ -51,6 +52,19 @@ public interface ImageResizerService
      */
     public Image resize(Image image, double sizeRatio, float compressJpegQuality) throws IOException;
     
+    /**
+     * Rotates image 90 degrees left, i.e. counterclockwise
+     * 
+     * @param image
+     * @return
+     */
+    public Image rotate90DegreeLeft(Image image);
     
-    
+    /**
+     * Rotates image 90 degrees left, i.e. clockwise
+     * 
+     * @param image
+     * @return
+     */
+    public Image rotate90DegreeRight(Image image);
 }

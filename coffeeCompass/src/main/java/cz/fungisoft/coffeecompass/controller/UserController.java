@@ -39,7 +39,6 @@ import io.swagger.annotations.Api;
  * @author Michal Václavek
  *
  */
-@Api // Anotace Swagger
 @RequestMapping("/user") // uvadi se, pokud vsechny dotazy/url requesty v kontroleru maji zacinat timto retezcem
 @Controller
 public class UserController
