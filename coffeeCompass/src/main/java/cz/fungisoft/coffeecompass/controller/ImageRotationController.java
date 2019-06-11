@@ -55,8 +55,9 @@ public class ImageRotationController
      * @param siteID
      * @return
      */
-    @PutMapping("/rotateImageRight/") // // http://localhost:8080/rotateImageRight/?siteID=2
+    @PutMapping("/rotateImageRight/") // http://localhost:8080/rotateImageRight/?siteID=2
     public String rotateRightAndSave(@RequestParam Long siteID) {
+
         Image siteImage = cofeeSiteService.findOneById(siteID).getImage();
         
         if (siteImage != null) {

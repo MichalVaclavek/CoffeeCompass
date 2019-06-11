@@ -37,7 +37,9 @@ public class CoffeeSiteDTO
     private String siteName;
     
     public void setSiteName(String siteName) {
-        this.siteName = siteName.trim();
+        if (siteName != null) {
+            this.siteName = siteName.trim();
+        }
     }
     
     @JsonFormat(pattern = "dd. MM. yyyy HH:mm")
@@ -83,35 +85,45 @@ public class CoffeeSiteDTO
     private String mesto;
     
     public void setMesto(String mesto) {
-        this.mesto = mesto.trim();
+        if (mesto != null) {
+            this.mesto = mesto.trim();
+        }
     }
 
     @Size(max=60)
     private String uliceCP;
     
     public void setUliceCP(String uliceCP) {
-        this.uliceCP = uliceCP.trim();
+        if (uliceCP != null) {
+            this.uliceCP = uliceCP.trim();
+        }
     }
     
     @Size(max=50)
     private String pristupnostDny;
     
     public void setPristupnostDny(String pristupnostDny) {
-        this.pristupnostDny = pristupnostDny.trim();
+        if (pristupnostDny != null) {
+            this.pristupnostDny = pristupnostDny.trim();
+        }
     }
     
     @Size(max=50)
     private String pristupnostHod;
     
     public void setPristupnostHod(String pristupnostHod) {
-        this.pristupnostHod = pristupnostHod.trim();
+        if (pristupnostHod != null) {
+            this.pristupnostHod = pristupnostHod.trim();
+        }
     }
     
     @Size(max=240)
     private String initialComment;
     
-    public void setinItialComment(String initialComment) {
-        this.initialComment = initialComment.trim();
+    public void setInitialComment(String initialComment) {
+        if (initialComment != null) {
+            this.initialComment = initialComment.trim();
+        }
     }
     
     @DecimalMax(value="9")
