@@ -136,50 +136,50 @@ public class UserController
      * @param model - objekt Springu s informacemi o objektech na strance a o prislusnem View, ktere tyto objekty zobrzuje.
      * @return nova stranka potvrzuji upsesnou registraci, v tomto pripade je to home stranka
      */
-    @PostMapping("/register-post")
-    public String registerUserAccount(@ModelAttribute("user") @Valid UserDataDTO userDto,
-                                      BindingResult result,
-                                      ModelMap model) {
-
-        if (userDto.getId() == 0) // Jde o noveho usera k registraci
-        { 
-            User existing = userService.findByUserName(userDto.getUserName());
-            
-            if (existing != null) {
-                result.rejectValue("userName","error.user.name.used", "There is already an account registered with that user name.");
-            }
-    
-            // Kontrola i na e-mail adresu
-            existing = userService.findByEmail(userDto.getEmail());
-            if (existing != null) {
-                result.rejectValue("email", "error.user.emailused", "There is already an account registered with that e-mail address.");
-            }
-            
-            if (userDto.getPassword().isEmpty())
-                result.rejectValue("password", "error.user.password.empty");
-            else
-                if (!userDto.getPassword().equals(userDto.getConfirmPassword()))
-                    result.rejectValue("confirmPassword", "error.user.password.confirm", "Confirmation password does not match password.");
-        }
-        
-        if (result.hasErrors()) { // In case of error, show the user_reg. page again with error labels
-            return "user_registration";
-        }
-        
-        boolean userCreateSuccess = false;
-        
-        if (userDto.getId() == 0) {
-            User newUser = userService.save(userDto);
-            if (newUser != null) {
-                userCreateSuccess = true;
-            }
-        }
-        
-        model.addAttribute("userCreateSuccess", userCreateSuccess);
-        model.addAttribute("userName", userDto.getUserName());
-
-        return "login";
-    }
+//    @PostMapping("/register-post")
+//    public String registerUserAccount(@ModelAttribute("user") @Valid UserDataDTO userDto,
+//                                      BindingResult result,
+//                                      ModelMap model) {
+//
+//        if (userDto.getId() == 0) // Jde o noveho usera k registraci
+//        { 
+//            User existing = userService.findByUserName(userDto.getUserName());
+//            
+//            if (existing != null) {
+//                result.rejectValue("userName","error.user.name.used", "There is already an account registered with that user name.");
+//            }
+//    
+//            // Kontrola i na e-mail adresu
+//            existing = userService.findByEmail(userDto.getEmail());
+//            if (existing != null) {
+//                result.rejectValue("email", "error.user.emailused", "There is already an account registered with that e-mail address.");
+//            }
+//            
+//            if (userDto.getPassword().isEmpty())
+//                result.rejectValue("password", "error.user.password.empty");
+//            else
+//                if (!userDto.getPassword().equals(userDto.getConfirmPassword()))
+//                    result.rejectValue("confirmPassword", "error.user.password.confirm", "Confirmation password does not match password.");
+//        }
+//        
+//        if (result.hasErrors()) { // In case of error, show the user_reg. page again with error labels
+//            return "user_registration";
+//        }
+//        
+//        boolean userCreateSuccess = false;
+//        
+//        if (userDto.getId() == 0) {
+//            User newUser = userService.save(userDto);
+//            if (newUser != null) {
+//                userCreateSuccess = true;
+//            }
+//        }
+//        
+//        model.addAttribute("userCreateSuccess", userCreateSuccess);
+//        model.addAttribute("userName", userDto.getUserName());
+//
+//        return "login";
+//    }
     
     /**
      * NEW TODO ... 

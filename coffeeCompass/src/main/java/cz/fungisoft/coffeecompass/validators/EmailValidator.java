@@ -8,7 +8,6 @@ import javax.validation.ConstraintValidatorContext;
 
 public class EmailValidator implements ConstraintValidator<ValidEmail, String>
 {
-    
    private Pattern pattern;
    private Matcher matcher;
    
@@ -23,13 +22,8 @@ public class EmailValidator implements ConstraintValidator<ValidEmail, String>
        
        boolean result = true;
        String errorMessageKey = "";
-       if (email.isEmpty()) {
-           errorMessageKey = "{error.user.password.empty}";
-           
-           result = false;
-       }
        
-       if (!validateEmail(email)) {
+       if (!email.isEmpty() && !validateEmail(email)) {
            errorMessageKey = "{error.user.password.wrong}";
            result = false;
        }
@@ -43,7 +37,6 @@ public class EmailValidator implements ConstraintValidator<ValidEmail, String>
    } 
    
    private boolean validateEmail(String email) {
-       
        pattern = Pattern.compile(EMAIL_PATTERN);
        matcher = pattern.matcher(email);
        return matcher.matches();

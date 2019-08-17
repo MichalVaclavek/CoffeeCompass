@@ -202,13 +202,11 @@ public class UserServiceImpl implements UserService
             
             // Can be empty, e-mail is not mandatory
             if (user.getEmail() != null) {
-                entity.setEmail(user.getEmail());
                 if (entity.getEmail().isEmpty()
                     || !entity.getEmail().equalsIgnoreCase(user.getEmail())) { // novy, neprazdny email => zatim nepotvrzeny
                     entity.setRegisterEmailConfirmed(false);
-                } else {
-                    entity.setRegisterEmailConfirmed(user.getRegisterEmailConfirmed());
-                }
+                } 
+                entity.setEmail(user.getEmail());
             }
             
             entity.setBanned(user.isBanned());
@@ -233,6 +231,11 @@ public class UserServiceImpl implements UserService
                     newUserProfiles = updatedUserProfiles;
                 if (newUserProfiles.isEmpty()) // There must be at least one basic user ROLE
                     newUserProfiles.add(userProfileRepository.searchByType("USER"));
+            }
+            
+            // If user's e-mail is not confirmed, remove DBA role
+            if (!entity.isRegisterEmailConfirmed()) {
+                newUserProfiles.remove(userProfileRepository.searchByType("DBA"));
             }
             
             entity.setUserProfiles(newUserProfiles);
@@ -263,11 +266,6 @@ public class UserServiceImpl implements UserService
         return entity;
     }
     
-//    @Override
-//    public UserDataDTO updateUser(UserDataDTO userDTO) {
-//        return mapperFacade.map(updateUser(mapperFacade.map(userDTO,  User.class)), UserDataDTO.class);
-//    }
-//    
     @Override
     public User updateUser(UserDataDTO userDTO) {
         return updateUser(mapperFacade.map(userDTO,  User.class));
