@@ -54,6 +54,41 @@ public class CustomUserDetailsService implements UserDetailsService
         return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), 
                  true, true, true, true, getGrantedAuthorities(user));
     }
+    
+    /**
+     * Used in case we use e-mail as userid
+     * 
+     * @param email
+     * @return
+     * @throws UsernameNotFoundException
+     */
+    @Transactional(readOnly = true)
+    public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
+            
+//              boolean enabled = true;
+              boolean accountNonExpired = true;
+              boolean credentialsNonExpired = true;
+              boolean accountNonLocked = true;
+              
+              try
+              {
+                  User user = userService.findByEmail(email);
+                  if (user == null) {
+                      throw new UsernameNotFoundException("No user found with username: " + email);
+                  }
+                   
+                  return new org.springframework.security.core.userdetails.User(
+                    user.getEmail(), 
+                    user.getPassword().toLowerCase(), 
+                    user.isRegisterEmailConfirmed(), 
+                    accountNonExpired, 
+                    credentialsNonExpired, 
+                    accountNonLocked, 
+                    getGrantedAuthorities(user));
+              } catch (Exception e) {
+                  throw new RuntimeException(e);
+              }
+    }
      
     public List<? extends GrantedAuthority> getGrantedAuthorities(User user) {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
@@ -66,5 +101,6 @@ public class CustomUserDetailsService implements UserDetailsService
         logger.info("authorities : {}", authorities);
         return authorities;
     }
+    
 }
      

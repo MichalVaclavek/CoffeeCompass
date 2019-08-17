@@ -19,8 +19,10 @@ import cz.fungisoft.coffeecompass.dto.UserDataDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.entity.UserProfileTypeEnum;
+import cz.fungisoft.coffeecompass.entity.UserVerificationToken;
 import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
+import cz.fungisoft.coffeecompass.repository.UserVerificationTokenRepository;
 import cz.fungisoft.coffeecompass.repository.UsersRepository;
 import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
 import cz.fungisoft.coffeecompass.security.IAuthenticationFacade;
@@ -45,6 +47,9 @@ public class UserServiceImpl implements UserService
     
     @Autowired
     private UserProfileRepository userProfileRepository;
+    
+    @Autowired
+    private UserVerificationTokenRepository tokenRepository;
     
     /**
      * To get right authorities object as required by Spring security in case of ROLES modification.
@@ -193,9 +198,20 @@ public class UserServiceImpl implements UserService
             if (user.getFirstName() != null)
                 entity.setFirstName(user.getFirstName());
             if (user.getLastName() != null)
-                entity.setLastName(user.getLastName());            
-            if (user.getEmail() != null)
+                entity.setLastName(user.getLastName());
+            
+            // Can be empty, e-mail is not mandatory
+            if (user.getEmail() != null) {
                 entity.setEmail(user.getEmail());
+                if (entity.getEmail().isEmpty()
+                    || !entity.getEmail().equalsIgnoreCase(user.getEmail())) { // novy, neprazdny email => zatim nepotvrzeny
+                    entity.setRegisterEmailConfirmed(false);
+                } else {
+                    entity.setRegisterEmailConfirmed(user.getRegisterEmailConfirmed());
+                }
+            }
+            
+            entity.setBanned(user.isBanned());
             
             // User profiles can be empty during update - means remove all roles - this is not applicable for ADMIN user
             // ADMIN cannot remove ADMIN role of another user
@@ -220,7 +236,6 @@ public class UserServiceImpl implements UserService
             }
             
             entity.setUserProfiles(newUserProfiles);
-            entity.setUpdatedOn(new Timestamp(new Date().getTime()));
             
             // User name can be empty, if ADMIN is editing another user
             if (user.getUserName() != null && !user.getUserName().isEmpty()) {
@@ -241,15 +256,21 @@ public class UserServiceImpl implements UserService
             // User name must be updated (saved) after Spring authentication object update, otherwise isLoggedInUserToManageItself(entity) resolves that 
             // another user (ADMIN) is updating this 'user' as user name was already updated in DB.
             entity.setUserName(newUserName);
+            entity.setUpdatedOn(new Timestamp(new Date().getTime()));
         }
         
         log.info("User name {} updated.", user.getUserName());
         return entity;
     }
     
+//    @Override
+//    public UserDataDTO updateUser(UserDataDTO userDTO) {
+//        return mapperFacade.map(updateUser(mapperFacade.map(userDTO,  User.class)), UserDataDTO.class);
+//    }
+//    
     @Override
-    public UserDataDTO updateUser(UserDataDTO userDTO) {
-        return mapperFacade.map(updateUser(mapperFacade.map(userDTO,  User.class)), UserDataDTO.class);
+    public User updateUser(UserDataDTO userDTO) {
+        return updateUser(mapperFacade.map(userDTO,  User.class));
     }
     
     @Override
@@ -282,6 +303,15 @@ public class UserServiceImpl implements UserService
         return ( user == null || ((id != null) && (user.getId() == id)));
     }
 
+    /**
+     * Verifies, if e-mail address is already used by another user.<br>
+     * Empty e-mail returns true as it is allowed for every user.<br>
+     * If verified emal belongs to the user of the verified id,<br>
+     * then return true as the user verifies it's own e-mail and it is allowed.
+     * 
+     * @param id - id of the user whos's e-mail is to be verified
+     * @param email - address to be verified if it is unique.
+     */
     @Override
     public boolean isEmailUnique(Integer id, String email) {
         User user = usersRepository.searchByEmail(email);
@@ -299,6 +329,7 @@ public class UserServiceImpl implements UserService
         user.setFirstName(registration.getFirstName());
         user.setLastName(registration.getLastName());
         user.setEmail(registration.getEmail());
+        user.setRegisterEmailConfirmed(false);
         user.setPassword(passwordEncoder.encode(registration.getPassword()));
         
         user.setCreatedOn(new Timestamp(new Date().getTime()));
@@ -351,5 +382,26 @@ public class UserServiceImpl implements UserService
         Authentication authentication = authenticationFacade.getAuthentication();
         return findByUserName(authentication.getName());
     }
+
+    /** Methods for E-mail verification tokens **/
     
+    @Override
+    public void saveVerifiedRegisteredUser(User user, String token) {
+        user.setRegisterEmailConfirmed(true);
+        // Deletes already used confirmation token from DB. This makes it invalid.
+        tokenRepository.deleteByToken(token);
+        
+        Set<UserProfile> currentUserProfiles = user.getUserProfiles();
+        // E-mail confirmed, higher privileges can be added to User
+        currentUserProfiles.add(userProfileRepository.searchByType("DBA"));
+        user.setUserProfiles(currentUserProfiles);
+        usersRepository.save(user);
+    }
+
+    @Override
+    public User getUserByToken(String verificationToken) {
+        User user = tokenRepository.findByToken(verificationToken).getUser();
+        return user;
+    }
+
 }

@@ -68,8 +68,8 @@ public class ContactMeMessageController
      * @return home page with indication that ContactMe message was sent
      */
     @PostMapping("/contactMe") // Mapovani http POST na DB SAVE
-    public String saveAndSendContactMeMessage(@ModelAttribute("contactMeMessage") @Valid ContactMeMessageDTO cmMessage, final BindingResult bindingResult) {
-
+    public String saveAndSendContactMeMessage(@ModelAttribute("contactMeMessage") @Valid ContactMeMessageDTO cmMessage,
+                                                                                         final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "contact_me_form";
         }

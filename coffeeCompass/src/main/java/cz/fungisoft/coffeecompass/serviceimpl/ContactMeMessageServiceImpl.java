@@ -13,7 +13,7 @@ import cz.fungisoft.coffeecompass.dto.ContactMeMessageDTO;
 import cz.fungisoft.coffeecompass.entity.ContactMeMessage;
 import cz.fungisoft.coffeecompass.repository.ContactMeMessageRepository;
 import cz.fungisoft.coffeecompass.service.IContactMeMessageService;
-import cz.fungisoft.coffeecompass.service.ISendMeEmailService;
+import cz.fungisoft.coffeecompass.service.ISendEmailService;
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
 
@@ -26,13 +26,13 @@ public class ContactMeMessageServiceImpl implements IContactMeMessageService
     
     private MapperFacade mapperFacade;
     
-    private ISendMeEmailService sendMeEmailService;
+    private ISendEmailService sendMeEmailService;
     
     @Autowired
     private ConfigProperties config;
     
     @Autowired
-    public ContactMeMessageServiceImpl(ContactMeMessageRepository contactMeMessageRepo, MapperFacade mapperFacade, ISendMeEmailService sendMeEmailService) {
+    public ContactMeMessageServiceImpl(ContactMeMessageRepository contactMeMessageRepo, MapperFacade mapperFacade, ISendEmailService sendMeEmailService) {
         super();
         this.contactMeMessageRepo = contactMeMessageRepo;
         this.mapperFacade = mapperFacade;

@@ -33,4 +33,5 @@ public class DefaultAccessDeniedHandler implements AccessDeniedHandler
 
         httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "error/403");
     }
+    
 }

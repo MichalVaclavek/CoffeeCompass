@@ -22,13 +22,25 @@
 			</p>
 		</div>
 		
+		<!-- Used in case of waiting to e-mail verification link click after User's e-mail modification -->
+		<div th:if="${verificationEmailSent}" class="w3-pale-blue w3-display-container w3-round w3-panel w3-center">
+		    <span onclick="this.parentElement.style.display='none'"
+		  		  class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
+		    <p><span th:text="#{verificationmail.sent.waitingtoclick.modifiedemail.message}"></span>
+		    </p>
+		</div>
+		
 		<div class="w3-row w3-margin">
 	
 		<div class="w3-half w3-right w3-card-2 w3-border w3-sand w3-round-large">
 		
            <h2 th:text="(${user.id} == 0) ? #{user.register.label.create} : #{user.register.label.update}" class="w3-center">Register/Update Label</h2>
            
-           <form th:action="${user.id} == 0 ? @{/user/register-post} : @{/user/edit-put}" th:object="${user}" th:method="${user.id} == 0 ? POST : PUT" class="w3-margin">
+           <!-- <form th:action="${user.id} == 0 ? @{/user/register-post} : @{/user/edit-put}"  -->
+           <form th:action="${user.id} == 0 ? @{/user/registration} : @{/user/edit-put}" 
+           		 th:object="${user}"
+           		 th:method="${user.id} == 0 ? POST : PUT"
+           		 class="w3-margin">
             
               <input th:type="hidden" name="id" th:field="${user.id}" />
        

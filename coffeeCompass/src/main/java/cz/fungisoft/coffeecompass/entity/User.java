@@ -28,9 +28,16 @@ import javax.validation.constraints.NotNull;
 @Table(name="user", schema="coffeecompass")
 public class User implements Serializable
 { 
+    public User() {
+        super();
+        this.registerEmailConfirmed = false;
+        this.banned = false;
+    }
+
     private static final long serialVersionUID = -9006499187256143209L;
 
-    @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id")
     private Integer id;
  
@@ -73,6 +80,12 @@ public class User implements Serializable
     
     @Column(name="deleted_sites")
     private Integer deletedSites;
+    
+    @Column(name = "registration_email_confirmed")
+    private boolean registerEmailConfirmed;
+    
+    @Column(name = "banned")
+    private boolean banned;
     
     /*
     @OneToMany(mappedBy="user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -213,6 +226,26 @@ public class User implements Serializable
 
     public void setDeletedSites(Integer deleted_sites) {
         this.deletedSites = deleted_sites;
+    }
+    
+    public boolean isRegisterEmailConfirmed() {
+        return registerEmailConfirmed;
+    }
+
+    public void setRegisterEmailConfirmed(boolean registerEmailConfirmed) {
+        this.registerEmailConfirmed = registerEmailConfirmed;
+    }
+    
+    public boolean getRegisterEmailConfirmed() {
+        return this.registerEmailConfirmed;
+    }
+
+    public boolean isBanned() {
+        return banned;
+    }
+
+    public void setBanned(boolean banned) {
+        this.banned = banned;
     }
     
 }

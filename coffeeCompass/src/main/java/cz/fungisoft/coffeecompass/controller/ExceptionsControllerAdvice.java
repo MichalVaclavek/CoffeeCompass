@@ -1,6 +1,8 @@
 package cz.fungisoft.coffeecompass.controller;
 
+import cz.fungisoft.coffeecompass.controller.models.GenericResponse;
 import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
+import cz.fungisoft.coffeecompass.exception.UserNotFoundException;
 
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
@@ -10,8 +12,15 @@ import javax.validation.ConstraintViolationException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailAuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -23,7 +32,11 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
 {
     private static final Logger logger = LogManager.getLogger(ExceptionsControllerAdvice.class);
     
-    @ExceptionHandler(EntityNotFoundException.class)
+    @Autowired
+    private MessageSource messages;
+    
+    
+    @ExceptionHandler({EntityNotFoundException.class})
     public ModelAndView handleEntNotFound(HttpServletResponse res, EntityNotFoundException e) {
         logger.error("Chyba Entity Not Found {}", e.getMessage());
         
@@ -41,7 +54,7 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
      * @param e
      * @return
      */
-    @ExceptionHandler(ConstraintViolationException.class)  
+    @ExceptionHandler({ConstraintViolationException.class})  
     public ModelAndView handleConstraintViolation(ConstraintViolationException e) {
         logger.error("Chyba Constraint Violation {}", e.getMessage());
         
@@ -79,7 +92,9 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
     
     /**
      * Osetreni ostatnich vyjimky nedefinovanych v me aplikaci 
+     //TODO pozor, stejnou obsluhu asi dela i metoda nize  handleInternal(RuntimeException ex, WebRequest request) 
      */
+    /*
     @ExceptionHandler
     public ModelAndView handleOtherExceptions(Exception e) {
         
@@ -90,6 +105,36 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
         model.addObject("errorMessage", e.getMessage());
         model.setViewName("error");
         return model;
+    }
+    */
+    
+    /** REST Exception handlers for error during User e-mail validation **/
+    
+    @ExceptionHandler({ UserNotFoundException.class })
+    public ResponseEntity<Object> handleUserNotFound(RuntimeException ex, WebRequest request) {
+        logger.error("404 Status Code", ex);
+        GenericResponse bodyOfResponse = new GenericResponse(messages.getMessage("message.userNotFound", null, request.getLocale()), "UserNotFound");
+         
+        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+ 
+    @ExceptionHandler({ MailAuthenticationException.class })
+    public ResponseEntity<Object> handleMail(RuntimeException ex, WebRequest request) {
+        logger.error("500 Status Code", ex);
+        GenericResponse bodyOfResponse = new GenericResponse(messages.getMessage("message.email.config.error", null, request.getLocale()), "MailError");
+         
+        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
+    }
+ 
+    @ExceptionHandler({ Exception.class })
+    public ResponseEntity<Object> handleInternal(RuntimeException ex, WebRequest request) {
+        logger.error("500 Status Code", ex);
+        GenericResponse bodyOfResponse = new GenericResponse(messages.getMessage("message.error",
+                                                             null,
+                                                             request.getLocale()),
+                                                             "InternalError");
+         
+        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
     
 }

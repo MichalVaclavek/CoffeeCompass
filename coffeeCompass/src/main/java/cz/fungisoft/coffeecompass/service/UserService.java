@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import cz.fungisoft.coffeecompass.dto.UserDataDTO;
 import cz.fungisoft.coffeecompass.entity.User;
+import cz.fungisoft.coffeecompass.entity.UserVerificationToken;
 
  
 public interface UserService
@@ -20,10 +21,10 @@ public interface UserService
     User findByEmail(String email);
      
     User saveUser(User user);
-    
     // Pro ulozeni nove vytvoreneho usera z DTO objektu ve formulari
     User save(UserDataDTO registration);
-    UserDataDTO updateUser(UserDataDTO user);
+    
+    User updateUser(UserDataDTO user);
     User updateUser(User user);    
     
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -59,4 +60,14 @@ public interface UserService
 
     User getCurrentLoggedInUser();
     
+    /**
+     * Saves/updated User, which was verified by token.
+     * 
+     * @param user - user, who was verified by token
+     * @param token - verification token used to verify user
+     */
+    void saveVerifiedRegisteredUser(User user, String token);
+    
+    public User getUserByToken(String verificationToken);
+
 }

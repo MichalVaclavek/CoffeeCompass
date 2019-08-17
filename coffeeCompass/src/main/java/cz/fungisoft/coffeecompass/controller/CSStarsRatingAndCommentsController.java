@@ -37,7 +37,8 @@ public class CSStarsRatingAndCommentsController
     
     
     @Autowired
-    public CSStarsRatingAndCommentsController(ICommentService commentsService, IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService,
+    public CSStarsRatingAndCommentsController(ICommentService commentsService,
+                                              IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService,
                                               CoffeeSiteService coffeeSiteService) {
         super();
         this.commentsService = commentsService;

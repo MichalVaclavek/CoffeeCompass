@@ -2,11 +2,13 @@ package cz.fungisoft.coffeecompass.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,15 +23,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import cz.fungisoft.coffeecompass.controller.models.GenericResponse;
 import cz.fungisoft.coffeecompass.dto.UserDataDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
+import cz.fungisoft.coffeecompass.entity.UserVerificationToken;
 import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
+import cz.fungisoft.coffeecompass.listeners.OnRegistrationCompleteEvent;
 import cz.fungisoft.coffeecompass.service.UserProfileService;
 import cz.fungisoft.coffeecompass.service.UserService;
+import cz.fungisoft.coffeecompass.service.VerificationTokenCreateAndSendEmailService;
 import io.swagger.annotations.Api;
 
 /**
@@ -49,8 +59,14 @@ public class UserController
     
     private UserProfileService userProfileService;
     
+//    @Autowired
+//    private MessageSource messagesSource;
+    
     @Autowired
-    private MessageSource messageSource;
+    private ApplicationEventPublisher eventPublisher;
+    
+    @Autowired
+    private VerificationTokenCreateAndSendEmailService verificationTokenSendEmailService;
  
  /* // For future use
     @Autowired
@@ -62,10 +78,13 @@ public class UserController
       * @param userService
       */
     @Autowired
-    public UserController(UserService userService , UserProfileService userProfileService) {
+    public UserController(UserService userService,
+                          UserProfileService userProfileService,
+                          VerificationTokenCreateAndSendEmailService verificationTokenService) {
         super();
         this.userService = userService;
         this.userProfileService = userProfileService;
+        this.verificationTokenSendEmailService = verificationTokenService;
     }
 
     
@@ -118,7 +137,9 @@ public class UserController
      * @return nova stranka potvrzuji upsesnou registraci, v tomto pripade je to home stranka
      */
     @PostMapping("/register-post")
-    public String registerUserAccount(@ModelAttribute("user") @Valid UserDataDTO userDto, BindingResult result, ModelMap model) {
+    public String registerUserAccount(@ModelAttribute("user") @Valid UserDataDTO userDto,
+                                      BindingResult result,
+                                      ModelMap model) {
 
         if (userDto.getId() == 0) // Jde o noveho usera k registraci
         { 
@@ -148,14 +169,100 @@ public class UserController
         boolean userCreateSuccess = false;
         
         if (userDto.getId() == 0) {
-            userService.save(userDto);
-            userCreateSuccess = true;
+            User newUser = userService.save(userDto);
+            if (newUser != null) {
+                userCreateSuccess = true;
+            }
         }
         
         model.addAttribute("userCreateSuccess", userCreateSuccess);
         model.addAttribute("userName", userDto.getUserName());
 
         return "login";
+    }
+    
+    /**
+     * NEW TODO ... 
+     * 
+     * <br>
+     * Je potreba provest kontrolu/validaci password, ktera je v prisusnem DTO vypnuta (v UserDataDto nema zadnou javax.validation.constraints.)
+     * protoze stejny UserDataDto objekt je pouzit i pro modifikaci, kdy prazdne heslo znamena, ze se heslo nepozaduje menit.
+     * <br>
+     * Pro modifikace je volana PUT metoda viz nize.
+     * 
+     * @param userDto - objekt, ktery vytvori kontroler/Spring z dat na strance register_user
+     * @param result - objekt obsahujici vysledky validace jednotlivych fields objektu userDto
+     * @param model - objekt Springu s informacemi o objektech na strance a o prislusnem View, ktere tyto objekty zobrzuje.
+     * 
+     * @return nova stranka potvrzuji upsesnou registraci, v tomto pripade je to home stranka
+     */
+    @PostMapping("/registration")
+    public ModelAndView registerUserAccountWithEmail(@ModelAttribute("user") @Valid UserDataDTO userDto,
+                                                      BindingResult result,
+                                                      ModelMap model,
+                                                      HttpServletRequest request,
+                                                      RedirectAttributes attr) {
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("user_registration");
+        
+        if (userDto.getId() == 0) // Jde o noveho usera k registraci
+        { 
+            User existing = userService.findByUserName(userDto.getUserName());
+            
+            if (existing != null) {
+                result.rejectValue("userName","error.user.name.used", "There is already an account registered with that user name.");
+            }
+    
+            // Kontrola i na e-mail adresu
+            existing = userService.findByEmail(userDto.getEmail());
+            if (existing != null) {
+                result.rejectValue("email", "error.user.emailused", "There is already an account registered with that e-mail address.");
+            }
+        }
+        
+        if (userDto.getPassword().isEmpty())
+            result.rejectValue("password", "error.user.password.empty");
+        else
+            if (!userDto.getPassword().equals(userDto.getConfirmPassword()))
+                result.rejectValue("confirmPassword", "error.user.password.confirm", "Confirmation password does not match password.");
+        
+        if (result.hasErrors()) { // In case of error, show the user_reg. page again with error labels
+            mav.addObject(userDto);
+            return mav;
+        }
+        
+        boolean userCreateSuccess = false;
+        User newUser = null;
+        
+        if (userDto.getId() == 0) {
+            newUser = userService.save(userDto);
+        }
+        
+        if (newUser != null) {
+            userCreateSuccess = true;
+            
+            if (!newUser.getEmail().isEmpty()) { // non empty, valid e-mail available for user (UserDataDTO validated e-mail using annotation)
+            
+                try {
+                    String appUrl = "http://" + request.getServerName() +  ":" + request.getServerPort() +  request.getContextPath();
+                    
+                    eventPublisher.publishEvent(new OnRegistrationCompleteEvent(newUser, request.getLocale(), appUrl));
+                    
+                    attr.addFlashAttribute("userName", userDto.getUserName());
+                    attr.addFlashAttribute("verificationEmailSent", true);
+                    attr.addFlashAttribute("userCreateSuccess", userCreateSuccess);
+    
+                    mav.setViewName("redirect:/login/?lang=" + request.getLocale().getLanguage());
+        
+                } catch (Exception ex) {
+                    mav.setViewName("emailError"); // problems to send confirmation e-mail
+                    mav.addObject(newUser);
+                }
+            }
+        }
+        
+        return mav;
     }
     
     // ------------------- Update a User -------------------------------------------------------- //
@@ -201,7 +308,12 @@ public class UserController
      * @return
      */
     @PutMapping("/edit-put")
-    public String editUserAccount(@ModelAttribute("user") @Valid UserDataDTO userDto, BindingResult result, ModelMap model, RedirectAttributes attr) {
+    public String editUserAccount(@ModelAttribute("user") @Valid UserDataDTO userDto,
+                                                                 BindingResult result,
+                                                                 ModelMap model,
+                                                                 HttpServletRequest request,
+                                                                 RedirectAttributes attr) {
+        
         // Neprihlaseny uzivatel muze byt editovany ADMINem - ten muze menit pouze Password a ROLES, pokud nejde taky o ADMIN usera. ADMIN nemuze byt editovan jinym ADMINem.
         User loggedInUser = userService.getCurrentLoggedInUser();
         
@@ -218,11 +330,12 @@ public class UserController
                 }
                 
                 // Prihlaseny user chce zmenit svoji e-mail adresu - overit jestli je to mozne
-                if (!loggedInUser.getEmail().equalsIgnoreCase(userDto.getEmail())) { 
+                if (!loggedInUser.getEmail().equalsIgnoreCase(userDto.getEmail())) { // nova e-mail adresa se lisi nebo je smazana
+                    
                     // Je e-mail jiz pouzit ?
                     if (!userService.isEmailUnique(userDto.getId(), userDto.getEmail())) {
                         result.rejectValue("email", "error.user.emailused", "There is already an account registered with that e-mail");
-                    }
+                    } 
                 }
             }
             
@@ -241,14 +354,23 @@ public class UserController
         
         boolean userModifySuccess = false;
         
-        if (userDto.getId() != 0) { // should be true, this method should be called only for already created user account
-            userDto = userService.updateUser(userDto); // new updated user is returned
+        User updatedUser = userService.updateUser(userDto);
+        
+        if (updatedUser != null) {
             userModifySuccess = true;
+            
+            if (!updatedUser.isRegisterEmailConfirmed() // novy email nepotvrzen a neprazdny. Poslat confirm e-mail token
+                && !userDto.getEmail().isEmpty()) {
+                String appUrl = "http://" + request.getServerName() +  ":" + request.getServerPort() +  request.getContextPath();
+                verificationTokenSendEmailService.setVerificationData(updatedUser, appUrl, request.getLocale());
+                verificationTokenSendEmailService.createAndSendVerificationTokenEmail();
+                attr.addFlashAttribute("verificationEmailSent", true); // requires processing of the "verificationEmailSent" attr. in "redirect:/user/edit/", see bellow
+            }
         }
         
-        attr.addFlashAttribute("userName", userDto.getUserName());
+        attr.addFlashAttribute("userName", updatedUser.getUserName());
         attr.addFlashAttribute("userModifySuccess", userModifySuccess);
-        return "redirect:/user/edit/" + userDto.getUserName();
+        return "redirect:/user/edit/" + updatedUser.getUserName();
     }
      
     // ------------------- Retrieve Single User -------------------------------------------------------- //

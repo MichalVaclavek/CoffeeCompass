@@ -34,6 +34,36 @@
 		    <p th:text="#{home.contactme.success}" class="w3-container" > </p>
 		</div>
 		
+     	<!-- Used in case of successful e-mail verfication link clicked with following redirection to this page and user is already logged-in-->
+     	<div sec:authorize="isAuthenticated()">
+			<div th:if="${emailVerified}" class="w3-pale-green w3-display-container w3-round w3-panel w3-center">
+			    <span onclick="this.parentElement.style.display='none'"
+			  		class="w3-button w3-pale-green w3-large w3-display-topright">&times;</span>
+			    <p><span th:text="#{register.accountVerified.loggedinuser.message}"></span> 
+				</p>
+			</div>
+		</div>
+		
+		<!-- Used in case of new e-mail verification link/email has been sent and user is logged-in -->
+		<div sec:authorize="isAuthenticated()">
+			<div th:if="${verificationEmailSent}" class="w3-pale-blue w3-display-container w3-round w3-panel w3-center">
+			    <span onclick="this.parentElement.style.display='none'"
+			  		  class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
+			    <p><span th:text="#{verificationmail.sent.waitingtoclick.message}"></span>
+			    </p>
+			</div>
+		</div>
+		
+		<!-- Used in case of invalid/expired e-mail verfication link click is redirected to this page and user is already logged-in-->
+     	<div sec:authorize="isAuthenticated()">
+			<div th:if="${tokenInvalid}" class="w3-pale-red w3-display-container w3-round w3-panel w3-center">
+			    <span onclick="this.parentElement.style.display='none'"
+			  		class="w3-button w3-pale-red w3-large w3-display-topright">&times;</span>
+			    <p><span th:text="#{register.failure.invalidtoken.loggedinuser.message}"></span> 
+				</p>
+			</div>
+		</div>
+		
 		<div class="w3-content w3-margin-top"> 
 			
 			<div class="w3-row-padding">

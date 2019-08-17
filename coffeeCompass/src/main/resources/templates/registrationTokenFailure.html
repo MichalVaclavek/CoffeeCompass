@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="#{registration.token.failure.title}">bad user</title>
+    <div th:replace="fragments/header :: header-css"/>
+</head>
+
+	<body>
+		<!-- Menu header -->
+		<div th:replace="fragments/header :: header"/>
+		
+		<!-- Nadpis -->
+		<h2 th:text="#{registration.token.failure.label}" class="w3-light-grey w3-margin-bottom w3-center">e-mail confirmation error</h2><br>
+	
+	    <div class="w3-content">
+	    <div class="w3-right">
+	    
+			<div class="w3-bar w3-margin">
+			
+				<!-- Error with e-mail when resending expired token -->
+				<div th:if="${emailError}">
+				    
+				    <div class="w3-pale-red w3-display-container w3-round w3-panel">
+					    <p th:text="#{register.verificationemail.resent.failure}" class="w3-container" > </p>
+					</div>
+					
+					<div>
+		       	    	<a th:href="@{'user/resendRegistrationToken?token=' + ${token}}"
+		       	    	   th:text="#{register.failure.resendverificationemail.button}"
+		       	    	   class="w3-button w3-blue w3-round w3-bar-item">resend verification email</a>
+			        </div> 
+				
+		        </div>   
+		        
+				<!-- Invalid confirmation link -->
+				<div th:if="${tokenInvalid}">
+				    
+				    <div class="w3-pale-red w3-display-container w3-round w3-panel">
+					    <p th:text="#{register.failure.invalidtoken.message}" class="w3-container" > </p>
+					</div>
+					
+					<div>
+						<a sec:authorize="NOT isAuthenticated()"
+						   th:href="@{/user/register}"
+						   th:text="#{register.failure.gotonewregistration.button}"
+						   class="w3-button w3-blue w3-round w3-bar-item">User register</a>
+					</div>
+				
+		        </div>         
+		                  
+				<!-- <a th:href="@{/user/registration}" th:text="#{label.form.loginSignUp}">signup</a> --> 
+				 
+				<!-- Expired confirmation link --> 
+				 
+				<div th:if="${tokenExpired}">
+					<!--  <h1 th:text="#{label.form.resendRegistrationToken}">resend</h1> --> 
+					
+					<div class="w3-pale-red w3-display-container w3-round w3-panel">
+						<p th:text="#{register.failure.expiredtoken.message}" class="w3-container" > </p>
+					</div>
+					
+					<!-- Standard variant -->
+					<div>
+		       	    	<a th:href="@{'user/resendRegistrationToken?token=' + ${token}}"
+		       	    	   th:text="#{register.failure.resendverificationemail.button}"
+		       	    	   class="w3-button w3-blue w3-round w3-bar-item">resend verification email</a>
+		        	</div> 
+					
+					
+					<!-- REST variant for resending token... ? -->
+					<!--
+					<button onclick="resendToken()"
+							class="w3-button w3-blue w3-round w3-bar-item"
+					  		th:text="#{register.failure.resendverificationemail.button}">resend verification email</button>
+					 -->  
+					<!-- <script src="jquery.min.js"></script> --> 
+					<!--
+					<script type="text/javascript">
+					 
+						var serverContext = [[@{/}]];
+						 
+						function resendToken() {
+						    $.get(serverContext + "user/resendRegistrationToken?token=" + token, 
+						      function(data){
+						            window.location.href = 
+						              serverContext + "login.html?message=" + data.message;
+						    })
+						    .fail(function(data) {
+						        if(data.responseJSON.error.indexOf("MailError") > -1) {
+						            window.location.href = serverContext + "emailError.html";
+						        }
+						        else {
+						            window.location.href = 
+						              serverContext + "login.html?message=" + data.responseJSON.message;
+						        }
+						    });
+						}
+					</script>
+					-->
+				</div>
+				
+				<!-- Cancel button -->
+				<div>
+		       	    <a th:href="@{'/home'}" 
+		       	       th:text="#{registration.cancel.button}"
+		       	       class="w3-button w3-bar-item w3-text-grey w3-margin-left">Cancel registration/verification page</a>
+		        </div>  
+        
+        	</div>
+        	
+        </div>
+        </div>
+		
+	</body>
+	
+</html>

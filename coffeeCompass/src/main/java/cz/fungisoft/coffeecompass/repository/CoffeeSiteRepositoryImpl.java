@@ -164,6 +164,7 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
         StringBuilder selectQuery = new StringBuilder();
         
         //TODO This query assembly is not optimal, check!!!
+        // POZOR - Nelze vynechavat vstupni parametry!!!
         
         selectQuery.append("SELECT *, poloha_gps_sirka, poloha_gps_delka");
         
@@ -173,34 +174,39 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
             selectQuery.append(" WHERE cs_dk.druhy_kavy_id=?1");
             selectQuery.append(" AND cs.id=cs_dk.coffee_site_id ");
             
-            if (siteStatus != null && !siteStatus.getStatus().isEmpty()) {
-                selectQuery.append("AND status_zarizeni_id=?2 ");
-            }
-            
             if (csRecordStatus != null && !csRecordStatus.getStatus().isEmpty())
-                selectQuery.append("AND status_zaznamu_id=?3 ");
+                selectQuery.append("AND status_zaznamu_id=?2 ");
             
             if (cityName != null && cityName.length() > 1) {
-                selectQuery.append("AND ( (distance(?4, ?5, poloha_gps_sirka, poloha_gps_delka) < ?6) OR (LOWER(cs.poloha_mesto) like LOWER(CONCAT(?7,'%')) ))");
-            } else
-                selectQuery.append("AND (distance(?4, ?5, poloha_gps_sirka, poloha_gps_delka) < ?6)");
+                selectQuery.append("AND ( (distance(?3, ?4, poloha_gps_sirka, poloha_gps_delka) < ?5) OR (LOWER(cs.poloha_mesto) like LOWER(CONCAT(?6,'%')) ))");
+                if (siteStatus != null && !siteStatus.getStatus().isEmpty()) {
+                    selectQuery.append("AND status_zarizeni_id=?7 ");
+                }
+            } else {
+                selectQuery.append("AND (distance(?3, ?4, poloha_gps_sirka, poloha_gps_delka) < ?5)");
+                if (siteStatus != null && !siteStatus.getStatus().isEmpty()) {
+                    selectQuery.append("AND status_zarizeni_id=?6 ");
+                }
+            }
+            
         } else {
             selectQuery.append(" FROM coffeecompass.coffee_site AS cs WHERE ");
             
-            if (siteStatus != null && !siteStatus.getStatus().isEmpty()) {
-                selectQuery.append("status_zarizeni_id=?2 AND ");
-            }
-            
             if (csRecordStatus != null && !csRecordStatus.getStatus().isEmpty())
-                selectQuery.append("status_zaznamu_id=?3 AND ");
+                selectQuery.append("status_zaznamu_id=?2 AND ");
             
             if (cityName != null && cityName.length() > 1) {
-                selectQuery.append("( (distance(?4, ?5, poloha_gps_sirka, poloha_gps_delka) < ?6) OR (LOWER(cs.poloha_mesto) like LOWER(CONCAT(?7,'%')) ))");
-            } else
-                selectQuery.append("(distance(?4, ?5, poloha_gps_sirka, poloha_gps_delka) < ?6)");
+                selectQuery.append("( (distance(?3, ?4, poloha_gps_sirka, poloha_gps_delka) < ?5) OR (LOWER(cs.poloha_mesto) like LOWER(CONCAT(?6,'%')) ))");
+                if (siteStatus != null && !siteStatus.getStatus().isEmpty()) {
+                    selectQuery.append("status_zarizeni_id=?7 AND ");
+                }
+            } else {
+                selectQuery.append("(distance(?3, ?4, poloha_gps_sirka, poloha_gps_delka) < ?5)");
+                if (siteStatus != null && !siteStatus.getStatus().isEmpty()) {
+                    selectQuery.append("status_zarizeni_id=?6 AND ");
+                }
+            }
         }
-            
-        
 //        String selectQuery = "SELECT *, poloha_gps_sirka, poloha_gps_delka"
 //                            + " FROM coffeecompass.coffee_site AS cs, coffeecompass.coffee_site_to_druhy_kavy AS cs_dk"
 //                            + " JOIN coffeecompass.druhy_kavy AS dk ON dk.id=?5"
@@ -218,19 +224,23 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
             sites.setParameter(1, sort.getId());
         }
         
-        if (siteStatus != null) {
-            sites.setParameter(2, siteStatus.getId());
-        }
         if (csRecordStatus != null) {
-            sites.setParameter(3, csRecordStatus.getId());
+            sites.setParameter(2, csRecordStatus.getId());
         }
         
-        sites.setParameter(4, sirka);
-        sites.setParameter(5, delka);
-        sites.setParameter(6, rangeMeters);
+        sites.setParameter(3, sirka);
+        sites.setParameter(4, delka);
+        sites.setParameter(5, rangeMeters);
         
         if (cityName != null && cityName.length() > 1) {
-            sites.setParameter(7, cityName); 
+            sites.setParameter(6, cityName); 
+            if (siteStatus != null) {
+                sites.setParameter(7, siteStatus.getId());
+            }
+        } else {
+            if (siteStatus != null) {
+                sites.setParameter(6, siteStatus.getId());
+            }
         }
         
         return sites.getResultList();

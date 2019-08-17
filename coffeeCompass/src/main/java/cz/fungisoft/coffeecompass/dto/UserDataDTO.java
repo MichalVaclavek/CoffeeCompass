@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import javax.validation.constraints.Email;
 
 import cz.fungisoft.coffeecompass.entity.UserProfile;
+import cz.fungisoft.coffeecompass.validators.PasswordMatches;
+import cz.fungisoft.coffeecompass.validators.ValidEmail;
 import lombok.Data;
 
 /**
@@ -18,6 +20,7 @@ import lombok.Data;
  * @author Michal Vaclavek
  */
 @Data
+@PasswordMatches
 public class UserDataDTO
 {
     private int id; 
@@ -31,7 +34,8 @@ public class UserDataDTO
     @Size(max=50)
     private String lastName;
  
-    @Email // Can be empty as it cannot be changed by ADMIN during editing
+//    @Email // Can be empty as it cannot be changed by ADMIN during editing
+    @ValidEmail
     @Size(max=64)
     private String email;
     
@@ -61,5 +65,11 @@ public class UserDataDTO
      * True if this user is to be managed by itself
      */
     public boolean isToManageItself = true; // default value. Used in case of a new User to be created
+    
+    private boolean enabled;
+    
+    private boolean banned;
+    
+    private boolean registerEmailConfirmed;
 
 }

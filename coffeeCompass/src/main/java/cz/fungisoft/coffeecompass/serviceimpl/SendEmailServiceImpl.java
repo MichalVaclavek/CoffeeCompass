@@ -8,17 +8,17 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import cz.fungisoft.coffeecompass.service.ISendMeEmailService;
+import cz.fungisoft.coffeecompass.service.ISendEmailService;
 
 @Service("sendMeEmailService")
-public class SendMeEmailServiceImpl implements ISendMeEmailService
+public class SendEmailServiceImpl implements ISendEmailService
 {
-    private static final Logger logger = LogManager.getLogger(SendMeEmailServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(SendEmailServiceImpl.class);
     
     public JavaMailSender emailSender;
 
     @Autowired
-    public SendMeEmailServiceImpl(JavaMailSender emailSender) {
+    public SendEmailServiceImpl(JavaMailSender emailSender) {
         super();
         this.emailSender = emailSender;
     }
@@ -35,7 +35,23 @@ public class SendMeEmailServiceImpl implements ISendMeEmailService
         }
         catch (MailException e)
         {
-            logger.error("Chyba při odesílaní zprávy: " + e.getMessage());
+            logger.error("Chyba při odesílaní 'Contact-me' e-mailu: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void sendVerificationEmail(String from, String to, String subject, String messageText) {
+        SimpleMailMessage message = new SimpleMailMessage(); 
+        message.setTo(to);
+        message.setSubject(subject); 
+        message.setText(messageText);
+        try {
+            emailSender.send(message);
+            logger.info("Verification e-mail sent to: {}. Subject: {}", to, subject);
+        }
+        catch (MailException e)
+        {
+            logger.error("Chyba při odesílaní verification e-mailu: " + e.getMessage());
         }
     }
     

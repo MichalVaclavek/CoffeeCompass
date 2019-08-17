@@ -89,7 +89,5 @@ public interface CoffeeSiteRepositoryCustom
      * @return
      */
      public List<DBReturnPair> getTop5CityNames();
-
-    
      
 }

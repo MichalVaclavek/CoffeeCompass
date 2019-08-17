@@ -138,7 +138,10 @@ public class CoffeeSiteSearchController
        
         List<CoffeeSiteDTO> foundSites = null;
        
-        if (searchCriteria.getLat1() != null && searchCriteria.getLon1() != null && searchCriteria.getRange() != null) {
+        if (searchCriteria.getLat1() != null
+            && searchCriteria.getLon1() != null
+            && searchCriteria.getRange() != null) {
+            
             foundSites = coffeeSiteService.findAllWithinCircleAndCityWithCSStatusAndCoffeeSort(searchCriteria.getLat1(),
                                                                                                 searchCriteria.getLon1(),
                                                                                                 searchCriteria.getRange(),
@@ -251,7 +254,8 @@ public class CoffeeSiteSearchController
    @GetMapping("/searchSitesInCityForm/") // napr.  http://coffeecompass.cz/searchSitesInCityForm/?cityName=Tišnov&searchCityNameExactly=true
    public ModelAndView  showCitySitesFromForm(@RequestParam(value="cityName", defaultValue="") String cityName,
                                               @RequestParam(value="searchCityNameExactly", defaultValue="false") boolean searchExactly,
-                                              @ModelAttribute("searchCriteria") CoffeeSiteSearchCriteriaModel searchCriteria, final BindingResult bindingResultSearchCriteria
+                                              @ModelAttribute("searchCriteria") CoffeeSiteSearchCriteriaModel searchCriteria,
+                                              final BindingResult bindingResultSearchCriteria
                                              ) {
        
        ModelAndView mav = new ModelAndView("coffeesite_search");

@@ -90,11 +90,12 @@
 			          	<!-- Selection of the places/cities found by mapy.cz -->
 			          	
 		          		<div>
-	               			<label for="cityInput" th:text="#{sitesearch.city}">City</label> <i><label id="selectfromlistSpan"
-	               																 					   style="visibility:hidden;"
-	               																 					   th:text="#{sitesearch.city.selectfromlist}"
-	               																 					   class="w3-text-blue w3-small">City</label></i>
-	            		</div>
+	               			<label for="cityInput" th:text="#{sitesearch.city}">City</label> 
+	               			<i><label id="selectfromlistSpan"
+				 					   style="visibility:hidden;"
+				 					   th:text="#{sitesearch.city.selectfromlist}"
+				 					   class="w3-text-blue w3-small">City</label></i>
+     					</div>
 			            <div id="cityNameInputDiv" th:classappend="${#fields.hasErrors('cityName')} ? 'has-error' : ''">
 			            	<!-- <input th:field="*{cityName}" th:errorclass="fieldError" class="w3-input w3-border w3-round" id="cityName" style="visibility:visible;" /> -->
 			            	<input th:field="*{cityName}"
@@ -146,10 +147,13 @@
 					                       
 					            <div>
 					              	<!-- <select id="selectSort"  style="visibility:hidden; width:50%" th:field="*{coffeeSort}" disabled class="w3-select"> -->
-					               	<select id="selectSort"  style="visibility:hidden;" th:field="*{coffeeSort}" disabled class="w3-select">
-					            	<option th:each="coffeeSort : ${allCoffeeSorts}" 
-					               	    	th:value="${coffeeSort}"
-					                   		th:text="${coffeeSort}">Site status</option>
+					               	<select id="selectSort"
+					               			style="display:none;"
+					               			th:field="*{coffeeSort}"
+					               			class="w3-select">
+					            		<option th:each="coffeeSort : ${allCoffeeSorts}" 
+					               	    		th:value="${coffeeSort}"
+					                   			th:text="${coffeeSort}">Site status</option>
 					               	</select>
 					            </div>
 				             
@@ -271,9 +275,16 @@
         });
      
      	var changeVisibility = function(node) {
-     		node.disabled = !node.disabled;
+     		/* node.disabled = !node.disabled; */
+     		if ( node.style.display == "none" ) {
+     			node.style.display = "block";
+     		} else {
+     			node.style.display = "none";
+     		}
+     		/*
      		if (node.disabled) node.style.visibility = "hidden";
      		if (!node.disabled) node.style.visibility = "visible";
+     		*/
      	}
      </script>
      

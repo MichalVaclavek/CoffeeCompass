@@ -382,8 +382,9 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         // only ACTIVE sites are relevant for distance searching - all users (even non-registered, not loggedd-in) can search, so only ACTIVE are interesting
         CoffeeSiteRecordStatus csRS = csRecordStatusRepo.searchByName(CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum.ACTIVE.toString());
 
-        if (noFilter)
+        if (noFilter) {
             coffeeSites = coffeeSiteRepo.findSitesWithRecordStatus(zemSirka, zemDelka, meters, csRS);
+        }
         
         if (cSortAndcsStatusFilter) {
             CoffeeSort cf = coffeeSortRepo.searchByName(cSort);
@@ -412,6 +413,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     }
     
     /**
+     * TODO - NOT working with CoffeeSite status is null and CoffeeSort is not null. Error in Repository.
+     * 
      * @param sirka
      * @param delka
      * @param rangeMeters

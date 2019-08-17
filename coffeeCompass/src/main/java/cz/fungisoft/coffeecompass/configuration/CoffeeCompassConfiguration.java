@@ -104,7 +104,8 @@ public class CoffeeCompassConfiguration implements WebMvcConfigurer
     }
     
     /**
-     * Defines source of validation error messages. In this case is same like all other i18n messages, see @Bean above
+     * Defines source of validation error messages. In this case is same like all other i18n messages, see @Bean above.
+     * 
      * @param messageSource
      * @return
      */
