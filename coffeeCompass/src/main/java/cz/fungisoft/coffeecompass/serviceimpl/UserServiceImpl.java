@@ -209,8 +209,6 @@ public class UserServiceImpl implements UserService
                 entity.setEmail(user.getEmail());
             }
             
-            entity.setBanned(user.isBanned());
-            
             // User profiles can be empty during update - means remove all roles - this is not applicable for ADMIN user
             // ADMIN cannot remove ADMIN role of another user
             

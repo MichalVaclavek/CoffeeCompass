@@ -16,16 +16,15 @@ import cz.fungisoft.coffeecompass.entity.UserVerificationToken;
  */
 public interface VerificationTokenCreateAndSendEmailService
 {
-    public void setVerificationData(User user, String appUrl, Locale locale);
-    
     /**
-     * Used for modified user, if the verification mail has to be sent (in case user's e-mail is required to be changed) 
+     * Sets basic data needed to create and sent verification token e-mail.
      * 
      * @param user
      * @param appUrl
      * @param locale
      */
-//    public void setVerificationData(UserDataDTO user, String appUrl, Locale locale);
+    public void setVerificationData(User user, String appUrl, Locale locale);
+    
     
     /**
      * Creates and send verification token e-mail to confirm user's e-mail address.

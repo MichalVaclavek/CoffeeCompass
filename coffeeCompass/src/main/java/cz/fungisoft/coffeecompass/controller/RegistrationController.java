@@ -58,14 +58,9 @@ public class RegistrationController
     public String confirmRegistration(Locale locale, Model model, @RequestParam("token") String token, RedirectAttributes attr) {
         
         UserVerificationToken verificationToken = verificationTokenService.getVerificationToken(token);
-        
-//        String message = messagesSource.getMessage("register.failure.invalidtoken.message", null, locale);
-        
+       
         // Error creatin token?
         if (verificationToken == null) {
-//            model.addAttribute("message", message);
-//            model.addAttribute("expired", false);
-//            attr.addFlashAttribute("message", message);
             attr.addFlashAttribute("tokenInvalid", true);
             
             return (userService.getCurrentLoggedInUser() != null) ? "redirect:/home"
@@ -75,11 +70,6 @@ public class RegistrationController
         // Token expired ?
         Calendar cal = Calendar.getInstance();
         if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-//            message = messagesSource.getMessage("register.failure.expiredtoken.message", null, locale);
-//            model.addAttribute("message", message);
-//            model.addAttribute("expired", true);
-//            model.addAttribute("token", token);
-//            attr.addFlashAttribute("message", message);
             attr.addFlashAttribute("tokenExpired", true);
             attr.addFlashAttribute("token", token);
             return "redirect:/registrationTokenFailure";
@@ -88,9 +78,6 @@ public class RegistrationController
         // Token valid ?
         User user = verificationToken.getUser();
         userService.saveVerifiedRegisteredUser(user, token);
-//        model.addAttribute("message", messagesSource.getMessage("message.accountVerified", null, locale));
-//        model.addAttribute("emailVerified", true);
-//        model.addAttribute("userName", user.getUserName());
         
         attr.addFlashAttribute("userName", user.getUserName());
         attr.addFlashAttribute("emailVerified", true);
@@ -163,9 +150,6 @@ public class RegistrationController
             if (userService.getCurrentLoggedInUser().getId() == user.getId()) {
                 mav.setViewName("redirect:/home");
             } 
-//            else {
-//                mav.setViewName("redirect:/login/?lang=" + request.getLocale().getLanguage());
-//            }
         } catch (Exception me) {
             
             attr.addFlashAttribute("emailError", true);

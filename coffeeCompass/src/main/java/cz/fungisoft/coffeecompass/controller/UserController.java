@@ -242,18 +242,16 @@ public class UserController
         if (newUser != null) {
             userCreateSuccess = true;
             
+            mav.setViewName("redirect:/login/?lang=" + request.getLocale().getLanguage());
+            attr.addFlashAttribute("userName", userDto.getUserName());
+            attr.addFlashAttribute("userCreateSuccess", userCreateSuccess);
+            
             if (!newUser.getEmail().isEmpty()) { // non empty, valid e-mail available for user (UserDataDTO validated e-mail using annotation)
             
                 try {
                     String appUrl = "http://" + request.getServerName() +  ":" + request.getServerPort() +  request.getContextPath();
-                    
                     eventPublisher.publishEvent(new OnRegistrationCompleteEvent(newUser, request.getLocale(), appUrl));
-                    
-                    attr.addFlashAttribute("userName", userDto.getUserName());
                     attr.addFlashAttribute("verificationEmailSent", true);
-                    attr.addFlashAttribute("userCreateSuccess", userCreateSuccess);
-    
-                    mav.setViewName("redirect:/login/?lang=" + request.getLocale().getLanguage());
         
                 } catch (Exception ex) {
                     mav.setViewName("emailError"); // problems to send confirmation e-mail

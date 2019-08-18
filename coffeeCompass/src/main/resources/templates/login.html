@@ -70,11 +70,11 @@
 	
 	                <div>
 	                	<p>
-		                    <input th:if="${emailVerified} OR ${verificationEmailSent}"
+		                    <input th:if="${emailVerified} OR ${verificationEmailSent} OR ${userCreateSuccess}"
 		                    	   type="text" name="username" id="username" class="w3-input"
 		                    	   th:value="${userName}"
 		                           th:placeholder="#{login.username.placeholder}" required>
-		                    <input th:unless="${emailVerified} OR ${verificationEmailSent}"
+		                    <input th:unless="${emailVerified} OR ${verificationEmailSent} OR ${userCreateSuccess}"
 		                    	   autofocus="autofocus"
 		                    	   type="text" name="username" id="username" class="w3-input"
 		                           th:placeholder="#{login.username.placeholder}" required>
@@ -83,10 +83,11 @@
 	                </div>
 	                <div>
 	                	<p>
-	                    	<input th:unless="${emailVerified}"
+	                    	<input th:unless="${emailVerified} OR ${verificationEmailSent} OR ${userCreateSuccess}"
 	                    		   type="password" name="password" id="password" class="w3-input"
 	                           	   th:placeholder="#{login.password.placeholder}" required>
-	                        <input th:if="${emailVerified}" type="password" name="password" id="password" class="w3-input"
+	                        <input th:if="${emailVerified} OR ${verificationEmailSent} OR ${userCreateSuccess}"
+	                               type="password" name="password" id="password" class="w3-input"
 	                        	   autofocus="autofocus"
 	                               th:placeholder="#{login.password.placeholder}" required>
 	                        <label th:text="#{login.passwd}">Passwd</label>
