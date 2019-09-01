@@ -360,8 +360,7 @@ public class UserController
             
             if (loggedInUser != null && updatedUser.getId() == loggedInUser.getId()) { // If the user modifies it's own profile
                 // Check if the email address is confirmed
-                if (!updatedUser.isRegisterEmailConfirmed() // novy email nepotvrzen a neprazdny. Poslat confirm e-mail token
-                    && !updatedUser.getEmail().isEmpty()) {
+                if (!updatedUser.isRegisterEmailConfirmed() && !updatedUser.getEmail().isEmpty()) { // novy email nepotvrzen a neprazdny. Poslat confirm e-mail token
                     String appUrl = "http://" + request.getServerName() +  ":" + request.getServerPort() +  request.getContextPath();
                     tokenCreateAndSendEmailService.setUserVerificationData(updatedUser, appUrl, request.getLocale());
                     tokenCreateAndSendEmailService.createAndSendVerificationTokenEmail();
