@@ -1,6 +1,7 @@
 package cz.fungisoft.coffeecompass.controller;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -39,7 +40,7 @@ import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.listeners.OnRegistrationCompleteEvent;
 import cz.fungisoft.coffeecompass.service.UserProfileService;
 import cz.fungisoft.coffeecompass.service.UserService;
-import cz.fungisoft.coffeecompass.service.VerificationTokenCreateAndSendEmailService;
+import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
 import io.swagger.annotations.Api;
 
 /**
@@ -66,7 +67,7 @@ public class UserController
     private ApplicationEventPublisher eventPublisher;
     
     @Autowired
-    private VerificationTokenCreateAndSendEmailService verificationTokenSendEmailService;
+    private TokenCreateAndSendEmailService tokenCreateAndSendEmailService;
  
  /* // For future use
     @Autowired
@@ -80,11 +81,11 @@ public class UserController
     @Autowired
     public UserController(UserService userService,
                           UserProfileService userProfileService,
-                          VerificationTokenCreateAndSendEmailService verificationTokenService) {
+                          TokenCreateAndSendEmailService verificationTokenService) {
         super();
         this.userService = userService;
         this.userProfileService = userProfileService;
-        this.verificationTokenSendEmailService = verificationTokenService;
+        this.tokenCreateAndSendEmailService = verificationTokenService;
     }
 
     
@@ -92,10 +93,10 @@ public class UserController
     
     @GetMapping("/all") 
     public ModelAndView listAllUsers() {
+        
         ModelAndView mav = new ModelAndView();
         
         List<UserDataDTO> users = userService.findAllUsers();
-        
         mav.addObject("allUsers", users);
         mav.setViewName("users_info");
     
@@ -206,8 +207,7 @@ public class UserController
         ModelAndView mav = new ModelAndView();
         mav.setViewName("user_registration");
         
-        if (userDto.getId() == 0) // Jde o noveho usera k registraci
-        { 
+        if (userDto.getId() == 0) { // Jde o noveho usera k registraci
             User existing = userService.findByUserName(userDto.getUserName());
             
             if (existing != null) {
@@ -221,11 +221,14 @@ public class UserController
             }
         }
         
-        if (userDto.getPassword().isEmpty())
+        if (userDto.getPassword().isEmpty()) {
             result.rejectValue("password", "error.user.password.empty");
-        else
-            if (!userDto.getPassword().equals(userDto.getConfirmPassword()))
+        }
+        else {
+            if (!userDto.getPassword().equals(userDto.getConfirmPassword())) {
                 result.rejectValue("confirmPassword", "error.user.password.confirm", "Confirmation password does not match password.");
+            }
+        }
         
         if (result.hasErrors()) { // In case of error, show the user_reg. page again with error labels
             mav.addObject(userDto);
@@ -247,14 +250,12 @@ public class UserController
             attr.addFlashAttribute("userCreateSuccess", userCreateSuccess);
             
             if (!newUser.getEmail().isEmpty()) { // non empty, valid e-mail available for user (UserDataDTO validated e-mail using annotation)
-            
                 try {
                     String appUrl = "http://" + request.getServerName() +  ":" + request.getServerPort() +  request.getContextPath();
                     eventPublisher.publishEvent(new OnRegistrationCompleteEvent(newUser, request.getLocale(), appUrl));
                     attr.addFlashAttribute("verificationEmailSent", true);
-        
                 } catch (Exception ex) {
-                    mav.setViewName("emailError"); // problems to send confirmation e-mail
+                    mav.setViewName("emailError"); // problems to send verification e-mail
                     mav.addObject(newUser);
                 }
             }
@@ -360,8 +361,8 @@ public class UserController
             if (!updatedUser.isRegisterEmailConfirmed() // novy email nepotvrzen a neprazdny. Poslat confirm e-mail token
                 && !userDto.getEmail().isEmpty()) {
                 String appUrl = "http://" + request.getServerName() +  ":" + request.getServerPort() +  request.getContextPath();
-                verificationTokenSendEmailService.setVerificationData(updatedUser, appUrl, request.getLocale());
-                verificationTokenSendEmailService.createAndSendVerificationTokenEmail();
+                tokenCreateAndSendEmailService.setUserVerificationData(updatedUser, appUrl, request.getLocale());
+                tokenCreateAndSendEmailService.createAndSendVerificationTokenEmail();
                 attr.addFlashAttribute("verificationEmailSent", true); // requires processing of the "verificationEmailSent" attr. in "redirect:/user/edit/", see bellow
             }
         }
@@ -370,7 +371,8 @@ public class UserController
         attr.addFlashAttribute("userModifySuccess", userModifySuccess);
         return "redirect:/user/edit/" + updatedUser.getUserName();
     }
-     
+    
+    
     // ------------------- Retrieve Single User -------------------------------------------------------- //
       
     /**
@@ -381,6 +383,7 @@ public class UserController
      */
     @GetMapping("/show/{id}")
     public ResponseEntity<UserDataDTO> getUser(@PathVariable("id") Integer id) {
+        
         logger.info("Fetching User with id " + id);
         UserDataDTO user = userService.findByIdToTransfer(id);
         if (user == null) {
@@ -394,6 +397,7 @@ public class UserController
       
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public String deleteUser(@PathVariable("id") Integer id) {
+        
         UserDataDTO user = userService.findByIdToTransfer(id);
         if (user == null) {
             logger.info("Unable to delete. User with id " + id + " not found");

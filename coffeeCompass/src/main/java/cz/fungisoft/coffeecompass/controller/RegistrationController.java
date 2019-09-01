@@ -1,11 +1,9 @@
 package cz.fungisoft.coffeecompass.controller;
 
-import java.util.Calendar;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,35 +13,39 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import cz.fungisoft.coffeecompass.controller.models.GenericResponse;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserVerificationToken;
-import cz.fungisoft.coffeecompass.listeners.OnRegistrationCompleteEvent;
 import cz.fungisoft.coffeecompass.service.UserService;
-import cz.fungisoft.coffeecompass.service.VerificationTokenCreateAndSendEmailService;
+import cz.fungisoft.coffeecompass.service.ValidateTokenService;
+import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
 
 /**
- * Controller to process click on User verification link.
+ * Controller to process click on User registration e-mail verification link.
  * 
  * @author Michal Vaclavek
- *
  */
 @Controller
 public class RegistrationController
 {
     private UserService userService;
     
-    private VerificationTokenCreateAndSendEmailService verificationTokenService;
+    private TokenCreateAndSendEmailService userVerificationTokenService;
     
-    private MessageSource messagesSource;
+    private ValidateTokenService validateTokenService;
     
-    
-    public RegistrationController(UserService userService, VerificationTokenCreateAndSendEmailService verificationTokenService,
-                                  MessageSource messagesSource) {
+    /**
+     * 
+     * @param userService
+     * @param verificationTokenService
+     * @param messagesSource
+     */
+    public RegistrationController(UserService userService,
+                                  TokenCreateAndSendEmailService verificationTokenService,
+                                  ValidateTokenService validateTokenService) {
         super();
         this.userService = userService;
-        this.verificationTokenService = verificationTokenService;
-        this.messagesSource = messagesSource;
+        this.userVerificationTokenService = verificationTokenService;
+        this.validateTokenService = validateTokenService;
     }
 
     /**
@@ -57,36 +59,46 @@ public class RegistrationController
     @GetMapping(value = "/user/registrationConfirm")
     public String confirmRegistration(Locale locale, Model model, @RequestParam("token") String token, RedirectAttributes attr) {
         
-        UserVerificationToken verificationToken = verificationTokenService.getVerificationToken(token);
-       
-        // Error creatin token?
-        if (verificationToken == null) {
+        String tokenValidationResult = validateTokenService.validateUserRegistrationToken(token);
+        
+        // Invalid token
+        if ("invalidToken".equals(tokenValidationResult)) {
             attr.addFlashAttribute("tokenInvalid", true);
-            
             return (userService.getCurrentLoggedInUser() != null) ? "redirect:/home"
                                                                   : "redirect:/registrationTokenFailure";
         }
 
         // Token expired ?
-        Calendar cal = Calendar.getInstance();
-        if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+        if ("expiredToken".equals(tokenValidationResult)) {
             attr.addFlashAttribute("tokenExpired", true);
             attr.addFlashAttribute("token", token);
             return "redirect:/registrationTokenFailure";
         }
         
-        // Token valid ?
-        User user = verificationToken.getUser();
-        userService.saveVerifiedRegisteredUser(user, token);
-        
-        attr.addFlashAttribute("userName", user.getUserName());
-        attr.addFlashAttribute("emailVerified", true);
-        
-        // If already logged-in user confirmed, then go to home page
-        // If user not logged-in yet, go to log-in page
-        return (userService.getCurrentLoggedInUser().getId() == user.getId()) ? "redirect:/home"
-                                                                              : "redirect:/login/?lang=" + locale.getLanguage();
+        // Valid token
+        if (tokenValidationResult.isEmpty()) {
 
+            UserVerificationToken verificationToken = userVerificationTokenService.getUserVerificationToken(token);
+
+            User user = verificationToken.getUser();
+            userService.saveVerifiedRegisteredUser(user, token);
+            
+            // Deletes already used confirmation token from DB. This makes it invalid.
+            userVerificationTokenService.deleteRegistrationToken(token);
+            
+            attr.addFlashAttribute("userName", user.getUserName());
+            attr.addFlashAttribute("emailVerified", true);
+            
+            // If already logged-in user confirmed, then go to home page
+            if (userService.getCurrentLoggedInUser() != null 
+                && userService.getCurrentLoggedInUser().getId() == user.getId()) {
+                return "redirect:/home";
+            } else { // default go to login page, after e-mail confirm success
+                return "redirect:/login/?lang=" + locale.getLanguage(); 
+            }
+        }
+        
+        return "redirect:/home";
     }
     
     @GetMapping(value = "/registrationTokenFailure")
@@ -133,29 +145,28 @@ public class RegistrationController
         // Standard new page (login) after new verification e-mail sent - used in case user is not logged-in yet
         ModelAndView mav = new ModelAndView("redirect:/login/?lang=" + request.getLocale().getLanguage());
         
-        UserVerificationToken verificationToken = verificationTokenService.getVerificationToken(existingToken);
+        UserVerificationToken verificationToken = userVerificationTokenService.getUserVerificationToken(existingToken);
         User user = verificationToken.getUser();
         
         String newToken = "";
         
         try {
             String appUrl = "http://" + request.getServerName() +  ":" + request.getServerPort() +  request.getContextPath();
-            verificationTokenService.setVerificationData(userService.getCurrentLoggedInUser(), appUrl, request.getLocale());
-            newToken = verificationTokenService.reSendVerificationTokenEmail(existingToken);
+            userVerificationTokenService.setUserVerificationData(user, appUrl, request.getLocale());
+            newToken = userVerificationTokenService.reSendUserVerificationTokenEmail(existingToken);
             
             attr.addFlashAttribute("userName", user.getUserName());
             attr.addFlashAttribute("verificationEmailSent", true);
             attr.addFlashAttribute("userCreateSuccess", true);
             
-            if (userService.getCurrentLoggedInUser().getId() == user.getId()) {
+            if (userService.getCurrentLoggedInUser().getId() != null
+                && userService.getCurrentLoggedInUser().getId() == user.getId()) {
                 mav.setViewName("redirect:/home");
             } 
         } catch (Exception me) {
-            
             attr.addFlashAttribute("emailError", true);
-            attr.addFlashAttribute("token", newToken);
-            
-            mav.setViewName("redirect:/registrationTokenFailure"); // problems to send confirmation e-mail
+            attr.addFlashAttribute("token", newToken); // passed to be used for generation of a new token
+            mav.setViewName("redirect:/registrationTokenFailure"); // problems to resend confirmation e-mail
         }
         
         return mav;

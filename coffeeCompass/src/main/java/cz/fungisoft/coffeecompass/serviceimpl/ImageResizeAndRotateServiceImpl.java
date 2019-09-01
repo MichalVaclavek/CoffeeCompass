@@ -40,7 +40,7 @@ public class ImageResizeAndRotateServiceImpl implements ImageResizeAndRotateServ
     private int defWidth = 1280; // 640
     private int defHeight = 960; // 480
     
-    private float defQuality = 0.8f;
+    private float defQuality = 0.85f;
     
     @Override
     public void setDefaultSize(int defWidth, int defHeight) {

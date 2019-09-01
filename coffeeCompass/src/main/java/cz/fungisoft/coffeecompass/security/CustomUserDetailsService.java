@@ -46,8 +46,7 @@ public class CustomUserDetailsService implements UserDetailsService
         
         User user = userService.findByUserName(userName);
         logger.info("User : {}", userName);
-        if (user == null)
-        {
+        if (user == null) {
             logger.info("User not found");
             throw new UsernameNotFoundException("Username not found: " + userName) ;
         }
@@ -70,8 +69,7 @@ public class CustomUserDetailsService implements UserDetailsService
               boolean credentialsNonExpired = true;
               boolean accountNonLocked = true;
               
-              try
-              {
+              try {
                   User user = userService.findByEmail(email);
                   if (user == null) {
                       throw new UsernameNotFoundException("No user found with username: " + email);

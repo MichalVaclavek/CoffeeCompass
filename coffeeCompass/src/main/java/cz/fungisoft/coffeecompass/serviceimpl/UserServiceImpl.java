@@ -21,6 +21,7 @@ import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.entity.UserProfileTypeEnum;
 import cz.fungisoft.coffeecompass.entity.UserVerificationToken;
 import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
+import cz.fungisoft.coffeecompass.repository.PasswordResetTokenRepository;
 import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
 import cz.fungisoft.coffeecompass.repository.UserVerificationTokenRepository;
 import cz.fungisoft.coffeecompass.repository.UsersRepository;
@@ -49,7 +50,10 @@ public class UserServiceImpl implements UserService
     private UserProfileRepository userProfileRepository;
     
     @Autowired
-    private UserVerificationTokenRepository tokenRepository;
+    private UserVerificationTokenRepository registartionTokenRepository;
+    
+    @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
     
     /**
      * To get right authorities object as required by Spring security in case of ROLES modification.
@@ -379,13 +383,11 @@ public class UserServiceImpl implements UserService
         return findByUserName(authentication.getName());
     }
 
-    /** Methods for E-mail verification tokens **/
+    /** Methods for User's e-mail verification or password reset tokens **/
     
     @Override
     public void saveVerifiedRegisteredUser(User user, String token) {
         user.setRegisterEmailConfirmed(true);
-        // Deletes already used confirmation token from DB. This makes it invalid.
-        tokenRepository.deleteByToken(token);
         
         Set<UserProfile> currentUserProfiles = user.getUserProfiles();
         // E-mail confirmed, higher privileges can be added to User
@@ -395,8 +397,38 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
-    public User getUserByToken(String verificationToken) {
-        User user = tokenRepository.findByToken(verificationToken).getUser();
+    public User getUserByRegistrationToken(String verificationToken) {
+        User user = registartionTokenRepository.findByToken(verificationToken).getUser();
+        return user;
+    }
+
+    /**
+     * Changes user's password.
+     * 
+     * @param user / user whos's password is to be changed. cannot be null.
+     * @param newPassword - newPassword of the user. cannot be null or empty
+     * 
+     * @return true if password changed successfully.
+     */
+    @Override
+    public boolean changeUserPassword(User user, String newPassword) {
+        if (user == null || newPassword == null || newPassword.isEmpty()) {
+            return false;
+        }
+        user.setPassword(passwordEncoder.encode(newPassword));
+        boolean result = usersRepository.save(user) != null;
+//        if (result) {
+//            Set<UserProfile> currentUserProfiles = user.getUserProfiles();
+//            // Password changed, temporary "CHANGE_PASSWORD_PRIVILEGE" can be removed now
+//            currentUserProfiles.remove(userProfileRepository.searchByType("CHANGE_PASSWORD_PRIVILEGE"));
+//            user.setUserProfiles(currentUserProfiles);
+//        }
+        return result;
+    }
+
+    @Override
+    public User getUserByPasswordResetToken(String pswdResetToken) {
+        User user = passwordResetTokenRepository.findByToken(pswdResetToken).getUser();
         return user;
     }
 

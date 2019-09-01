@@ -49,12 +49,9 @@
 				
 		        </div>         
 		                  
-				<!-- <a th:href="@{/user/registration}" th:text="#{label.form.loginSignUp}">signup</a> --> 
-				 
 				<!-- Expired confirmation link --> 
 				 
 				<div th:if="${tokenExpired}">
-					<!--  <h1 th:text="#{label.form.resendRegistrationToken}">resend</h1> --> 
 					
 					<div class="w3-pale-red w3-display-container w3-round w3-panel">
 						<p th:text="#{register.failure.expiredtoken.message}" class="w3-container" > </p>
@@ -67,37 +64,6 @@
 		       	    	   class="w3-button w3-blue w3-round w3-bar-item">resend verification email</a>
 		        	</div> 
 					
-					
-					<!-- REST variant for resending token... ? -->
-					<!--
-					<button onclick="resendToken()"
-							class="w3-button w3-blue w3-round w3-bar-item"
-					  		th:text="#{register.failure.resendverificationemail.button}">resend verification email</button>
-					 -->  
-					<!-- <script src="jquery.min.js"></script> --> 
-					<!--
-					<script type="text/javascript">
-					 
-						var serverContext = [[@{/}]];
-						 
-						function resendToken() {
-						    $.get(serverContext + "user/resendRegistrationToken?token=" + token, 
-						      function(data){
-						            window.location.href = 
-						              serverContext + "login.html?message=" + data.message;
-						    })
-						    .fail(function(data) {
-						        if(data.responseJSON.error.indexOf("MailError") > -1) {
-						            window.location.href = serverContext + "emailError.html";
-						        }
-						        else {
-						            window.location.href = 
-						              serverContext + "login.html?message=" + data.responseJSON.message;
-						        }
-						    });
-						}
-					</script>
-					-->
 				</div>
 				
 				<!-- Cancel button -->

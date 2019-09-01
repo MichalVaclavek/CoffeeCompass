@@ -1,0 +1,30 @@
+package cz.fungisoft.coffeecompass.service;
+
+/**
+ * Used to validate user registration and reset password tokens
+ * 
+ * @author Michal Vaclavek
+ *
+ */
+public interface ValidateTokenService
+{
+    /**
+     * Validates password reset token sent to user on request.
+     * 
+     * @param id - id of the user requesting password reset.
+     * @param token - token to be validated
+     * 
+     * @return empty string if token is valid, otherwise invalid token reason i.e. "expiredToken" or "invalidToken" or "invalidUser"
+     */
+    public String validatePasswordResetToken(long id, String token);
+    
+    /**
+     * Validates registration confirm e-mail token sent to user's email during registration process.
+     * 
+     * @param token - token to be validated
+     * 
+     * @return empty string if token is valid, otherwise invalid token reason i.e. "expiredToken" or "invalidToken"
+     */
+    public String validateUserRegistrationToken(String token);
+    
+}

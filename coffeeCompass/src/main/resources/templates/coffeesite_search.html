@@ -71,11 +71,6 @@
 					      	</div>
 							 
 						  	<div class="w3-container w3-cell">
-						  	<!--
-				            	<label for="Longitude">
-				              		<span th:text="#{sitesearch.longitude}">Longitude</span>
-				            	</label>
-				            	-->
 				            	<div th:classappend="${#fields.hasErrors('lon1')} ? 'has-error' : ''">
 				            		<!-- <input type="number" step="any" th:field="*{lon1}" th:errorclass="fieldError" class="w3-input w3-border w3-round" id="lon1"/> -->
 				               		<input th:type="hidden" step="any" th:field="*{lon1}" th:errorclass="fieldError" class="w3-input w3-border w3-round" id="lon1"/>

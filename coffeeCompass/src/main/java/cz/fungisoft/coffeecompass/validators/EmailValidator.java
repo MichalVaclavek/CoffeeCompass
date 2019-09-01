@@ -6,6 +6,12 @@ import java.util.regex.Pattern;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+/**
+ * Validator for e-mail address. 
+ * 
+ * @author Michal Vaclavek
+ *
+ */
 public class EmailValidator implements ConstraintValidator<ValidEmail, String>
 {
    private Pattern pattern;
@@ -23,8 +29,8 @@ public class EmailValidator implements ConstraintValidator<ValidEmail, String>
        boolean result = true;
        String errorMessageKey = "";
        
-       if (!email.isEmpty() && !validateEmail(email)) {
-           errorMessageKey = "{error.user.password.wrong}";
+       if (email == null || !validateEmail(email)) {
+           errorMessageKey = "{error.user.email.wrong}";
            result = false;
        }
        

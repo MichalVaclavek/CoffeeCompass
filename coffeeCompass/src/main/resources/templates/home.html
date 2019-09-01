@@ -64,6 +64,22 @@
 			</div>
 		</div>
 		
+		<!-- Used in case password reset succeeded -->
+		 <div th:if="${passwordResetSaveSuccess}" class="w3-pale-green w3-display-container w3-round w3-panel w3-center">
+		    <span onclick="this.parentElement.style.display='none'"
+		  		  class="w3-button w3-pale-green w3-large w3-display-topright">&times;</span>
+		    <p><span th:text="#{resetPassword.changed.saved.message}"></span>
+		    </p>
+		</div>
+		
+		<!-- Used in case password reset failed -->
+		 <div th:if="${passwordResetSaveFailed}" class="w3-pale-red w3-display-container w3-round w3-panel w3-center">
+		    <span onclick="this.parentElement.style.display='none'"
+		  		  class="w3-button w3-pale-red w3-large w3-display-topright">&times;</span>
+		    <p><span th:text="#{resetPassword.change.failed.message}"></span>
+		    </p>
+		</div>
+		
 		<div class="w3-content w3-margin-top"> 
 			
 			<div class="w3-row-padding">

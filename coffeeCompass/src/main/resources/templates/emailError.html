@@ -14,6 +14,9 @@
 		  signup</a>
 		  -->
 		  
+		<!-- Menu header -->
+		<div th:replace="fragments/header :: header"/>
+		  
 		  <!-- Error with e-mail when sending token -->
 		  <div th:if="${emailError}"
 		  	   class="w3-bar w3-margin">
@@ -30,7 +33,8 @@
 	        
 	        <!-- Cancel button -->
 			<div>
-	       	    <a th:href="@{'/home'}" th:text="#{registration.cancel.button}"
+	       	    <a th:href="@{'/home'}"
+	       	       th:text="#{registration.cancel.button}"
 	       	       class="w3-button w3-bar-item w3-text-grey w3-margin-left">Cancel registration/verification page</a>
 	        </div> 
 		

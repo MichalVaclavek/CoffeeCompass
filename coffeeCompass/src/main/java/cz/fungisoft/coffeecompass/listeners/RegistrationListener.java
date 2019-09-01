@@ -4,13 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
-import cz.fungisoft.coffeecompass.service.VerificationTokenCreateAndSendEmailService;
+import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
 
 @Component
 public class RegistrationListener implements ApplicationListener<OnRegistrationCompleteEvent>
 {
     @Autowired
-    private VerificationTokenCreateAndSendEmailService verificationTokenSendEmailService;
+    private TokenCreateAndSendEmailService verificationTokenSendEmailService;
     
     @Override
     public void onApplicationEvent(OnRegistrationCompleteEvent event) {
@@ -18,7 +18,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     }
  
     private void confirmRegistration(OnRegistrationCompleteEvent event) {
-        verificationTokenSendEmailService.setVerificationData(event.getUser(), event.getAppUrl(), event.getLocale());
+        verificationTokenSendEmailService.setUserVerificationData(event.getUser(), event.getAppUrl(), event.getLocale());
         verificationTokenSendEmailService.createAndSendVerificationTokenEmail();
     }
     

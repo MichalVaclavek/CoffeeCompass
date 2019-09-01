@@ -51,9 +51,7 @@ public class UserDataDTO
     private Timestamp createdOn;
     
     private Integer createdSites;
-        
     private Integer updatedSites;
-    
     private Integer deletedSites;   
     
     /**

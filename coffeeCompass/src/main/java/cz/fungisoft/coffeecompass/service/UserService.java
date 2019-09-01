@@ -68,6 +68,10 @@ public interface UserService
      */
     void saveVerifiedRegisteredUser(User user, String token);
     
-    public User getUserByToken(String verificationToken);
+    public User getUserByRegistrationToken(String verificationToken);
+
+    boolean changeUserPassword(User user, String newPassword);
+    
+    public User getUserByPasswordResetToken(String pswdResetToken);
 
 }

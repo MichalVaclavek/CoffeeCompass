@@ -94,7 +94,6 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
      * Osetreni ostatnich vyjimky nedefinovanych v me aplikaci 
      //TODO pozor, stejnou obsluhu asi dela i metoda nize  handleInternal(RuntimeException ex, WebRequest request) 
      */
-    /*
     @ExceptionHandler
     public ModelAndView handleOtherExceptions(Exception e) {
         
@@ -106,26 +105,28 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
         model.setViewName("error");
         return model;
     }
-    */
-    
-    /** REST Exception handlers for error during User e-mail validation **/
     
     @ExceptionHandler({ UserNotFoundException.class })
     public ResponseEntity<Object> handleUserNotFound(RuntimeException ex, WebRequest request) {
         logger.error("404 Status Code", ex);
-        GenericResponse bodyOfResponse = new GenericResponse(messages.getMessage("message.userNotFound", null, request.getLocale()), "UserNotFound");
+        GenericResponse bodyOfResponse = new GenericResponse(messages.getMessage("message.userNotFound.rest", null, request.getLocale()), "UserNotFound");
          
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
  
+    /** REST Exception handlers for error during User e-mail validation **/
+    
     @ExceptionHandler({ MailAuthenticationException.class })
     public ResponseEntity<Object> handleMail(RuntimeException ex, WebRequest request) {
         logger.error("500 Status Code", ex);
-        GenericResponse bodyOfResponse = new GenericResponse(messages.getMessage("message.email.config.error", null, request.getLocale()), "MailError");
+        GenericResponse bodyOfResponse = new GenericResponse(messages.getMessage("message.email.config.error.rest", null, request.getLocale()), "MailError");
          
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
     }
  
+    /** Obecny REST exception handler **/
+    
+    /*
     @ExceptionHandler({ Exception.class })
     public ResponseEntity<Object> handleInternal(RuntimeException ex, WebRequest request) {
         logger.error("500 Status Code", ex);
@@ -136,5 +137,6 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
          
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
+    */
     
 }

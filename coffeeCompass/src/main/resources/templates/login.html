@@ -1,17 +1,19 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Coffee Compass login</title>
     <div th:replace="fragments/header :: header-css"/>
 </head>
+
 <body>
 
 	<div th:replace="fragments/header :: header"/></div>
 	
 	<!-- CustomAuthenticationFailure -->
+	<!--
 	<div th:if="${param.error != null}"
   		 th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
+	-->
 	
 	<div class="w3-row-padding">  
 	
@@ -42,6 +44,34 @@
 			</p>
 		</div>
 		
+		<!-- Used in case of waiting to click on link for reseting user's password sent to e-mail -->
+		<div th:if="${resetPasswordEmailSent}" class="w3-pale-blue w3-display-container w3-round w3-panel w3-center">
+		    <span onclick="this.parentElement.style.display='none'"
+		  		  class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
+		    <p><span th:text="#{resetPassword.email.sent.waitingtoclick.message}"></span>
+		    </p>
+		</div>
+		
+		<!-- Used in case of invalid/expired password reset link was clicked and redirected to this page -->
+     	<div>
+			<div th:if="${passwordResetTokenInvalid}" class="w3-pale-red w3-display-container w3-round w3-panel w3-center">
+			    <span onclick="this.parentElement.style.display='none'"
+			  		class="w3-button w3-pale-red w3-large w3-display-topright">&times;</span>
+			    <p><span th:text="#{resetPassword.invalidtoken.message}"></span> 
+				</p>
+			</div>
+		</div>
+		
+		<!-- Used in case an unknown e-mail was submited for sending link to reset password -->
+		<!-- 
+		<div th:if="${resetPasswordUnknownEmail}" class="w3-pale-red w3-display-container w3-round w3-panel w3-center">
+		    <span onclick="this.parentElement.style.display='none'"
+		  		  class="w3-button w3-pale-red w3-large w3-display-topright">&times;</span>
+		    <p><span th:text="#{resetPassword.email.unknown.message}"></span>
+		    </p>
+		</div>
+		 -->
+		 
 		<!-- Used in case User modification is redirected to this page -->
 		<div th:if="${userModifySuccess}" class="w3-pale-blue w3-display-container w3-round w3-panel">
 		    <span onclick="this.parentElement.style.display='none'"
@@ -93,6 +123,8 @@
 	                        <label th:text="#{login.passwd}">Passwd</label>
 	                    </p> 
 	                </div>
+	
+					<a th:href="@{/forgotPassword}" th:text="#{forgotPassword.login.link.message}">reset</a>
 	
 	                <div class="w3-container w3-bottom-middle">
 	                   <button type="submit" name="login" th:text="#{login.button.login}" class="w3-button w3-green w3-border w3-margin w3-round">Login</button> 
