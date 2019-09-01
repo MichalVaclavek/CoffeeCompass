@@ -358,12 +358,15 @@ public class UserController
         if (updatedUser != null) {
             userModifySuccess = true;
             
-            if (!updatedUser.isRegisterEmailConfirmed() // novy email nepotvrzen a neprazdny. Poslat confirm e-mail token
-                && !userDto.getEmail().isEmpty()) {
-                String appUrl = "http://" + request.getServerName() +  ":" + request.getServerPort() +  request.getContextPath();
-                tokenCreateAndSendEmailService.setUserVerificationData(updatedUser, appUrl, request.getLocale());
-                tokenCreateAndSendEmailService.createAndSendVerificationTokenEmail();
-                attr.addFlashAttribute("verificationEmailSent", true); // requires processing of the "verificationEmailSent" attr. in "redirect:/user/edit/", see bellow
+            if (loggedInUser != null && updatedUser.getId() == loggedInUser.getId()) { // If the user modifies it's own profile
+                // Check if the email address is confirmed
+                if (!updatedUser.isRegisterEmailConfirmed() // novy email nepotvrzen a neprazdny. Poslat confirm e-mail token
+                    && !updatedUser.getEmail().isEmpty()) {
+                    String appUrl = "http://" + request.getServerName() +  ":" + request.getServerPort() +  request.getContextPath();
+                    tokenCreateAndSendEmailService.setUserVerificationData(updatedUser, appUrl, request.getLocale());
+                    tokenCreateAndSendEmailService.createAndSendVerificationTokenEmail();
+                    attr.addFlashAttribute("verificationEmailSent", true); // requires processing of the "verificationEmailSent" attr. in "redirect:/user/edit/", see bellow
+                }
             }
         }
         

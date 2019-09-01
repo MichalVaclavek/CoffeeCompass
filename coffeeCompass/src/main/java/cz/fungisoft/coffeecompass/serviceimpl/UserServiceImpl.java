@@ -262,7 +262,7 @@ public class UserServiceImpl implements UserService
             entity.setUpdatedOn(new Timestamp(new Date().getTime()));
         }
         
-        log.info("User name {} updated.", user.getUserName());
+        log.info("User name {} updated.", entity.getUserName());
         return entity;
     }
     
