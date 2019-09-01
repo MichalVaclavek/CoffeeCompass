@@ -19,8 +19,6 @@ import cz.fungisoft.coffeecompass.dto.UserDataDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.entity.UserProfileTypeEnum;
-import cz.fungisoft.coffeecompass.entity.UserVerificationToken;
-import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.repository.PasswordResetTokenRepository;
 import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
 import cz.fungisoft.coffeecompass.repository.UserVerificationTokenRepository;

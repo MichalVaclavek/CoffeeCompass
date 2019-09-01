@@ -7,8 +7,6 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import javax.validation.constraints.Email;
-
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.validators.PasswordMatches;
 import cz.fungisoft.coffeecompass.validators.ValidEmail;
@@ -35,7 +33,7 @@ public class UserDataDTO
     private String lastName;
  
 //    @Email // Can be empty as it cannot be changed by ADMIN during editing
-    @ValidEmail
+//    @ValidEmail // e-mail is not obligatory, can be empty
     @Size(max=64)
     private String email;
     

@@ -19,7 +19,7 @@ public class EmailAddressModel
     public EmailAddressModel() {
     }
     
-    public EmailAddressModel(String emailAddr) {
+    public EmailAddressModel(@NotEmpty String emailAddr) {
         super();
         this.emailAddr = emailAddr;
     }
