@@ -34,6 +34,30 @@
 		    <p th:text="#{home.contactme.success}" class="w3-container" > </p>
 		</div>
 		
+		<!-- Used in case User registration succeeded, user loged-in and redirected to this page -->
+		<div sec:authorize="isAuthenticated()">
+			<div th:if="${userCreateSuccess}" class="w3-pale-green w3-display-container w3-round w3-panel w3-center">
+			    <span onclick="this.parentElement.style.display='none'"
+			  		class="w3-button w3-pale-green w3-large w3-display-topright">&times;</span>
+			    <p><span th:text="#{user.user}"></span><b><span th:text="${userName}"></span></b><span th:text="#{user.created.suffix}"></span></p>
+			</div>
+		</div>
+		
+		<!-- Used in case of waiting to e-mail verification link click after new User registration -->
+		<div th:if="${verificationEmailSent}" class="w3-pale-blue w3-display-container w3-round w3-panel w3-center">
+		    <span onclick="this.parentElement.style.display='none'"
+		  		  class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
+		    <p><span th:text="#{verificationmail.sent.waitingtoclick.message}"></span></p>
+		    <p><span th:text="#{verificationmail.sent.waitingtoclick.pleaselogin}"></span></p>
+		</div>
+		
+		<!-- Used in case verification link e-mail sending failure -->
+		<div th:if="${sendVerificationEmailErrorMessage}" class="w3-pale-red w3-display-container w3-round w3-panel w3-center">
+		    <span onclick="this.parentElement.style.display='none'"
+		  		  class="w3-button w3-pale-red w3-large w3-display-topright">&times;</span>
+		    <p><span th:text="${sendVerificationEmailErrorMessage}"></span></p>
+		</div>
+
      	<!-- Used in case of successful e-mail verfication link clicked with following redirection to this page and user is already logged-in-->
      	<div sec:authorize="isAuthenticated()">
 			<div th:if="${emailVerified}" class="w3-pale-green w3-display-container w3-round w3-panel w3-center">
@@ -49,8 +73,7 @@
 			<div th:if="${verificationEmailSent}" class="w3-pale-blue w3-display-container w3-round w3-panel w3-center">
 			    <span onclick="this.parentElement.style.display='none'"
 			  		  class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
-			    <p><span th:text="#{verificationmail.sent.waitingtoclick.message}"></span>
-			    </p>
+			    <p><span th:text="#{verificationmail.sent.waitingtoclick.message}"></span></p>
 			</div>
 		</div>
 		
@@ -59,8 +82,7 @@
 			<div th:if="${tokenInvalid}" class="w3-pale-red w3-display-container w3-round w3-panel w3-center">
 			    <span onclick="this.parentElement.style.display='none'"
 			  		class="w3-button w3-pale-red w3-large w3-display-topright">&times;</span>
-			    <p><span th:text="#{register.failure.invalidtoken.loggedinuser.message}"></span> 
-				</p>
+			    <p><span th:text="#{register.failure.invalidtoken.loggedinuser.message}"></span> </p>
 			</div>
 		</div>
 		
@@ -68,16 +90,14 @@
 		 <div th:if="${passwordResetSaveSuccess}" class="w3-pale-green w3-display-container w3-round w3-panel w3-center">
 		    <span onclick="this.parentElement.style.display='none'"
 		  		  class="w3-button w3-pale-green w3-large w3-display-topright">&times;</span>
-		    <p><span th:text="#{resetPassword.changed.saved.message}"></span>
-		    </p>
+		    <p><span th:text="#{resetPassword.changed.saved.message}"></span></p>
 		</div>
 		
 		<!-- Used in case password reset failed -->
 		 <div th:if="${passwordResetSaveFailed}" class="w3-pale-red w3-display-container w3-round w3-panel w3-center">
 		    <span onclick="this.parentElement.style.display='none'"
 		  		  class="w3-button w3-pale-red w3-large w3-display-topright">&times;</span>
-		    <p><span th:text="#{resetPassword.change.failed.message}"></span>
-		    </p>
+		    <p><span th:text="#{resetPassword.change.failed.message}"></span></p>
 		</div>
 		
 		<div class="w3-content w3-margin-top"> 
@@ -85,39 +105,39 @@
 			<div class="w3-row-padding">
 			
 				<div class="w3-third" th:classappend="${#authorization.expression('isAuthenticated()')} ? 'w3-half'">
-				<div class="w3-container w3-padding-16 w3-sand w3-card-2 w3-round">
-				
-					<div class="w3-center" >
-						<h5 th:text="#{home.about.text}"> </h5>
+					<div class="w3-container w3-padding-16 w3-sand w3-card-2 w3-round">
 					
-	        			<h4><a th:href="@{/about}" th:text="#{home.button.info}" class="w3-button w3-brown w3-margin-top">Informace o těchto stránkách.</a></h4>
-	        		</div>
-	        		
-	        	</div>	
+						<div class="w3-center" >
+							<h5 th:text="#{home.about.text}"> </h5>
+						
+		        			<h4><a th:href="@{/about}" th:text="#{home.button.info}" class="w3-button w3-brown w3-margin-top">Informace o těchto stránkách.</a></h4>
+		        		</div>
+		        		
+		        	</div>	
 	        	</div>
 	        	
 	        	<div class="w3-third" th:classappend="${#authorization.expression('isAuthenticated()')} ? 'w3-half'">
-				<div class="w3-container w3-padding-16 w3-sand w3-card-2 w3-round">
-	        	
-	        		<div class="w3-center">
-						<h5 th:text="#{home.search.text}"> </h5>
-						
-	        			<h4><a th:href="@{/showSearch}" th:text="#{home.button.search}" class="w3-button w3-brown w3-margin-top">Search sites</a></h4>
-	        		</div>
-				
-	        	</div>
+					<div class="w3-container w3-padding-16 w3-sand w3-card-2 w3-round">
+		        	
+		        		<div class="w3-center">
+							<h5 th:text="#{home.search.text}"> </h5>
+							
+		        			<h4><a th:href="@{/showSearch}" th:text="#{home.button.search}" class="w3-button w3-brown w3-margin-top">Search sites</a></h4>
+		        		</div>
+					
+		        	</div>
 	        	</div>
 	        	
 	        	<div sec:authorize="NOT isAuthenticated()" class="w3-third">
-				<div class="w3-container w3-padding-16 w3-sand w3-card-2 w3-round">
-
-	        		<div class="w3-center" >
-						<h5 th:text="#{home.register.text}" > </h5>
-						<a th:href="@{/user/register}" th:text="#{mainmenu.registeruser}">User login</a>
-	        			<h4><a th:href="@{/login}" th:text="#{home.button.login}" class="w3-button w3-brown">User login</a> </h4>
-	        		</div>
+					<div class="w3-container w3-padding-16 w3-sand w3-card-2 w3-round">
 	
-	        	</div>
+		        		<div class="w3-center" >
+							<h5 th:text="#{home.register.text}" > </h5>
+							<a th:href="@{/user/register}" th:text="#{mainmenu.registeruser}">User login</a>
+		        			<h4><a th:href="@{/login}" th:text="#{home.button.login}" class="w3-button w3-brown">User login</a> </h4>
+		        		</div>
+		
+		        	</div>
 	        	</div>
         	</div>
        	

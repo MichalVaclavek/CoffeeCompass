@@ -25,7 +25,6 @@ import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
  * and for reseting user's password.
  * 
  * @author Michal Vaclavek
- *
  */
 @Service("tokenCreateAndSendByEmail")
 public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailService
@@ -86,7 +85,7 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
             String fromEmail = messages.getMessage("register.verificationemail.from", null, locale);
             
             //TODO throw exception in case of e-mail sent error
-            this.sendEmailService.sendVerificationEmail(fromEmail, recipientAddress, subject, message + "\r\n" + confirmationUrl);
+            this.sendEmailService.sendEmail(fromEmail, recipientAddress, subject, message + "\r\n" + confirmationUrl);
             
             return token;
         } else
@@ -97,7 +96,6 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
      * Creates a new verification token and send it by e-mail.
      * 
      */
-    // TODO - what about to check if the e-mail was really send. Inform user via Exception?
     @Override
     public String reSendUserVerificationTokenEmail(String existingToken) {
         
@@ -109,13 +107,13 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
         String message = messages.getMessage("register.verificationemail.resendToken.message", null, locale);
         String fromEmail = messages.getMessage("register.verificationemail.from", null, locale);
         
-        this.sendEmailService.sendVerificationEmail(fromEmail, user.getEmail(), subject, message + "\r\n\r\n" + confirmationUrl);
+        this.sendEmailService.sendEmail(fromEmail, user.getEmail(), subject, message + "\r\n\r\n" + confirmationUrl);
         
         return newToken.getToken();
     }
     
-    @Override
     @Transactional
+    @Override
     public void createUserVerificationToken(User user, String token) {
         UserVerificationToken myToken = new UserVerificationToken(token, user);
         userVerificationTokenRepository.save(myToken);
@@ -136,11 +134,9 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
         return userVerificationTokenRepository.findByToken(verificationToken);
     }
     
-    @Override
     @Transactional
+    @Override
     public void deleteRegistrationToken(String token) {
-//        UserVerificationToken oldToken = getUserVerificationToken(token);
-//        userVerificationTokenRepository.delete(oldToken);
         userVerificationTokenRepository.deleteByToken(token);
     }
 
@@ -175,14 +171,12 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
             
             String resetPasswordUrl = appUrl + "/user/changePassword?userId=" + user.getId() + "&token=" + token;;
             
-            //TODO throw exception in case of e-mail sent error
-            this.sendEmailService.sendVerificationEmail(fromEmail, recipientAddress, subject, message + "\r\n\r\n" + resetPasswordUrl);
+            this.sendEmailService.sendEmail(fromEmail, recipientAddress, subject, message + "\r\n\r\n" + resetPasswordUrl);
             
             return token;
         } else
             throw new InvalidParameterException("User is null.");
     }
-
     
     @Override
     public PasswordResetToken getPasswordResetToken(String passwordResetToken) {
@@ -192,7 +186,6 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
     @Transactional
     @Override
     public void deletePasswordResetToken(String token) {
-//        PasswordResetToken oldToken = getPasswordResetToken(token);
         passwordResetTokenRepository.deleteByToken(token);
     }
 

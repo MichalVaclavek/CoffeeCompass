@@ -21,6 +21,7 @@ import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
 import cz.fungisoft.coffeecompass.repository.CommentRepository;
 import cz.fungisoft.coffeecompass.service.ICommentService;
+import cz.fungisoft.coffeecompass.service.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
@@ -43,8 +44,9 @@ public class CommentService implements ICommentService
     
     @Autowired
     private UserService userService;
-   
+    
     private CommentRepository commentsRepo;
+    
     private MapperFacade mapperFacade;
 		
 	@Autowired
@@ -81,7 +83,7 @@ public class CommentService implements ICommentService
     
     @Override
     public Comment saveTextAsComment(String commentText, CoffeeSite coffeeSite) {
-        User logedInUser = userService.getCurrentLoggedInUser();
+        User logedInUser =  userService.getCurrentLoggedInUser();
         return saveTextAsComment(commentText, logedInUser, coffeeSite);
     }
 
@@ -131,9 +133,9 @@ public class CommentService implements ICommentService
     }
     
     private boolean isDeletable(CommentDTO comment) {
-        return (comment != null && userService.getCurrentLoggedInUser() != null) ? 
-                  userService.isADMINloggedIn() || comment.getUserName().equals(userService.getCurrentLoggedInUser().getUserName()) : 
-                     false;
+        return (comment != null &&  userService.getCurrentLoggedInUser() != null)
+                  ? userService.isADMINloggedIn() || comment.getUserName().equals( userService.getCurrentLoggedInUser().getUserName())
+                  : false;
     }
 
 	@Override

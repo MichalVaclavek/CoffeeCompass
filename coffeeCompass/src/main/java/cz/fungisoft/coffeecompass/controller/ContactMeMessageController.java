@@ -17,7 +17,7 @@ import cz.fungisoft.coffeecompass.service.UserService;
 
 /**
  * Controller pro obsluhu formulare pro zadani Contact me zpravy.
- * <br>
+ * <p>
  * 
  * @author Michal Vaclavek
  */
@@ -29,7 +29,8 @@ public class ContactMeMessageController
     private UserService userService;
     
     @Autowired
-    public ContactMeMessageController(IContactMeMessageService contactMeService, UserService userService) {
+    public ContactMeMessageController(IContactMeMessageService contactMeService,
+                                      UserService userService) {
         super();
         this.contactMeService = contactMeService;
         this.userService = userService;
@@ -50,7 +51,9 @@ public class ContactMeMessageController
         
         if (loggedInUser != null) {
             cmMessage.setAuthorName(loggedInUser.getUserName());
-            cmMessage.setEmail(loggedInUser.getEmail());
+            if (loggedInUser.isRegisterEmailConfirmed()) {
+                cmMessage.setEmail(loggedInUser.getEmail());
+            }
         }
         
         mav.addObject("contactMeMessage", cmMessage);

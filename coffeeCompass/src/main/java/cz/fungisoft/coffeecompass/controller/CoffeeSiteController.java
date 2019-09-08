@@ -29,6 +29,7 @@ import cz.fungisoft.coffeecompass.service.OtherOfferService;
 import cz.fungisoft.coffeecompass.service.PriceRangeService;
 import cz.fungisoft.coffeecompass.service.SiteLocationTypeService;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
+import cz.fungisoft.coffeecompass.service.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.UserService;
 
 import io.swagger.annotations.Api;

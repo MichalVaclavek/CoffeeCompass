@@ -1,16 +1,12 @@
 package cz.fungisoft.coffeecompass.serviceimpl;
 
 import java.sql.Timestamp;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,13 +19,18 @@ import cz.fungisoft.coffeecompass.repository.PasswordResetTokenRepository;
 import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
 import cz.fungisoft.coffeecompass.repository.UserVerificationTokenRepository;
 import cz.fungisoft.coffeecompass.repository.UsersRepository;
-import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
-import cz.fungisoft.coffeecompass.security.IAuthenticationFacade;
+import cz.fungisoft.coffeecompass.service.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
  
-  
+/**
+ * Implements all operations related to user data manipulation.<br>
+ * Saves new users, updates user profile, retrieves user's data, and so on.
+ *    
+ * @author Michal Vaclavek
+ *
+ */
 @Service("userService")
 @Transactional
 @Log4j2
@@ -40,9 +41,6 @@ public class UserServiceImpl implements UserService
     private PasswordEncoder passwordEncoder;
         
     private MapperFacade mapperFacade;
-        
-    @Autowired
-    private IAuthenticationFacade authenticationFacade;
     
     @Autowired
     private UserProfileRepository userProfileRepository;
@@ -53,11 +51,9 @@ public class UserServiceImpl implements UserService
     @Autowired
     private PasswordResetTokenRepository passwordResetTokenRepository;
     
-    /**
-     * To get right authorities object as required by Spring security in case of ROLES modification.
-     */
     @Autowired
-    private CustomUserDetailsService userDetailsService;
+    private UserSecurityService userSecurityService;
+    
      
     /**
      * Konstruktor, ktery vyuzije Spring pro injection zavislosti. Neni potreba uvadet anotaci @Autowired na atributech
@@ -79,14 +75,6 @@ public class UserServiceImpl implements UserService
     @Override
     public UserDataDTO findByIdToTransfer(Integer id) {        
         User user = findById(id);
-        
-        if (user == null) {
-            log.warn("User with id {} not found.", id);
-        }
-        else {
-            log.warn("User with id {} found.", id);
-        }
-        
         return addNonPersistentInfoToUser(user);
     }
     
@@ -107,6 +95,12 @@ public class UserServiceImpl implements UserService
     @Override
     public UserDataDTO findByUserNameToTransfer(String userName) {      
         User user = findByUserName(userName);
+        return addNonPersistentInfoToUser(user);
+    }
+    
+    @Override
+    public User findByUserName(String userName) {
+        User user = usersRepository.searchByUsername(userName);
         
         if (user == null) {
             log.warn("User with user name {} not found.", userName);
@@ -115,7 +109,7 @@ public class UserServiceImpl implements UserService
             log.info("User with user name {} found.", userName);
         }
         
-        return addNonPersistentInfoToUser(user);
+        return user;
     }
     
     /**
@@ -134,20 +128,6 @@ public class UserServiceImpl implements UserService
         }
         
         return userDTO;
-    }
-    
-    @Override
-    public User findByUserName(String userName) {
-        User user = usersRepository.searchByUsername(userName);
-        
-        if (user == null) {
-            log.warn("User with user name {} not found.", userName);
-        }
-        else {
-            log.info("User with user name {} found.", userName);
-        }
-        
-        return user;
     }
     
     @Override
@@ -178,10 +158,11 @@ public class UserServiceImpl implements UserService
     /**
      * Updates logged-in User data. If the userName is changed, Spring security context
      * must be changed too.<br>
+     * <p>
      * Updates also User data of another user, if logged-in has ADMIN rights. In such case,
      * only password or Roles (except ADMIN) can be changed.<br>
-     * If all ROLES should be removed, that USER role is inserted.<br>
-     * If ADMIN removes his ADMIN role, than it is applied also in Spring authentication object, immediately
+     * If all ROLES should be removed, then USER role is inserted (User has to have at least one role)<br>
+     * If ADMIN removes his ADMIN role, than it is applied also in Spring authentication object, immediately.
      */
     @Override
     public User updateUser(User user) {
@@ -245,16 +226,9 @@ public class UserServiceImpl implements UserService
                 newUserName = user.getUserName();
             }
             
-            // logged-in User updated own data - Spring authentication object has to be updated too
+            // logged-in User has updated it's own data - 'Spring authentication object' has to be updated too.
             if (isLoggedInUserToManageItself(entity)) { 
-                Authentication authentication = authenticationFacade.getAuthentication();
-                
-                if (authentication != null) {
-                    Collection<SimpleGrantedAuthority>  nowAuthorities = (Collection<SimpleGrantedAuthority>) userDetailsService.getGrantedAuthorities(entity);
-                        
-                    UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(newUserName, newPasswd, nowAuthorities);
-                    authenticationFacade.getContext().setAuthentication(newAuthentication);                 
-                }
+                userSecurityService.updateCurrentAuthentication(entity, newUserName, newPasswd);
             }
             // User name must be updated (saved) after Spring authentication object update, otherwise isLoggedInUserToManageItself(entity) resolves that 
             // another user (ADMIN) is updating this 'user' as user name was already updated in DB.
@@ -337,7 +311,7 @@ public class UserServiceImpl implements UserService
         user.setDeletedSites(0);    
         
         Set<UserProfile> userProfiles = new HashSet<UserProfile>();
-        // Only basic USER role can be assigned to commom user 
+        // Only basic USER role can be assigned to commom new user 
         userProfiles.add(userProfileRepository.searchByType("USER"));
         user.setUserProfiles(userProfiles);
         
@@ -375,12 +349,6 @@ public class UserServiceImpl implements UserService
         return loggedInUser != null && hasADMINRole(loggedInUser);
     }
     
-    @Override
-    public User getCurrentLoggedInUser() {
-        Authentication authentication = authenticationFacade.getAuthentication();
-        return findByUserName(authentication.getName());
-    }
-
     /** Methods for User's e-mail verification or password reset tokens **/
     
     @Override
@@ -414,14 +382,7 @@ public class UserServiceImpl implements UserService
             return false;
         }
         user.setPassword(passwordEncoder.encode(newPassword));
-        boolean result = usersRepository.save(user) != null;
-//        if (result) {
-//            Set<UserProfile> currentUserProfiles = user.getUserProfiles();
-//            // Password changed, temporary "CHANGE_PASSWORD_PRIVILEGE" can be removed now
-//            currentUserProfiles.remove(userProfileRepository.searchByType("CHANGE_PASSWORD_PRIVILEGE"));
-//            user.setUserProfiles(currentUserProfiles);
-//        }
-        return result;
+        return usersRepository.save(user) != null;
     }
 
     @Override
@@ -429,5 +390,10 @@ public class UserServiceImpl implements UserService
         User user = passwordResetTokenRepository.findByToken(pswdResetToken).getUser();
         return user;
     }
-
+    
+    @Override
+    public User getCurrentLoggedInUser() {
+        return this.usersRepository.searchByUsername(userSecurityService.getCurrentLoggedInUserName());
+    }
+    
 }

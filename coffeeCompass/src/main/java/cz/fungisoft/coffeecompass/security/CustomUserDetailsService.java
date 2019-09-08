@@ -34,24 +34,33 @@ public class CustomUserDetailsService implements UserDetailsService
      * @param userService
      */
     @Autowired
-    public CustomUserDetailsService(/*@Qualifier("userService")*/ @Lazy UserService userService) {
+    public CustomUserDetailsService(@Lazy UserService userService) {
         super();
         this.userService = userService;
     }
 
-    // Je nutne zde uvadet @Transactional pokud nejsme v Repository vrstve? Pokud by bylo
-    // vice operaci tak asi ano
+    // Je nutne zde uvadet @Transactional pokud nejsme v Repository vrstve?
+    //  Pokud by bylo vice operaci tak asi ano
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         
+        boolean accountNonExpired = true;
+        boolean credentialsNonExpired = true;
+        boolean accountNonLocked = true;
+        
         User user = userService.findByUserName(userName);
-        logger.info("User : {}", userName);
-        if (user == null) {
-            logger.info("User not found");
-            throw new UsernameNotFoundException("Username not found: " + userName) ;
-        }
-        return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), 
-                 true, true, true, true, getGrantedAuthorities(user));
+            if (user == null) {
+                logger.info("Username {} not found.", userName);
+                throw new UsernameNotFoundException("Username not found: " + userName) ;
+            }
+            return new org.springframework.security.core.userdetails.User(user.getUserName(),
+                                                                          user.getPassword(), 
+                                                                          !user.isBanned(),
+                                                                          accountNonExpired,
+                                                                          credentialsNonExpired,
+                                                                          accountNonLocked,
+                                                                          getGrantedAuthorities(user));
+
     }
     
     /**
@@ -64,35 +73,34 @@ public class CustomUserDetailsService implements UserDetailsService
     @Transactional(readOnly = true)
     public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
             
-//              boolean enabled = true;
-              boolean accountNonExpired = true;
-              boolean credentialsNonExpired = true;
-              boolean accountNonLocked = true;
-              
-              try {
-                  User user = userService.findByEmail(email);
-                  if (user == null) {
-                      throw new UsernameNotFoundException("No user found with username: " + email);
-                  }
-                   
-                  return new org.springframework.security.core.userdetails.User(
-                    user.getEmail(), 
-                    user.getPassword().toLowerCase(), 
-                    user.isRegisterEmailConfirmed(), 
-                    accountNonExpired, 
-                    credentialsNonExpired, 
-                    accountNonLocked, 
-                    getGrantedAuthorities(user));
-              } catch (Exception e) {
-                  throw new RuntimeException(e);
-              }
+        boolean accountNonExpired = true;
+        boolean credentialsNonExpired = true;
+        boolean accountNonLocked = true;
+          
+        try {
+            User user = userService.findByEmail(email);
+            if (user == null) {
+                logger.info("User with e-mail {} not found.", email);
+                throw new UsernameNotFoundException("No user found with e-mail: " + email);
+            }
+               
+            return new org.springframework.security.core.userdetails.User(user.getEmail(), 
+                                                                          user.getPassword().toLowerCase(), 
+                                                                          !user.isBanned(), 
+                                                                          accountNonExpired, 
+                                                                          credentialsNonExpired, 
+                                                                          accountNonLocked, 
+                                                                          getGrantedAuthorities(user));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
-     
+    
+    
     public List<? extends GrantedAuthority> getGrantedAuthorities(User user) {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
          
         for (UserProfile userProfile : user.getUserProfiles()) {
-            logger.info("UserProfile : {}", userProfile);
             authorities.add(new SimpleGrantedAuthority("ROLE_" + userProfile.getType()));
         }
         

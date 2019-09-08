@@ -17,6 +17,7 @@ import cz.fungisoft.coffeecompass.repository.StarsForCoffeeSiteAndUserRepository
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
+import cz.fungisoft.coffeecompass.service.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import lombok.extern.log4j.Log4j2;
 
@@ -38,6 +39,9 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     
     @Autowired
     private UserService userService;
+    
+//    @Autowired
+//    private UserSecurityService userSecurityService;
     
     @Autowired
     private CoffeeSiteService coffeeSiteService;

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title th:text="#{registration.token.failure.title}">bad user</title>
+    <title th:text="#{registration.token.failure.title}">Registration token failure (bad user)</title>
     <div th:replace="fragments/header :: header-css"/>
 </head>
 
@@ -20,7 +20,6 @@
 			
 				<!-- Error with e-mail when resending expired token -->
 				<div th:if="${emailError}">
-				    
 				    <div class="w3-pale-red w3-display-container w3-round w3-panel">
 					    <p th:text="#{register.verificationemail.resent.failure}" class="w3-container" > </p>
 					</div>
@@ -30,12 +29,10 @@
 		       	    	   th:text="#{register.failure.resendverificationemail.button}"
 		       	    	   class="w3-button w3-blue w3-round w3-bar-item">resend verification email</a>
 			        </div> 
-				
 		        </div>   
 		        
 				<!-- Invalid confirmation link -->
 				<div th:if="${tokenInvalid}">
-				    
 				    <div class="w3-pale-red w3-display-container w3-round w3-panel">
 					    <p th:text="#{register.failure.invalidtoken.message}" class="w3-container" > </p>
 					</div>
@@ -46,13 +43,11 @@
 						   th:text="#{register.failure.gotonewregistration.button}"
 						   class="w3-button w3-blue w3-round w3-bar-item">User register</a>
 					</div>
-				
 		        </div>         
 		                  
 				<!-- Expired confirmation link --> 
 				 
 				<div th:if="${tokenExpired}">
-					
 					<div class="w3-pale-red w3-display-container w3-round w3-panel">
 						<p th:text="#{register.failure.expiredtoken.message}" class="w3-container" > </p>
 					</div>
@@ -63,7 +58,6 @@
 		       	    	   th:text="#{register.failure.resendverificationemail.button}"
 		       	    	   class="w3-button w3-blue w3-round w3-bar-item">resend verification email</a>
 		        	</div> 
-					
 				</div>
 				
 				<!-- Cancel button -->

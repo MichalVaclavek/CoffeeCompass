@@ -11,5 +11,5 @@ public interface ISendEmailService
 {
     public void sendMeSimpleEmail(String fromName, String fromEmail, String toEmail, String message);
     
-    public void sendVerificationEmail(String from, String to, String subject, String message);
+    public void sendEmail(String from, String to, String subject, String message);
 }

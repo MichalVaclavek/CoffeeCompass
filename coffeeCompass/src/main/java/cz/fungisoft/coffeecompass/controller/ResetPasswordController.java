@@ -1,32 +1,33 @@
 package cz.fungisoft.coffeecompass.controller;
 
-import java.util.Collection;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.context.MessageSource;
+import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import cz.fungisoft.coffeecompass.controller.models.EmailAddressModel;
 import cz.fungisoft.coffeecompass.controller.models.NewPasswordInputModel;
+import cz.fungisoft.coffeecompass.entity.PasswordResetToken;
 import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
-import cz.fungisoft.coffeecompass.security.IAuthenticationFacade;
 import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
+import cz.fungisoft.coffeecompass.service.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import cz.fungisoft.coffeecompass.service.ValidateTokenService;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Controller to handle URLs for forgot password procedure.<br>
@@ -39,6 +40,7 @@ import cz.fungisoft.coffeecompass.service.ValidateTokenService;
  *
  */
 @Controller
+@Log4j2
 public class ResetPasswordController
 {
     private UserService userService;
@@ -47,9 +49,9 @@ public class ResetPasswordController
     
     private ValidateTokenService validateTokenService;
     
-    private IAuthenticationFacade authenticationFacade;
+    private UserSecurityService userSecurityService;
     
-    private CustomUserDetailsService userDetailsService;
+    private MessageSource messages;
     
     /**
      * Standard constructor.
@@ -63,14 +65,14 @@ public class ResetPasswordController
     public ResetPasswordController(UserService userService,
                                    TokenCreateAndSendEmailService passwordTokenService,
                                    ValidateTokenService validateTokenService,
-                                   IAuthenticationFacade authenticationFacade,
-                                   CustomUserDetailsService userDetailsService) {
+                                   UserSecurityService userSecurityService,
+                                   MessageSource messages) {
         super();
         this.userService = userService;
         this.passwordTokenService = passwordTokenService;
         this.validateTokenService = validateTokenService;
-        this.authenticationFacade = authenticationFacade;
-        this.userDetailsService = userDetailsService;
+        this.userSecurityService = userSecurityService;
+        this.messages = messages;
     }
     
     
@@ -110,14 +112,16 @@ public class ResetPasswordController
        
         if (bindingResult.hasErrors()) { // wrong format of e-mail address or empty
             return mav;
-        } else { // try to find user based on valid e-mail address
-            User user = userService.findByEmail(userEmail.getEmailAddr());
-            if (user == null) {
-                bindingResult.rejectValue("emailAddr", "resetPassword.email.unknown.message");
-                return mav;
-            } 
         }
-        // User found by e-mail. Send passwd. reset link to the user.
+        
+        // try to find user based on valid e-mail address
+        User user = userService.findByEmail(userEmail.getEmailAddr());
+        if (user == null) {
+            bindingResult.rejectValue("emailAddr", "resetPassword.email.unknown.message");
+            return mav;
+        } 
+        
+        // User found by e-mail. Send password reset link to the user.
         mav.setViewName("redirect:/login");
         String appUrl = "http://" + request.getServerName() +  ":" + request.getServerPort() +  request.getContextPath();
         passwordTokenService.setResetPasswordTokenData(userEmail.getEmailAddr(), appUrl, request.getLocale());
@@ -127,7 +131,7 @@ public class ResetPasswordController
     }
     
     /**
-     * Serves click to reset password link sent to user by e-mail.
+     * Serves click to reset password link sent to user's e-mail address.
      * 
      * @param userId
      * @param token
@@ -142,22 +146,28 @@ public class ResetPasswordController
                                                   RedirectAttributes attr) {
 
         ModelAndView mav = new ModelAndView();
-        // Validates token and if valid then log-in user with "CHANGE_PASSWORD_PRIVILEGE" needed for entering updatePassword.html page
+        // Validates token 
         String validationResult = validateTokenService.validatePasswordResetToken(userId, token);
         
-        if (!validationResult.isEmpty()) { // token not valid
-            attr.addFlashAttribute("passwordResetTokenInvalid", validationResult);
-            mav.setViewName("redirect:/login?lang=" + locale.getLanguage());
-        } else { // valid token
+        if (validationResult.isEmpty()) { // token is valid
+            // create temporary active principal with ROLE CHANGE_PASSWORD_PRIVILEGE
+            PasswordResetToken passToken = passwordTokenService.getPasswordResetToken(token);
+            User user = passToken.getUser();
+            userSecurityService.authWithUserNameAndRole(user.getUserName(), "CHANGE_PASSWORD_PRIVILEGE");
+            
             attr.addFlashAttribute("token", token); // needed to pass further, to be deleted after the new password is saved.
             mav.setViewName("redirect:/user/updatePassword?lang=" + locale.getLanguage());
+        } else { // invalid token
+            attr.addFlashAttribute("passwordResetTokenInvalid", validationResult);
+            mav.setViewName("redirect:/login?lang=" + locale.getLanguage());
         }
         
         return mav;
     }
     
     /**
-     * Shows the page for entering new and confirm password.<br>
+     * Shows the page for entering new and confirm password.
+     * <p>
      * Called after successfull verification of password reset token in processChangePasswordLink method.<br>
      * Can be called only with "CHANGE_PASSWORD_PRIVILEGE", see SecurityConfiguration.<br>
      * 
@@ -171,8 +181,8 @@ public class ResetPasswordController
         mav.addObject("resetedPassword", resetedPassword);
         mav.setViewName("updatePassword");
         
-        // log-out temporary principal with "CHANGE_PASSWORD_PRIVILEGE"
-        authenticationFacade.getContext().setAuthentication(null);
+        // log-out temporary principal with "CHANGE_PASSWORD_PRIVILEGE" role.
+        userSecurityService.logout();
         
         return mav;
     }
@@ -209,18 +219,31 @@ public class ResetPasswordController
             passwordTokenService.deletePasswordResetToken(token);
             
             // User verified by email, password reseted, User can be logged-in now
-            Authentication auth = authenticationFacade.getContext().getAuthentication();
-            if (auth == null || auth.getName().equalsIgnoreCase("anonymousUser")) {    
-                Collection<SimpleGrantedAuthority>  nowAuthorities = (Collection<SimpleGrantedAuthority>) userDetailsService.getGrantedAuthorities(user);
-                UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(user.getUserName(), resetedPassword.getNewPassword(), nowAuthorities);
-                authenticationFacade.getContext().setAuthentication(newAuthentication);                 
-            }
+            userSecurityService.authWithPassword(user, resetedPassword.getNewPassword());
         } else {
             attr.addFlashAttribute("passwordResetSaveFailed", true);
         }
         
         mav.setViewName("redirect:/home?lang=" + locale.getLanguage());
         return mav;
+    }
+    
+    /**
+     * Handles exception during sending e-mail with reset password link.
+     * 
+     * @param e
+     * @param request
+     * @return
+     */
+    @ExceptionHandler({MailException.class})  
+    public ModelAndView handleSendMailException(MailException e, WebRequest request) {
+        log.error("MailException: {}", e.getMessage());
+        
+        String errorMessage = messages.getMessage("resetPassword.sendemail.error.message", null, request.getLocale());
+        ModelAndView model = new ModelAndView();
+        model.addObject("errorMessage", errorMessage);
+        model.setViewName("forgotPassword");
+        return model;
     }
     
 }

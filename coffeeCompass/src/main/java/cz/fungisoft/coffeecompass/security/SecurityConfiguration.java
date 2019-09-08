@@ -15,7 +15,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
- 
+
+/**
+ * Zakladni nastaveni zabezpeceni pristupu na stranky, pristup k datum uzivatelu apod.
+ * 
+ * @author Michal Vaclavek
+ *
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter
@@ -54,7 +60,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
                 .antMatchers("/finalDeleteSite/**").access("hasRole('ADMIN')") // real deletition of the CoffeeSite record
                 .antMatchers("/user/all", "/user/show/**").access("hasRole('ADMIN')")
                 .antMatchers("/allSites").access("hasRole('ADMIN') OR hasRole('DBA')")
-                .antMatchers("/user/delete/**").hasAnyRole("ADMIN")
+                .antMatchers("/user/delete/**").hasRole("ADMIN")
                 .antMatchers("/user/edit-put", "/user/edit/**").hasAnyRole("ADMIN", "DBA", "USER")
                 .antMatchers("/imageUpload", "/deleteImage/**").hasAnyRole("ADMIN", "DBA", "USER")
                 .antMatchers("/user/updatePassword**", "/updatePassword**").hasAuthority("CHANGE_PASSWORD_PRIVILEGE")
@@ -64,7 +70,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
                 .logout().permitAll().logoutUrl("/logout")
                 .logoutSuccessUrl("/home")
                 .and()
-                .exceptionHandling().accessDeniedHandler(accessDeniedHandler);        
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler);    
     }
  
     @Bean
@@ -84,5 +90,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
     public AuthenticationTrustResolver getAuthenticationTrustResolver() {
         return new AuthenticationTrustResolverImpl();
     }
-    
+        
 }

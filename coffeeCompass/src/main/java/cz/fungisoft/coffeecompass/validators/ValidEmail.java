@@ -14,7 +14,12 @@ import javax.validation.Payload;
 @Constraint(validatedBy = EmailValidator.class)
 @Documented
 public @interface ValidEmail {   
-    String message() default "Invalid email";
+    String message() default "{error.user.email.wrong}";
     Class<?>[] groups() default {}; 
     Class<? extends Payload>[] payload() default {};
+    
+    /**
+     * @return true, if the e-mail address can be null or empty.
+     */
+    boolean canbeempty() default false;
 }

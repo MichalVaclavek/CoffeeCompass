@@ -3,13 +3,8 @@
  */
 package cz.fungisoft.coffeecompass.serviceimpl;
 
-import java.util.Arrays;
 import java.util.Calendar;
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import cz.fungisoft.coffeecompass.entity.PasswordResetToken;
@@ -33,7 +28,6 @@ public class ValidateTokenServiceImpl implements ValidateTokenService
     
     private TokenCreateAndSendEmailService userVerificationTokenService;
     
-    
     /**
      * 
      * @param passwordTokenRepository
@@ -54,7 +48,7 @@ public class ValidateTokenServiceImpl implements ValidateTokenService
             return "invalidToken";
         }
    
-     // Token expired ?
+        // Token expired ?
         Calendar cal = Calendar.getInstance();
         if ((passToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
             return "expiredToken";
@@ -66,11 +60,6 @@ public class ValidateTokenServiceImpl implements ValidateTokenService
             return "invalidUser"; 
         }
         
-        // Reset password token is valid
-        // create temporary active principal with ROLE CHANGE_PASSWORD_PRIVILEGE
-        Authentication auth = new UsernamePasswordAuthenticationToken(user.getUserName(), null, Arrays.asList(new SimpleGrantedAuthority("CHANGE_PASSWORD_PRIVILEGE")));
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        
         // token valid
         return "";
     }
@@ -78,6 +67,7 @@ public class ValidateTokenServiceImpl implements ValidateTokenService
  
     @Override
     public String validateUserRegistrationToken(String token) {
+        
         UserVerificationToken verificationToken = userVerificationTokenService.getUserVerificationToken(token);
         
         // Invalid token

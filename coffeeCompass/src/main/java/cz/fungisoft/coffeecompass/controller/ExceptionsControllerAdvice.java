@@ -72,7 +72,8 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
     */
     
     /**
-     * Probably not needed currently as the validation of the uploaded file size is performed (by {@link cz.fungisoft.coffeecompass.validators.ImageFileValidator})<br>
+     * Probably not needed currently as the validation of the uploaded file size is performed<br>
+     * (by {@link cz.fungisoft.coffeecompass.validators.ImageFileValidator})<br>
      * before Exception could be raised.
      * 
      * @param exc

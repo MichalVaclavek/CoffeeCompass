@@ -4,7 +4,6 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,7 +48,7 @@ public class RegistrationController
     }
 
     /**
-     * Handles click to verification e-mail link 
+     * Handles click to verification e-mail link.
      * 
      * @param locale
      * @param model
@@ -89,9 +88,10 @@ public class RegistrationController
             attr.addFlashAttribute("userName", user.getUserName());
             attr.addFlashAttribute("emailVerified", true);
             
+            User loggedInUser = userService.getCurrentLoggedInUser();
             // If already logged-in user confirmed, then go to home page
-            if (userService.getCurrentLoggedInUser() != null 
-                && userService.getCurrentLoggedInUser().getId() == user.getId()) {
+            if ( loggedInUser != null 
+                 && loggedInUser.getId() == user.getId()) {
                 return "redirect:/home";
             } else { // default go to login page, after e-mail confirm success
                 return "redirect:/login/?lang=" + locale.getLanguage(); 
@@ -110,7 +110,7 @@ public class RegistrationController
      * User requests another verification link, in case the previous one expired.
      * REST variant, not working yet, problems in a view "registrationTokenFailure"
      * 
-     //TODO DO NOT DELETE, NEEDS TO BE REPAIRED 
+     //TODO DO NOT DELETE, NEEDS TO BE REPAIRED as REST reponse
      * 
      * @param request
      * @param existingToken
@@ -159,8 +159,10 @@ public class RegistrationController
             attr.addFlashAttribute("verificationEmailSent", true);
             attr.addFlashAttribute("userCreateSuccess", true);
             
-            if (userService.getCurrentLoggedInUser().getId() != null
-                && userService.getCurrentLoggedInUser().getId() == user.getId()) {
+            User loggedInUser = userService.getCurrentLoggedInUser();
+            
+            if (loggedInUser != null && loggedInUser.getId() != null
+                && loggedInUser.getId() == user.getId()) {
                 mav.setViewName("redirect:/home");
             } 
         } catch (Exception me) {

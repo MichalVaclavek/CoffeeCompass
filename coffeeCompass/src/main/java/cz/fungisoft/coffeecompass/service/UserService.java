@@ -6,7 +6,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import cz.fungisoft.coffeecompass.dto.UserDataDTO;
 import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.entity.UserVerificationToken;
 
  
 public interface UserService
@@ -53,13 +52,12 @@ public interface UserService
     boolean isLoggedInUserToManageItself(User user);
     
     /**
-     * Method to return true if currently logged-in user has ADMIN role
-     * @return
+     * @return true if currently logged-in user has ADMIN role
      */
     boolean isADMINloggedIn();
-
-    User getCurrentLoggedInUser();
     
+    public User getCurrentLoggedInUser();
+
     /**
      * Saves/updated User, which was verified by token.
      * 
@@ -68,10 +66,10 @@ public interface UserService
      */
     void saveVerifiedRegisteredUser(User user, String token);
     
-    public User getUserByRegistrationToken(String verificationToken);
+    User getUserByRegistrationToken(String verificationToken);
 
     boolean changeUserPassword(User user, String newPassword);
     
-    public User getUserByPasswordResetToken(String pswdResetToken);
+    User getUserByPasswordResetToken(String pswdResetToken);
 
 }

@@ -30,6 +30,13 @@
 		    </p>
 		</div>
 		
+		<!-- Used in case verification link e-mail sending failure -->
+		<div th:if="${sendVerificationEmailErrorMessage}" class="w3-pale-red w3-display-container w3-round w3-panel w3-center">
+		    <span onclick="this.parentElement.style.display='none'"
+		  		  class="w3-button w3-pale-red w3-large w3-display-topright">&times;</span>
+		    <p><span th:text="${sendVerificationEmailErrorMessage}"></span></p>
+		</div>
+		
 		<div class="w3-row w3-margin">
 	
 		<div class="w3-half w3-right w3-card-2 w3-border w3-sand w3-round-large">

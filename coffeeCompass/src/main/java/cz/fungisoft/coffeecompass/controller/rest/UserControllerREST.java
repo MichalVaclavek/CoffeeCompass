@@ -94,19 +94,11 @@ public class UserControllerREST
         }
   
         User savedUser = userService.saveUser(user);
-  /*
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/rest/user/{id}").buildAndExpand(user.getId()).toUri());
-        return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
-        */
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setLocation(ucBuilder.path("/rest/user/{id}").buildAndExpand(user.getId()).toUri());
+
         ResponseEntity<UserDataDTO> response;
-        if (savedUser != null) {
-            response = new ResponseEntity<UserDataDTO>(userService.findByIdToTransfer(savedUser.getId()), HttpStatus.CREATED);
-        } else
-            response = new ResponseEntity<UserDataDTO>(HttpStatus.METHOD_FAILURE);
         
+        response = (savedUser != null) ? new ResponseEntity<UserDataDTO>(userService.findByIdToTransfer(savedUser.getId()), HttpStatus.CREATED)
+                                       : new ResponseEntity<UserDataDTO>(HttpStatus.METHOD_FAILURE);
         return response;
     }
        

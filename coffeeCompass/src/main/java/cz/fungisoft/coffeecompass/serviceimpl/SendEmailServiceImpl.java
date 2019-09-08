@@ -24,34 +24,34 @@ public class SendEmailServiceImpl implements ISendEmailService
     }
 
     @Override
-    public void sendMeSimpleEmail(String fromName, String fromEmail, String toEmail, String messageText) {
+    public void sendMeSimpleEmail(String fromName, String fromEmail, String toEmail, String messageText) throws MailException {
         SimpleMailMessage message = new SimpleMailMessage(); 
         message.setTo(toEmail);
         message.setSubject("Zpráva z CoffeeCompass, od: " + fromName + " , email: " + fromEmail); 
         message.setText(messageText);
         try {
             emailSender.send(message);
-            logger.info("ODESLÁNO - zpráva z CoffeeCompass, od: " + fromName + " , email: " + fromEmail);
+            logger.info("ODESLÁNO - zpráva z CoffeeCompass, od: {} , email: {}", fromName, fromEmail);
         }
-        catch (MailException e)
-        {
-            logger.error("Chyba při odesílaní 'Contact-me' e-mailu: " + e.getMessage());
+        catch (MailException e) {
+            logger.error("Chyba při odesílaní 'Contact me' e-mailu z adresy: {}. Exception: {}", fromEmail, e.getMessage());
+            throw e;
         }
     }
 
     @Override
-    public void sendVerificationEmail(String from, String to, String subject, String messageText) {
+    public void sendEmail(String from, String to, String subject, String messageText) throws MailException {
         SimpleMailMessage message = new SimpleMailMessage(); 
         message.setTo(to);
         message.setSubject(subject); 
         message.setText(messageText);
         try {
             emailSender.send(message);
-            logger.info("Verification e-mail sent to: {}. Subject: {}", to, subject);
+            logger.info("E-mail sent to: {}. Subject: {}", to, subject);
         }
-        catch (MailException e)
-        {
-            logger.error("Chyba při odesílaní verification e-mailu: " + e.getMessage());
+        catch (MailException e) {
+            logger.error("Chyba při odesílaní e-mailu na adresu {}. Exception: {}", to, e.getMessage());
+            throw e;
         }
     }
     

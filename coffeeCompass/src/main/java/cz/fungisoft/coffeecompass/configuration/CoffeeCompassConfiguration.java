@@ -73,8 +73,6 @@ public class CoffeeCompassConfiguration implements WebMvcConfigurer
                                                              .byDefault()
                                                              .register();
         
-        mapperFactory.classMap(UserDataDTO.class, User.class).byDefault().register();
-
         // Only userName is needed for CoffeeSiteDto object
         mapperFactory.classMap(CoffeeSite.class, CoffeeSiteDTO.class)
                                         .field("originalUser.userName", "originalUserName")

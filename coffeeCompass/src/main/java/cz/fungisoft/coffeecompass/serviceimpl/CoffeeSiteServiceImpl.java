@@ -34,6 +34,7 @@ import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.CompanyService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.service.ImageStorageService;
+import cz.fungisoft.coffeecompass.service.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
@@ -60,6 +61,9 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private UserSecurityService userSecurityService;
     
     @Autowired
     private CompanyService companyService;

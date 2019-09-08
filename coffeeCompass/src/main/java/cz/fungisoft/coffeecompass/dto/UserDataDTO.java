@@ -32,8 +32,7 @@ public class UserDataDTO
     @Size(max=50)
     private String lastName;
  
-//    @Email // Can be empty as it cannot be changed by ADMIN during editing
-//    @ValidEmail // e-mail is not obligatory, can be empty
+    @ValidEmail(canbeempty = true) // e-mail is not obligatory, can be empty
     @Size(max=64)
     private String email;
     
