@@ -25,7 +25,7 @@ public interface ICommentService
 	 * 
 	 * @return instance of the saved {@link Comment} object.
 	 */
-	public Comment saveTextAsComment(String commentText, Integer userID, Long coffeeSiteID);
+	public Comment saveTextAsComment(String commentText, Long userID, Long coffeeSiteID);
 	public Comment saveTextAsComment(String commentText, User user, CoffeeSite coffeeSite);
 	public Comment saveTextAsComment(String commentText, CoffeeSite coffeeSite);
     
@@ -45,7 +45,7 @@ public interface ICommentService
 	 * @param userID id of the User the comments are required from.
 	 * @return all Comments of given userID i.e. User with this id. 
 	 */
-	public List<CommentDTO> getAllCommentsFromUser(Integer userID);
+	public List<CommentDTO> getAllCommentsFromUser(Long userID);
 	public List<CommentDTO> getAllCommentsFromUser(User user);
 	
 	/**
@@ -66,7 +66,7 @@ public interface ICommentService
 	public Long deleteCommentById(Integer commentId);
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_DBA')")
-	public void deleteAllCommentsFromUser(Integer userID);
+	public void deleteAllCommentsFromUser(Long userID);
 	@PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_DBA')")
 	public void deleteAllCommentsForSite(Long coffeeSiteID);
     

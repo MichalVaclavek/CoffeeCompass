@@ -18,7 +18,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>
     public List<Comment> getAllCommentsForSite(Long coffeeSiteID);
     
     @Query("select cl from Comment cl where user.id=?1")
-    public List<Comment> getAllCommentsFromUser(Integer userID);
+    public List<Comment> getAllCommentsFromUser(Long userID);
     
     /**
      * Gets CoffeeSite id this Comment belongs to
@@ -28,7 +28,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>
     public Long getSiteIdForComment(Integer commentId);
     
     @Query("delete FROM Comment cl where user.id=?1")
-    public void deleteAllFromUser(Integer userID);
+    public void deleteAllFromUser(Long userID);
 
     @Query("delete FROM Comment cl where coffeeSite.id=?1")
     public void deleteAllForSite(Long siteID);

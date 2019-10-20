@@ -20,7 +20,11 @@
            <th th:text="#{user.firstname}"></th>
            <th th:text="#{user.lastname}"></th>
            <th th:text="#{user.email}"></th>
+           <th th:text="#{user.emailconfirmed}"></th>
+           <th th:text="#{user.authprovider}"></th>
            <th th:text="#{user.profiles}"></th>
+           <th th:text="#{user.isenabled}"></th>
+           <th th:text="#{user.isbanned}"></th>
            <th th:text="#{user.createdon}"></th>
            <th th:text="#{user.created_sites}"></th>
         </tr>
@@ -30,15 +34,16 @@
 		  <td th:text="${user.firstName}">FirstName</td>
 		  <td th:text="${user.lastName}">LastName</td>
 		  <td th:text="${user.email}">Email</td>
+		  <td th:text="${user.registerEmailConfirmed}">Email</td>
+		  <td th:text="${user.authProvider}">Email</td>
 		  <td th:text="${user.userProfiles}">Profiles</td>
+		  <td th:text="${user.enabled}">Profiles</td>
+		  <td th:text="${user.banned}">Profiles</td>
 		  <td th:text="${#dates.format(user.createdOn, 'dd. MM. yyyy , HH:mm')}"></td> 
 		  <td th:text="${user.createdSites}">NumOfCreatedSites</td>		
 		  
 		  <td sec:authorize="hasRole('ROLE_ADMIN')">
-	         <form action="#" th:action="@{'/user/edit/' + ${user.userName}}" th:method="GET" >
-	            <input type="hidden" name="_method" value="get" />
-	            <button type="submit" id="submitButton" th:text="#{user.edit}" class="w3-btn w3-blue w3-round w3-small">X</button>
-	         </form>
+	         <a th:href="@{'/user/edit/?userName=' + ${user.userName}}" th:text="#{user.edit}" class="w3-btn w3-blue w3-round w3-small">Edit user's account</a>
 	      </td>
 	      
 		  <td sec:authorize="hasRole('ROLE_ADMIN')" th:if="${!user.hasADMINRole}">

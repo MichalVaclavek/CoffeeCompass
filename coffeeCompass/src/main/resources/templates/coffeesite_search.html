@@ -176,12 +176,12 @@
     
     		<div class="w3-threequarter"> <!-- Element to insert script for map -->
 	        	<!-- Element to show map - class="w3-display-topright" -->
-	        	<div  id="map" class="w3-round w3-card-4 w3-margin-left" style="height: 600px; width: 100%;"></div> <!-- "height: 600px; width: 800px;" -->
+	        	<div  id="map" class="w3-round w3-card-4 w3-margin-left w3-margin-bottom" style="height: 600px; width: 100%;"></div> <!-- "height: 600px; width: 800px;" -->
 	    	</div>
 	    	
 	    	<!-- div for current info about search coordinates and range. Also coordinate of the movable marker in the map -->
 	    	<!-- This div should be placed under maps's div -->
-	    	<i><div class="w3-text-grey w3-small w3-right w3-margin-top"> 
+	    	<i><div class="w3-text-grey w3-small w3-center w3-margin-top"> 
 	        	<!-- 5 fixed and 3 labels updated by javascript -->
 	        	<label th:text="#{sitesearch.searchcoordinates.label}"></label>
 	        	<label th:text="#{sitesearch.searchcoordinates.lat.label}"></label>

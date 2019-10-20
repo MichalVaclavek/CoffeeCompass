@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Profile;
  * @author Michal Václavek
  */
 @Configuration
-@Profile(value= {"https_redir"})
+@Profile({"https_prod","https_dev"})
 public class ConfigurationRedirectToHttps 
 {  
     @Bean
@@ -43,7 +43,6 @@ public class ConfigurationRedirectToHttps
      */
     private Connector redirectConnector() {
         Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
-//        Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
         connector.setScheme("http");
         connector.setPort(8080);
         connector.setSecure(false);

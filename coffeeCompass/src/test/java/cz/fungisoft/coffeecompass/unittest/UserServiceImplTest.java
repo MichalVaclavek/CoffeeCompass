@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.Before;
@@ -99,7 +100,7 @@ public class UserServiceImplTest
         userProfiles.add(userProfUser);
         genius.setUserProfiles(userProfiles);      
                
-        Mockito.when(UserSiteServiceImplTestContextConfiguration.usersRepository.searchByUsername(genius.getUserName()))
+        Mockito.when(UserSiteServiceImplTestContextConfiguration.usersRepository.searchByUsername(genius.getUserName()).get())
                .thenReturn(genius);
 
     }
@@ -108,10 +109,11 @@ public class UserServiceImplTest
     public void whenValidName_thenUserShouldBeFound() {
         String name = "bert";
         String passwd = "gravity";
-        User found = userService.findByUserName(name);
+        Optional<User> found = userService.findByUserName(name);
       
-        assertThat(found.getUserName()).isEqualTo(name);
-        assertThat(found.getPassword()).isEqualTo(passwd);
+        assertThat(found.isPresent()).isEqualTo(true);
+        assertThat(found.get().getUserName()).isEqualTo(name);
+        assertThat(found.get().getPassword()).isEqualTo(passwd);
     } 
 
 }

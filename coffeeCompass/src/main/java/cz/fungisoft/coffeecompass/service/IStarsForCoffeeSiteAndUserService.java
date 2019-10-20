@@ -33,7 +33,7 @@ public interface IStarsForCoffeeSiteAndUserService
     public void cancelStarsForCoffeeSite(CoffeeSite coffeeSite, User user);
     
     public double avgStarsForSite(Long coffeeSiteID);
-    public double avgStarsForUser(Integer userID);
+    public double avgStarsForUser(Long userID);
     
     public AverageStarsForSiteDTO getStarsAndNumOfHodnoceniForSite(Long coffeeSiteID);
 }

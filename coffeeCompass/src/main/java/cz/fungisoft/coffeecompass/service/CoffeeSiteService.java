@@ -161,4 +161,11 @@ public interface CoffeeSiteService
     // Pomocna metoda pro otestovani, ze funguje volani Stored procedure v DB
     public double getDistance(double zemSirka1, double zemDelka1, double zemSirka2, double zemDelka2);
     
+    /**
+     * To obtain complete URL of the image for the requested CoffeeSiteDTO
+     * 
+     * @return URL of the CoffeeSite's image if available, otherwise empty String
+     */
+    public String getMainImageURL(CoffeeSiteDTO cs);
+    
 }

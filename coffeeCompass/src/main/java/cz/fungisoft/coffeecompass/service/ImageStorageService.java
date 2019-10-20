@@ -38,5 +38,5 @@ public interface ImageStorageService
 
     public boolean isImageAvailableForSiteId(Long siteId);
 
-    public String getBaseImageURL();
+    public String getBaseImageURLPath();
 }

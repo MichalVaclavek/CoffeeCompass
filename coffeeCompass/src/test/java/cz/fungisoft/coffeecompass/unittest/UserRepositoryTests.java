@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -90,14 +91,18 @@ public class UserRepositoryTests
         entityManager.flush();
      
         // when
-        User found = usersRepository.searchByUsername("pauld");
+        Optional<User> found = usersRepository.searchByUsername("pauld");
      
         // then
-        assertThat(found.getUserName())
-          .isEqualTo(newUser.getUserName());
+        assertTrue(found.isPresent());
         
-        assertThat(found.getPassword())
-        .isEqualTo(newUser.getPassword());
+        if (found.isPresent()) {
+            assertThat(found.get().getUserName())
+               .isEqualTo(newUser.getUserName());
+            
+            assertThat(found.get().getPassword())
+               .isEqualTo(newUser.getPassword());
+        }
     }
   
 

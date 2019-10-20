@@ -33,7 +33,7 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
     public long countItems();
     
     @Query("select cs from CoffeeSite cs where originalUser.id=?1")
-    public List<CoffeeSite> findSitesFromUserID(int userId);
+    public List<CoffeeSite> findSitesFromUserID(long userId);
     
     @Query("select cs from CoffeeSite cs where cs.recordStatus.status=?1 order by cs.siteName asc")
     public List<CoffeeSite> findSitesWithRecordStatus(String csRecordStatus);  

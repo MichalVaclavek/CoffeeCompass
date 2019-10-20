@@ -6,6 +6,7 @@ package cz.fungisoft.coffeecompass.serviceimpl;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,7 +57,7 @@ public class CommentService implements ICommentService
 	}
 	
 	@Override
-    public Comment saveTextAsComment(String commentText, Integer userID, Long coffeeSiteID) {
+    public Comment saveTextAsComment(String commentText, Long userID, Long coffeeSiteID) {
 	    User user = userService.findById(userID);
         CoffeeSite cs = coffeeSiteRepo.findById(coffeeSiteID).orElse(null);             
        
@@ -83,15 +84,15 @@ public class CommentService implements ICommentService
     
     @Override
     public Comment saveTextAsComment(String commentText, CoffeeSite coffeeSite) {
-        User logedInUser =  userService.getCurrentLoggedInUser();
-        return saveTextAsComment(commentText, logedInUser, coffeeSite);
+        Optional<User> logedInUser =  userService.getCurrentLoggedInUser();
+        return saveTextAsComment(commentText, logedInUser.get(), coffeeSite);
     }
 
 	/* (non-Javadoc)
 	 * @see cz.zutrasoft.base.services.CommentService#getAllCommentsFromUser(int)
 	 */
 	@Override
-	public List<CommentDTO> getAllCommentsFromUser(Integer userID) {
+	public List<CommentDTO> getAllCommentsFromUser(Long userID) {
 	    return modifyToTransfer(commentsRepo.getAllCommentsFromUser(userID));
 	}
 
@@ -133,8 +134,8 @@ public class CommentService implements ICommentService
     }
     
     private boolean isDeletable(CommentDTO comment) {
-        return (comment != null &&  userService.getCurrentLoggedInUser() != null)
-                  ? userService.isADMINloggedIn() || comment.getUserName().equals( userService.getCurrentLoggedInUser().getUserName())
+        return (comment != null &&  userService.getCurrentLoggedInUser().isPresent())
+                  ? userService.isADMINloggedIn() || comment.getUserName().equals( userService.getCurrentLoggedInUser().get().getUserName())
                   : false;
     }
 
@@ -164,7 +165,7 @@ public class CommentService implements ICommentService
     }
 
     @Override
-    public void deleteAllCommentsFromUser(Integer userID) {
+    public void deleteAllCommentsFromUser(Long userID) {
         log.info("All comments from user id {} deleted.", userID);
         commentsRepo.deleteAllFromUser(userID);
         

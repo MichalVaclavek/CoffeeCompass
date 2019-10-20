@@ -93,10 +93,10 @@ public class CoffeeSiteControllerREST
     private CoffeeSiteService coffeeSiteService;
     
     /**
-     * Dependency Injection pomoci konstruktoru, neni potreba uvadet @Autowired u atributu, Spring toto umi automaticky.
+     * Dependency Injection pomoci konstruktoru, neni potreba uvadet @Autowired u atributu, Spring toto umi automaticky.<br>
      * Lze ale uvest u konstruktoru, aby bylo jasne, ze Injection provede Spring.
-     * <br><br>
-     * Ale protoze techto servicu bude v tomto Controleru mnoho, bude konstruktor obsahovat pouze jeden
+     * <p>
+     * Ale protoze techto servicu bude v tomto Controleru mnoho, bude konstruktor obsahovat pouze jeden<br>
      * parametr se zakladnim Servicem CoffeeSiteService.<br>
      * Ostatni service budou @Autowired jako atributy instance, Spring zaridi injection
      * 

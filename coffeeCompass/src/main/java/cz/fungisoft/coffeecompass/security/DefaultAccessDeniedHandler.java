@@ -31,7 +31,6 @@ public class DefaultAccessDeniedHandler implements AccessDeniedHandler
                     + httpServletRequest.getRequestURI());
         }
 
-//        httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "error/403");
         httpServletResponse.sendRedirect("http://" + httpServletRequest.getServerName() +  ":" + httpServletRequest.getServerPort() + "/403");
     }
     

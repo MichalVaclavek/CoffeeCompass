@@ -4,12 +4,12 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import cz.fungisoft.coffeecompass.controller.models.NewPasswordInputModel;
-import cz.fungisoft.coffeecompass.dto.UserDataDTO;
+import cz.fungisoft.coffeecompass.dto.UserDTO;
 
 /**
  * Validates if password and confirmationPassword matches.<br>
  * 
- * Can be used only for {@link UserDataDTO} and {@link NewPasswordInputModel} classes.
+ * Can be used only for {@link UserDTO} and {@link NewPasswordInputModel} classes.
  * 
  * @author Michal Vaclavek
  *
@@ -27,8 +27,8 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
         boolean result = true;
         String errorMessageKey = "";
         
-        if (obj instanceof UserDataDTO) {
-            UserDataDTO user = (UserDataDTO) obj;
+        if (obj instanceof UserDTO) {
+            UserDTO user = (UserDTO) obj;
             result = user.getPassword().equals(user.getConfirmPassword());
         }
         if (obj instanceof NewPasswordInputModel) {

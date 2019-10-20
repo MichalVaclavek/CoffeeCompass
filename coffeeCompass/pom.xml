@@ -87,6 +87,19 @@
 		    <artifactId>spring-boot-starter-mail</artifactId>
 		    <!--<version>2.0.1.RELEASE</version>-->
 		</dependency>
+		
+		<!-- OAuth2 Client -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-oauth2-client</artifactId>
+		</dependency>
+		
+		<!-- JWT library -->
+		<dependency>
+		  <groupId>io.jsonwebtoken</groupId>
+		  <artifactId>jjwt</artifactId>
+		  <version>0.5.1</version>
+		</dependency>
         
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
 		<dependency>
@@ -180,16 +193,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
 		
 	</dependencies>
 
@@ -197,7 +200,7 @@
 	<!-- knihovnou lombok, ktera generuje casti kodu jako -->
 	<!-- konstruktory a getters a setters -->
 	<build>
-		<finalName>${project.artifactId}</finalName>  <!-- Name of war -->
+		<finalName>${project.artifactId}</finalName>  <!-- Name of war/jar -->
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

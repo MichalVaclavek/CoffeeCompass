@@ -12,7 +12,7 @@
 	
 	<div class="w3-row-padding">  
 	
-		<!-- Used in case User registration is redirected to this page -->
+		<!-- Used in case User registration/creation is redirected to this page -->
 		<div th:if="${userCreateSuccess}" class="w3-pale-green w3-display-container w3-round w3-panel w3-center">
 		    <span onclick="this.parentElement.style.display='none'"
 		  		class="w3-button w3-pale-green w3-large w3-display-topright">&times;</span>
@@ -58,6 +58,16 @@
 		  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
 		    <p><span th:text="#{user.user}"></span><b><span th:text="${userName}"></span></b><span th:text="#{user.modified.suffix}"></span></p>
 		</div>
+		
+		
+		<!-- Used in case of error during OAuth2 authentication -->
+		<div>
+			<div th:if="${oAuth2ErrorMessage}" class="w3-pale-red w3-display-container w3-round w3-panel w3-center">
+			    <span onclick="this.parentElement.style.display='none'"
+			  		class="w3-button w3-pale-red w3-large w3-display-topright">&times;</span>
+			    <p><span th:text="${oAuth2ErrorMessage}"></span></p>
+			</div>
+		</div>
 	
 	    <div class="w3-quarter w3-card-4 w3-right w3-margin w3-light-grey w3-round">
 	    
@@ -82,11 +92,11 @@
 		                    <input th:if="${emailVerified} OR ${verificationEmailSent} OR ${userCreateSuccess}"
 		                    	   type="text" name="username" id="username" class="w3-input"
 		                    	   th:value="${userName}"
-		                           th:placeholder="#{login.username.placeholder}" required>
+		                           th:placeholder="#{login.username.placeholder}">
 		                    <input th:unless="${emailVerified} OR ${verificationEmailSent} OR ${userCreateSuccess}"
 		                    	   autofocus="autofocus"
 		                    	   type="text" name="username" id="username" class="w3-input"
-		                           th:placeholder="#{login.username.placeholder}" required>
+		                           th:placeholder="#{login.username.placeholder}">
 		                    <label th:text="#{login.name}" class="w3-margin-bottom">User name</label>
 	                    </p>
 	                </div>
@@ -94,11 +104,11 @@
 	                	<p>
 	                    	<input th:unless="${emailVerified} OR ${verificationEmailSent} OR ${userCreateSuccess}"
 	                    		   type="password" name="password" id="password" class="w3-input"
-	                           	   th:placeholder="#{login.password.placeholder}" required>
+	                           	   th:placeholder="#{login.password.placeholder}">
 	                        <input th:if="${emailVerified} OR ${verificationEmailSent} OR ${userCreateSuccess}"
 	                               type="password" name="password" id="password" class="w3-input"
 	                        	   autofocus="autofocus"
-	                               th:placeholder="#{login.password.placeholder}" required>
+	                               th:placeholder="#{login.password.placeholder}">
 	                        <label th:text="#{login.passwd}">Passwd</label>
 	                    </p> 
 	                </div>
@@ -108,7 +118,28 @@
 	                <div class="w3-container w3-bottom-middle">
 	                   <button type="submit" name="login" th:text="#{login.button.login}" class="w3-button w3-green w3-border w3-margin w3-round">Login</button> 
 	                </div>
+	                
 	          </form>
+	          
+	          <br>
+	          <!-- Oddelovac mezi input form pro standard. login a social login oauth2 -->
+	          <div class="line-with-word-middle"><span class="w3-text-grey" th:text="#{login.or}"></span></div>
+	          
+	          <div class="w3-bar-block">
+	          
+		          	<!-- Google OAuth2 -->
+					<div class="w3-bar-item">
+					    <a  th:text="#{login.social.promt.begin}+'Google'+#{login.social.promt.end}" th:href="${oAuth2RegUrlGoogle}" style="width:100%;" class="w3-border w3-round w3-hover-opacity googleSignInButton">Client</a>
+					</div>
+				
+					<!-- Facebook OAuth2 -->
+					<div class="w3-bar-item w3-margin-bottom">
+					    <a  th:text="#{login.social.promt.begin}+'Facebook'+#{login.social.promt.end}" th:href="${oAuth2RegUrlFacebook}" style="width:100%;" class="w3-border w3-round w3-hover-opacity facebookSignInButton">Client</a>
+					</div>
+					
+					<!-- LinkeIn OAuth2 -->
+				
+			   </div>
 	              
 	        </div>
 		</div>

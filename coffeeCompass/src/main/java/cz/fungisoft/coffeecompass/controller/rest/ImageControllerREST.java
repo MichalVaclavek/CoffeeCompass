@@ -108,9 +108,9 @@ public class ImageControllerREST
             headers.setContentLength(pic.length);
         
         if (pic == null) {
-            return new ResponseEntity<byte[]>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(pic, headers, HttpStatus.OK);
+        return new ResponseEntity<byte[]>(pic, headers, HttpStatus.OK);
     }
 
 }

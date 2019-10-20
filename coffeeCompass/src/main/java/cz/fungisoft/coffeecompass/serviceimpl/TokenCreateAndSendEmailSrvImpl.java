@@ -144,7 +144,7 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
     
     @Override
     public void setResetPasswordTokenData(String userEmail, String appUrl, Locale locale) {
-        user = userService.findByEmail(userEmail);
+        user = userService.findByEmail(userEmail).orElse(null);
         this.appUrl = appUrl;
         this.locale = locale;
     }

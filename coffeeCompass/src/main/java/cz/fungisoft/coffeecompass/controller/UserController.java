@@ -1,6 +1,10 @@
 package cz.fungisoft.coffeecompass.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -10,8 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,13 +26,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import cz.fungisoft.coffeecompass.dto.UserDataDTO;
+import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
-import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
+import cz.fungisoft.coffeecompass.exception.UserNotFoundException;
 import cz.fungisoft.coffeecompass.listeners.OnRegistrationCompleteEvent;
 import cz.fungisoft.coffeecompass.service.UserProfileService;
 import cz.fungisoft.coffeecompass.service.UserSecurityService;
@@ -65,7 +68,7 @@ public class UserController
     private TokenCreateAndSendEmailService tokenCreateAndSendEmailService;
     
     
- /* // For future use
+    /* // For future use
     @Autowired
     PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices;
     */
@@ -89,14 +92,14 @@ public class UserController
     }
 
     
-    // ------------------- Retrieve All Users -------------------------------------------------------- //
+    // ---------------- Retrieve All Users ---------------- //
     
     @GetMapping("/all") 
     public ModelAndView listAllUsers() {
         
         ModelAndView mav = new ModelAndView();
         
-        List<UserDataDTO> users = userService.findAllUsers();
+        List<UserDTO> users = userService.findAllUsers();
         mav.addObject("allUsers", users);
         mav.setViewName("users_info");
     
@@ -114,7 +117,7 @@ public class UserController
      * @return
      */
     @GetMapping("/register")
-    public ModelAndView showRegistrationForm(final UserDataDTO user, Model model) {
+    public ModelAndView showRegistrationForm(final UserDTO user, Model model) {
         
         ModelAndView mav = new ModelAndView();
         
@@ -142,19 +145,21 @@ public class UserController
      * @return nova stranka potvrzuji uspesnou registraci, v tomto pripade je to home stranka
      */
     @PostMapping("/registration")
-    public ModelAndView registerUserAccountWithEmail(@ModelAttribute("user") @Valid UserDataDTO userDto,
-                                                      BindingResult result,
-                                                      ModelMap model,
-                                                      HttpServletRequest request,
-                                                      RedirectAttributes attr) {
+    public ModelAndView registerUserAccountWithEmail(@ModelAttribute("user")
+                                                     @Valid
+                                                     UserDTO userDto,
+                                                     BindingResult result,
+                                                     ModelMap model,
+                                                     HttpServletRequest request,
+                                                     RedirectAttributes attr) {
 
         ModelAndView mav = new ModelAndView();
         mav.setViewName("user_registration");
         
         if (userDto.getId() == 0) { // Jde o noveho usera k registraci
-            User existing = userService.findByUserName(userDto.getUserName());
+            Optional<User> existing = userService.findByUserName(userDto.getUserName());
             
-            if (existing != null) {
+            if (existing.isPresent()) {
                 result.rejectValue("userName","error.user.name.used", "There is already an account registered with that user name.");
             }
     
@@ -162,7 +167,7 @@ public class UserController
             if (userDto.getEmail() != null && !userDto.getEmail().isEmpty()) { // should be true as input of e-mail has been validated
                 
                 existing = userService.findByEmail(userDto.getEmail());
-                if (existing != null) {
+                if (existing.isPresent()) {
                     result.rejectValue("email", "error.user.emailused", "There is already an account registered with that e-mail address.");
                 }
             }
@@ -222,18 +227,42 @@ public class UserController
     
     /**
      * This method will provide the page with Form to update an existing user.
+     * 
+     * @param userName - user name of the User to be edited here.
+     * @param firstOAuth2Login - indicates if this is the very first edit after social login of a new User.<br>
+     *                           If true, then welcome message (and registration finish request) is shown to user on edit page.
+     * @param model
+     * @param locale
+     * @return
      */
-    @GetMapping("/edit/{userName}")
-    public ModelAndView editUser(@PathVariable String userName, ModelMap model) {
-        
+    @GetMapping("/edit/") // napr. http://coffeecompass.cz/user/edit/?userName=Michal Vaclavek&firstOAuth2Login=true
+    public ModelAndView getEditUserForm(@RequestParam(value="userName", defaultValue="") String userName,
+                                 @RequestParam(value="firstOAuth2Login", defaultValue="") String firstOAuth2Login,
+                                 ModelMap model,
+                                 Locale locale) {    
+    
         ModelAndView mav = new ModelAndView();
 
         // Model uz muze atribut "user" obsahovat a to v pripade, ze predchozi update/put daneho usera obsahoval chyby
         // a presmeroval na tento handler
+        UserDTO user = null;
         if (!model.containsAttribute("user")) {
-            UserDataDTO user = userService.findByUserNameToTransfer(userName);
-            mav.addObject("user", user);
+            user = userService.findByUserNameToTransfer(userName);
+            if (user != null) {
+                mav.addObject("user", user);
+            } else {
+                logger.error("User name {} not found.", userName);
+                throw new UserNotFoundException("User name " + userName + " not found.");
+            }
         }
+        
+        if (user != null && "true".equals(firstOAuth2Login)) {
+            // OAuth2 provider name with first letter in upper case
+            String oAuth2ProviderName = user.getAuthProvider().substring(0, 1).toUpperCase() + user.getAuthProvider().substring(1);
+            mav.addObject("socialLoginStillAvailableMessage", messages.getMessage("user.register.social.firstlogin.message.socialloginavailable", new Object[] {oAuth2ProviderName}, locale));
+        }
+        mav.addObject("firstOAuth2Login", "true".equals(firstOAuth2Login));
+        mav.addObject("userName", userName);
         
         mav.setViewName("user_registration");
         return mav;
@@ -261,22 +290,24 @@ public class UserController
      * @return
      */
     @PutMapping("/edit-put")
-    public String editUserAccount(@ModelAttribute("user") @Valid UserDataDTO userDto,
-                                                                 BindingResult result,
-                                                                 ModelMap model,
-                                                                 HttpServletRequest request,
-                                                                 RedirectAttributes attr) {
+    public String editUserAccount(@ModelAttribute("user")
+                                  @Valid 
+                                  UserDTO userDto,
+                                  BindingResult result,
+                                  ModelMap model,
+                                  HttpServletRequest request,
+                                  RedirectAttributes attr) {
         
         // Neprihlaseny uzivatel muze byt editovany ADMINem - ten muze menit pouze Password a ROLES, pokud nejde taky o ADMIN usera.
         // ADMIN nemuze byt editovan jinym ADMINem.
-        User loggedInUser = userService.getCurrentLoggedInUser();
+        Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
         
-        if (loggedInUser != null) { // Jde o prihlaseneho uzivatele - muze pokracovat editace
+        if (loggedInUser.isPresent()) { // Jde o prihlaseneho uzivatele - muze pokracovat editace
             // Prihlaseny uzivatel meni svoje data - je potreba overit userName a e-mail, ktere se nesmi shodovat s jinym jiz vytvorenym.
             // Pokud jineho usera edituje ADMIN, neni potreba overovat, protoze ADMIn nemuze menit ve formulari ani userName ani e-mail
-            if (userDto.getId() == loggedInUser.getId()) { 
+            if (userDto.getId() == loggedInUser.get().getId()) { 
                 // Tento blok je spravny pouze pokud prihlaseny user meni svoje udaje (je jedno jaky ma Profile)
-                if (!loggedInUser.getUserName().equalsIgnoreCase(userDto.getUserName())) { // Prihlaseny uzivatel chce zmenit userName
+                if (!loggedInUser.get().getUserName().equalsIgnoreCase(userDto.getUserName())) { // Prihlaseny uzivatel chce zmenit userName
                     // Je uzivatelske jmeno jiz pouzito
                     if (!userService.isUserNameUnique(userDto.getId(), userDto.getUserName())) {
                         result.rejectValue("userName", "error.user.name.used", "There is already an account registered with that user name.");
@@ -284,8 +315,7 @@ public class UserController
                 }
                 
                 // Prihlaseny user chce zmenit svoji e-mail adresu - overit jestli je to mozne
-                if (!loggedInUser.getEmail().equalsIgnoreCase(userDto.getEmail())) { // nova e-mail adresa se lisi nebo je smazana
-                    
+                if (!loggedInUser.get().getEmail().equalsIgnoreCase(userDto.getEmail())) { // nova e-mail adresa se lisi nebo je smazana
                     // Je e-mail jiz pouzit ?
                     if (!userService.isEmailUnique(userDto.getId(), userDto.getEmail())) {
                         result.rejectValue("email", "error.user.emailused", "There is already an account registered with that e-mail");
@@ -295,15 +325,16 @@ public class UserController
             
             // Kontrola hesla. Muze byt prazdne. Pokud neni, musi se shodovat s confirmPassword
             if (!userDto.getPassword().isEmpty()
-                && !userDto.getPassword().equals(userDto.getConfirmPassword()))
+                && !userDto.getPassword().equals(userDto.getConfirmPassword())) {
                     result.rejectValue("confirmPassword", "error.user.password.confirm", "Confirmation password does not match password.");
+            }
         }
         
         if (result.hasErrors()) { // In case of error, show the user edit page again with errors          
             // Pokud se maji predat bindingResult, ktery obsahuje chyby do dalsiho redirect View, musi se prenest timto zpusobem
             attr.addFlashAttribute("org.springframework.validation.BindingResult.user", result);
             attr.addFlashAttribute("user", userDto);
-            return "redirect:/user/edit/" + userDto.getUserName();
+            return "redirect:/user/edit/?userName=" + userDto.getUserName();
         }
         
         boolean userModifySuccess = false;
@@ -313,8 +344,8 @@ public class UserController
         if (updatedUser != null) {
             userModifySuccess = true;
             
-            if (loggedInUser != null 
-                && updatedUser.getId() == loggedInUser.getId()) { // If the user modifies it's own profile
+            if (loggedInUser.isPresent() 
+                && updatedUser.getId() == loggedInUser.get().getId()) { // If the user modifies it's own profile
                 // Check if the email address is confirmed
                 if (!updatedUser.isRegisterEmailConfirmed()
                      && !updatedUser.getEmail().isEmpty()) { // novy email nepotvrzen a neprazdny. Poslat confirm e-mail token
@@ -333,38 +364,26 @@ public class UserController
             }
         }
         
-        attr.addFlashAttribute("userName", updatedUser.getUserName());
-        attr.addFlashAttribute("userModifySuccess", userModifySuccess);
-        return "redirect:/user/edit/" + updatedUser.getUserName();
-    }
-    
-    
-    // ------------------- Retrieve Single User -------------------------------------------------------- //
-      
-    /**
-     * Not used, yet.
-     * 
-     * @param id
-     * @return
-     */
-    @GetMapping("/show/{id}")
-    public ResponseEntity<UserDataDTO> getUser(@PathVariable("id") Integer id) {
-        
-        logger.info("Fetching User with id " + id);
-        UserDataDTO user = userService.findByIdToTransfer(id);
-        if (user == null) {
-            logger.info("User with id " + id + " not found");
-            throw new EntityNotFoundException("User with id " + id + " not found");
+        String encodedUserName = updatedUser.getUserName();
+        try {
+            encodedUserName = URLEncoder.encode(updatedUser.getUserName(), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.warn("User name URL encoding error. User name {}.", encodedUserName);
         }
-        return new ResponseEntity<UserDataDTO>(user, HttpStatus.OK);
+        
+        attr.addFlashAttribute("userModifySuccess", userModifySuccess);
+        attr.addFlashAttribute("userName", updatedUser.getUserName());
+//        return "redirect:/user/edit/?userName=" + encodedUserName; // while redirecting encoding of cz/cs chars is required
+        return "redirect:/home/?userName=" + encodedUserName; // while redirecting encoding of cz/cs chars is required
     }
+    
     
     // ------------------- Delete a User -------------------------------------------------------- //
       
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-    public String deleteUser(@PathVariable("id") Integer id) {
+    public String deleteUser(@PathVariable("id") Long id) {
         
-        UserDataDTO user = userService.findByIdToTransfer(id);
+        UserDTO user = userService.findByIdToTransfer(id);
         if (user == null) {
             logger.info("Unable to delete. User with id " + id + " not found");
         } else
@@ -373,6 +392,11 @@ public class UserController
         return "redirect:/user/all";
     }
   
+    /**
+     * Provides all configured ROLE names to allow modification of the user's ROLEs.
+     * 
+     * @return all ROLE names to Model.
+     */
     @ModelAttribute("allUserProfiles")
     public List<UserProfile> populateUserProfiles() {
         return userProfileService.findAll();

@@ -5,7 +5,7 @@ import javax.validation.ConstraintValidatorContext;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import cz.fungisoft.coffeecompass.configuration.FileStorageProperties;
+import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
 
 /**
  * Validator to check if the file requested to upload:
@@ -19,7 +19,7 @@ public class ImageFileValidator implements ConstraintValidator<ImageFileValidato
 {
     private Long maxFileSize = 5_242_880L; // 5 MB
     
-    private FileStorageProperties properties;
+    private ConfigProperties properties;
     
     /**
      * Default construktor needed for Hibernate? othervise Exception is thrown
@@ -31,7 +31,7 @@ public class ImageFileValidator implements ConstraintValidator<ImageFileValidato
      * 
      * @param properties
      */
-    public ImageFileValidator(FileStorageProperties properties) {
+    public ImageFileValidator(ConfigProperties properties) {
         super();
         this.properties = properties;
         maxFileSize = this.properties.getMaxUploadFileByteSize();

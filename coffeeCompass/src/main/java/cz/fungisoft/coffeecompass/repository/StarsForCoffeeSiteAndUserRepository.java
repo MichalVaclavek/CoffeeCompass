@@ -13,7 +13,7 @@ import cz.fungisoft.coffeecompass.entity.StarsForCoffeeSiteAndUser;
 public interface StarsForCoffeeSiteAndUserRepository extends JpaRepository<StarsForCoffeeSiteAndUser, Integer>
 {
     @Query("select stcsu from StarsForCoffeeSiteAndUser stcsu where coffeeSite.id=?1 and user.id=?2")
-    public StarsForCoffeeSiteAndUser getOneStarEvalForSiteAndUser(Long coffeeSiteID, Integer userID);
+    public StarsForCoffeeSiteAndUser getOneStarEvalForSiteAndUser(Long coffeeSiteID, Long userID);
     
     @Query("select avg(stars.numOfStars) from StarsForCoffeeSiteAndUser stcsu where coffeeSite.id=?1")
     public double averageStarsForSiteID(Long coffeeSiteID);
@@ -27,11 +27,11 @@ public interface StarsForCoffeeSiteAndUserRepository extends JpaRepository<Stars
      * @return
      */
     @Query("select avg(stars.numOfStars) from StarsForCoffeeSiteAndUser stcsu where user.id=?1")
-    public double averageStarsForUserID(Integer userID);
+    public double averageStarsForUserID(Long userID);
     
     /**
      * Deletes stars evaluation of one User for one CoffeeSite
      */
     @Query("delete StarsForCoffeeSiteAndUser where coffeeSite.id=?1 and user.id=?1")
-    public void deleteStarsForSiteAndUser(Long coffeeSiteID, Integer userID);
+    public void deleteStarsForSiteAndUser(Long coffeeSiteID, Long userID);
 }

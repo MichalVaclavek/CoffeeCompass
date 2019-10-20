@@ -1,12 +1,19 @@
 package cz.fungisoft.coffeecompass.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ResolvableType;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import cz.fungisoft.coffeecompass.controller.models.AuthProviders;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.StatisticsToShow;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
@@ -15,7 +22,7 @@ import cz.fungisoft.coffeecompass.service.StatisticsInfoService;
 /**
  * Controller pro obsluhu zakladnich odkazu, prevazne z home.html stranky.
  * Obsluhuje i zakladni chybove odkazy, jako /403, /404 a /500
- * <br>
+ * <p>
  * Vrací základní html stránky uložené v src/main/resources/templates
  * 
  * @author Michal Vaclavek
@@ -27,11 +34,20 @@ public class BasicController
     
     private CoffeeSiteService coffeeSiteService;
     
+    private ClientRegistrationRepository clientRegistrationRepository;
+    
+    private static String oAuth2AuthorizationRequestBaseUri = "/oauth2/authorize";
+    private Map<String, String> oauth2AuthenticationUrls = new HashMap<>();
+    
+    
     @Autowired
-    public BasicController(StatisticsInfoService statsService, CoffeeSiteService coffeeSiteService) {
+    public BasicController(StatisticsInfoService statsService,
+                           CoffeeSiteService coffeeSiteService,
+                           ClientRegistrationRepository clientRegistrationRepository) {
         super();
         this.statsService = statsService;
         this.coffeeSiteService = coffeeSiteService;
+        this.clientRegistrationRepository = clientRegistrationRepository;
     }
 
 
@@ -55,7 +71,21 @@ public class BasicController
     }
 
     @GetMapping("/login")
-    public String login() {
+    public String login(Model model) {
+        
+        // Enter Social login links/buttons to login page/form
+        Iterable<ClientRegistration> clientRegistrations = null;
+        ResolvableType type = ResolvableType.forInstance(clientRegistrationRepository).as(Iterable.class);
+        if (type != ResolvableType.NONE && ClientRegistration.class.isAssignableFrom(type.resolveGenerics()[0])) {
+            clientRegistrations = (Iterable<ClientRegistration>) clientRegistrationRepository;
+        }
+   
+        clientRegistrations.forEach(registration ->  oauth2AuthenticationUrls.put(registration.getClientName().toLowerCase(), 
+                                    oAuth2AuthorizationRequestBaseUri + "/" + registration.getRegistrationId()));
+        
+        model.addAttribute("oAuth2RegUrlGoogle", oauth2AuthenticationUrls.get(AuthProviders.google.toString()));
+        model.addAttribute("oAuth2RegUrlFacebook", oauth2AuthenticationUrls.get(AuthProviders.facebook.toString()));
+        
         return "login";
     }
     

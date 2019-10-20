@@ -25,7 +25,7 @@
 					</div>
 					
 					<div>
-		       	    	<a th:href="@{'user/resendRegistrationToken?token=' + ${token}}"
+		       	    	<a th:href="@{'/user/resendRegistrationToken?token=' + ${token}}"
 		       	    	   th:text="#{register.failure.resendverificationemail.button}"
 		       	    	   class="w3-button w3-blue w3-round w3-bar-item">resend verification email</a>
 			        </div> 
@@ -54,7 +54,7 @@
 					
 					<!-- Standard variant -->
 					<div>
-		       	    	<a th:href="@{'user/resendRegistrationToken?token=' + ${token}}"
+		       	    	<a th:href="@{'/user/resendRegistrationToken?token=' + ${token}}"
 		       	    	   th:text="#{register.failure.resendverificationemail.button}"
 		       	    	   class="w3-button w3-blue w3-round w3-bar-item">resend verification email</a>
 		        	</div> 

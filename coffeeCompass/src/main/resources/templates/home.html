@@ -34,21 +34,30 @@
 		    <p th:text="#{home.contactme.success}" class="w3-container" > </p>
 		</div>
 		
-		<!-- Used in case User registration succeeded, user loged-in and redirected to this page -->
+		<!-- Used in case new User registration succeeded, user loged-in and redirected to this page -->
 		<div sec:authorize="isAuthenticated()">
 			<div th:if="${userCreateSuccess}" class="w3-pale-green w3-display-container w3-round w3-panel w3-center">
 			    <span onclick="this.parentElement.style.display='none'"
 			  		class="w3-button w3-pale-green w3-large w3-display-topright">&times;</span>
 			    <p><span th:text="#{user.user}"></span><b><span th:text="${userName}"></span></b><span th:text="#{user.created.suffix}"></span></p>
+			    <p><span th:text="#{user.created.welcome.message}"></span><a th:href="@{'/about'}" th:text="#{user.created.welcome.linktoinfo.text}" class="w3-text-blue"></a></p>
 			</div>
 		</div>
 		
+		<!-- Confirm message - used in case User account modification is redirected to this page -->
+		<div th:if="${userModifySuccess}" class="w3-pale-blue w3-display-container w3-round w3-panel w3-center">
+		    <span onclick="this.parentElement.style.display='none'"
+		  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
+		    <p><span th:text="#{user.user}"></span><b><span th:text="${userName}"></span></b><span th:text="#{user.modified.suffix}"></span> 
+			</p>
+		</div>
+		
 		<!-- Used in case of waiting to e-mail verification link click after new User registration -->
-		<div th:if="${verificationEmailSent}" class="w3-pale-blue w3-display-container w3-round w3-panel w3-center">
+		<div th:if="${verificationEmailSent} AND ${userCreateSuccess}" class="w3-pale-blue w3-display-container w3-round w3-panel w3-center">
 		    <span onclick="this.parentElement.style.display='none'"
 		  		  class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
 		    <p><span th:text="#{verificationmail.sent.waitingtoclick.message}"></span></p>
-		    <p><span th:text="#{verificationmail.sent.waitingtoclick.pleaselogin}"></span></p>
+		    <p><span th:text="#{verificationmail.sent.waitingtoclick.emailnotverifiedlimit.message}"></span></p>
 		</div>
 		
 		<!-- Used in case verification link e-mail sending failure -->
@@ -68,9 +77,9 @@
 			</div>
 		</div>
 		
-		<!-- Used in case of new e-mail verification link/email has been sent and user is logged-in -->
+		<!-- Used in case of new e-mail verification link/email has been sent and already created user is logged-in -->
 		<div sec:authorize="isAuthenticated()">
-			<div th:if="${verificationEmailSent}" class="w3-pale-blue w3-display-container w3-round w3-panel w3-center">
+			<div th:if="${verificationEmailSent} AND !${userCreateSuccess}" class="w3-pale-blue w3-display-container w3-round w3-panel w3-center">
 			    <span onclick="this.parentElement.style.display='none'"
 			  		  class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
 			    <p><span th:text="#{verificationmail.sent.waitingtoclick.message}"></span></p>
@@ -99,6 +108,7 @@
 		  		  class="w3-button w3-pale-red w3-large w3-display-topright">&times;</span>
 		    <p><span th:text="#{resetPassword.change.failed.message}"></span></p>
 		</div>
+		
 		
 		<div class="w3-content w3-margin-top"> 
 			

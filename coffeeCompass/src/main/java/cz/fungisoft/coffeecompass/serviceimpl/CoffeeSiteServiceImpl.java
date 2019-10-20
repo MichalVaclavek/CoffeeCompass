@@ -4,12 +4,15 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.OptionalDouble;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
@@ -63,9 +66,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     private UserService userService;
     
     @Autowired
-    private UserSecurityService userSecurityService;
-    
-    @Autowired
     private CompanyService companyService;
     
     @Autowired
@@ -82,7 +82,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     
     private ConfigProperties config;
     
-    private User loggedInUser;
+    private Optional<User> loggedInUser;
     
     
     @Autowired
@@ -182,7 +182,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     @Override
     public List<CoffeeSiteDTO> findAllFromLoggedInUser() {
         loggedInUser = userService.getCurrentLoggedInUser();
-        return findAllFromUser(loggedInUser);
+        return findAllFromUser(loggedInUser.get());
     }
 
     @Override
@@ -223,9 +223,10 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         
             CoffeeSiteRecordStatus coffeeSiteRecordStatus = csRecordStatusService.findCSRecordStatus(CoffeeSiteRecordStatusEnum.CREATED);
             coffeeSite.setRecordStatus(coffeeSiteRecordStatus);
-            if (loggedInUser != null) {   
-                coffeeSite.setOriginalUser(loggedInUser);
-                loggedInUser.setCreatedSites(loggedInUser.getCreatedSites() + 1);
+            if (loggedInUser.isPresent()) {
+                User user = loggedInUser.get();
+                coffeeSite.setOriginalUser(user);
+                user.setCreatedSites(user.getCreatedSites() + 1);
             }
         } else { // modifikace stavajiciho CoffeeSitu
             updateSite(coffeeSite);
@@ -255,9 +256,10 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             loggedInUser = userService.getCurrentLoggedInUser();
             
             entityFromDB.setUpdatedOn(new Timestamp(new Date().getTime()));
-            if (loggedInUser != null) {
-                loggedInUser.setUpdatedSites(loggedInUser.getUpdatedSites() + 1);
-                entityFromDB.setLastEditUser(loggedInUser);
+            if (loggedInUser.isPresent()) {
+                User user = loggedInUser.get();
+                user.setUpdatedSites(user.getUpdatedSites() + 1);
+                entityFromDB.setLastEditUser(user);
             }
             
             entityFromDB.setCena(coffeeSite.getCena());
@@ -304,8 +306,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     public CoffeeSite save(CoffeeSiteDTO cs) {
         CoffeeSite csToSave = mapperFacade.map(cs, CoffeeSite.class);
         // Insert original user, which was removed during maping from CoffeeSite to CoffeeSiteDto when sending to client
-        User origUser = userService.findByUserName(cs.getOriginalUserName());
-        csToSave.setOriginalUser(origUser);
+        Optional<User> origUser = userService.findByUserName(cs.getOriginalUserName());
+        csToSave.setOriginalUser(origUser.get());
  
         return save(csToSave);
     }
@@ -537,10 +539,12 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      * @return
      */
     private boolean siteUserMatch(CoffeeSiteDTO cs) {
-        if (loggedInUser != null && cs.getOriginalUserName() != null)
-            return (loggedInUser.getUserName().equals(cs.getOriginalUserName()) || userService.hasADMINorDBARole(loggedInUser));
-        else
+        if (loggedInUser.isPresent() && cs.getOriginalUserName() != null) {
+            return (loggedInUser.get().getUserName().equals(cs.getOriginalUserName()) || userService.hasADMINorDBARole(loggedInUser.get()));
+        }
+        else {
             return false;
+        }
     }
     
     /**
@@ -564,7 +568,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
                &&
                (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.ACTIVE)
                 || (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CANCELED) // Admin or DBA users can modify from CANCELED to INACTIVE or Inactive to Active
-                    && userService.hasADMINorDBARole(loggedInUser)
+                    && userService.hasADMINorDBARole(loggedInUser.get())
                    )    
                );
     }
@@ -577,7 +581,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      * @return
      */
     private boolean canBeCanceled(CoffeeSiteDTO cs) {
-        return siteUserMatch(cs) && !userService.hasDBARole(loggedInUser) // all users allowed to modify are also allowed change status from Inactive to Cancel or from CREATED to Cancel, except those with DBA role
+        return siteUserMatch(cs) && !userService.hasDBARole(loggedInUser.get()) // all users allowed to modify are also allowed change status from Inactive to Cancel or from CREATED to Cancel, except those with DBA role
                &&
                (
                   cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.INACTIVE)
@@ -590,21 +594,21 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      * Only ADMIN is allowed to Delete site permanently (from every CoffeeSite state)
      */
     private boolean canBeDeleted(CoffeeSiteDTO cs) {
-        return (loggedInUser != null) ? userService.hasADMINRole(loggedInUser) : false;
+        return (loggedInUser.isPresent()) ? userService.hasADMINRole(loggedInUser.get()) : false;
     }
 
     /**
      * Evaluates if a Comment can be added to the CoffeeSite. 
      */
     private boolean canBeCommented(CoffeeSiteDTO cs) {
-        return (loggedInUser != null);
+        return (loggedInUser.isPresent());
     }
     
     /**
      * Evaluates if Stars can be added to the CoffeeSite. 
      */
     private boolean canBeRateByStars(CoffeeSiteDTO cs) {
-        return (loggedInUser != null);
+        return (loggedInUser.isPresent());
     }
 
     /**
@@ -622,10 +626,10 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             if (!cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CANCELED)) {
                 // not ACTIVE site and not CANCELED, logged-in user
                 // Logged-in user can see only ACTIVE Sites or only the sites he/she created
-                return loggedInUser != null && siteUserMatch(cs);
+                return loggedInUser.isPresent() && siteUserMatch(cs);
                 
             } else { // is CANCELED, only DBA and ADMIN can see the site 
-                 return (loggedInUser == null) ? false : userService.hasADMINorDBARole(loggedInUser);
+                 return (loggedInUser.isPresent()) ? userService.hasADMINorDBARole(loggedInUser.get()) : false;
               }
         }     
     }
@@ -636,8 +640,12 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      * 
      * @return URL of the CoffeeSite's image if available, otherwise empty String
      */
-    private String getMainImageURL(CoffeeSiteDTO cs) {
-        return (imageService.isImageAvailableForSiteId(cs.getId())) ? imageService.getBaseImageURL() + cs.getId() : "";
+    @Override
+    public String getMainImageURL(CoffeeSiteDTO cs) {
+        ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequest();
+        UriComponentsBuilder extBuilder = builder.replacePath(imageService.getBaseImageURLPath()).replaceQuery("");
+        String imageURI = extBuilder.build().toUriString() + cs.getId();
+        return (imageService.isImageAvailableForSiteId(cs.getId())) ? imageURI : "";
     }
 
     /**

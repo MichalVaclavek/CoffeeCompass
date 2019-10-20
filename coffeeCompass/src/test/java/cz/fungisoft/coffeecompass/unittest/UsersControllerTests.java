@@ -44,7 +44,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import cz.fungisoft.coffeecompass.controller.rest.UserControllerREST;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.dto.CommentDTO;
-import cz.fungisoft.coffeecompass.dto.UserDataDTO;
+import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.Comment;
 import cz.fungisoft.coffeecompass.entity.User;
@@ -96,12 +96,12 @@ public class UsersControllerTests
             MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
             
             // Uprava pro mapovano z User na UserDataDTO - pro prenaseni na clienta neni potreba prenaset heslo a confirm hesla
-            mapperFactory.classMap(User.class, UserDataDTO.class).exclude("password")
+            mapperFactory.classMap(User.class, UserDTO.class).exclude("password")
                                                                  .exclude("confirmPassword")
                                                                  .byDefault()
                                                                  .register();
             
-            mapperFactory.classMap(UserDataDTO.class, User.class).byDefault().register();
+            mapperFactory.classMap(UserDTO.class, User.class).byDefault().register();
 
             return mapperFactory.getMapperFacade();
         }  
@@ -133,13 +133,13 @@ public class UsersControllerTests
         // given
         User john = new User();
         john.setUserName("john");
-        john.setId(1);
+        john.setId(1l);
         
         john.setCreatedOn(new Timestamp(new Date().getTime()));
         john.setUserProfiles(userProfiles); 
                 
         given(userService.saveUser(Mockito.any(User.class))).willReturn(john);
-        given(userService.findByIdToTransfer(Mockito.anyInt())).willReturn(mapperFacade.map(john, UserDataDTO.class) );
+        given(userService.findByIdToTransfer(Mockito.anyLong())).willReturn(mapperFacade.map(john, UserDTO.class) );
         
         // when and then
 
@@ -157,17 +157,17 @@ public class UsersControllerTests
     public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {       
         User john = new User();
         john.setUserName("john");
-        UserDataDTO johnDto = mapperFacade.map(john, UserDataDTO.class);
+        UserDTO johnDto = mapperFacade.map(john, UserDTO.class);
         
         User mary = new User();
         mary.setUserName("mary");
-        UserDataDTO maryDto = mapperFacade.map(mary, UserDataDTO.class);        
+        UserDTO maryDto = mapperFacade.map(mary, UserDTO.class);        
         
         User dick = new User();        
         dick.setUserName("dick");
-        UserDataDTO dickDto = mapperFacade.map(dick, UserDataDTO.class);
+        UserDTO dickDto = mapperFacade.map(dick, UserDTO.class);
             
-        List<UserDataDTO> allUsers = Arrays.asList(dickDto, maryDto, johnDto);
+        List<UserDTO> allUsers = Arrays.asList(dickDto, maryDto, johnDto);
      
         given(userService.findAllUsers()).willReturn(allUsers);
      

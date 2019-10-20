@@ -3,8 +3,8 @@ package cz.fungisoft.coffeecompass.service;
 import cz.fungisoft.coffeecompass.entity.User;
 
 /**
- * An interface to gather functions realted to user's authentication like
- * log-in, log-out, updates of the user's data etc.
+ * An interface to gather functions related to user's authentication like<br>
+ * log-in, log-out, updates of the Spring user's Authentication data object etc.
  * 
  * @author Michal Vaclavek
  *

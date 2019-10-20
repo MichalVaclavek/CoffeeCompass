@@ -66,3 +66,34 @@ table {
 	opacity:0.8;
 	background: url(/images/loader4.gif) center no-repeat #fff;
 }
+
+.googleSignInButton {
+	text-align: center;
+	padding: 10px 52px;
+	text-decoration: none;
+	display: inline-block;
+	background: url(/images/btn_google_light_normal_ios.svg) left no-repeat #ffffff
+}
+
+.facebookSignInButton {
+	text-align: center;
+	padding: 10px 52px;
+	text-decoration: none;
+	display: inline-block;
+	background: url(/images/facebook_icon_48x48.png) left no-repeat #ffffff
+}
+
+
+/* Creates line in the middle on both ends of the text in span */
+.line-with-word-middle {
+	width: 100%;
+    text-align: center; 
+    border-bottom: 1px solid #a2a2a2; 
+    line-height: 0.1em;
+    margin: 10px 0 20px; 
+}
+
+.line-with-word-middle span {
+	background: #f2f2f2; 
+    padding:0 10px; 
+}

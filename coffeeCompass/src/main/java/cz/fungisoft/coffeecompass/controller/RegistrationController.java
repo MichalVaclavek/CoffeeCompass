@@ -1,6 +1,7 @@
 package cz.fungisoft.coffeecompass.controller;
 
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -63,7 +64,7 @@ public class RegistrationController
         // Invalid token
         if ("invalidToken".equals(tokenValidationResult)) {
             attr.addFlashAttribute("tokenInvalid", true);
-            return (userService.getCurrentLoggedInUser() != null) ? "redirect:/home"
+            return (userService.getCurrentLoggedInUser().isPresent()) ? "redirect:/home"
                                                                   : "redirect:/registrationTokenFailure";
         }
 
@@ -88,10 +89,10 @@ public class RegistrationController
             attr.addFlashAttribute("userName", user.getUserName());
             attr.addFlashAttribute("emailVerified", true);
             
-            User loggedInUser = userService.getCurrentLoggedInUser();
+            Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
             // If already logged-in user confirmed, then go to home page
-            if ( loggedInUser != null 
-                 && loggedInUser.getId() == user.getId()) {
+            if ( loggedInUser.isPresent() 
+                 && loggedInUser.get().getId() == user.getId()) {
                 return "redirect:/home";
             } else { // default go to login page, after e-mail confirm success
                 return "redirect:/login/?lang=" + locale.getLanguage(); 
@@ -159,10 +160,10 @@ public class RegistrationController
             attr.addFlashAttribute("verificationEmailSent", true);
             attr.addFlashAttribute("userCreateSuccess", true);
             
-            User loggedInUser = userService.getCurrentLoggedInUser();
+            Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
             
-            if (loggedInUser != null && loggedInUser.getId() != null
-                && loggedInUser.getId() == user.getId()) {
+            if (loggedInUser.isPresent() && loggedInUser.get().getId() != null
+                && loggedInUser.get().getId() == user.getId()) {
                 mav.setViewName("redirect:/home");
             } 
         } catch (Exception me) {

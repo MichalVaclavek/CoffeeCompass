@@ -4,7 +4,7 @@
 
     <div th:fragment="header-css">
     
-	    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
 		<!-- <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.js"></script>  -->
 		<script>
 			$(window).load(function() {
@@ -71,9 +71,9 @@
                 <div sec:authorize="hasRole('USER') OR hasRole('ADMIN') OR hasRole('DBA')">	
 	                <form action="#" th:action="@{/logout}" method="post" class="w3-right">
 	        	   		<input type="hidden" name="_method" value="post"/>
-	          			<button type="submit" id="submitLogoutButton" th:text="#{mainmenu.userlogout}" class="w3-button w3-white w3-border w3-round">X</button>
+	          			<button type="submit" id="submitLogoutButton" th:text="#{mainmenu.userlogout}" class="w3-button w3-white w3-border">X</button>
 	    	    	</form>
-	        		<a th:href="@{'/user/edit/' + ${#authentication.name}}" th:text="${#authentication.name}" class="w3-bar-item w3-button w3-blue w3-right w3-round">Edit user's account</a>
+	        		<a th:href="@{'/user/edit/?userName=' + ${#authentication.name}}" th:text="${#authentication.name}" class="w3-bar-item w3-button w3-blue w3-right">Edit user's account</a>
 	        	</div>
                 <!-- Swap between 2 languages  -->
 				<div sec:authorize="hasAnyRole('USER', 'ADMIN', 'DBA') OR isAnonymous()"
@@ -84,6 +84,7 @@
            </div>
        </div>
        
+       
     <!-- Reference click with loader image --> 
 	<script>
        function referenceClickedWithLoaderImage(value) {
@@ -93,7 +94,6 @@
        }
     </script>
   </div>
-  
   
 
 </body>

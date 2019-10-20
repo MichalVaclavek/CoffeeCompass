@@ -47,6 +47,7 @@ import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Základní Controller pro obsluhu požadavků, které se týkají práce s hlavním objektem CoffeeSite.<br>
@@ -135,9 +136,9 @@ public class CoffeeSiteController
         
         ModelAndView mav = new ModelAndView();
         
-        User loggedInUser = userService.getCurrentLoggedInUser();
+        Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
         
-        if (loggedInUser != null &&  userService.hasADMINorDBARole(loggedInUser))
+        if (loggedInUser.isPresent() &&  userService.hasADMINorDBARole(loggedInUser.get()))
             mav.addObject("allSites", coffeeSiteService.findAll(orderBy, direction));  
         else
             mav.addObject("allSites", coffeeSiteService.findAllWithRecordStatus(CoffeeSiteRecordStatusEnum.ACTIVE));
@@ -346,9 +347,9 @@ public class CoffeeSiteController
     @PutMapping("/cancelStatusSite/{id}") 
     public String cancelStatusSite(@PathVariable(name = "id") Long id, RedirectAttributes redirectAttributes) {
         // ADMIN or DBA can still continue in CoffeeSite view page to modify site's status
-        User loggedInUser = userService.getCurrentLoggedInUser();
+        Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
         
-        if (loggedInUser != null &&  userService.hasADMINorDBARole(loggedInUser))
+        if (loggedInUser.isPresent() &&  userService.hasADMINorDBARole(loggedInUser.get()))
             return modifyStatusAndReturnSameView(id, CoffeeSiteRecordStatusEnum.CANCELED);
         else // Normal USER is redirected to list of his/her sites after cancelling site
         {

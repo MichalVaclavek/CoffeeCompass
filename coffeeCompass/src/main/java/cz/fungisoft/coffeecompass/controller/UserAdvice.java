@@ -3,6 +3,8 @@
  */
 package cz.fungisoft.coffeecompass.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,8 +33,8 @@ public class UserAdvice
     @ModelAttribute("loggedInUser")
     public User currentUser() {
         
-        User loggedInUser = userService.getCurrentLoggedInUser();
-        return loggedInUser;
+        Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
+        return loggedInUser.orElse(null);
     }
     
 }

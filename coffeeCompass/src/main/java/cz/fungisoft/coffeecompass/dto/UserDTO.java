@@ -6,7 +6,9 @@ import java.util.Set;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import cz.fungisoft.coffeecompass.controller.models.AuthProviders;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.validators.PasswordMatches;
 import cz.fungisoft.coffeecompass.validators.ValidEmail;
@@ -19,9 +21,9 @@ import lombok.Data;
  */
 @Data
 @PasswordMatches
-public class UserDataDTO
+public class UserDTO
 {
-    private int id; 
+    private long id; 
      
     @Size(min=3, max=30)
     private String userName;
@@ -37,14 +39,18 @@ public class UserDataDTO
     private String email;
     
     // Can be empty as the USER or ADMIN don't want to change the password. Is evaluated in UserController
+    @JsonIgnore
     private String password;
 
     // Can be empty as the USER or ADMIN don't want to change the password. Is evaluated in UserController
+    @JsonIgnore
     private String confirmPassword;
     
     private Set<UserProfile> userProfiles;
     
-    @JsonFormat(pattern = "dd. MM. yyyy HH:mm")
+    private String authProvider;
+    
+    @JsonFormat(pattern = "dd.MM. yyyy HH:mm")
     private Timestamp createdOn;
     
     private Integer createdSites;
@@ -54,6 +60,7 @@ public class UserDataDTO
     /**
      * To evaluate if the user can be modified.
      */
+    @JsonIgnore
     private boolean hasADMINRole;
     
     /**
@@ -61,10 +68,13 @@ public class UserDataDTO
      */
     public boolean isToManageItself = true; // default value. Used in case of a new User to be created
     
+    @JsonIgnore
     private boolean enabled;
     
+    @JsonIgnore
     private boolean banned;
     
+    @JsonIgnore
     private boolean registerEmailConfirmed;
 
 }

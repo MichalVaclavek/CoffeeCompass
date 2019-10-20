@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,36 +18,37 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import cz.fungisoft.coffeecompass.controller.models.AuthProviders;
+
  
 /**
  * Zakladni trida/entita/model pro uchovani udaju o uzivateli.
  * 
  * @author Michal Vaclavek
- *
  */
 @Entity
 @Table(name="user", schema="coffeecompass")
 public class User implements Serializable
 { 
+    private static final long serialVersionUID = -9006499187256143209L;
+    
+    
     public User() {
         super();
         this.registerEmailConfirmed = false;
         this.banned = false;
     }
 
-    private static final long serialVersionUID = -9006499187256143209L;
-
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id")
-    private Integer id;
+    private Long id;
  
     @NotNull
     @Column(name="username", unique=true, nullable=false)
     private String userName;
      
-    @NotNull
-    @Column(name="passwd", nullable=false)
+    @Column(name="passwd") // can be empty or null for user's logedin via social network oauth2 providers
     private String password;
          
     @Column(name="first_name")
@@ -82,21 +84,29 @@ public class User implements Serializable
     private Integer deletedSites;
     
     @Column(name = "registration_email_confirmed")
-    private boolean registerEmailConfirmed;
+    private boolean registerEmailConfirmed = false;
+    
+    @NotNull
+    @Enumerated // V DB je cislovano od indexu 0, protoze i enum type se v defaultnim pripade cisluje od 0.
+    @Column(name="auth_provider_id", columnDefinition = "smallint")
+    private AuthProviders authProvider;
     
     @Column(name = "banned")
     private boolean banned;
+    
+    @Column(name = "enabled")
+    private boolean enabled = false;
     
     /*
     @OneToMany(mappedBy="user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments;
     */
     
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
  
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
  
@@ -248,4 +258,20 @@ public class User implements Serializable
         this.banned = banned;
     }
     
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+    
+    public AuthProviders getAuthProvider() {
+        return authProvider;
+    }
+
+    public void setAuthProvider(AuthProviders authProvider) {
+        this.authProvider = authProvider;
+    }
+
 }

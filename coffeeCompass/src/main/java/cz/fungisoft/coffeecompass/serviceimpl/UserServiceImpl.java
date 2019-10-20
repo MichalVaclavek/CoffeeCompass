@@ -4,14 +4,17 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cz.fungisoft.coffeecompass.dto.UserDataDTO;
+import cz.fungisoft.coffeecompass.controller.models.AuthProviders;
+import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.entity.UserProfileTypeEnum;
@@ -19,6 +22,7 @@ import cz.fungisoft.coffeecompass.repository.PasswordResetTokenRepository;
 import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
 import cz.fungisoft.coffeecompass.repository.UserVerificationTokenRepository;
 import cz.fungisoft.coffeecompass.repository.UsersRepository;
+import cz.fungisoft.coffeecompass.security.oauth2.user.OAuth2UserInfo;
 import cz.fungisoft.coffeecompass.service.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import lombok.extern.log4j.Log4j2;
@@ -26,7 +30,7 @@ import ma.glasnost.orika.MapperFacade;
  
 /**
  * Implements all operations related to user data manipulation.<br>
- * Saves new users, updates user profile, retrieves user's data, and so on.
+ * Saves new users, updates user's profile, retrieves user's data, and so on.
  *    
  * @author Michal Vaclavek
  *
@@ -73,13 +77,13 @@ public class UserServiceImpl implements UserService
     // ** Findind User ** /
 
     @Override
-    public UserDataDTO findByIdToTransfer(Integer id) {        
+    public UserDTO findByIdToTransfer(Long id) {        
         User user = findById(id);
         return addNonPersistentInfoToUser(user);
     }
     
     @Override
-    public User findById(Integer id) {
+    public User findById(Long id) {
         User user = usersRepository.findById(id).orElse(null);
         
         if (user == null) {
@@ -93,16 +97,19 @@ public class UserServiceImpl implements UserService
     }
     
     @Override
-    public UserDataDTO findByUserNameToTransfer(String userName) {      
-        User user = findByUserName(userName);
-        return addNonPersistentInfoToUser(user);
+    public UserDTO findByUserNameToTransfer(String userName) {      
+        Optional<User> user = findByUserName(userName);
+        if (user.isPresent()) {
+            return addNonPersistentInfoToUser(user.get());
+        } else
+            return null;
     }
     
     @Override
-    public User findByUserName(String userName) {
-        User user = usersRepository.searchByUsername(userName);
+    public Optional<User> findByUserName(String userName) {
+        Optional<User> user = usersRepository.searchByUsername(userName);
         
-        if (user == null) {
+        if (!user.isPresent()) {
             log.warn("User with user name {} not found.", userName);
         }
         else {
@@ -118,11 +125,11 @@ public class UserServiceImpl implements UserService
      * @param userName
      * @return
      */
-    private UserDataDTO addNonPersistentInfoToUser(User user) {
-        UserDataDTO userDTO = null;
+    private UserDTO addNonPersistentInfoToUser(User user) {
+        UserDTO userDTO = null;
         
         if (user != null) {
-            userDTO = mapperFacade.map(user, UserDataDTO.class);
+            userDTO = mapperFacade.map(user, UserDTO.class);
             userDTO.setHasADMINRole(hasADMINRole(user));
             userDTO.setToManageItself(isLoggedInUserToManageItself(user));
         }
@@ -131,26 +138,24 @@ public class UserServiceImpl implements UserService
     }
     
     @Override
-    public User findByEmail(String email) {
-        User user = null;
-        if (!email.isEmpty())
-            user = usersRepository.searchByEmail(email);
+    public Optional<User> findByEmail(String email) {
         
-        if (user == null) {
+        Optional<User> user = usersRepository.searchByEmail(email);
+        
+        if (!user.isPresent()) {
             log.warn("User with e-mail {} not found.", email);
         }
         else {
-            log.info("User with e-mail {} found. User name: ", email, user.getUserName());
+            log.info("User with e-mail {} found. User name: ", email, user.get().getUserName());
         }
         
-        return user ;
+        return user;
     }
  
     /** Saving and Updating **/
     
     @Override
     public User saveUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         log.info("Saving user name {}", user.getUserName());
         return usersRepository.save(user);
     }
@@ -241,9 +246,105 @@ public class UserServiceImpl implements UserService
     }
     
     @Override
-    public User updateUser(UserDataDTO userDTO) {
+    public User updateUser(UserDTO userDTO) {
         return updateUser(mapperFacade.map(userDTO,  User.class));
     }
+    
+    /**
+     * Saves new user data to DB. Converts from UserDataDto to standard User
+     */
+    @Override
+    public User save(UserDTO registration) {
+        User user = new User();
+        
+        user.setUserName(registration.getUserName());
+        user.setFirstName(registration.getFirstName());
+        user.setLastName(registration.getLastName());
+        user.setEmail(registration.getEmail());
+        user.setRegisterEmailConfirmed(false);
+        user.setPassword(passwordEncoder.encode(registration.getPassword()));
+        
+        user.setUpdatedSites(0);
+        user.setCreatedSites(0);
+        user.setDeletedSites(0);    
+        
+        Set<UserProfile> userProfiles = new HashSet<UserProfile>();
+        // Only basic USER role can be assigned to commom new user 
+        userProfiles.add(userProfileRepository.searchByType("USER"));
+        user.setUserProfiles(userProfiles);
+        
+        user.setEnabled(true);
+        user.setAuthProvider(AuthProviders.local);
+        user.setCreatedOn(new Timestamp(new Date().getTime()));
+        
+        log.info("Saving new user name {}", user.getUserName());
+        return usersRepository.save(user);
+    }
+    
+    /**
+     * Special version of user save method to save User logedin via OAuth2 authentication provider.
+     */
+    @Override
+    public User saveOAuth2User(ClientRegistration clientRegistration, OAuth2UserInfo oAuth2UserInfo) {
+        User user = new User();
+
+        user.setAuthProvider(AuthProviders.valueOf(clientRegistration.getRegistrationId()));
+        user.setUserName(oAuth2UserInfo.getName());
+        user.setFirstName(oAuth2UserInfo.getFirstName());
+        user.setLastName(oAuth2UserInfo.getLastName());
+        user.setEmail(oAuth2UserInfo.getEmail());
+        user.setRegisterEmailConfirmed(oAuth2UserInfo.isEmailConfirmed());
+        
+        user.setUpdatedSites(0);
+        user.setCreatedSites(0);
+        user.setDeletedSites(0);
+        
+        // User is set to enabled after first login when the registration form is shown
+        // to enable user registration directly on coffeecompass.cz within respective controller
+        
+        Set<UserProfile> userProfiles = new HashSet<UserProfile>();
+        // Only basic USER role can be assigned to commom new user 
+        userProfiles.add(userProfileRepository.searchByType("USER"));
+        // If user's e-mail is confirmed, add DBA role
+        if (user.isRegisterEmailConfirmed()) {
+            userProfiles.add(userProfileRepository.searchByType("DBA"));
+        } 
+        user.setUserProfiles(userProfiles);
+//        user.setImageUrl(oAuth2UserInfo.getImageUrl());
+        user.setCreatedOn(new Timestamp(new Date().getTime()));
+        
+        log.info("Saving new OAuth2 user name {}", user.getUserName());
+        return usersRepository.save(user);
+    }
+
+    /**
+     * Special version of user update method to update user logedin via OAuth2 authentication provider.
+     */
+    @Override
+    public User updateOAuth2User(User existingUser, OAuth2UserInfo oAuth2UserInfo) {
+
+        existingUser.setUserName(oAuth2UserInfo.getName());
+        existingUser.setFirstName(oAuth2UserInfo.getFirstName());
+        existingUser.setLastName(oAuth2UserInfo.getLastName());
+        existingUser.setRegisterEmailConfirmed(oAuth2UserInfo.isEmailConfirmed());
+//        existingUser.setImageUrl(oAuth2UserInfo.getImageUrl());
+        
+        Set<UserProfile> existingUserProfiles = existingUser.getUserProfiles();
+        // If user's e-mail is not confirmed, remove DBA role
+        if (!existingUser.isRegisterEmailConfirmed()) {
+            existingUserProfiles.remove(userProfileRepository.searchByType("DBA"));
+        } else { // user's e-mail confirmed, add DBA ROLE if it is not already assigned
+            if (!hasDBARole(existingUser)) { // probably not needed as userProfiles is a Set<UserProfile> and one UserProfile cannot be twice in one Set
+                existingUserProfiles.add(userProfileRepository.searchByType("DBA"));
+            }
+        }
+        
+        existingUser.setUpdatedOn(new Timestamp(new Date().getTime()));
+        
+        log.info("Updating OAuth2 user name {}", existingUser.getUserName());
+        return usersRepository.save(existingUser);
+    }
+    
     
     @Override
     public void deleteUserBySSO(String ssoId) {
@@ -252,27 +353,27 @@ public class UserServiceImpl implements UserService
     }
            
     @Override
-    public void deleteUserById(Integer id) {
+    public void deleteUserById(Long id) {
         usersRepository.deleteById(id);
         log.info("User id {} deleted.", id);
     }
  
     @Override
-    public List<UserDataDTO> findAllUsers() {
-        List<UserDataDTO> usersDTO = mapperFacade.mapAsList(usersRepository.findAll(), UserDataDTO.class);
+    public List<UserDTO> findAllUsers() {
+        List<UserDTO> usersDTO = mapperFacade.mapAsList(usersRepository.findAll(), UserDTO.class);
         
-        for (UserDataDTO userDTO : usersDTO) {
+        for (UserDTO userDTO : usersDTO) {
             userDTO.setHasADMINRole(hasADMINRole(mapperFacade.map(userDTO,  User.class)));
             userDTO.setToManageItself(isLoggedInUserToManageItself(mapperFacade.map(userDTO,  User.class)));
         }
-        
+        log.info("All users retrieved: {}", usersDTO.size());
         return usersDTO;
     }
  
     @Override
-    public boolean isUserNameUnique(Integer id, String sso) {
-        User user = usersRepository.searchByUsername(sso);
-        return ( user == null || ((id != null) && (user.getId() == id)));
+    public boolean isUserNameUnique(Long id, String sso) {
+        Optional<User> user = usersRepository.searchByUsername(sso);
+        return (!user.isPresent() || ((id != null) && (user.get().getId() == id)));
     }
 
     /**
@@ -285,40 +386,11 @@ public class UserServiceImpl implements UserService
      * @param email - address to be verified if it is unique.
      */
     @Override
-    public boolean isEmailUnique(Integer id, String email) {
-        User user = usersRepository.searchByEmail(email);
-        return ( user == null || ((id != null) && (user.getId() == id)));
+    public boolean isEmailUnique(Long id, String email) {
+        Optional<User> user = usersRepository.searchByEmail(email);
+        return (!user.isPresent() || ((id != null) && (user.get().getId() == id)));
     }
     
-    /**
-     * Saves new user data to DB. Converts from UserDataDto to standard User
-     */
-    @Override
-    public User save(UserDataDTO registration) {
-        User user = new User();
-        
-        user.setUserName(registration.getUserName());
-        user.setFirstName(registration.getFirstName());
-        user.setLastName(registration.getLastName());
-        user.setEmail(registration.getEmail());
-        user.setRegisterEmailConfirmed(false);
-        user.setPassword(passwordEncoder.encode(registration.getPassword()));
-        
-        user.setCreatedOn(new Timestamp(new Date().getTime()));
-        
-        user.setUpdatedSites(0);
-        user.setCreatedSites(0);
-        user.setDeletedSites(0);    
-        
-        Set<UserProfile> userProfiles = new HashSet<UserProfile>();
-        // Only basic USER role can be assigned to commom new user 
-        userProfiles.add(userProfileRepository.searchByType("USER"));
-        user.setUserProfiles(userProfiles);
-        
-        log.info("Saving new user name {}", user.getUserName());
-        return usersRepository.save(user);
-    }
-
     @Override
     public boolean hasADMINRole(User user) {
         return user.getUserProfiles().stream().anyMatch(p -> p.getType().equals(UserProfileTypeEnum.ADMIN.getUserProfileType()));
@@ -339,14 +411,14 @@ public class UserServiceImpl implements UserService
      */
     @Override
     public boolean isLoggedInUserToManageItself(User user) {
-        User loggedInUser = getCurrentLoggedInUser();
-        return loggedInUser != null && loggedInUser.getId() == user.getId();        
+        Optional<User> loggedInUser = getCurrentLoggedInUser();
+        return loggedInUser.isPresent() && loggedInUser.get().getId() == user.getId();        
     }
 
     @Override
     public boolean isADMINloggedIn() {
-        User loggedInUser = getCurrentLoggedInUser();
-        return loggedInUser != null && hasADMINRole(loggedInUser);
+        Optional<User> loggedInUser = getCurrentLoggedInUser();
+        return loggedInUser.isPresent() && hasADMINRole(loggedInUser.get());
     }
     
     /** Methods for User's e-mail verification or password reset tokens **/
@@ -392,8 +464,8 @@ public class UserServiceImpl implements UserService
     }
     
     @Override
-    public User getCurrentLoggedInUser() {
+    public Optional<User> getCurrentLoggedInUser() {
         return this.usersRepository.searchByUsername(userSecurityService.getCurrentLoggedInUserName());
     }
-    
+
 }

@@ -1,42 +1,56 @@
 package cz.fungisoft.coffeecompass.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
 
-import cz.fungisoft.coffeecompass.dto.UserDataDTO;
+import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.User;
+import cz.fungisoft.coffeecompass.security.oauth2.user.OAuth2UserInfo;
 
  
 public interface UserService
 {     
-    UserDataDTO findByIdToTransfer(Integer id);
+    UserDTO findByIdToTransfer(Long id);
     
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    User findById(Integer id);
+    User findById(Long id);
     
-    UserDataDTO findByUserNameToTransfer(String userName);
-    User findByUserName(String userName);
-    User findByEmail(String email);
+    UserDTO findByUserNameToTransfer(String userName);
+    Optional<User> findByUserName(String userName);
+    Optional<User> findByEmail(String email);
      
     User saveUser(User user);
     // Pro ulozeni nove vytvoreneho usera z DTO objektu ve formulari
-    User save(UserDataDTO registration);
+    User save(UserDTO registration);
     
-    User updateUser(UserDataDTO user);
-    User updateUser(User user);    
+    /**
+     * Saves new OAuth2Info user data obtained from OAuth2 provider
+     * @return
+     */
+    User saveOAuth2User(ClientRegistration clientRegistration, OAuth2UserInfo oAuth2UserInfo);
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    User updateUser(UserDTO user);
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    User updateUser(User user);
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    User updateOAuth2User(User existingUser, OAuth2UserInfo oAuth2UserInfo); 
     
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     void deleteUserBySSO(String sso);
     
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    void deleteUserById(Integer id);
+    void deleteUserById(Long id);
  
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    List<UserDataDTO> findAllUsers();
+    List<UserDTO> findAllUsers();
     
-    boolean isUserNameUnique(Integer id, String sso);
-    boolean isEmailUnique(Integer id, String email);
+    boolean isUserNameUnique(Long id, String sso);
+    boolean isEmailUnique(Long id, String email);
     
     boolean hasADMINRole(User user);
     boolean hasADMINorDBARole(User user);
@@ -56,7 +70,7 @@ public interface UserService
      */
     boolean isADMINloggedIn();
     
-    public User getCurrentLoggedInUser();
+    public Optional<User> getCurrentLoggedInUser();
 
     /**
      * Saves/updated User, which was verified by token.

@@ -1,5 +1,7 @@
 package cz.fungisoft.coffeecompass.controller;
 
+import java.util.Optional;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +49,13 @@ public class ContactMeMessageController
    
         ModelAndView mav = new ModelAndView();
         
-        User loggedInUser = userService.getCurrentLoggedInUser();
+        Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
         
-        if (loggedInUser != null) {
-            cmMessage.setAuthorName(loggedInUser.getUserName());
-            if (loggedInUser.isRegisterEmailConfirmed()) {
-                cmMessage.setEmail(loggedInUser.getEmail());
+        if (loggedInUser.isPresent()) {
+            User user = loggedInUser.get();
+            cmMessage.setAuthorName(user.getUserName());
+            if (user.isRegisterEmailConfirmed()) {
+                cmMessage.setEmail(user.getEmail());
             }
         }
         

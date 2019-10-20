@@ -1,6 +1,7 @@
 package cz.fungisoft.coffeecompass.controller;
 
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -115,8 +116,8 @@ public class ResetPasswordController
         }
         
         // try to find user based on valid e-mail address
-        User user = userService.findByEmail(userEmail.getEmailAddr());
-        if (user == null) {
+        Optional<User> user = userService.findByEmail(userEmail.getEmailAddr());
+        if (!user.isPresent()) {
             bindingResult.rejectValue("emailAddr", "resetPassword.email.unknown.message");
             return mav;
         } 

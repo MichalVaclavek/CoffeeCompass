@@ -28,12 +28,34 @@ public class ConfigProperties
     @Value("${contactme.mail.to}")
     private String contactMeEmailTo = "sadlokan@email.cz";
     
-    @Value("${site.image.baseurl.rest}")
-    private String baseURLforImages = "http://coffeecompass.cz/rest/image/bytes/";
+    /**
+     * Base path part of the URL for requesting images for CoffeeSites
+     * The othe parts of complete URL is the CoffeeSite id and the protocol and server at the begining
+     * so, the complete example could be http://coffeecompass.cz/rest/image/bytes/171
+     */
+    @Value("${site.image.baseurlpath.rest}")
+    private String baseURLPathforImages = "/rest/image/bytes/";
+//    private String baseURLforImages = "http://coffeecompass.cz/rest/image/bytes/";
     
     /**
      * number of days back from now for the statistics overview of newest CoffeeSites
      */
     @Value("${site.statistics.newest.days.back}")
     private int daysBackForNewestSites = 60; 
+    
+    
+    /**
+     * Attributes to store configuration parameters of the image File.
+    * <p>
+    * Can be used in case uploaded image files are saved to file system, not to DB.
+    * and for validation/limitation of the image file size.
+    **/ 
+    /**
+     * Directory to save images to
+     */
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+    
+    @Value("${image.upload.max-file-size}")
+    private Long maxUploadFileByteSize;
 }

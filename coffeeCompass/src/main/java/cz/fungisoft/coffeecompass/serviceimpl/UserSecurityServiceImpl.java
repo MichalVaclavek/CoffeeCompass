@@ -14,7 +14,7 @@ import cz.fungisoft.coffeecompass.security.IAuthenticationFacade;
 import cz.fungisoft.coffeecompass.service.UserSecurityService;
 
 /**
- * Implements custome interface for operations related to security issues.
+ * Implements custom interface for operations specific to security issues.
  * <p>
  * Creates new authentications objects in case new user is registered or current user is
  * updated.
@@ -93,7 +93,6 @@ public class UserSecurityServiceImpl implements UserSecurityService
     @Override
     public void authWithUserNameAndRole(String userName, String role) {
         authWithUserNameAndPasswordAndRole(userName, null, role);
-        
     }
 
     @Override

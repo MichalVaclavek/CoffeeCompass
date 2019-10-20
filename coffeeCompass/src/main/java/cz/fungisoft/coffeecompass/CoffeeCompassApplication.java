@@ -9,12 +9,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 
  * @author Michal Václavek
  */
-@EnableAutoConfiguration
+//@EnableAutoConfiguration
 @SpringBootApplication
 public class CoffeeCompassApplication
 {
 	public static void main(String[] args) {
 		SpringApplication.run(CoffeeCompassApplication.class, args);
 	}		
-
 }

@@ -3,6 +3,8 @@
  */
 package cz.fungisoft.coffeecompass.serviceimpl;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,7 +83,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
      * @see cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService#avgStarsForUser(java.lang.Integer)
      */
     @Override
-    public double avgStarsForUser(Integer userID) {
+    public double avgStarsForUser(Long userID) {
         return avgStarsRepo.averageStarsForUserID(userID);
     }
 
@@ -115,10 +117,11 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     public void saveStarsForCoffeeSite(Long coffeeSiteID, Integer stars) {
         CoffeeSite cs = coffeeSiteService.findOneById(coffeeSiteID);
         
-        User logedInUser = userService.getCurrentLoggedInUser();
+        Optional<User> logedInUser = userService.getCurrentLoggedInUser();
         
-        if (logedInUser != null)
-            saveStarsForCoffeeSite(cs, logedInUser, stars);
+        if (logedInUser.isPresent()) {
+            saveStarsForCoffeeSite(cs, logedInUser.get(), stars);
+        }
     }
 
     @Override
@@ -137,18 +140,18 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
 
     @Override
     public String getStarsStringForCoffeeSiteAndLoggedInUser(CoffeeSiteDTO coffeeSite) {
-        User logedInUser = userService.getCurrentLoggedInUser();
-        return getStarsForCoffeeSiteAndUser(coffeeSite, logedInUser);
+        Optional<User> logedInUser = userService.getCurrentLoggedInUser();
+        return getStarsForCoffeeSiteAndUser(coffeeSite, logedInUser.get());
     }
 
     @Override
     public StarsQualityDescription getStarsForCoffeeSiteAndLoggedInUser(CoffeeSiteDTO coffeeSite) {
         
-        User logedInUser = userService.getCurrentLoggedInUser();
+        Optional<User> logedInUser = userService.getCurrentLoggedInUser();
         StarsForCoffeeSiteAndUser userSiteStars = null;
-        if (logedInUser != null) {
-            log.info("Retrieving Stars for Coffee site name {} and User name {}", coffeeSite.getSiteName(), logedInUser.getUserName());
-            userSiteStars = avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), logedInUser.getId());
+        if (logedInUser.isPresent()) {
+            log.info("Retrieving Stars for Coffee site name {} and User name {}", coffeeSite.getSiteName(), logedInUser.get().getUserName());
+            userSiteStars = avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), logedInUser.get().getId());
         }
         else
             log.info("Stars for Coffee site name {} cannot be retrieved, no user logged-in.", coffeeSite.getSiteName());

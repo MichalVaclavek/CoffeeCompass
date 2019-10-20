@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
-import cz.fungisoft.coffeecompass.configuration.FileStorageProperties;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.Image;
 import cz.fungisoft.coffeecompass.exception.StorageFileException;
@@ -27,7 +26,7 @@ import javax.transaction.Transactional;
 import javax.validation.ValidationException;
 
 /**
- * Sluzba pro praci s objekty Image, obrazek CoffeeSitu. Ukladani, mazani, konverze na Base64String
+ * Sluzba pro praci s objekty Image, obrazek CoffeeSitu. Ukladani, mazani, konverze na Base64String apod.
  * 
  * @author Michal Vaclavek
  *
@@ -48,9 +47,11 @@ public class ImageStorageServiceImpl implements ImageStorageService
     private ConfigProperties config;
     
     /**
-     * Base part of the CoffeeSite's image URL, loaded from ConfigProperties, provided by this ImageService impl.
+     * Base part of the CoffeeSite's image URL, loaded from ConfigProperties.<br>
+     * Complete URL of the image provided by {@link CoffeeSiteService#getMainImageURL()}.
+     * as it can be build using current html request URI and current requsted CoffeeSite id.
      */
-    private String baseImageURL;
+    private String baseImageURLPath;
     
 
     /**
@@ -61,7 +62,7 @@ public class ImageStorageServiceImpl implements ImageStorageService
      * @param imageResizer
      */
     @Autowired
-    public ImageStorageServiceImpl(FileStorageProperties fileStorageProperties, ImageRepository imageRepo, ImageResizeAndRotateService imageResizer) {
+    public ImageStorageServiceImpl(ConfigProperties fileStorageProperties, ImageRepository imageRepo, ImageResizeAndRotateService imageResizer) {
         
         this.imageRepo = imageRepo;
         this.imageResizer = imageResizer;
@@ -96,7 +97,7 @@ public class ImageStorageServiceImpl implements ImageStorageService
     public void setConfig(ConfigProperties config) {
         this.config = config;
         if (this.config != null) {
-            baseImageURL = config.getBaseURLforImages();
+            baseImageURLPath = config.getBaseURLPathforImages();
         }
     }
 
@@ -146,7 +147,7 @@ public class ImageStorageServiceImpl implements ImageStorageService
                 image.setCoffeeSite(cs);
                 image.setSavedOn(new Timestamp(new Date().getTime()));
             } catch (IOException e) {
-    
+                log.warn("Error during resizing Image. File name: {}. CoffeeSite name: {}. Exception: {}", image.getFileName(), cs.getSiteName(), e.getMessage());
             }
             try {
                 image = imageResizer.resize(image);
@@ -256,8 +257,8 @@ public class ImageStorageServiceImpl implements ImageStorageService
     }
     
     @Override
-    public String getBaseImageURL() {
-        return baseImageURL;
+    public String getBaseImageURLPath() {
+        return baseImageURLPath;
     }
 
 }

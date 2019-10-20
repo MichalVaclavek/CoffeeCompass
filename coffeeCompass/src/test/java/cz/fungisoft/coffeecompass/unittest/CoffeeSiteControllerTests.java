@@ -42,7 +42,7 @@ import cz.fungisoft.coffeecompass.controller.CoffeeSiteController;
 import cz.fungisoft.coffeecompass.controller.rest.CoffeeSiteControllerREST;
 import cz.fungisoft.coffeecompass.controller.rest.UserControllerREST;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
-import cz.fungisoft.coffeecompass.dto.UserDataDTO;
+import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
@@ -95,7 +95,7 @@ public class CoffeeSiteControllerTests
                                             .byDefault()
                                             .register();
             
-            mapperFactory.classMap(UserDataDTO.class, User.class).byDefault().register();
+            mapperFactory.classMap(UserDTO.class, User.class).byDefault().register();
 
             return mapperFactory.getMapperFacade();
         }  
