@@ -124,8 +124,7 @@ public class ResetPasswordController
         
         // User found by e-mail. Send password reset link to the user.
         mav.setViewName("redirect:/login");
-        String appUrl = "http://" + request.getServerName() +  ":" + request.getServerPort() +  request.getContextPath();
-        passwordTokenService.setResetPasswordTokenData(userEmail.getEmailAddr(), appUrl, request.getLocale());
+        passwordTokenService.setResetPasswordTokenData(userEmail.getEmailAddr(), request.getLocale());
         passwordTokenService.createAndSendResetPasswordTokenEmail();
         attr.addFlashAttribute("resetPasswordEmailSent", true); 
         return mav;

@@ -152,8 +152,7 @@ public class RegistrationController
         String newToken = "";
         
         try {
-            String appUrl = "http://" + request.getServerName() +  ":" + request.getServerPort() +  request.getContextPath();
-            userVerificationTokenService.setUserVerificationData(user, appUrl, request.getLocale());
+            userVerificationTokenService.setUserVerificationData(user, request.getLocale());
             newToken = userVerificationTokenService.reSendUserVerificationTokenEmail(existingToken);
             
             attr.addFlashAttribute("userName", user.getUserName());

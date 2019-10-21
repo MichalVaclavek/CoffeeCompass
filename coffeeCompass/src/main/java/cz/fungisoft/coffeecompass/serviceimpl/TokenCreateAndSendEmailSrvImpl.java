@@ -9,6 +9,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import cz.fungisoft.coffeecompass.entity.PasswordResetToken;
 import cz.fungisoft.coffeecompass.entity.User;
@@ -21,8 +23,8 @@ import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
 
 /**
  * 
- * Service implementing creation and sending token links for verification of the newly created user's e-mail
- * and for reseting user's password.
+ * Service implementing creation and sending token links for verification<br>
+ * of the newly created user's e-mail and for reseting user's password.
  * 
  * @author Michal Vaclavek
  */
@@ -30,8 +32,6 @@ import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
 public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailService
 {
     private User user;
-    
-    private String appUrl;
     
     private Locale locale;
     
@@ -64,9 +64,8 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
     }
     
     @Override
-    public void setUserVerificationData(User user, String appUrl, Locale locale) {
+    public void setUserVerificationData(User user, Locale locale) {
         this.user = user;
-        this.appUrl = appUrl;
         this.locale = locale;
     }
        
@@ -80,7 +79,10 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
             String recipientAddress = user.getEmail();
             String subject = messages.getMessage("register.verificationemail.subject", null, locale);
             String message = messages.getMessage("register.verificationemail.message", null, locale);
-            String confirmationUrl = appUrl + "/user/registrationConfirm?token=" + token;
+            
+            ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequest();
+            UriComponentsBuilder extBuilder = builder.replacePath("/user/registrationConfirm").replaceQuery("token=" + token);
+            String confirmationUrl = extBuilder.build().toUriString();
             
             String fromEmail = messages.getMessage("register.verificationemail.from", null, locale);
             
@@ -102,7 +104,10 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
         UserVerificationToken newToken = generateNewUserVerificationToken(existingToken);
         this.user = userService.getUserByRegistrationToken(newToken.getToken());
         
-        String confirmationUrl = appUrl + "/user/registrationConfirm?token=" + newToken.getToken();
+        ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequest();
+        UriComponentsBuilder extBuilder = builder.replacePath("/user/registrationConfirm").replaceQuery("token=" + newToken.getToken());
+        String confirmationUrl = extBuilder.build().toUriString();
+        
         String subject = messages.getMessage("register.verificationemail.resendToken.subject", null, locale);
         String message = messages.getMessage("register.verificationemail.resendToken.message", null, locale);
         String fromEmail = messages.getMessage("register.verificationemail.from", null, locale);
@@ -143,9 +148,8 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
     // ---- Password reset token ------  //
     
     @Override
-    public void setResetPasswordTokenData(String userEmail, String appUrl, Locale locale) {
+    public void setResetPasswordTokenData(String userEmail, Locale locale) {
         user = userService.findByEmail(userEmail).orElse(null);
-        this.appUrl = appUrl;
         this.locale = locale;
     }
 
@@ -169,7 +173,9 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
             String message = messages.getMessage("resetPassword.email.message", null, locale);
             String fromEmail = messages.getMessage("resetPassword.email.from", null, locale);
             
-            String resetPasswordUrl = appUrl + "/user/changePassword?userId=" + user.getId() + "&token=" + token;;
+            ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequest();
+            UriComponentsBuilder extBuilder = builder.replacePath("/user/changePassword").replaceQuery("userId=" + user.getId() + "&token=" + token);
+            String resetPasswordUrl = extBuilder.build().toUriString();
             
             this.sendEmailService.sendEmail(fromEmail, recipientAddress, subject, message + "\r\n\r\n" + resetPasswordUrl);
             

@@ -6,3 +6,4 @@
 /application.properties
 /application-prod.properties
 /configprops.properties
+/keystore_selfsigned.p12

@@ -2,9 +2,6 @@ package cz.fungisoft.coffeecompass.service;
 
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
-
-import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.PasswordResetToken;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserVerificationToken;
@@ -24,7 +21,7 @@ public interface TokenCreateAndSendEmailService
      * @param appUrl
      * @param locale
      */
-    public void setUserVerificationData(User user, String appUrl, Locale locale);
+    public void setUserVerificationData(User user, Locale locale);
     
     /**
      * Creates and send verification token e-mail to confirm user's e-mail address.
@@ -60,7 +57,7 @@ public interface TokenCreateAndSendEmailService
      * @param appUrl
      * @param locale
      */
-    public void setResetPasswordTokenData(String userEmail, String appUrl, Locale locale);
+    public void setResetPasswordTokenData(String userEmail, Locale locale);
     
     public void createPasswordResetToken(User user, String token);
     

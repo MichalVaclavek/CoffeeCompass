@@ -17,16 +17,14 @@ public class OnRegistrationCompleteEvent extends ApplicationEvent
      */
     private static final long serialVersionUID = -4098439041309044675L;
     
-    private String appUrl;
     private Locale locale;
     private User user;
  
-    public OnRegistrationCompleteEvent(User user, Locale locale, String appUrl) {
+    public OnRegistrationCompleteEvent(User user, Locale locale) {
         super(user);
          
         this.user = user;
         this.locale = locale;
-        this.appUrl = appUrl;
     }
 
 }
