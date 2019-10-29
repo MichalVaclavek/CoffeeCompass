@@ -224,17 +224,19 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     public CoffeeSite save(CoffeeSite coffeeSite) {
         loggedInUser = userService.getCurrentLoggedInUser();
         
-        if (coffeeSite.getId() == 0) { // Zcela novy CoffeeSite
-        
-            CoffeeSiteRecordStatus coffeeSiteRecordStatus = csRecordStatusService.findCSRecordStatus(CoffeeSiteRecordStatusEnum.CREATED);
-            coffeeSite.setRecordStatus(coffeeSiteRecordStatus);
-            if (loggedInUser.isPresent()) {
-                User user = loggedInUser.get();
+        if (loggedInUser.isPresent()) {
+            User user = loggedInUser.get();
+            if (coffeeSite.getId() == 0) { // Zcela novy CoffeeSite
+                CoffeeSiteRecordStatus coffeeSiteRecordStatus = csRecordStatusService.findCSRecordStatus(CoffeeSiteRecordStatusEnum.CREATED);
+                coffeeSite.setRecordStatus(coffeeSiteRecordStatus);
                 coffeeSite.setOriginalUser(user);
                 user.setCreatedSites(user.getCreatedSites() + 1);
             }
-        } else { // modifikace stavajiciho CoffeeSitu
-            updateSite(coffeeSite);
+            else { // modifikace stavajiciho CoffeeSitu
+                updateSite(coffeeSite);
+            }
+            // User updated, save
+            userService.saveUser(user);
         }
             
         // Zjisteni, jestli Company je nove nebo ne
@@ -250,7 +252,16 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     
     @Override
     public CoffeeSite save(CoffeeSiteDTO cs) {
+        
         CoffeeSite csToSave = mapperFacade.map(cs, CoffeeSite.class);
+        
+        // Insert original user, which was removed during maping from CoffeeSite to CoffeeSiteDto when sending to client?
+        // during site update ???
+        Optional<User> origUser = userService.findByUserName(cs.getOriginalUserName());
+        if (origUser.isPresent()) {
+            csToSave.setOriginalUser(origUser.get());
+        }
+ 
         return save(csToSave);
     }
     
@@ -306,8 +317,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             entityFromDB.setZemDelka(coffeeSite.getZemDelka());
             entityFromDB.setZemSirka(coffeeSite.getZemSirka());
             entityFromDB.setRecordStatus(coffeeSite.getRecordStatus());
-            
-            entityFromDB.setOriginalUser(coffeeSite.getOriginalUser());   
             
             log.info("CoffeeSite name {} updated.", coffeeSite.getSiteName());
         }
