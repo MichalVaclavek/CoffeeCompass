@@ -25,7 +25,6 @@ import static cz.fungisoft.coffeecompass.security.oauth2.HttpCookieOAuth2Authori
 
  * @author https://www.callicoder.com/spring-boot-security-oauth2-social-login-part-2/
  * @author Michal Vaclavek
- *
  */
 @Component
 @Log4j2
@@ -42,24 +41,6 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
         this.ouat2Properties = ouat2Properties;
     }
 
-
-//    @Override
-//    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-//                                        AuthenticationException exception) throws IOException, ServletException {
-//        
-//        String targetUrl = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
-//                                      .map(Cookie::getValue)
-//                                      .orElse(("/oauth2/loginError"));
-//
-//        targetUrl = UriComponentsBuilder.fromUriString(targetUrl)
-//                                        .queryParam("error", exception.getLocalizedMessage())
-//                                        .build().toUriString();
-//
-//        httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
-//
-//        getRedirectStrategy().sendRedirect(request, response, targetUrl);
-//    }
-    
     /**
      * Serves OAuth2 authentication failure case.
      * Mainly redirects to predefined URL with error message code included.

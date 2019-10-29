@@ -154,6 +154,10 @@ public class UserServiceImpl implements UserService
  
     /** Saving and Updating **/
     
+    /**
+     * Used to save User profile registered via social login after first successful
+     * login redirection URL (/oauth2/loginSuccess/?token=) processed.
+     */
     @Override
     public User saveUser(User user) {
         log.info("Saving user name {}", user.getUserName());
@@ -282,7 +286,7 @@ public class UserServiceImpl implements UserService
     }
     
     /**
-     * Special version of user save method to save User logedin via OAuth2 authentication provider.
+     * Special version of user save method to save User loged-in via OAuth2 authentication provider.
      */
     @Override
     public User saveOAuth2User(ClientRegistration clientRegistration, OAuth2UserInfo oAuth2UserInfo) {
@@ -318,7 +322,7 @@ public class UserServiceImpl implements UserService
     }
 
     /**
-     * Special version of user update method to update user logedin via OAuth2 authentication provider.
+     * Special version of user update method to update user's profile loged-in via OAuth2 authentication provider.
      */
     @Override
     public User updateOAuth2User(User existingUser, OAuth2UserInfo oAuth2UserInfo) {
@@ -356,6 +360,30 @@ public class UserServiceImpl implements UserService
     public void deleteUserById(Long id) {
         usersRepository.deleteById(id);
         log.info("User id {} deleted.", id);
+    }
+    
+    @Override
+    public void clearUserDataById(Long userId) {
+        User userToClear = usersRepository.findById(userId).orElse(null);
+        
+        if (userToClear != null) {
+            userToClear.setPassword("");
+            
+            userToClear.setFirstName("");
+            userToClear.setLastName("");
+            
+            userToClear.setRegisterEmailConfirmed(false);
+            userToClear.setEmail("");
+            
+            userToClear.setUpdatedOn(new Timestamp(new Date().getTime()));
+            
+            userToClear.setBanned(true);
+            userToClear.setEnabled(false);
+            
+            log.info("User id {} cleared.", userId);
+        } else {
+            log.warn("User id {} to be cleared not found.", userId);
+        }
     }
  
     @Override
@@ -400,12 +428,12 @@ public class UserServiceImpl implements UserService
     public boolean hasDBARole(User user) {
         return user.getUserProfiles().stream().anyMatch(p -> p.getType().equals(UserProfileTypeEnum.DBA.getUserProfileType()));
     }
-
+    
     @Override
     public boolean hasADMINorDBARole(User user) {
         return hasADMINRole(user) || hasDBARole(user);
     }
-
+    
     /**
      * Overeni, ze logged-in uzivatel je stejny jako {@code user}
      */
@@ -466,6 +494,11 @@ public class UserServiceImpl implements UserService
     @Override
     public Optional<User> getCurrentLoggedInUser() {
         return this.usersRepository.searchByUsername(userSecurityService.getCurrentLoggedInUserName());
+    }
+
+    @Override
+    public Optional<UserDTO> getCurrentLoggedInUserDTO() {
+        return Optional.ofNullable(findByUserNameToTransfer(userSecurityService.getCurrentLoggedInUserName()));
     }
 
 }

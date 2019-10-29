@@ -40,6 +40,8 @@ public class ConfigurationRedirectToHttps
 
     /**
      * HTTPS - redirect port 8080 to port 8443 (https)
+     * It also requires redirecting of 443 port to 8443 port on linux server
+     * (redhat, centos6) # iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-ports 8443
      */
     private Connector redirectConnector() {
         Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");

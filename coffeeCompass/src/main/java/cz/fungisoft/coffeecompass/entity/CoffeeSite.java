@@ -109,7 +109,6 @@ public class CoffeeSite
 
     @NotNull
     @Size(min = 3, max = 50)
-//    @Column(name = "site_name", unique=true)
     @Column(name = "site_name")
     private String siteName;
 

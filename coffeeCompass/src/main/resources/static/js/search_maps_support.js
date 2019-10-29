@@ -49,8 +49,8 @@ createMap = function(lat1, lon1) {
 	    latSearchInput.value = coords.toWGS84()[1];
 	 	lonSearchInput.value = coords.toWGS84()[0];
 	 	
-	 	latSearchLabel.innerHTML = coords.toWGS84()[1];
-	 	lonSearchLabel.innerHTML = coords.toWGS84()[0];
+	 	latSearchLabel.innerHTML = latSearchInput.value.substring(0,10);
+	 	lonSearchLabel.innerHTML = latSearchInput.value.substring(0,10);
 	 }
 	
 	 var signals = m.getSignals();
@@ -138,9 +138,9 @@ map.insertSites = function(foundSites)
 		
 		var cz = m.computeCenterZoom(souradnice); /* Spočítat pozici mapy tak, aby v3echny značky byly vidět */
 		m.setCenterZoom(cz[0], cz[1]);
-		
 	
-		// poslouchani na kliknuti u markeru - Pro zakladni info mame prirazenu card - Jake dalsi vyuziti ... vedle mapy mala karta s detaily, ktera by se vyplnila udaji o situ
+		// poslouchani na kliknuti u markeru - Pro zakladni info mame prirazenu card 
+		//- Jake dalsi vyuziti ... vedle mapy mala karta s detaily, ktera by se vyplnila udaji o situ
 		/*
 		m.getSignals().addListener(this, "marker-click", function(e) {
 		  // vybrany marker
@@ -243,18 +243,3 @@ function odpoved(geocoder) { /* Odpověď */
     return vysledky.length > 0;
     /* alert(data.join("\n")); */
 }
-
-//map.findCoords() {
-//	var geocode = new SMap.Geocoder(document.querySelector(cityName).value, odpoved, {
-//	    // parametry pro omezeni mista - bounding box ceske republiky dle https://wiki.openstreetmap.org/wiki/WikiProject_Czech_Republic
-//	 bbox: [SMap.Coords.fromWGS84(12.09, 51.06), SMap.Coords.fromWGS84(18.87, 48.55)]
-//}
-
-// hledani souradnic mista
-//document.querySelector("searchCity").addEventListener("click", function(e) {
-//	var geocode = new SMap.Geocoder(document.querySelector(cityName).value, odpoved, {
-//    // parametry pro omezeni mista - bounding box ceske republiky dle https://wiki.openstreetmap.org/wiki/WikiProject_Czech_Republic
-//  	bbox: [SMap.Coords.fromWGS84(12.09, 51.06), SMap.Coords.fromWGS84(18.87, 48.55)]
-//  });
-//});
- 

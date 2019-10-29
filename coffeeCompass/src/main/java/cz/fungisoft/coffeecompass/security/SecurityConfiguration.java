@@ -81,7 +81,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
             .antMatchers("/finalDeleteSite/**").access("hasRole('ADMIN')") // real deletition of the CoffeeSite record
             .antMatchers("/user/all", "/user/show/**", "/rest/user/all").access("hasRole('ADMIN')")
             .antMatchers("/allSites").access("hasRole('ADMIN') OR hasRole('DBA')")
-            .antMatchers("/user/delete/**").hasRole("ADMIN")
+            .antMatchers("/user/delete/**").hasAnyRole("ADMIN", "DBA", "USER")
             .antMatchers("/user/edit-put", "/user/edit/**").hasAnyRole("ADMIN", "USER") // only USER itself or ADMIN can modify user account
             .antMatchers("/imageUpload", "/deleteImage/**").hasAnyRole("ADMIN", "DBA", "USER")
             .antMatchers("/user/updatePassword**", "/updatePassword**").hasAuthority("CHANGE_PASSWORD_PRIVILEGE")

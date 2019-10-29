@@ -13,11 +13,9 @@ import cz.fungisoft.coffeecompass.entity.User;
 public interface UsersRepository extends JpaRepository<User, Long>, UsersRepositoryCustom
 {
     @Query("select u from User u where userName= ?1")
-//    public User searchByUsername(String userName);
-  public Optional<User> searchByUsername(String userName);
+    public Optional<User> searchByUsername(String userName);
     
     @Query("select u from User u where email= ?1")
-//    public User searchByEmail(String email);
     public Optional<User> searchByEmail(String email);
     
     @Query("delete from User u where userName= ?1") 
@@ -26,6 +24,12 @@ public interface UsersRepository extends JpaRepository<User, Long>, UsersReposit
     @Query("select count(id) from User u")
     public Long countAllUsers();
     
-    @Query("select count(id) from User u where date(u.createdOn) > (current_date - 7)")
+    @Query("select count(id) from User u WHERE u.enabled=true")
+    public Long countAllEnabledUsers();
+    
+    @Query("select count(id) from User u WHERE date(u.createdOn) > (current_date - 7) AND u.enabled=true")
     public Long getNumOfUsersRegisteredLast7Days();
+
+//    @Query("update User set password='' firstName='' lastName='' email='' banned='true' enabled='false' WHERE id= ?1")
+//    public void clearById(Long userId);
 }

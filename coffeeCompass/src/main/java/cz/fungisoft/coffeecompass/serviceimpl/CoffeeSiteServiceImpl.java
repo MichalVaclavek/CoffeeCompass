@@ -37,7 +37,6 @@ import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.CompanyService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.service.ImageStorageService;
-import cz.fungisoft.coffeecompass.service.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
@@ -180,9 +179,15 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     }
     
     @Override
+    public List<CoffeeSiteDTO> findAllFromUserName(String userName) {
+        Optional<User> user = userService.findByUserName(userName);
+        return (user.isPresent()) ? findAllFromUser(user.get()) : null;
+    }
+    
+    @Override
     public List<CoffeeSiteDTO> findAllFromLoggedInUser() {
         loggedInUser = userService.getCurrentLoggedInUser();
-        return findAllFromUser(loggedInUser.get());
+        return findAllFromUser(mapperFacade.map(loggedInUser.get(), User.class));
     }
 
     @Override
@@ -241,6 +246,12 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         coffeeSite.setDodavatelPodnik(comp);
         log.info("CoffeeSite name {} saved into DB.", coffeeSite.getSiteName());
         return coffeeSiteRepo.save(coffeeSite);
+    }
+    
+    @Override
+    public CoffeeSite save(CoffeeSiteDTO cs) {
+        CoffeeSite csToSave = mapperFacade.map(cs, CoffeeSite.class);
+        return save(csToSave);
     }
     
     /**
@@ -302,16 +313,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         }
     }
     
-    @Override
-    public CoffeeSite save(CoffeeSiteDTO cs) {
-        CoffeeSite csToSave = mapperFacade.map(cs, CoffeeSite.class);
-        // Insert original user, which was removed during maping from CoffeeSite to CoffeeSiteDto when sending to client
-        Optional<User> origUser = userService.findByUserName(cs.getOriginalUserName());
-        csToSave.setOriginalUser(origUser.get());
- 
-        return save(csToSave);
-    }
-
     /**
      * Zmena CoffeeSite record statusu
      */
@@ -696,7 +697,12 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         return new LatLong(searchPointLat, searchPointLong);
     }
 
+    @Override
+    public void deleteCoffeeSitesFromUser(Long userId) {
+        coffeeSiteRepo.deleteAllFromUser(userId);
+    }
 
+    
     //TODO dalsi vyhledavaci metody podle ruznych kriterii?
     // CriteriaQuery a CriteriaQueryBuilder
     /*

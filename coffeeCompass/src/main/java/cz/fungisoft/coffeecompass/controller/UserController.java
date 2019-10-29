@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import cz.fungisoft.coffeecompass.controller.models.DeleteUserAccountModel;
 import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
@@ -38,6 +40,9 @@ import cz.fungisoft.coffeecompass.listeners.OnRegistrationCompleteEvent;
 import cz.fungisoft.coffeecompass.service.UserProfileService;
 import cz.fungisoft.coffeecompass.service.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.UserService;
+import cz.fungisoft.coffeecompass.serviceimpl.CommentService;
+import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
+import cz.fungisoft.coffeecompass.service.ICommentService;
 import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
 
 /**
@@ -61,6 +66,10 @@ public class UserController
     
     private MessageSource messages;
     
+    private ICommentService commentsService;
+    
+    private CoffeeSiteService coffeeSiteService;
+    
     @Autowired
     private ApplicationEventPublisher eventPublisher;
     
@@ -82,12 +91,16 @@ public class UserController
                           UserSecurityService userSecurityService,
                           UserProfileService userProfileService,
                           TokenCreateAndSendEmailService verificationTokenService,
+                          ICommentService commentsService,
+                          CoffeeSiteService coffeeSiteService,
                           MessageSource messages) {
         super();
         this.userService = userService;
         this.userSecurityService = userSecurityService;
         this.userProfileService = userProfileService;
         this.tokenCreateAndSendEmailService = verificationTokenService;
+        this.commentsService = commentsService;
+        this.coffeeSiteService = coffeeSiteService;
         this.messages = messages;
     }
 
@@ -121,6 +134,7 @@ public class UserController
         
         ModelAndView mav = new ModelAndView();
         
+        user.setId(0l); // set Id to 0 of type long
         mav.addObject("user", user);
         mav.setViewName("user_registration");
         return mav;
@@ -236,9 +250,9 @@ public class UserController
      */
     @GetMapping("/edit/") // napr. http://coffeecompass.cz/user/edit/?userName=Michal Vaclavek&firstOAuth2Login=true
     public ModelAndView getEditUserForm(@RequestParam(value="userName", defaultValue="") String userName,
-                                 @RequestParam(value="firstOAuth2Login", defaultValue="") String firstOAuth2Login,
-                                 ModelMap model,
-                                 Locale locale) {    
+                                        @RequestParam(value="firstOAuth2Login", defaultValue="") String firstOAuth2Login,
+                                        ModelMap model,
+                                        Locale locale) {    
     
         ModelAndView mav = new ModelAndView();
 
@@ -378,16 +392,115 @@ public class UserController
     
     // ------------------- Delete a User -------------------------------------------------------- //
       
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+    /**
+     * Deletes user account, without verifiyng if there are any related records in another
+     * tables/entities. Usualy called from the page listing all the user accounts by ADMIN
+     * user.
+     * 
+     * @param id - id of the user to be deleted
+     * @return
+     */
+    @DeleteMapping(value = "/delete/{id}")
     public String deleteUser(@PathVariable("id") Long id) {
         
         UserDTO user = userService.findByIdToTransfer(id);
         if (user == null) {
             logger.info("Unable to delete. User with id " + id + " not found");
-        } else
+        } else {
             userService.deleteUserById(id);
+        }
         
         return "redirect:/user/all";
+    }
+    
+    /**
+     * Creates/prepares form to confirm user account deletition.
+     * 
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/delete/")
+    public ModelAndView getDeleteUserAndRelatedItemsForm(@RequestParam("userID") Long id) {
+        
+        User user = userService.findById(id);
+        ModelAndView mav = new ModelAndView();
+        
+        if (user == null) {
+            logger.info("Unable to delete. User with id " + id + " not found");
+        } else {
+            DeleteUserAccountModel userToDeleteModel = new DeleteUserAccountModel();
+            
+            userToDeleteModel.setUserId(id);
+            userToDeleteModel.setUserName(user.getUserName());
+            userToDeleteModel.setUserToDeleteItself(userService.isLoggedInUserToManageItself(user));
+    
+            // if user created comments, ...
+            if (commentsService.getAllCommentsFromUser(id).size() > 0) {
+                userToDeleteModel.setDeleteUsersComments(true);
+            }
+            
+            // if user created CoffeeSites ....
+            if (coffeeSiteService.findAllFromUser(user).size() > 0) {
+                userToDeleteModel.setDeleteUsersCoffeeSites(true);
+            }
+            
+            mav.addObject("userDataModelToDelete", userToDeleteModel);
+            mav.setViewName("user_delete");
+        }
+        return mav;
+    }
+    
+    /**
+     * Deletes user and all related data (comments, coffee sites, ...) if requested.<br>
+     * If related data are not requested to delete, it deletes user's data in DB,<br>
+     * except userID and username. So, the user record is kept to allow all<br>
+     * related items be link to user record.  
+     * 
+     * @param id
+     * @return
+     */
+    @DeleteMapping(value = "/delete/")
+    public String deleteUserAndRelatedItems(@ModelAttribute("userDataModelToDelete") DeleteUserAccountModel userDataToDelete,
+                                            RedirectAttributes attr) {
+        
+       UserDTO user = userService.findByIdToTransfer(userDataToDelete.getUserId());
+       Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
+       
+       String userName = "";
+        
+       if ((user != null) && loggedInUser.isPresent()) {
+            
+           userName = user.getUserName();
+           // Prihlaseny uzivatel maze svoje data?
+           // Pokud jineho usera maze ADMIN, neodhlasovat z app
+           if (user.getId() == loggedInUser.get().getId()
+               && !userService.isADMINloggedIn()) { 
+               userSecurityService.logout();
+           }
+            
+           // smazat user's coffee sites if requested
+           if (userDataToDelete.isDeleteUsersCoffeeSites()) {
+               coffeeSiteService.deleteCoffeeSitesFromUser(userDataToDelete.getUserId());
+           }
+            
+           // smazat user's comments if requested
+           if (userDataToDelete.isDeleteUsersComments()) {
+               commentsService.deleteAllCommentsFromUser(userDataToDelete.getUserId());
+           }
+
+           if (commentsService.getAllCommentsFromUser(user.getId()).size() == 0
+               && coffeeSiteService.findAllFromUserName(userName).size() == 0) { // user's comments and CoffeeSites deleted, now User can be deleted too
+               userService.deleteUserById(userDataToDelete.getUserId());
+           } else { // clear user's data as either user's CoffeeSites or comments are not deleted
+               userService.clearUserDataById(userDataToDelete.getUserId());   
+           }
+           attr.addFlashAttribute("userDeleteSuccess", true);
+       } else {
+           logger.info("Unable to delete. User with id " + userDataToDelete.getUserId() + " not found or not registered currently.");
+       }
+       
+       attr.addFlashAttribute("userName", userName);
+       return "redirect:/home/"; 
     }
   
     /**

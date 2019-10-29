@@ -188,12 +188,6 @@
 	        	<label id="searchPointLatLabel" th:text="${searchCriteria.lat1}"></label> ,
 	        	<label th:text="#{sitesearch.searchcoordinates.long.label}"></label>
 	        	<label id="searchPointLonLabel" th:text="${searchCriteria.lon1}"></label>
-	        	<!-- Currently the range is visible in the form, no need to show it elswere
-	        	<label th:text="#{sitesearch.searchcoordinates.range.label}"></label>
-	        	<label id="searchPointRangeLabel" th:text="${searchCriteria.range}"></label>
-	        	<label th:text="#{sitesearch.searchcoordinates.range.unit}"></label>
-	        	-->
-	        	
 	    	</div></i>
 	    	
 	    	<!-- Short text result of the search request -->
@@ -276,10 +270,6 @@
      		} else {
      			node.style.display = "none";
      		}
-     		/*
-     		if (node.disabled) node.style.visibility = "hidden";
-     		if (!node.disabled) node.style.visibility = "visible";
-     		*/
      	}
      </script>
      
@@ -324,8 +314,8 @@
      			
      			lonInput.value = selectedCityOption.dataset[selectCity.selectedIndex+'0']; 
      			latInput.value = selectedCityOption.dataset[selectCity.selectedIndex+'1'];
-     			latLabel.innerHTML = latInput.value;
-     			lonLabel.innerHTML = lonInput.value;
+     			latLabel.innerHTML = latInput.value.substring(0,10);
+     			lonLabel.innerHTML = lonInput.value.substring(0,10);
      			$(".se-pre-con").fadeIn("fast");
      			document.getElementById("searchByCoordinatesForm").submit();
      		}

@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.repository;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
@@ -12,14 +13,15 @@ import java.util.List;
 /**
  * Zakladni Repository trida pro CoffeeSite objekt.
  * 
- * Specialni verze vyhledavacich metod, pokud nejsou k dispozici zakladni
- * z {@code org.springframework.data.jpa.repository.JpaRepository}, ale ktere lze zapsat
+ * Specialni verze vyhledavacich metod, pokud nejsou k dispozici zakladni<br>
+ * z {@code org.springframework.data.jpa.repository.JpaRepository}, ale ktere lze zapsat<br>
  * pomoci jednoduchych SELECTu s anotaci @Query.
- * <br>
- * Tato trida muze rozsirovat dalsi Interface, ktery deklaruje dalsi specialni metody (implementovaner v konkretni tride
- * oznacene Repository anotaci). V tomto interfacu resp. v jeho implementaci se pak deklaruji a definuji metody pro slozitejsi
- * dotazy napr. pomoci CriteriaQuery.
- * <br>
+ * <p>
+ * Tato trida muze rozsirovat dalsi Interface, ktery deklaruje dalsi specialni metody<br>
+ * (implementovaner v konkretni tride oznacene Repository anotaci). V tomto interfacu<br>
+ * resp. v jeho implementaci se pak deklaruji a definuji metody pro slozitejsi dotazy<br>
+ * napr. pomoci CriteriaQuery.
+ * <p>
  * Zde rozsiren interface {@code CoffeeSiteRepositoryCustom}, ktery ma jmeno odvozene od jmena tohoto zakladniho interfacu
  * tj. {@code CoffeeSiteRepository} na {@code CoffeeSiteRepositoryCustom}
  * 
@@ -118,5 +120,14 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
     @Procedure(name = "distance")
     public long callStoredProcedureCalculateDistance(@Param("lat1") double sirkaFrom, @Param("lon1") double delkaFrom,
                                                      @Param("lat2") double sirkaTo, @Param("lon2") double delkaTo);
+
+    /**
+     * Deletes all CoffeeSites created by User id.
+     * 
+     * @param userId
+     */
+    @Modifying // required by Hibernate, otherwise there is an exception ' ... Illegal state ...'
+    @Query("delete FROM CoffeeSite cs WHERE originalUser.id=?1")
+    public void deleteAllFromUser(Long userId);
     
 }

@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.service.UserSecurityService;
+import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.service.UserService;
 
 /**
@@ -20,20 +19,19 @@ import cz.fungisoft.coffeecompass.service.UserService;
  * @author Michal Vaclavek
  */
 @ControllerAdvice
-public class UserAdvice
+public class LoggedInUserAdvice
 {    
     private UserService userService;
     
     @Autowired
-    public UserAdvice(UserService userService) {
+    public LoggedInUserAdvice(UserService userService) {
         super();
         this.userService = userService;
     }
 
     @ModelAttribute("loggedInUser")
-    public User currentUser() {
-        
-        Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
+    public UserDTO currentUser() {
+        Optional<UserDTO> loggedInUser = userService.getCurrentLoggedInUserDTO();
         return loggedInUser.orElse(null);
     }
     

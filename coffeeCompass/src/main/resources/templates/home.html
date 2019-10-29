@@ -109,6 +109,14 @@
 		    <p><span th:text="#{resetPassword.change.failed.message}"></span></p>
 		</div>
 		
+		<!-- Confirm message - used in case successful User account delete is redirected to this page -->
+		<div th:if="${userDeleteSuccess}" class="w3-pale-blue w3-display-container w3-round w3-panel w3-center">
+		    <span onclick="this.parentElement.style.display='none'"
+		  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
+		    <p><span th:text="#{user.deleted.confirm.message.prefix}"></span><b><span th:text="${userName}"></span></b><span th:text="#{user.deleted.confirm.message.sufix}"></span> 
+			</p>
+		</div>
+		
 		
 		<div class="w3-content w3-margin-top"> 
 			

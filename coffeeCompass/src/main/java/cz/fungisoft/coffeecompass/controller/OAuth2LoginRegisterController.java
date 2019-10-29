@@ -5,7 +5,6 @@ import java.net.URLEncoder;
 import java.util.Locale;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.stereotype.Controller;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.exception.BadAuthorizationRequestException;
 import cz.fungisoft.coffeecompass.security.oauth2.OAuth2TokenProvider;
@@ -54,12 +54,12 @@ public class OAuth2LoginRegisterController
     }
 
     /**
-     * Handle redirection URL after successful OAuth2 login.<br>
-     * <br>
+     * Handle redirection URL after successful OAuth2 login.
+     * <p>
      * Either show registration form to allow a new user to finish registration<br>
      * (to modify user data and entering password) or home page, if the user is<br>
-     * already registered.<br>
-     * <br>
+     * already registered.
+     * <p>
      * The endpoint URL is protected by token generated during finish of OAuth2<br>
      * in OAuth2AuthenticationSuccessHandler class.
      * 
@@ -127,7 +127,6 @@ public class OAuth2LoginRegisterController
         }
        
         attr.addFlashAttribute("oAuth2ErrorMessage", encodedErorrMessage);
-        
         return ("redirect:/login");
     }
     

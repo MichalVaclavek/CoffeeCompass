@@ -8,7 +8,6 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import cz.fungisoft.coffeecompass.controller.models.AuthProviders;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.validators.PasswordMatches;
 import cz.fungisoft.coffeecompass.validators.ValidEmail;
@@ -23,7 +22,7 @@ import lombok.Data;
 @PasswordMatches
 public class UserDTO
 {
-    private long id; 
+    private Long id; 
      
     @Size(min=3, max=30)
     private String userName;

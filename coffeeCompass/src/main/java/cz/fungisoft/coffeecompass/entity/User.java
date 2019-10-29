@@ -32,7 +32,6 @@ public class User implements Serializable
 { 
     private static final long serialVersionUID = -9006499187256143209L;
     
-    
     public User() {
         super();
         this.registerEmailConfirmed = false;

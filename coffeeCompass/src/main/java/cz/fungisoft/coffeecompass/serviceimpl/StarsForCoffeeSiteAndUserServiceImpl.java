@@ -19,9 +19,9 @@ import cz.fungisoft.coffeecompass.repository.StarsForCoffeeSiteAndUserRepository
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
-import cz.fungisoft.coffeecompass.service.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import lombok.extern.log4j.Log4j2;
+import ma.glasnost.orika.MapperFacade;
 
 /**
  * Implementace prislusneho service interfacu. Vyuziva StarsForCoffeeSiteAndUserRepository
@@ -42,8 +42,8 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     @Autowired
     private UserService userService;
     
-//    @Autowired
-//    private UserSecurityService userSecurityService;
+    @Autowired
+    private MapperFacade mapperFacade;
     
     @Autowired
     private CoffeeSiteService coffeeSiteService;
@@ -95,8 +95,9 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
         if (sfcsu == null) { // Pokud zaznam pro tohoto uzivatele a CoffeeSite jeste v DB neni, vytvori novy
             sfcsu = new StarsForCoffeeSiteAndUser(coffeeSite, user, starsQualService.findStarsQualityById(stars));
         }
-        else
+        else {
             sfcsu.setStars(starsQualService.findStarsQualityById(stars));
+        }
         
         // Nove/updatovane hodnoceni ulozit do Repositoy
         avgStarsRepo.save(sfcsu);
@@ -116,11 +117,10 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     @Override
     public void saveStarsForCoffeeSite(Long coffeeSiteID, Integer stars) {
         CoffeeSite cs = coffeeSiteService.findOneById(coffeeSiteID);
-        
         Optional<User> logedInUser = userService.getCurrentLoggedInUser();
         
         if (logedInUser.isPresent()) {
-            saveStarsForCoffeeSite(cs, logedInUser.get(), stars);
+            saveStarsForCoffeeSite(cs, mapperFacade.map(logedInUser.get(), User.class), stars);
         }
     }
 

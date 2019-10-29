@@ -53,7 +53,7 @@
 			     </p>
 			</div>
 	
-			<div class="w3-right w3-card-2 w3-border w3-sand w3-round-large">
+			<div class="w3-right w3-card-2 w3-border w3-sand w3-round-large w3-half">
 			
 	           <h2 th:text="(${user.id} == 0) ? #{user.register.label.create} : #{user.register.label.update}" class="w3-center">Register/Update Label</h2>
 	           
@@ -145,41 +145,72 @@
 	                       th:text="${error}">Validation error</p>
 	                </div>
 	              
-	                <div sec:authorize="hasRole('ROLE_ADMIN')" class="w3-container w3-margin-top">
-	                    <label for="userProfiles" th:text="#{user.profiles}">User profiles</label>
-	                    <div th:classappend="${#fields.hasErrors('userProfiles')} ? 'has-error' : ''">
-	                    <ul>
-	                       <li th:each="userProfile : ${allUserProfiles}">
-	               			 <input type="checkbox"
-	               			 		class="w3-check"
-	               			 		th:classappend="( (${userProfile.type} == 'ADMIN') AND *{hasADMINRole} AND *{!isToManageItself}) ? 'w3-disabled'"
-	               			 		th:disabled="( (${userProfile.type} == 'ADMIN') AND *{hasADMINRole} AND *{!isToManageItself})"
-	                	 		    th:field="*{userProfiles}"
-	                	  		    th:value="${userProfile}" />
-	               			 <label th:for="${userProfile.id}" th:text="${userProfile}">User profiles</label>
-	               			  <p class="error-message"
-	                       		th:each="error : ${#fields.errors('userProfiles')}"
-	                       		th:text="${error}">Validation error</p>
-	              		   </li>
-	              		</ul>
-	              		</div>
+	              
+	              	<div class="w3-cell-row w3-margin-top"> <!-- User Roles and user ban in one row -->
+	              	
+	              		<div class="w3-cell w3-container">
+		                <div sec:authorize="hasRole('ROLE_ADMIN')">
+		                    <label for="userProfiles" th:text="#{user.profiles}">User profiles</label>
+		                    <div th:classappend="${#fields.hasErrors('userProfiles')} ? 'has-error' : ''">
+			                    <ul>
+			                       <li th:each="userProfile : ${allUserProfiles}">
+			               			 <input type="checkbox"
+			               			 		class="w3-check"
+			               			 		th:classappend="( (${userProfile.type} == 'ADMIN') AND *{hasADMINRole} AND *{!isToManageItself}) ? 'w3-disabled'"
+			               			 		th:disabled="( (${userProfile.type} == 'ADMIN') AND *{hasADMINRole} AND *{!isToManageItself})"
+			                	 		    th:field="*{userProfiles}"
+			                	  		    th:value="${userProfile}" />
+			               			 <label th:for="${userProfile.id}" th:text="${userProfile}">User profiles</label>
+			               			  <p class="error-message"
+			                       		th:each="error : ${#fields.errors('userProfiles')}"
+			                       		th:text="${error}">Validation error</p>
+			              		   </li>
+			              		</ul>
+		              		</div>
+		                </div>
+	                	</div>
+	                	
+		                <!-- Ban user option -->
+		                <div class="w3-cell-bottom w3-container w3-right">
+		                <div sec:authorize="hasRole('ROLE_ADMIN')">
+		                    <label for="userBan" th:text="#{user.edit.ban}">Ban user?</label>
+		               			 <input type="checkbox"
+		               			 		class="w3-check"
+		               			 		th:disabled="(*{hasADMINRole} AND *{!isToManageItself})"
+		                	 		    th:field="*{banned}"
+		                	  		    th:value="*{banned}"/>
+			               			  
+		                </div>
+		                </div>
 	                </div>
 	                
-	                <div class="w3-bar w3-margin">
-	                  <div class="w3-bar-item">
-	               		 <button type="submit" class="w3-button w3-blue w3-border" name="save" th:text="(${user.id} == 0) ? #{user.register.button.create} : #{user.register.button.update}">Save/Modify User</button>    
+	                <div class="w3-bar w3-margin-top"> <!-- Buttons row -->
+	                
+	                  <div class="w3-bar-item"> <!-- Submit button -->
+	               		 <button type="submit" class="w3-button w3-blue w3-border w3-round" name="save" th:text="(${user.id} == 0) ? #{user.register.button.create} : #{user.register.button.update}">Save/Modify User</button>    
 	          		  </div>
 	          		
-		              <div class="w3-bar-item">
-		          	     <a th:href="@{'/home'}" th:text="#{user.edit.cancel}" class="w3-button">Cancel register/modify user</a>
+	          		  <div class="w3-bar-item"> <!-- Cancel edit button -->
+		                <a th:href="@{'/home'}" th:text="#{user.edit.cancel}" class="w3-button">Cancel register/modify user</a>
 			          </div>  
 			          
-			          <div class="w3-bar-item w3-text-gray w3-margin-top w3-right">
-			             <label th:text="#{app.items.obligatory}" class="w3-text-gray w3-margin-top w3-small w3-right">Announcement</label>
-			          </div>
-			        </div>
-	          		
+			          <!-- DELETE User account button -->
+				      <!-- ADMIN user is not allowed to delete him/herself -->
+				      <div sec:authorize="isAuthenticated()" class="w3-right w3-bar-item"> <!-- Button to open user account delete page -->
+					     <div th:if="!(*{hasADMINRole} AND *{isToManageItself})"> 
+					        <a th:href="@{'/user/delete/?userID=' + ${user.id}}"
+					           th:text="#{user.delete}"
+					           class="w3-btn w3-red w3-round w3-small">Delete user account</a>
+					     </div>
+				      </div>
+				    </div>
+			        
 				  </form>
+				  
+				  <div class="w3-margin w3-right">
+			          <label th:text="#{app.items.obligatory}" class="w3-text-gray w3-small">Announcement</label>
+			      </div>
+				  
 				
 			</div>
     	</div>

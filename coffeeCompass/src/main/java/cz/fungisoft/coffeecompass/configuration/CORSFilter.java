@@ -12,7 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Java EE filter používaný pro vyvolání speciálních akcí před dalším zpracováním požadavků z clientů
- * nebo pro filtrování požadavků z clientů podle jejich typu apod.
+ * nebo pro filtrování požadavků z clientů podle jejich typu apod. Jde o specialni filtr pro
+ * sdileni mezi ruznymi url? Cross-Origin Resource Sharing (CORS) - enables the cross-domain communication,
+ * tj. napr. mezi example.com a api.example.com
+ * Tento filtr pravdepodobne upravuje funkcionalitu CORS, aby se nedala zneuzit k zaskodnickym utoku.
  * Také pro nastavení HTML Headers a jejich hodnot ... ?
  * 
  * @author Michal Vaclavek
@@ -20,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class CORSFilter implements Filter
 {
-
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException
 	{
 		System.out.println("Filtering on ...........................................................");

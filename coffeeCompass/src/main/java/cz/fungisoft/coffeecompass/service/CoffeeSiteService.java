@@ -21,6 +21,7 @@ public interface CoffeeSiteService
 {
     public List<CoffeeSiteDTO> findAll(String orderBy, String direction);
     public List<CoffeeSiteDTO> findAllFromUser(User user);
+    public List<CoffeeSiteDTO> findAllFromUserName(String userName);
     public List<CoffeeSiteDTO> findAllFromLoggedInUser();
     
     public CoffeeSiteDTO findOneToTransfer(Long siteId);
@@ -167,5 +168,8 @@ public interface CoffeeSiteService
      * @return URL of the CoffeeSite's image if available, otherwise empty String
      */
     public String getMainImageURL(CoffeeSiteDTO cs);
+    
+    @PreAuthorize("isAuthenticated()")
+    public void deleteCoffeeSitesFromUser(Long userId);
     
 }

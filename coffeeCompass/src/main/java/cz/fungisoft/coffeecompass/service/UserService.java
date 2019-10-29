@@ -71,6 +71,7 @@ public interface UserService
     boolean isADMINloggedIn();
     
     public Optional<User> getCurrentLoggedInUser();
+    public Optional<UserDTO> getCurrentLoggedInUserDTO();
 
     /**
      * Saves/updated User, which was verified by token.
@@ -85,5 +86,13 @@ public interface UserService
     boolean changeUserPassword(User user, String newPassword);
     
     User getUserByPasswordResetToken(String pswdResetToken);
+
+    /**
+     * Clears all data related to the given user id, except username.<br>
+     * Sets 'enabled' to false and 'banned' to true.
+     * 
+     * @param userId
+     */
+    void clearUserDataById(Long userId);
 
 }

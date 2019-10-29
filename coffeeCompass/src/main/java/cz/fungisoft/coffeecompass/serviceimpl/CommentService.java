@@ -38,8 +38,6 @@ import ma.glasnost.orika.MapperFacade;
 @Log4j2
 public class CommentService implements ICommentService
 {
-//    private static final Logger logger = LogManager.getLogger(CommentService.class);
-    
     @Autowired
     CoffeeSiteRepository coffeeSiteRepo;
     
@@ -85,7 +83,8 @@ public class CommentService implements ICommentService
     @Override
     public Comment saveTextAsComment(String commentText, CoffeeSite coffeeSite) {
         Optional<User> logedInUser =  userService.getCurrentLoggedInUser();
-        return saveTextAsComment(commentText, logedInUser.get(), coffeeSite);
+        
+        return saveTextAsComment(commentText, mapperFacade.map(logedInUser.get(), User.class), coffeeSite);
     }
 
 	/* (non-Javadoc)
@@ -168,7 +167,6 @@ public class CommentService implements ICommentService
     public void deleteAllCommentsFromUser(Long userID) {
         log.info("All comments from user id {} deleted.", userID);
         commentsRepo.deleteAllFromUser(userID);
-        
     }
 
     @Override

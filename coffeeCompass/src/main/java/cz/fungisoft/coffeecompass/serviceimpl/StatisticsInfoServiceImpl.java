@@ -49,7 +49,7 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService
         statsToShow.setNumOfNewSitesToday(csRepo.getNumOfSitesCreatedToday());
         statsToShow.setNumOfNewSitesLast7Days(csRepo.getNumOfSitesCreatedLast7Days());
         
-        statsToShow.setNumOfAllUsers(usersRepo.countAllUsers());
+        statsToShow.setNumOfAllUsers(usersRepo.countAllEnabledUsers());
         statsToShow.setNumOfNewUsersThisWeek(usersRepo.getNumOfUsersRegisteredLast7Days());
         
         List<DBReturnPair> cities = csRepo.getTop5CityNames();

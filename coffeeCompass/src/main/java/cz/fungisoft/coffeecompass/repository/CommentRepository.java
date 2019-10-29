@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import cz.fungisoft.coffeecompass.entity.Comment;
@@ -27,6 +28,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>
     @Query("select coffeeSite.id FROM Comment cl where id=?1")
     public Long getSiteIdForComment(Integer commentId);
     
+    @Modifying // required by Hibernate, otherwise there is an exception ' ... Illegal state ...'
     @Query("delete FROM Comment cl where user.id=?1")
     public void deleteAllFromUser(Long userID);
 

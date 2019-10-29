@@ -29,10 +29,7 @@ import cz.fungisoft.coffeecompass.service.OtherOfferService;
 import cz.fungisoft.coffeecompass.service.PriceRangeService;
 import cz.fungisoft.coffeecompass.service.SiteLocationTypeService;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
-import cz.fungisoft.coffeecompass.service.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.UserService;
-
-import io.swagger.annotations.Api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -294,10 +291,7 @@ public class CoffeeSiteController
      */
     @PostMapping("/createModifySite") // Mapovani http POST na DB SAVE/UPDATE
     public String createOrUpdateCoffeeSite(@ModelAttribute("coffeeSite") @Valid CoffeeSiteDTO coffeeSite, final BindingResult bindingResult) {
-        //Overeni jmena, nesmi se shodovat s jinym jmenem.
-//        if (!coffeeSiteService.isSiteNameUnique(coffeeSite.getId(), coffeeSite.getSiteName())) {
-//            bindingResult.rejectValue("siteName", "error.site.name.used", "Name already used.");
-//        }
+
         // Overeni, zda zadana pozice CoffeeSitu neni jiz pouzita.
         if (coffeeSite.getZemSirka() != null && coffeeSite.getZemDelka() != null) {
             if (coffeeSiteService.isLocationAlreadyOccupied(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5, coffeeSite.getId())) {

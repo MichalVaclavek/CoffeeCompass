@@ -7,18 +7,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import cz.fungisoft.coffeecompass.configuration.OAuth2Properties;
 import cz.fungisoft.coffeecompass.exception.BadAuthorizationRequestException;
-import cz.fungisoft.coffeecompass.utils.CookieUtils;
 import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
-
-import static cz.fungisoft.coffeecompass.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
 
 /**
@@ -36,7 +32,6 @@ import static cz.fungisoft.coffeecompass.security.oauth2.HttpCookieOAuth2Authori
  * 
  * @author https://www.callicoder.com/spring-boot-security-oauth2-social-login-part-2/
  * @author Michal Václavek
-
  */
 @Component
 @Log4j2
@@ -79,10 +74,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
      * @return
      */
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        
-        // Used in case frontend original request for social login contains redirection URI
-//        Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
-//                                                  .map(Cookie::getValue);
         
         Optional<String> redirectUri = Optional.of(ouat2Properties.getOauth2().getDefaultSuccessLoginRedirectURI());
         

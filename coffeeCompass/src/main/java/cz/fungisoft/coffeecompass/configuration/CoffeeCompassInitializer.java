@@ -6,7 +6,6 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 
 public class CoffeeCompassInitializer extends AbstractAnnotationConfigDispatcherServletInitializer
 {    
-    
     @Override
     protected Class<?>[] getRootConfigClasses() {
         return new Class[] { CoffeeCompassConfiguration.class };

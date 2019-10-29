@@ -15,8 +15,6 @@ import org.springframework.context.annotation.PropertySource;
  */
 @Configuration
 @Profile("dev")
-//@PropertySource("classpath:configprops-${spring.profiles.active}.properties")
-//@PropertySource("classpath:configprops-dev.properties")
 @PropertySource({"classpath:configprops-dev.properties"})
 public class ConfigPropertiesDev extends ConfigProperties
 {}

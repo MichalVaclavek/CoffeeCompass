@@ -13,6 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
 public class DefaultAccessDeniedHandler implements AccessDeniedHandler
@@ -27,11 +29,16 @@ public class DefaultAccessDeniedHandler implements AccessDeniedHandler
 
         if (auth != null) {
             logger.info("User '" + auth.getName()
-                    + "' attempted to access the protected URL: "
-                    + httpServletRequest.getRequestURI());
+                        + "' attempted to access the protected URL: "
+                        + httpServletRequest.getRequestURI());
         }
 
-        httpServletResponse.sendRedirect("http://" + httpServletRequest.getServerName() +  ":" + httpServletRequest.getServerPort() + "/403");
+//        httpServletResponse.sendRedirect("http://" + httpServletRequest.getServerName() +  ":" + httpServletRequest.getServerPort() + "/403");
+        ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequest();
+        UriComponentsBuilder extBuilder = builder.replacePath("/user/registrationConfirm").replaceQuery("").replacePath("/403");
+        String redirectTo403Page = extBuilder.build().toUriString();
+        
+        httpServletResponse.sendRedirect(redirectTo403Page);
     }
     
 }

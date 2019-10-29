@@ -43,14 +43,24 @@
 		  <td th:text="${user.createdSites}">NumOfCreatedSites</td>		
 		  
 		  <td sec:authorize="hasRole('ROLE_ADMIN')">
-	         <a th:href="@{'/user/edit/?userName=' + ${user.userName}}" th:text="#{user.edit}" class="w3-btn w3-blue w3-round w3-small">Edit user's account</a>
+		  	<div class="w3-right w3-margin">
+	            <a th:href="@{'/user/edit/?userName=' + ${user.userName}}" th:text="#{user.edit}" class="w3-btn w3-blue w3-round w3-small">Edit user's account</a>
+	      	</div>
 	      </td>
 	      
 		  <td sec:authorize="hasRole('ROLE_ADMIN')" th:if="${!user.hasADMINRole}">
+		  	<div class="w3-right w3-margin"> <!-- Button to open user account delete page -->
+				 <a th:href="@{'/user/delete/?userID=' + ${user.id}}"
+				    th:text="#{user.delete}"
+				    class="w3-btn w3-red w3-round w3-small">Delete user account</a>
+		    </div>
+		  
+		  		<!-- 
 	         <form action="#" th:action="@{'/user/delete/' + ${user.id}}" th:method="DELETE">
 	            <input type="hidden" name="_method" value="delete" />
 	            <button type="submit" id="submitButton" th:text="#{user.delete}" class="w3-btn w3-red w3-round w3-small" >X</button>
 	         </form>
+	          -->
 	      </td>
 		    		  
 	    </tr>	

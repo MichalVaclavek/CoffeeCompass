@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/header :: header-css"/>
+
+    <title>Registration</title>
+    
+</head>
+
+<body>
+    <div th:replace="fragments/header :: header"/>
+
+	<div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} OR ${loggedInUser.isToManageItself}" 
+	     class="w3-light-grey w3-margin-bottom w3-center">
+       <h2 th:text="#{user.delete.label}">DELETE USER</h2>
+    </div>	
+
+	<div class="w3-content" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} OR ${loggedInUser.isToManageItself}">
+	
+		  <div class="w3-container w3-card-2 w3-pale-yellow w3-round w3-twothird w3-right"> 
+		  	<!-- Form to delete user account -->
+		  	<form action="#"
+		  	      th:object="${userDataModelToDelete}"
+		  	      th:action="@{'/user/delete/'}"
+		  	      th:method="DELETE">
+		  	      
+		  	    <input th:type="hidden" name="userId" th:field="${userDataModelToDelete.userId}" />
+		  	    
+		  	    <div class="w3-cell-row w3-margin-top">
+		  	    
+		  	    	<div class="w3-cell w3-container">
+		  	    		<p th:text="*{!userToDeleteItself} ? #{user.delete.byadmin.question} + *{userName}+' ?' : #{user.delete.question}"></p>
+					</div>
+					<div class="w3-cell w3-container">
+						<div class="w3-bar">
+							<div class="w3-bar-item">
+		          				<input type="hidden" name="_method" value="delete" />
+		          				<button type="submit" id="submitButton" th:text="#{user.delete}" class="w3-button w3-red w3-round w3-small" >Delete user account</button>
+		          			</div>
+		          			<div class="w3-bar-item">
+			          			<a th:href="@{'/user/edit/?userName=' + *{userName}}" th:text="#{user.edit.cancel}" class="w3-button w3-small">Cancel delete user account</a>
+				    		</div>
+			    		</div>
+			    	</div>
+				</div>
+				
+				<div> <!-- Check boxes to select if also user's CoffeeSites and/or Comments should be deleted with user account -->
+		            <ul>
+		              <li th:if="*{deleteUsersCoffeeSites}">
+		                <input type="checkbox" class="w3-check"
+		                       th:field="*{deleteUsersCoffeeSites}"
+		                       th:value="*{deleteUsersCoffeeSites}" />
+		                <label th:text="#{user.delete.coffeeSites.question}">Delete coffee sites?</label>
+		              </li>
+		              <li th:if="*{deleteUsersComments}">
+		                <input type="checkbox" class="w3-check"
+		                       th:field="*{deleteUsersComments}"
+		                       th:value="*{deleteUsersComments}" />
+		                <label th:text="#{user.delete.comments.question}">Delete comments?</label>
+		              </li>
+		            </ul>
+				</div>
+	          	
+	       	</form>
+	       	
+		  </div>
+				
+	</div>
+
+	<div th:replace="fragments/footer :: footer"/>
+	
+</body>
+</html>
