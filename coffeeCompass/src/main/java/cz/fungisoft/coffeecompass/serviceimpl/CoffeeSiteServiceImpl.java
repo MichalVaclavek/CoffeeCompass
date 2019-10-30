@@ -231,12 +231,11 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
                 coffeeSite.setRecordStatus(coffeeSiteRecordStatus);
                 coffeeSite.setOriginalUser(user);
                 user.setCreatedSites(user.getCreatedSites() + 1);
+                userService.saveUser(user);
             }
             else { // modifikace stavajiciho CoffeeSitu
                 updateSite(coffeeSite);
             }
-            // User updated, save
-            userService.saveUser(user);
         }
             
         // Zjisteni, jestli Company je nove nebo ne
@@ -255,11 +254,15 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         
         CoffeeSite csToSave = mapperFacade.map(cs, CoffeeSite.class);
         
-        // Insert original user, which was removed during maping from CoffeeSite to CoffeeSiteDto when sending to client?
-        // during site update ???
+        // Insert original user, which was removed during maping from CoffeeSite to CoffeeSiteDto when sending to client
+        // asnOnly user name is mapped into CoffeeSiteDTO from CoffeeSite
         Optional<User> origUser = userService.findByUserName(cs.getOriginalUserName());
         if (origUser.isPresent()) {
             csToSave.setOriginalUser(origUser.get());
+        }
+        Optional<User> lastEditUser = userService.findByUserName(cs.getLastEditUserName());
+        if (lastEditUser.isPresent()) {
+            csToSave.setLastEditUser(lastEditUser.get());
         }
  
         return save(csToSave);
@@ -281,6 +284,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             if (loggedInUser.isPresent()) {
                 User user = loggedInUser.get();
                 user.setUpdatedSites(user.getUpdatedSites() + 1);
+                userService.saveUser(user);
                 entityFromDB.setLastEditUser(user);
             }
             
