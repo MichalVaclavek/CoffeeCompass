@@ -51,7 +51,7 @@
 		  <td sec:authorize="hasRole('ROLE_ADMIN')" th:if="${!user.hasADMINRole}">
 		  	<div class="w3-right w3-margin"> <!-- Button to open user account delete page -->
 				 <a th:href="@{'/user/delete/?userID=' + ${user.id}}"
-				    th:text="#{user.delete}"
+				    th:text="#{user.delete.questionmark}"
 				    class="w3-btn w3-red w3-round w3-small">Delete user account</a>
 		    </div>
 		  

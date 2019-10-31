@@ -50,7 +50,7 @@ createMap = function(lat1, lon1) {
 	 	lonSearchInput.value = coords.toWGS84()[0];
 	 	
 	 	latSearchLabel.innerHTML = latSearchInput.value.substring(0,10);
-	 	lonSearchLabel.innerHTML = latSearchInput.value.substring(0,10);
+	 	lonSearchLabel.innerHTML = lonSearchInput.value.substring(0,10);
 	 }
 	
 	 var signals = m.getSignals();
@@ -65,20 +65,19 @@ map.create =  function(aLatSearchInput, aLonSearchInput, aLatSearchLabel, aLonSe
 
 	 latSearchInput = aLatSearchInput;
 	 lonSearchInput = aLonSearchInput;
+	 latSearchLabel = aLatSearchLabel;
+	 lonSearchLabel = aLonSearchLabel;
 	 
 	 var latInit = latSearchInput.value;
 	 var lonInit = lonSearchInput.value;
 
 	 if (latInit == 0 && lonInit == 0) {
-	 	lat1 = 49.8250401;
-	    lon1 = 15.4190817;
+		 latInit = 49.8250401;
+		 lonInit = 15.4190817;
 	 }
 	 
-	 latSearchLabel = aLatSearchLabel;
-	 lonSearchLabel = aLonSearchLabel;
-	 
-	 latSearchLabel.value = lat1;
-	 lonSearchLabel.value = lon1;
+	 latSearchLabel.innerHTML = latInit.substring(0,10);
+	 lonSearchLabel.innerHTML = lonInit.substring(0,10);
 	 
 	 createMap(latInit, lonInit);
 }

@@ -176,6 +176,7 @@
 		                    <label for="userBan" th:text="#{user.edit.ban}">Ban user?</label>
 		               			 <input type="checkbox"
 		               			 		class="w3-check"
+		               			 		th:classappend="(*{hasADMINRole} AND *{!isToManageItself}) ? 'w3-disabled'"
 		               			 		th:disabled="(*{hasADMINRole} AND *{!isToManageItself})"
 		                	 		    th:field="*{banned}"
 		                	  		    th:value="*{banned}"/>
@@ -197,9 +198,9 @@
 			          <!-- DELETE User account button -->
 				      <!-- ADMIN user is not allowed to delete him/herself -->
 				      <div sec:authorize="isAuthenticated()" class="w3-right w3-bar-item"> <!-- Button to open user account delete page -->
-					     <div th:if="!(*{hasADMINRole} AND *{isToManageItself})"> 
+					     <div th:if="*{!hasADMINRole}"> 
 					        <a th:href="@{'/user/delete/?userID=' + ${user.id}}"
-					           th:text="#{user.delete}"
+					           th:text="#{user.delete.questionmark}"
 					           class="w3-btn w3-red w3-round w3-small">Delete user account</a>
 					     </div>
 				      </div>
