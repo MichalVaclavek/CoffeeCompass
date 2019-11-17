@@ -5,8 +5,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import cz.fungisoft.coffeecompass.configuration.OAuth2Properties;
+import cz.fungisoft.coffeecompass.configuration.JwtAndOAuth2Properties;
 import cz.fungisoft.coffeecompass.exception.BadAuthorizationRequestException;
+import cz.fungisoft.coffeecompass.security.JwtTokenProviderService;
 import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.ServletException;
@@ -37,17 +38,17 @@ import java.util.Optional;
 @Log4j2
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
 {
-    private OAuth2TokenProvider oAuth2TokenProvider;
+    private JwtTokenProviderService jwtTokenProviderService;
 
-    private OAuth2Properties ouat2Properties;
+    private JwtAndOAuth2Properties ouat2Properties;
 
     private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
 
-    public OAuth2AuthenticationSuccessHandler(OAuth2TokenProvider oAuth2TokenProvider,
-                                              OAuth2Properties appProperties,
+    public OAuth2AuthenticationSuccessHandler(JwtTokenProviderService jwtTokenProviderService,
+                                              JwtAndOAuth2Properties appProperties,
                                               HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
-        this.oAuth2TokenProvider = oAuth2TokenProvider;
+        this.jwtTokenProviderService = jwtTokenProviderService;
         this.ouat2Properties = appProperties;
         this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
     }
@@ -85,7 +86,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
-        String token = oAuth2TokenProvider.createToken(authentication);
+        String token = jwtTokenProviderService.createToken(authentication);
 
         return UriComponentsBuilder.fromUriString(targetUrl)
                                    .queryParam("token", token)

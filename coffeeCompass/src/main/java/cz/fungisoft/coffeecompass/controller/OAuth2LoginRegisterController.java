@@ -17,7 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.exception.BadAuthorizationRequestException;
-import cz.fungisoft.coffeecompass.security.oauth2.OAuth2TokenProvider;
+import cz.fungisoft.coffeecompass.security.JwtTokenProviderService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import lombok.extern.log4j.Log4j2;
 
@@ -41,12 +41,12 @@ public class OAuth2LoginRegisterController
 
     private MessageSource messages;
     
-    private OAuth2TokenProvider tokenProvider;
+    private JwtTokenProviderService tokenProvider;
     
 
     public OAuth2LoginRegisterController(UserService userService,
                                          MessageSource messages,
-                                         OAuth2TokenProvider tokenProvider) {
+                                         JwtTokenProviderService tokenProvider) {
         super();
         this.userService = userService;
         this.messages = messages;

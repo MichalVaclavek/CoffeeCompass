@@ -88,7 +88,7 @@ public class User implements Serializable
     @NotNull
     @Enumerated // V DB je cislovano od indexu 0, protoze i enum type se v defaultnim pripade cisluje od 0.
     @Column(name="auth_provider_id", columnDefinition = "smallint")
-    private AuthProviders authProvider;
+    private AuthProviders authProvider = AuthProviders.local; // default value for new user
     
     @Column(name = "banned")
     private boolean banned;

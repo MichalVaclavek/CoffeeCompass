@@ -16,17 +16,17 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
- * Entity holding token String, User, and expiryDate for verification of the user's 
- * email address. 
+ * Entity holding token String, User, Device ID and expiryDate for validating
+ * user, who is loging-in from mobile app. 
  * 
  * @author Michal Vaclavek
  *
  */
 @Entity
-@Table(name="user_verification_token", schema = "coffeecompass")
-public class UserVerificationToken
+@Table(name="mobile_user_login_token", schema = "coffeecompass")
+public class MobileUserLoginToken
 {
-    private static final int EXPIRATION_MINUTES = 60 * 24; // 24 hours as default
+    private static final int EXPIRATION_MINUTES = 60 * 168; // 168 hours as default, i.e. one week
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +35,10 @@ public class UserVerificationToken
     @NotNull
     @Column(name="token", nullable=false)
     private String token;
+    
+    @NotNull
+    @Column(name="device_id", nullable=false)
+    private String deviceId;
     
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id")
@@ -47,7 +51,7 @@ public class UserVerificationToken
     /**
      * Default contructor, required by Hibernate
      */
-    public UserVerificationToken() {
+    public MobileUserLoginToken() {
     }
 
 
@@ -57,9 +61,10 @@ public class UserVerificationToken
      * @param token2
      * @param user2
      */
-    public UserVerificationToken(String token2, User user2) {
-        this.token = token2;
-        this.user = user2;
+    public MobileUserLoginToken(String token, String deviceId, User user) {
+        this.token = token;
+        this.user = user;
+        this.deviceId = deviceId;
         setExpiryDate(calculateExpiryDate(EXPIRATION_MINUTES)); // default expiry date
     }
 
@@ -96,7 +101,14 @@ public class UserVerificationToken
     public void setExpiryDate(Date expiryDate) {
         this.expiryDate = expiryDate;
     }
+    
+    public String getDeviceId() {
+        return deviceId;
+    }
 
+    public void setDeviceId(String deviceID) {
+        this.deviceId = deviceID;
+    }
     
     private Date calculateExpiryDate(int expiryTimeInMinutes) {
         

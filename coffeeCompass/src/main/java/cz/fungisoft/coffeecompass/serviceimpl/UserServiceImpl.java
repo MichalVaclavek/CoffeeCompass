@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cz.fungisoft.coffeecompass.controller.models.AuthProviders;
+import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
 import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
@@ -77,7 +78,8 @@ public class UserServiceImpl implements UserService
     // ** Findind User ** /
 
     @Override
-    public UserDTO findByIdToTransfer(Long id) {        
+    @Transactional
+    public Optional<UserDTO> findByIdToTransfer(Long id) {        
         User user = findById(id);
         return addNonPersistentInfoToUser(user);
     }
@@ -97,12 +99,9 @@ public class UserServiceImpl implements UserService
     }
     
     @Override
-    public UserDTO findByUserNameToTransfer(String userName) {      
+    public Optional<UserDTO> findByUserNameToTransfer(String userName) {      
         Optional<User> user = findByUserName(userName);
-        if (user.isPresent()) {
-            return addNonPersistentInfoToUser(user.get());
-        } else
-            return null;
+        return addNonPersistentInfoToUser(user.get());
     }
     
     @Override
@@ -125,7 +124,7 @@ public class UserServiceImpl implements UserService
      * @param userName
      * @return
      */
-    private UserDTO addNonPersistentInfoToUser(User user) {
+    private Optional<UserDTO> addNonPersistentInfoToUser(User user) {
         UserDTO userDTO = null;
         
         if (user != null) {
@@ -134,7 +133,7 @@ public class UserServiceImpl implements UserService
             userDTO.setToManageItself(isLoggedInUserToManageItself(user));
         }
         
-        return userDTO;
+        return Optional.ofNullable(userDTO);
     }
     
     @Override
@@ -152,18 +151,46 @@ public class UserServiceImpl implements UserService
         return user;
     }
  
-    /** Saving and Updating **/
+    /** Saving and Updating a User **/
     
     /**
-     * Used to save User profile registered via social login after first successful
-     * login redirection URL (/oauth2/loginSuccess/?token=) processed.
+     * Used to save user. Checks if User has at least one ROLE assigned
+     * and if it has other obligatory attributes set.
+     * Used especially for savin new users created via REST interface. 
      */
     @Override
     public User saveUser(User user) {
-        log.info("Saving user name {}", user.getUserName());
+        log.info("Saving user name: {}", user.getUserName());
         return usersRepository.save(user);
     }
  
+
+    @Override
+    public User registerNewRESTUser(SignUpAndLoginRESTDto restRegisterDTO) {
+        User user = new User();
+        
+        user.setUserName(restRegisterDTO.getUserName());
+        user.setPassword(passwordEncoder.encode(restRegisterDTO.getPassword()));
+        user.setEmail(restRegisterDTO.getEmail());
+        user.setRegisterEmailConfirmed(false);
+        
+        user.setUpdatedSites(0);
+        user.setCreatedSites(0);
+        user.setDeletedSites(0);    
+        
+        Set<UserProfile> userProfiles = new HashSet<UserProfile>();
+        // Only basic USER role can be assigned to commom new user 
+        userProfiles.add(userProfileRepository.searchByType("USER"));
+        
+        user.setUserProfiles(userProfiles);
+        
+        user.setEnabled(true);
+        user.setCreatedOn(new Timestamp(new Date().getTime()));
+        
+        log.info("Saving user name: {}", user.getUserName());
+        return usersRepository.save(user);
+    }
+    
     /**
      * Updates logged-in User data. If the userName is changed, Spring security context
      * must be changed too.<br>
@@ -175,6 +202,7 @@ public class UserServiceImpl implements UserService
      */
     @Override
     public User updateUser(User user) {
+        
         User entity = usersRepository.findById(user.getId()).orElse(null);
         
         if (entity != null) {
@@ -278,7 +306,6 @@ public class UserServiceImpl implements UserService
         user.setUserProfiles(userProfiles);
         
         user.setEnabled(true);
-        user.setAuthProvider(AuthProviders.local);
         user.setCreatedOn(new Timestamp(new Date().getTime()));
         
         log.info("Saving new user name {}", user.getUserName());
@@ -411,7 +438,7 @@ public class UserServiceImpl implements UserService
      * then return true as the user verifies it's own e-mail and it is allowed.
      * 
      * @param id - id of the user whos's e-mail is to be verified
-     * @param email - address to be verified if it is unique.
+     * @param email - address to be verified.
      */
     @Override
     public boolean isEmailUnique(Long id, String email) {
@@ -498,7 +525,7 @@ public class UserServiceImpl implements UserService
 
     @Override
     public Optional<UserDTO> getCurrentLoggedInUserDTO() {
-        return Optional.ofNullable(findByUserNameToTransfer(userSecurityService.getCurrentLoggedInUserName()));
+        return findByUserNameToTransfer(userSecurityService.getCurrentLoggedInUserName());
     }
 
 }

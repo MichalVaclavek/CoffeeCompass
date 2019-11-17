@@ -180,10 +180,14 @@ public class UserController
             // Kontrola i na e-mail adresu, pokud je zadana
             if (userDto.getEmail() != null && !userDto.getEmail().isEmpty()) { // should be true as input of e-mail has been validated
                 
-                existing = userService.findByEmail(userDto.getEmail());
-                if (existing.isPresent()) {
+                if (!userService.isEmailUnique(null, userDto.getEmail())) {
                     result.rejectValue("email", "error.user.emailused", "There is already an account registered with that e-mail address.");
                 }
+                
+//                existing = userService.findByEmail(userDto.getEmail());
+//                if (existing.isPresent()) {
+//                    result.rejectValue("email", "error.user.emailused", "There is already an account registered with that e-mail address.");
+//                }
             }
         }
         
@@ -258,10 +262,10 @@ public class UserController
 
         // Model uz muze atribut "user" obsahovat a to v pripade, ze predchozi update/put daneho usera obsahoval chyby
         // a presmeroval na tento handler
-        UserDTO user = null;
+        Optional<UserDTO> user = Optional.empty();
         if (!model.containsAttribute("user")) {
             user = userService.findByUserNameToTransfer(userName);
-            if (user != null) {
+            if (user.isPresent()) {
                 mav.addObject("user", user);
             } else {
                 logger.error("User name {} not found.", userName);
@@ -269,9 +273,9 @@ public class UserController
             }
         }
         
-        if (user != null && "true".equals(firstOAuth2Login)) {
+        if (user.isPresent() && "true".equals(firstOAuth2Login)) {
             // OAuth2 provider name with first letter in upper case
-            String oAuth2ProviderName = user.getAuthProvider().substring(0, 1).toUpperCase() + user.getAuthProvider().substring(1);
+            String oAuth2ProviderName = user.get().getAuthProvider().substring(0, 1).toUpperCase() + user.get().getAuthProvider().substring(1);
             mav.addObject("socialLoginStillAvailableMessage", messages.getMessage("user.register.social.firstlogin.message.socialloginavailable", new Object[] {oAuth2ProviderName}, locale));
         }
         mav.addObject("firstOAuth2Login", "true".equals(firstOAuth2Login));
@@ -403,11 +407,12 @@ public class UserController
     @DeleteMapping(value = "/delete/{id}")
     public String deleteUser(@PathVariable("id") Long id) {
         
-        UserDTO user = userService.findByIdToTransfer(id);
-        if (user == null) {
-            logger.info("Unable to delete. User with id " + id + " not found");
-        } else {
+        Optional<UserDTO> user = userService.findByIdToTransfer(id);
+        
+        if (user.isPresent()) {
             userService.deleteUserById(id);
+        } else {
+            logger.info("Unable to delete. User with id " + id + " not found");
         }
         
         return "redirect:/user/all";
@@ -463,17 +468,17 @@ public class UserController
     public String deleteUserAndRelatedItems(@ModelAttribute("userDataModelToDelete") DeleteUserAccountModel userDataToDelete,
                                             RedirectAttributes attr) {
         
-       UserDTO user = userService.findByIdToTransfer(userDataToDelete.getUserId());
+       Optional<UserDTO> user = userService.findByIdToTransfer(userDataToDelete.getUserId());
        Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
        
        String userName = "";
         
-       if ((user != null) && loggedInUser.isPresent()) {
+       if (user.isPresent() && loggedInUser.isPresent()) {
             
-           userName = user.getUserName();
+           userName = user.get().getUserName();
            // Prihlaseny uzivatel maze svoje data?
            // Pokud jineho usera maze ADMIN, neodhlasovat z app
-           if (user.getId() == loggedInUser.get().getId()
+           if (user.get().getId() == loggedInUser.get().getId()
                && !userService.isADMINloggedIn()) { 
                userSecurityService.logout();
            }
@@ -488,7 +493,7 @@ public class UserController
                commentsService.deleteAllCommentsFromUser(userDataToDelete.getUserId());
            }
 
-           if (commentsService.getAllCommentsFromUser(user.getId()).size() == 0
+           if (commentsService.getAllCommentsFromUser(user.get().getId()).size() == 0
                && coffeeSiteService.findAllFromUserName(userName).size() == 0) { // user's comments and CoffeeSites deleted, now User can be deleted too
                userService.deleteUserById(userDataToDelete.getUserId());
            } else { // clear user's data as either user's CoffeeSites or comments are not deleted

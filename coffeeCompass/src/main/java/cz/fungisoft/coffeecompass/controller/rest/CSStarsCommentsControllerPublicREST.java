@@ -37,50 +37,17 @@ import io.swagger.annotations.Api;
 @Api // Anotace Swagger
 @RestController // Ulehcuje zpracovani HTTP/JSON pozadavku z clienta a automaticky vytvari i HTTP/JSON response odpovedi na HTTP/JSON requesty
 @RequestMapping("/rest/starsAndComments")
-public class CSStarsCommentsControllerREST
+public class CSStarsCommentsControllerPublicREST
 {
     private ICommentService commentsService;
     
-    private IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService;
-    
-    private CoffeeSiteService coffeeSiteService;
-    
-    
     @Autowired
-    public CSStarsCommentsControllerREST(ICommentService commentsService, IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService,
+    public CSStarsCommentsControllerPublicREST(ICommentService commentsService, IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService,
                                 CoffeeSiteService coffeeSiteService) {
         super();
         this.commentsService = commentsService;
-        this.starsForCoffeeSiteService = starsForCoffeeSiteService;
-        this.coffeeSiteService = coffeeSiteService;
     }
 
-
-    /**
-     * Zpracuje POST pozadavek z REST consumera, ktery pozaduje ulozit Comment a Stars pro jeden CoffeeSite<br>
-     * 
-     * NOT YET USED in REST CONTROLLER
-     * 
-     * @param starsAndComment
-     * @param id CoffeeSite id to which the StarsAndCommentModel belongs to
-     * @return
-     */
-    @PostMapping("/saveStarsAndComment/{coffeeSiteId}") 
-    public ModelAndView saveCommentAndStarsForSite(@ModelAttribute StarsAndCommentModel starsAndComment, @PathVariable Long coffeeSiteId) {
-        // Ulozit hodnoceni if not empty
-        starsForCoffeeSiteService.saveStarsForCoffeeSite(coffeeSiteId, starsAndComment.getStars().getNumOfStars());
-        
-        CoffeeSite cs = coffeeSiteService.findOneById(coffeeSiteId);
-        
-        if ((starsAndComment.getComment() != null) && !starsAndComment.getComment().isEmpty())
-            commentsService.saveTextAsComment(starsAndComment.getComment(), cs);
-        
-        // Show same coffee site with new Stars and comments
-        ModelAndView mav = new ModelAndView("redirect:/showSite/"+ coffeeSiteId);
-        
-        return mav;
-    }
-    
     /**
      * Returns all comments of the CoffeeSite of id=siteId
      * 
@@ -97,27 +64,6 @@ public class CSStarsCommentsControllerREST
             return new ResponseEntity<List<CommentDTO>>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<List<CommentDTO>>(comments, HttpStatus.OK);
-    }
-    
-    
-    /**
-     * Zpracuje DELETE pozadavek na smazani komentare k jednomu CoffeeSitu.<br>
-     * Muze byt volano pouze ADMINEM ... <br>
-     * 
-     * NOT YET USED in REST CONTROLLER
-     * 
-     * @param id of the Comment to delete
-     * @return
-     */
-    @DeleteMapping("/deleteComment/{commentId}") 
-    public ModelAndView deleteCommentAndStarsForSite(@PathVariable Integer commentId) {
-        // Smazat komentar - need to have site Id to give it to /showSite Controller
-        Long siteId = commentsService.deleteCommentById(commentId);
-        
-        // Show same coffee site with updated Stars and comments
-        ModelAndView mav = new ModelAndView("redirect:/showSite/"+ siteId);
-        
-        return mav;
     }
 
 }

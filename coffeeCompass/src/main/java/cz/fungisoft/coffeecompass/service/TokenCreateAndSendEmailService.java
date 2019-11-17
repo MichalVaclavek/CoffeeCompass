@@ -18,7 +18,6 @@ public interface TokenCreateAndSendEmailService
      * Sets basic data needed to create and sent verification token e-mail.
      * 
      * @param user
-     * @param appUrl
      * @param locale
      */
     public void setUserVerificationData(User user, Locale locale);
@@ -54,7 +53,6 @@ public interface TokenCreateAndSendEmailService
      * Sets basic data needed to create reset password token
      * 
      * @param user
-     * @param appUrl
      * @param locale
      */
     public void setResetPasswordTokenData(String userEmail, Locale locale);

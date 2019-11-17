@@ -5,7 +5,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import cz.fungisoft.coffeecompass.configuration.OAuth2Properties;
+import cz.fungisoft.coffeecompass.configuration.JwtAndOAuth2Properties;
 import cz.fungisoft.coffeecompass.exception.OAuth2AuthenticationProcessingException;
 import cz.fungisoft.coffeecompass.utils.CookieUtils;
 import lombok.extern.log4j.Log4j2;
@@ -32,10 +32,10 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
 {
     private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     
-    private OAuth2Properties ouat2Properties;
+    private JwtAndOAuth2Properties ouat2Properties;
 
     public OAuth2AuthenticationFailureHandler(HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository,
-                                              OAuth2Properties ouat2Properties) {
+                                              JwtAndOAuth2Properties ouat2Properties) {
         super();
         this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
         this.ouat2Properties = ouat2Properties;

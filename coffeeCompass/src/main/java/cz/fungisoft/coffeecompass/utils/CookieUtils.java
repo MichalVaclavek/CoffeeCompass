@@ -7,6 +7,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Base64;
 import java.util.Optional;
 
+/**
+ * Class to serve Cookies needed within OAuth2 authentication process.
+ * see: {@link cz.fungisoft.coffeecompass.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository}
+ * 
+ * @author https://www.callicoder.com/spring-boot-security-oauth2-social-login-part-2/
+ *
+ */
 public class CookieUtils
 {
     public static Optional<Cookie> getCookie(HttpServletRequest request, String name) {

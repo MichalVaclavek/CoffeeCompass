@@ -17,6 +17,6 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @Profile("dev")
 @PropertySource("classpath:application-dev.properties")
-public class OAuth2PropertiesDev extends OAuth2Properties
+public class OAuth2PropertiesDev extends JwtAndOAuth2Properties
 {
 }

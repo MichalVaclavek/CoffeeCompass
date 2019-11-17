@@ -58,37 +58,9 @@ import io.swagger.annotations.Api;
 @Api // Anotace Swagger
 @RestController // Ulehcuje zpracovani HTTP/JSON pozadavku z clienta a automaticky vytvari i HTTP/JSON response odpovedi na HTTP/JSON requesty
 @RequestMapping("/rest/site") // vsechny http dotazy v kontroleru maji zacinat timto retezcem
-//@RequiredArgsConstructor //TODO dodelat s pouzitim lombok, bez Autowired na fields
-public class CoffeeSiteControllerREST
+public class CoffeeSiteControllerPublicREST
 {
-    private static final Logger log = LoggerFactory.getLogger(CoffeeSiteControllerREST.class);
-    
-    @Autowired
-    private OtherOfferService offerService;
-    
-    @Autowired
-    private CSStatusService csStatusService;
-    
-    @Autowired
-    private StarsQualityService starsQualityService;
-    
-    @Autowired
-    private PriceRangeService priceRangeService;
-    
-    @Autowired
-    private SiteLocationTypeService locationTypesService;
-    
-    @Autowired
-    private CupTypeService cupTypesService;
-    
-    @Autowired
-    private CoffeeSortService coffeeSortService;
-    
-    @Autowired
-    private NextToMachineTypeService ntmtService;
-    
-    @Autowired
-    private CoffeeSiteTypeService coffeeSiteTypeService;
+    private static final Logger log = LoggerFactory.getLogger(CoffeeSiteControllerPublicREST.class);
     
     private CoffeeSiteService coffeeSiteService;
     
@@ -103,7 +75,7 @@ public class CoffeeSiteControllerREST
      * @param coffeeSiteService
      */
     @Autowired
-    public CoffeeSiteControllerREST(CoffeeSiteService coffeeSiteService) {
+    public CoffeeSiteControllerPublicREST(CoffeeSiteService coffeeSiteService) {
         super();
         this.coffeeSiteService = coffeeSiteService;
     }
@@ -240,107 +212,5 @@ public class CoffeeSiteControllerREST
         } else
             return new ResponseEntity<List<CoffeeSiteDTO>>(result, HttpStatus.OK); 
     }
-
-   
-    /**
-     * Obsluha POST pozadavku ze stranky obsahujici formular pro vytvoreni CoffeeSite.
-     * 
-     * @Valid zajisti, ze se pred zavolanim metody zvaliduje Coffee Site podle limitu, ktere jsou u atributu coffeeSite
-     *
-     * @param coffeeSite
-     * @return
-     */
-    @PostMapping("/create") // Mapovani http POST na DB save/INSERT
-    public ResponseEntity<Void> insert(@Valid @RequestBody CoffeeSiteDTO coffeeSite, UriComponentsBuilder ucBuilder) {
     
-       CoffeeSite cs = coffeeSiteService.save(coffeeSite);
-       
-       HttpHeaders headers = new HttpHeaders();
-       if (cs != null) {
-           log.info("New Coffee site created.");
-           headers.setLocation(ucBuilder.path("/rest/site/{id}").buildAndExpand(coffeeSite.getId()).toUri());
-           return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
-       }
-       else {
-           log.error("Coffee site creation failed");
-           headers.setLocation(ucBuilder.path("/rest/site/create}").buildAndExpand(coffeeSite.getId()).toUri());
-           return new ResponseEntity<Void>(headers, HttpStatus.BAD_REQUEST);
-       }
-    }
-    
-
-    @PutMapping("/update/{id}") // Mapovani http PUT na DB operaci UPDATE tj. zmena zaznamu c. id polozkou coffeeSite, napr. http://localhost:8080/rest/site/update/2
-    public ResponseEntity<CoffeeSiteDTO> updateRest(@PathVariable Long id, @Valid @RequestBody CoffeeSiteDTO coffeeSite) {
-        coffeeSite.setId(id);
-        
-        CoffeeSiteDTO cs = null;
-        if (coffeeSiteService.save(coffeeSite) != null) {
-            log.info("Coffee site update successful.");
-            cs = coffeeSiteService.findOneToTransfer(id);
-        } else
-            log.error("Coffee site update failed.");
-        
-        return (cs != null) ? new ResponseEntity<CoffeeSiteDTO>(cs, HttpStatus.CREATED)
-                            : new ResponseEntity<CoffeeSiteDTO>(HttpStatus.BAD_REQUEST);
-        
-    }
-    
-    /**
-     * Smazani CoffeeSite daneho id
-     * 
-     * @param id
-     */
-    @DeleteMapping("/delete/{id}") // Mapovani http DELETE na DB operaci delete, napr. http://localhost:8080/rest/site/delete/2
-    public ResponseEntity<CoffeeSiteDTO> delete(@PathVariable Long id) {
-        coffeeSiteService.delete(id);
-        return new ResponseEntity<CoffeeSiteDTO>(HttpStatus.NO_CONTENT);
-    }
-    
-    /* *** Atributes needed for client creating/editing Coffee site **** */
-    
-    @ModelAttribute("allOffers")
-    public List<OtherOffer> populateOffers() {
-        return offerService.getAllOtherOffers();
-    }
-       
-    @ModelAttribute("allSiteStatuses")
-    public List<CoffeeSiteStatus> populateSiteStatuses() {
-        return csStatusService.getAllCoffeeSiteStatuses();
-    }
-    
-    @ModelAttribute("allHodnoceniKavyStars")
-    public List<StarsQualityDescription> populateQualityStars() {
-        return starsQualityService.getAllStarsQualityDescriptions();
-    }
-    
-    @ModelAttribute("allPriceRanges")
-    public List<PriceRange> populatePriceRanges() {
-        return priceRangeService.getAllPriceRanges();
-    }
-    
-    @ModelAttribute("allLocationTypes")
-    public List<SiteLocationType> populateLocationTypes() {
-        return locationTypesService.getAllSiteLocationTypes();
-    }
-    
-    @ModelAttribute("allCupTypes")
-    public List<CupType> populateCupTypes() {
-        return cupTypesService.getAllCupTypes();
-    }
-        
-    @ModelAttribute("allCoffeeSorts")
-    public List<CoffeeSort> populateCoffeeSorts() {
-        return coffeeSortService.getAllCoffeeSorts();
-    }
-       
-    @ModelAttribute("allNextToMachineTypes")
-    public List<NextToMachineType> populateNextToMachineTypes() {
-        return ntmtService.getAllNextToMachineTypes();
-    }
-    
-    @ModelAttribute("allCoffeeSiteTypes")
-    public List<CoffeeSiteType> populateCoffeeSiteTypes() {
-        return coffeeSiteTypeService.getAllCoffeeSiteTypes();
-    }
-
 }

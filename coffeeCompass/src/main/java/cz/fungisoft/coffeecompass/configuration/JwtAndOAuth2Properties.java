@@ -18,16 +18,36 @@ import java.util.List;
 @Profile("default")
 @Configuration
 @ConfigurationProperties(prefix = "app")
-public class OAuth2Properties
+public class JwtAndOAuth2Properties
 {
-    private final Auth auth = new Auth();
+    private final JwtAuth jwtAuth = new JwtAuth();
     private final OAuth2 oauth2 = new OAuth2();
 
-    public static class Auth {
+    public static class JwtAuth {
         
         private String tokenSecret;
         
-        private long tokenExpirationMsec;
+        private int tokenExpirationSec;
+        
+        private String issuer;
+        
+        private int clockSkewSec;
+        
+        public String getIssuer() {
+            return issuer;
+        }
+
+        public void setIssuer(String issuer) {
+            this.issuer = issuer;
+        }
+
+        public int getClockSkewSec() {
+            return clockSkewSec;
+        }
+
+        public void setClockSkewSec(int clockSkewSec) {
+            this.clockSkewSec = clockSkewSec;
+        }
 
         public String getTokenSecret() {
             return tokenSecret;
@@ -37,12 +57,12 @@ public class OAuth2Properties
             this.tokenSecret = tokenSecret;
         }
 
-        public long getTokenExpirationMsec() {
-            return tokenExpirationMsec;
+        public int getTokenExpirationSec() {
+            return tokenExpirationSec;
         }
 
-        public void setTokenExpirationMsec(long tokenExpirationMsec) {
-            this.tokenExpirationMsec = tokenExpirationMsec;
+        public void setTokenExpirationSec(int tokenExpirationSec) {
+            this.tokenExpirationSec = tokenExpirationSec;
         }
     }
 
@@ -90,8 +110,8 @@ public class OAuth2Properties
         }
     }
 
-    public Auth getAuth() {
-        return auth;
+    public JwtAuth getJwtAuth() {
+        return jwtAuth;
     }
 
     public OAuth2 getOauth2() {

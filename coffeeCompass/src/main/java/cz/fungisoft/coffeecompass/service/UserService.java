@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 
+import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
 import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.security.oauth2.user.OAuth2UserInfo;
@@ -13,18 +14,22 @@ import cz.fungisoft.coffeecompass.security.oauth2.user.OAuth2UserInfo;
  
 public interface UserService
 {     
-    UserDTO findByIdToTransfer(Long id);
+    Optional<UserDTO> findByIdToTransfer(Long id);
     
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     User findById(Long id);
     
-    UserDTO findByUserNameToTransfer(String userName);
+    Optional<UserDTO> findByUserNameToTransfer(String userName);
     Optional<User> findByUserName(String userName);
     Optional<User> findByEmail(String email);
      
     User saveUser(User user);
     // Pro ulozeni nove vytvoreneho usera z DTO objektu ve formulari
     User save(UserDTO registration);
+    
+    // Pro ulozeni nove vytvoreneho usera z POST requestu pres REST
+    // rozhrani tj. prevazne z mob. app.
+    User registerNewRESTUser(SignUpAndLoginRESTDto restRegisterDTO);
     
     /**
      * Saves new OAuth2Info user data obtained from OAuth2 provider

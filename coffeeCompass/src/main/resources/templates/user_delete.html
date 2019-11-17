@@ -10,12 +10,12 @@
 <body>
     <div th:replace="fragments/header :: header"/>
 
-	<div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} OR ${loggedInUser.isToManageItself}" 
+	<div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} OR ${loggedInUser.toManageItself}" 
 	     class="w3-light-grey w3-margin-bottom w3-center">
        <h2 th:text="#{user.delete.label}">DELETE USER</h2>
     </div>	
 
-	<div class="w3-content" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} OR ${loggedInUser.isToManageItself}">
+	<div class="w3-content" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} OR ${loggedInUser.toManageItself}">
 	
 		  <div class="w3-container w3-card-2 w3-pale-yellow w3-round w3-twothird w3-right"> 
 		  	<!-- Form to delete user account -->

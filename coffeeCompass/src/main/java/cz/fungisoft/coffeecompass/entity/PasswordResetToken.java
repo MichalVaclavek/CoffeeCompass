@@ -19,6 +19,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
+ * 
+ * 
  * @author Michal Václavek, by Baeldung.com 
  *
  */

@@ -45,19 +45,19 @@ public class ValidateTokenServiceImpl implements ValidateTokenService
         
         PasswordResetToken passToken = passwordTokenRepository.findByToken(token);
         if ((passToken == null) || (passToken.getUser().getId() != id)) {
-            return "invalidToken";
+            return TOKEN_INVALID;
         }
    
         // Token expired ?
         Calendar cal = Calendar.getInstance();
         if ((passToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-            return "expiredToken";
+            return TOKEN_EXPIRED;
         }
    
         User user = passToken.getUser();
         
         if (user.getId() != id) {
-            return "invalidUser"; 
+            return TOKEN_INVALID_USER; 
         }
         
         // token valid

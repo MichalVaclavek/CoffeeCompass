@@ -1,0 +1,102 @@
+package cz.fungisoft.coffeecompass.serviceimpl;
+
+
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.google.common.collect.ImmutableMap;
+
+import cz.fungisoft.coffeecompass.entity.User;
+import cz.fungisoft.coffeecompass.security.UserPrincipal;
+import cz.fungisoft.coffeecompass.service.CustomRESTUserAuthenticationService;
+import cz.fungisoft.coffeecompass.service.TokenService;
+import cz.fungisoft.coffeecompass.service.UserSecurityService;
+import cz.fungisoft.coffeecompass.service.UserService;
+
+/**
+ * This class is responsible of logging in and out the users, as well as deliver the authentication tokens.
+ * see: https://octoperf.com/blog/2018/03/08/securing-rest-api-spring-security/
+ * 
+ * @author Michal Vaclavek
+ *
+ */
+@Service("jwtTokenUserAuthenticationService")
+public class JwtTokenUserAuthenticationServiceImpl implements CustomRESTUserAuthenticationService
+{
+    private UserService usersService;
+    
+    private TokenService tokens;
+    
+    private PasswordEncoder passwordEncoder;
+    
+    private UserSecurityService userSecurityService;
+    
+    
+    public JwtTokenUserAuthenticationServiceImpl(UserService usersService,
+                                                 TokenService tokens,
+                                                 PasswordEncoder passwordEncoder,
+                                                 UserSecurityService userSecurityService) {
+        super();
+        this.usersService = usersService;
+        this.tokens = tokens;
+        this.passwordEncoder = passwordEncoder;
+        this.userSecurityService = userSecurityService;
+    }
+
+    /**
+     * Login using username and password. Returns token.
+     */
+    @Override
+    public Optional<String> login(final String userName, final String password, final String deviceID) {
+        
+        Optional<User> user = usersService.findByUserName(userName);
+        
+//        if (user.isPresent()) {
+//            userSecurityService.authWithPassword(user.get(), password);
+//        }
+        
+        Map<String, String> tokenAttributes = ImmutableMap.of("deviceID", deviceID, "username", userName);
+        
+        return user.filter(u -> passwordEncoder.matches(password, u.getPassword()))
+                   .map(u -> tokens.expiring(tokenAttributes));
+    }
+
+    /**
+     * Login using token
+     */
+    @Override
+    @Transactional
+    public Optional<UserDetails> findByToken(final String token) {
+        
+        return Optional.of(tokens.verify(token))
+                       .map(map -> map.get("username"))
+                       .map(usersService::findByUserName) //userName -> usersService.findByUserName(userName)
+                       .flatMap(user -> Optional.ofNullable(UserPrincipal.create(user.get())));
+    }
+
+    @Override
+    public void logout(final UserDetails user) {
+        userSecurityService.logout(user);
+    }
+
+//    @Override
+//    public Optional<UserDetails> findByDeviceId(String deviceId) {
+//        // TODO Auto-generated method stub
+//        return Optional.of(tokens.verify(token))
+//                .map(map -> map.get("username"))
+//                .map(usersService::findByUserName) //userName -> usersService.findByUserName(userName)
+//                .flatMap(user -> Optional.ofNullable(UserPrincipal.create(user.get())));
+//    }
+
+//    @Override
+//    public Optional<UserDetails> findByTokenAndDeviceId(String token, String deviceId) {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
+
+}

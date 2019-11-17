@@ -39,8 +39,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import cz.fungisoft.coffeecompass.controller.CoffeeSiteController;
-import cz.fungisoft.coffeecompass.controller.rest.CoffeeSiteControllerREST;
-import cz.fungisoft.coffeecompass.controller.rest.UserControllerREST;
+import cz.fungisoft.coffeecompass.controller.rest.CoffeeSiteControllerPublicREST;
+import cz.fungisoft.coffeecompass.controller.rest.secured.UserControllerSecuredREST;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
@@ -68,7 +68,7 @@ public class CoffeeSiteControllerTests
 { 
     private MockMvc mvc;
     
-    private CoffeeSiteControllerREST coffeeSiteController;
+    private CoffeeSiteControllerPublicREST coffeeSiteController;
  
     @Mock
     private CoffeeSiteService csService;
@@ -104,7 +104,7 @@ public class CoffeeSiteControllerTests
     
     @Before
     public void setUp() {
-        coffeeSiteController = new CoffeeSiteControllerREST(csService);
+        coffeeSiteController = new CoffeeSiteControllerPublicREST(csService);
         
         mvc = MockMvcBuilders.standaloneSetup(coffeeSiteController).build();
     }

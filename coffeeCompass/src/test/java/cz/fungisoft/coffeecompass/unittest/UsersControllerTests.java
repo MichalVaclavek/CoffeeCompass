@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.Before;
@@ -41,7 +42,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import cz.fungisoft.coffeecompass.controller.rest.UserControllerREST;
+import cz.fungisoft.coffeecompass.controller.rest.secured.UserControllerSecuredREST;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.dto.CommentDTO;
 import cz.fungisoft.coffeecompass.dto.UserDTO;
@@ -54,7 +55,9 @@ import cz.fungisoft.coffeecompass.repository.UsersRepository;
 import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
 import cz.fungisoft.coffeecompass.security.IAuthenticationFacade;
 import cz.fungisoft.coffeecompass.security.SecurityConfiguration;
+import cz.fungisoft.coffeecompass.service.CustomRESTUserAuthenticationService;
 import cz.fungisoft.coffeecompass.service.UserProfileService;
+import cz.fungisoft.coffeecompass.service.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import cz.fungisoft.coffeecompass.serviceimpl.UserServiceImpl;
 import cz.fungisoft.coffeecompass.testutils.JsonUtil;
@@ -75,10 +78,13 @@ public class UsersControllerTests
 { 
     private MockMvc mvc;
     
-    private UserControllerREST userController;
+    private UserControllerSecuredREST userController;
  
     @Mock
     private UserService userService;
+    
+    @Mock
+    UserSecurityService userSecurityService;
     
     @Autowired
     private MapperFacade mapperFacade;
@@ -115,7 +121,7 @@ public class UsersControllerTests
     @Before
     public void setUp() {
         
-        userController = new UserControllerREST(userService);
+        userController = new UserControllerSecuredREST(userService, userSecurityService);
         
         mvc = MockMvcBuilders.standaloneSetup(userController).build();
         
@@ -139,7 +145,7 @@ public class UsersControllerTests
         john.setUserProfiles(userProfiles); 
                 
         given(userService.saveUser(Mockito.any(User.class))).willReturn(john);
-        given(userService.findByIdToTransfer(Mockito.anyLong())).willReturn(mapperFacade.map(john, UserDTO.class) );
+        given(userService.findByIdToTransfer(Mockito.anyLong())).willReturn(Optional.ofNullable((mapperFacade.map(john, UserDTO.class))));
         
         // when and then
 

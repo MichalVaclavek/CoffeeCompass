@@ -15,8 +15,18 @@ public class UserNotFoundException extends RuntimeException
      * 
      */
     private static final long serialVersionUID = -3953771079191608961L;
+    
+    private String localizedMessageCode;
 
     public UserNotFoundException(String message) {
         super(message);
+    }
+
+    public String getLocalizedMessageCode() {
+        return localizedMessageCode;
+    }
+
+    public void setLocalizedMessageCode(String localizedMessageCode) {
+        this.localizedMessageCode = localizedMessageCode;
     }
 }

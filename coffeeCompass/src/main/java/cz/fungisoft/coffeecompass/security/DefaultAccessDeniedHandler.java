@@ -33,7 +33,6 @@ public class DefaultAccessDeniedHandler implements AccessDeniedHandler
                         + httpServletRequest.getRequestURI());
         }
 
-//        httpServletResponse.sendRedirect("http://" + httpServletRequest.getServerName() +  ":" + httpServletRequest.getServerPort() + "/403");
         ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequest();
         UriComponentsBuilder extBuilder = builder.replacePath("/user/registrationConfirm").replaceQuery("").replacePath("/403");
         String redirectTo403Page = extBuilder.build().toUriString();

@@ -2,15 +2,24 @@ package cz.fungisoft.coffeecompass.serviceimpl;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
 import cz.fungisoft.coffeecompass.security.IAuthenticationFacade;
+import cz.fungisoft.coffeecompass.service.CustomRESTUserAuthenticationService;
+import cz.fungisoft.coffeecompass.service.TokenService;
 import cz.fungisoft.coffeecompass.service.UserSecurityService;
 
 /**
@@ -31,10 +40,21 @@ public class UserSecurityServiceImpl implements UserSecurityService
     
     private CustomUserDetailsService userDetailsService;
     
-    public UserSecurityServiceImpl(IAuthenticationFacade authenticationFacade, CustomUserDetailsService userDetailsService) {
+    private CustomRESTUserAuthenticationService restUserDetailsService;
+    
+//    private TokenService tokens;
+    
+    public UserSecurityServiceImpl(IAuthenticationFacade authenticationFacade,
+                                   CustomUserDetailsService userDetailsService,
+                                   @Lazy
+                                   @Qualifier("jwtTokenUserAuthenticationService")
+                                   CustomRESTUserAuthenticationService restUserDetailsService
+                                   ) {
         super();
         this.authenticationFacade = authenticationFacade;
         this.userDetailsService = userDetailsService;
+        this.restUserDetailsService = restUserDetailsService;
+//        this.tokens = tokens;
     }
 
     @Override
@@ -57,6 +77,23 @@ public class UserSecurityServiceImpl implements UserSecurityService
             UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(user.getUserName(), password, nowAuthorities);
             authenticationFacade.getContext().setAuthentication(newAuthentication);                 
         }
+    }
+    
+    /**
+     * Used for authentication using REST token, within Authentication filter, where UserDetails
+     * are fetche from jwt token send from client.
+     */
+    @Override
+    public Authentication authWithToken(String token) {
+        
+        Authentication auth = authenticationFacade.getContext().getAuthentication();
+        
+        Optional<UserDetails> userDetails = restUserDetailsService.findByToken(token);
+        if (userDetails.isPresent()) {
+            auth = new UsernamePasswordAuthenticationToken(userDetails.get().getUsername(), userDetails.get().getPassword(), userDetails.get().getAuthorities());
+        }
+        authenticationFacade.getContext().setAuthentication(auth);
+        return auth;
     }
 
     
@@ -99,6 +136,20 @@ public class UserSecurityServiceImpl implements UserSecurityService
     public void authWithUserNameAndPasswordAndRole(String userName, String passwd, String role) {
         Authentication auth = new UsernamePasswordAuthenticationToken(userName, passwd, Arrays.asList(new SimpleGrantedAuthority(role)));
         authenticationFacade.getContext().setAuthentication(auth);
+    }
+
+    @Override
+    public void logout(UserDetails user) {
+        if (user.equals(authenticationFacade.getAuthentication().getDetails())) {
+            logout();
+        }
+    }
+
+    @Override
+    public void logout(String userName) {
+        if (userName.equalsIgnoreCase((authenticationFacade.getAuthentication().getName()))) {
+            logout();
+        }
     }
 
 }

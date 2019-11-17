@@ -8,6 +8,12 @@ package cz.fungisoft.coffeecompass.service;
  */
 public interface ValidateTokenService
 {
+    final static String TOKEN_EXPIRED = "expiredToken";
+    
+    final static String TOKEN_INVALID = "invalidToken";
+    
+    final static String TOKEN_INVALID_USER =  "invalidTokenUser";
+    
     /**
      * Validates password reset token sent to user on request.
      * 

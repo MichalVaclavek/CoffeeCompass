@@ -11,6 +11,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
+import cz.fungisoft.coffeecompass.security.JwtTokenProviderService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -31,15 +32,15 @@ public class OAuth2TokenAuthenticationFilter extends OncePerRequestFilter
 {
     private static final Logger logger = LoggerFactory.getLogger(OAuth2TokenAuthenticationFilter.class);
     
-    private OAuth2TokenProvider oAuth2TokenProvider;
+    private JwtTokenProviderService jwtTokenProviderService;
 
     private CustomUserDetailsService customUserDetailsService;
 
     
     @Autowired
-    public OAuth2TokenAuthenticationFilter(OAuth2TokenProvider oAuth2TokenProvider, CustomUserDetailsService customUserDetailsService) {
+    public OAuth2TokenAuthenticationFilter(JwtTokenProviderService jwtTokenProviderService, CustomUserDetailsService customUserDetailsService) {
         super();
-        this.oAuth2TokenProvider = oAuth2TokenProvider;
+        this.jwtTokenProviderService = jwtTokenProviderService;
         this.customUserDetailsService = customUserDetailsService;
     }
 
@@ -49,8 +50,8 @@ public class OAuth2TokenAuthenticationFilter extends OncePerRequestFilter
         try {
             String jwt = getJwtFromRequest(request);
 
-            if (StringUtils.hasText(jwt) && oAuth2TokenProvider.validateToken(jwt)) {
-                Long userId = oAuth2TokenProvider.getUserIdFromToken(jwt);
+            if (StringUtils.hasText(jwt) && jwtTokenProviderService.validateToken(jwt)) {
+                Long userId = jwtTokenProviderService.getUserIdFromToken(jwt);
 
                 UserDetails userDetails = customUserDetailsService.loadUserById(userId);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
