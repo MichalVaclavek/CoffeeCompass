@@ -14,8 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -91,9 +93,9 @@ public class UserControllerSecuredREST
         return new ResponseEntity<UserDTO>(user.get(), HttpStatus.OK);
     }
     
-    @GetMapping("/{id}")
+    @GetMapping("/{userName}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserDTO> getUserByUsername(@PathVariable("id") String userName) {
+    public ResponseEntity<UserDTO> getUserByUsername(@PathVariable("userName") String userName) {
         logger.info("Fetching User with username '{}'", userName);
         Optional<UserDTO> currentUser = userService.findByUserNameToTransfer(userName); 
         if (!currentUser.isPresent()) {
@@ -124,7 +126,7 @@ public class UserControllerSecuredREST
        
     // ------------------- Update a User -------------------------------------------------------- //
       
-    @RequestMapping(method = RequestMethod.PUT)
+    @PutMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody SignUpAndLoginRESTDto updateUserRequest) {
         logger.info("Updating User name: '{}'", updateUserRequest.getUserName());
@@ -142,9 +144,9 @@ public class UserControllerSecuredREST
   
     // ------------------- Delete a User -------------------------------------------------------- //
       
-    @RequestMapping(method = RequestMethod.DELETE)
+    @DeleteMapping(("/delete/{userName}"))
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<User> deleteUser(@PathVariable("id") String userName) {
+    public ResponseEntity<User> deleteUser(@PathVariable("userName") String userName) {
         logger.info("Fetching & Deleting User with username {} ", userName);
   
         Optional<User> currentUser = userService.findByUserName(userName);

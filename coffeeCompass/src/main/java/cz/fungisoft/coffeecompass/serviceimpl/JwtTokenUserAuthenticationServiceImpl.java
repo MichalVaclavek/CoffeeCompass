@@ -56,11 +56,7 @@ public class JwtTokenUserAuthenticationServiceImpl implements CustomRESTUserAuth
         
         Optional<User> user = usersService.findByUserName(userName);
         
-//        if (user.isPresent()) {
-//            userSecurityService.authWithPassword(user.get(), password);
-//        }
-        
-        Map<String, String> tokenAttributes = ImmutableMap.of("deviceID", deviceID, "username", userName);
+        Map<String, String> tokenAttributes = ImmutableMap.of("deviceID", deviceID, "userName", userName);
         
         return user.filter(u -> passwordEncoder.matches(password, u.getPassword()))
                    .map(u -> tokens.expiring(tokenAttributes));
@@ -74,29 +70,14 @@ public class JwtTokenUserAuthenticationServiceImpl implements CustomRESTUserAuth
     public Optional<UserDetails> findByToken(final String token) {
         
         return Optional.of(tokens.verify(token))
-                       .map(map -> map.get("username"))
+                       .map(map -> map.get("userName"))
                        .map(usersService::findByUserName) //userName -> usersService.findByUserName(userName)
-                       .flatMap(user -> Optional.ofNullable(UserPrincipal.create(user.get())));
+                       .map(user -> UserPrincipal.create(user.get()));
     }
 
     @Override
     public void logout(final UserDetails user) {
         userSecurityService.logout(user);
     }
-
-//    @Override
-//    public Optional<UserDetails> findByDeviceId(String deviceId) {
-//        // TODO Auto-generated method stub
-//        return Optional.of(tokens.verify(token))
-//                .map(map -> map.get("username"))
-//                .map(usersService::findByUserName) //userName -> usersService.findByUserName(userName)
-//                .flatMap(user -> Optional.ofNullable(UserPrincipal.create(user.get())));
-//    }
-
-//    @Override
-//    public Optional<UserDetails> findByTokenAndDeviceId(String token, String deviceId) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
 
 }

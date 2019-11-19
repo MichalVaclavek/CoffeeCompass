@@ -4,6 +4,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
+
 /**
  * A DTO object for accepting REST register request from mobile
  * client app. It is simlified version of {@link cz.fungisoft.coffeecompass.dto.UserDTO}.

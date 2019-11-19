@@ -99,9 +99,9 @@ public class UserServiceImpl implements UserService
     }
     
     @Override
-    public Optional<UserDTO> findByUserNameToTransfer(String userName) {      
+    public Optional<UserDTO> findByUserNameToTransfer(String userName) {
         Optional<User> user = findByUserName(userName);
-        return addNonPersistentInfoToUser(user.get());
+        return user.isPresent() ? addNonPersistentInfoToUser(user.get()) : Optional.empty();
     }
     
     @Override

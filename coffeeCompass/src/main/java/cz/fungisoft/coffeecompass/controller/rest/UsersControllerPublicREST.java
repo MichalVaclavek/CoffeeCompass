@@ -49,10 +49,8 @@ public class UsersControllerPublicREST
             throw new BadRequestException("Name already in use.");
         }
         
-        if (loginRequest.getEmail() != null && !loginRequest.getEmail().isEmpty()) {
-            if (!usersService.isEmailUnique(null, loginRequest.getEmail())) {
-                throw new BadRequestException("Email address already in use.");
-            }
+        if (!usersService.isEmailUnique(null, loginRequest.getEmail())) {
+            throw new BadRequestException("Email address already in use.");
         }
       
         usersService.registerNewRESTUser(loginRequest);
@@ -64,7 +62,7 @@ public class UsersControllerPublicREST
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody SignUpAndLoginRESTDto loginRequest) {
         
-        String token = authentication.login(loginRequest.getEmail(), loginRequest.getPassword(), loginRequest.getDeviceID())
+        String token = authentication.login(loginRequest.getUserName(), loginRequest.getPassword(), loginRequest.getDeviceID())
                                      .orElseThrow(() -> new BadRequestException("invalid login and/or password"));
       
         return ResponseEntity.ok(token);
