@@ -34,12 +34,12 @@ import io.swagger.annotations.Api;
 @Api // Anotace Swagger
 @RestController // Ulehcuje zpracovani HTTP/JSON pozadavku z clienta a automaticky vytvari i HTTP/JSON response odpovedi na HTTP/JSON requesty
 @RequestMapping("/rest/image")
-public class ImageControllerREST
+public class ImageControllerPublicREST
 {
     private final ImageStorageService imageStorageService;
 
     @Autowired
-    public ImageControllerREST(ImageStorageService storageService) {
+    public ImageControllerPublicREST(ImageStorageService storageService) {
         this.imageStorageService = storageService;
     }
 

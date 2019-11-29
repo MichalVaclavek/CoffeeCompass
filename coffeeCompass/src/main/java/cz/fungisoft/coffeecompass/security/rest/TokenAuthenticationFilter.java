@@ -42,6 +42,7 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
     @Override
     public Authentication attemptAuthentication(final HttpServletRequest request,
                                                 final HttpServletResponse response) {
+        
        String param = Optional.ofNullable(request.getHeader(AUTHORIZATION))
                               .orElse(request.getParameter("t"));
 
@@ -56,7 +57,7 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
            auth = userSecurityService.authWithToken(token);
          
        } catch (Exception ex) {
-         logger.error("Could not set user authentication in security context", ex);
+           logger.error("Could not set user authentication in security context", ex);
        }
       return auth;
     }
@@ -66,6 +67,7 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
                                             final HttpServletResponse response,
                                             final FilterChain chain,
                                             final Authentication authResult) throws IOException, ServletException {
+        
        super.successfulAuthentication(request, response, chain, authResult);
        chain.doFilter(request, response);
     }

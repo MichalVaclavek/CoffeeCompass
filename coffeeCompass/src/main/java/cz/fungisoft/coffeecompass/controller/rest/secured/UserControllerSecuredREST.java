@@ -51,7 +51,6 @@ public class UserControllerSecuredREST
     
     private UserService userService;
      
-    //private CustomRESTUserAuthenticationService userSecurityService;
     private UserSecurityService userSecurityService;
     
      /**
@@ -105,25 +104,6 @@ public class UserControllerSecuredREST
         return new ResponseEntity<UserDTO>(currentUser.get(), HttpStatus.OK);
     }
   
-    // ------------------- Create a User -------------------------------------------------------- //
-      
-//    @RequestMapping(value = "/", method = RequestMethod.POST)
-//    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO user, UriComponentsBuilder ucBuilder) {
-//        logger.info("Creating User " + user.getUserName());
-//  
-//        if (userService.isUserNameUnique(null, user.getUserName())) {
-//            logger.info("A User with name " + user.getUserName() + " already exist");
-//            return new ResponseEntity<UserDTO>(HttpStatus.CONFLICT);
-//        }
-//  
-//        User savedUser = userService.save(user);
-//
-//        ResponseEntity<UserDTO> response;
-//        response = (savedUser != null) ? new ResponseEntity<UserDTO>(userService.findByIdToTransfer(savedUser.getId()), HttpStatus.CREATED)
-//                                       : new ResponseEntity<UserDTO>(HttpStatus.METHOD_FAILURE);
-//        return response;
-//    }
-       
     // ------------------- Update a User -------------------------------------------------------- //
       
     @PutMapping

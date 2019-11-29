@@ -13,7 +13,6 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.ICommentService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
-import io.swagger.annotations.Api;
 
 /**
  * Controller for handling addition/deletition of Comment and Stars for CoffeeSite.<br>
@@ -62,8 +61,10 @@ public class CSStarsRatingAndCommentsController
         
         CoffeeSite cs = coffeeSiteService.findOneById(coffeeSiteId);
         
-        if ((starsAndComment.getComment() != null) && !starsAndComment.getComment().isEmpty())
+        // Ulozit Comment if not empty
+        if ((starsAndComment.getComment() != null) && !starsAndComment.getComment().isEmpty()) {
             commentsService.saveTextAsComment(starsAndComment.getComment(), cs);
+        }
         
         // Show same coffee site with new Stars and comments
         ModelAndView mav = new ModelAndView("redirect:/showSite/" + coffeeSiteId);

@@ -19,8 +19,9 @@ import cz.fungisoft.coffeecompass.service.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.UserService;
 
 /**
- * This class is responsible of logging in and out the users, as well as deliver the authentication tokens.
- * see: https://octoperf.com/blog/2018/03/08/securing-rest-api-spring-security/
+ * This class is responsible of performing logging in and out operations for the users,<br>
+ * as well as deliver the authentication tokens.<br>
+ * @see https://octoperf.com/blog/2018/03/08/securing-rest-api-spring-security/
  * 
  * @author Michal Vaclavek
  *

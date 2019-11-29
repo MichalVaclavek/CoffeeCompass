@@ -24,19 +24,9 @@ public class StarsAndCommentModel
     @Size(max=240)
     private String comment;
     
+    
     public StarsAndCommentModel() {
         stars = new StarsQualityDescription(); 
-        stars.setQuality(StarsQualityEnum.THREE); // default value, prumerna kvalita
     }
     
-    //TODO - check if the method is really needed
-    /**
-     * Clears the model, before nex usage. Is it really needed or the new model 
-     * is created every time the evaluation is requested.
-     *
-     */
-    public void clear() {
-        stars.setQuality(StarsQualityEnum.THREE); // set back to default
-        comment="";
-    }
 }

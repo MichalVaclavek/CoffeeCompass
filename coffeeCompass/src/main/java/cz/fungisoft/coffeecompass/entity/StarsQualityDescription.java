@@ -14,18 +14,17 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
- * Slovni popis kvality kavy, automatu, podniku ...
+ * Slovni a čiselný popis kvality kavy, automatu, podniku ...
+ * Stupnice 1 až 5 a příslušné slovní označení.
  *
  * @author Michal Vaclavek
- *
  */
 @Data
 @Entity
 @Table(name="stars_hodnoceni_kvality", schema="coffeecompass")
 public class StarsQualityDescription
 {
-  
-    public enum StarsQualityEnum implements Serializable
+    public static enum StarsQualityEnum implements Serializable
     {
         ONE("Břečka"),
         TWO("Slabota"),
@@ -33,7 +32,7 @@ public class StarsQualityDescription
         FOUR("Dobrá"),
         FIVE("Vynikající");
          
-        String starsQuality;
+        private String starsQuality;
          
         private StarsQualityEnum(String starsQuality) {
             this.starsQuality = starsQuality;
@@ -42,19 +41,53 @@ public class StarsQualityDescription
         public String getStarsQuality() {
             return starsQuality;
         }
+        
+        public static StarsQualityEnum fromString(String text) {
+            for (StarsQualityEnum b : StarsQualityEnum.values()) {
+                if (b.starsQuality.equalsIgnoreCase(text)) {
+                    return b;
+                }
+            }
+            throw new IllegalArgumentException("No constant with text " + text + " found.");
+        }
     }
     
     @Id
     @NotNull
     @Column(name = "pocet_hvezdicek")
-    private Integer numOfStars;  
+    private Integer numOfStars; 
+    
+    public void setNumOfStars(Integer numOfStars) {
+        this.numOfStars = numOfStars;
+        
+        switch (numOfStars)
+        {
+          case 1:
+              this.quality = StarsQualityEnum.ONE.getStarsQuality();
+              break;
+          case 2:
+              this.quality = StarsQualityEnum.TWO.getStarsQuality();
+              break;
+          case 3:
+              this.quality = StarsQualityEnum.THREE.getStarsQuality();
+              break;
+          case 4:
+              this.quality = StarsQualityEnum.FOUR.getStarsQuality();
+              break;
+          case 5:
+              this.quality = StarsQualityEnum.FIVE.getStarsQuality();
+              break;    
+          default:
+              break;
+        }
+    }
     
     @NotNull // Validace vstupu, nesmi byt null
     @Column(name = "slovni_vyjadreni_hvezdicek", unique=true, length=45)
     private String quality = StarsQualityEnum.THREE.getStarsQuality(); // Default value needed, atribute must not be null
     
     public void setQuality(StarsQualityEnum qual) {
-        quality = qual.starsQuality;
+        this.quality = qual.starsQuality;
         
         switch (qual)
         {
@@ -75,6 +108,31 @@ public class StarsQualityDescription
                 break;    
             default:
                 break;
+        }
+    }
+    
+    public void setQuality(String quality) {
+        this.quality = quality;
+        
+        switch (StarsQualityEnum.fromString(quality))
+        {
+          case ONE:
+              numOfStars = 1;
+              break;
+          case TWO:
+              numOfStars = 2;
+              break;
+          case THREE:
+              numOfStars = 3;
+              break;
+          case FOUR:
+              numOfStars = 4;
+              break;
+          case FIVE:
+              numOfStars = 5;
+              break;    
+          default:
+              break;
         }
     }
     

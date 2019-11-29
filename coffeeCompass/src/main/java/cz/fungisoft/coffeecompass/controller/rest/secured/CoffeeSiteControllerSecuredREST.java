@@ -59,9 +59,9 @@ import io.swagger.annotations.Api;
 @RestController // Ulehcuje zpracovani HTTP/JSON pozadavku z clienta a automaticky vytvari i HTTP/JSON response odpovedi na HTTP/JSON requesty
 @RequestMapping("/rest/site") // vsechny http dotazy v kontroleru maji zacinat timto retezcem
 //@RequiredArgsConstructor //TODO dodelat s pouzitim lombok, bez Autowired na fields
-public class CoffeeSiteControllerREST
+public class CoffeeSiteControllerSecuredREST
 {
-    private static final Logger log = LoggerFactory.getLogger(CoffeeSiteControllerREST.class);
+    private static final Logger log = LoggerFactory.getLogger(CoffeeSiteControllerSecuredREST.class);
     
     @Autowired
     private OtherOfferService offerService;
@@ -103,7 +103,7 @@ public class CoffeeSiteControllerREST
      * @param coffeeSiteService
      */
     @Autowired
-    public CoffeeSiteControllerREST(CoffeeSiteService coffeeSiteService) {
+    public CoffeeSiteControllerSecuredREST(CoffeeSiteService coffeeSiteService) {
         super();
         this.coffeeSiteService = coffeeSiteService;
     }

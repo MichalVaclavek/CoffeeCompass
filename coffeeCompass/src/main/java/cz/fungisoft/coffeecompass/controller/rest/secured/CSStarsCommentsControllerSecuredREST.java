@@ -1,22 +1,22 @@
 package cz.fungisoft.coffeecompass.controller.rest.secured;
 
+
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import cz.fungisoft.coffeecompass.controller.models.StarsAndCommentModel;
-import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.dto.CommentDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
@@ -31,15 +31,15 @@ import io.swagger.annotations.Api;
  * <br>
  * Pro ziskani techto informaci ke CoffeeSitu se pouziva Controler CoffeeSiteController,
  * ktery vola prislusne Service, ktere dodaji Comments a prumerne hodnoceni k danemu
- * CoffeeSitu
+ * CoffeeSitu.
  * 
  * @author Michal Vaclavek
  *
  */
 @Api // Anotace Swagger
 @RestController // Ulehcuje zpracovani HTTP/JSON pozadavku z clienta a automaticky vytvari i HTTP/JSON response odpovedi na HTTP/JSON requesty
-@RequestMapping("/rest/starsAndComments")
-public class CSStarsCommentsControllerREST
+@RequestMapping("/rest/secured/starsAndComments")
+public class CSStarsCommentsControllerSecuredREST
 {
     private ICommentService commentsService;
     
@@ -49,8 +49,9 @@ public class CSStarsCommentsControllerREST
     
     
     @Autowired
-    public CSStarsCommentsControllerREST(ICommentService commentsService, IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService,
-                                CoffeeSiteService coffeeSiteService) {
+    public CSStarsCommentsControllerSecuredREST(ICommentService commentsService,
+                                                IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService,
+                                                CoffeeSiteService coffeeSiteService) {
         super();
         this.commentsService = commentsService;
         this.starsForCoffeeSiteService = starsForCoffeeSiteService;
@@ -60,45 +61,58 @@ public class CSStarsCommentsControllerREST
 
     /**
      * Zpracuje POST pozadavek z REST consumera, ktery pozaduje ulozit Comment a Stars pro jeden CoffeeSite<br>
+     * Example of Correct JSON request body:
+     * { "stars": {
+     *             "numOfStars": 2
+     *            },
+     *   "comment": "Docela dobra kava"
+     * }
      * 
-     * NOT YET USED in REST CONTROLLER
+     * Returns list of comments belonging to this coffeeSite id
      * 
      * @param starsAndComment
      * @param id CoffeeSite id to which the StarsAndCommentModel belongs to
-     * @return
+     * @return list of comments belonging to this coffeeSitie id
      */
-    @PostMapping("/saveStarsAndComment/{coffeeSiteId}") 
-    public ResponseEntity<Void> saveCommentAndStarsForSite(@ModelAttribute StarsAndCommentModel starsAndComment, @PathVariable Long coffeeSiteId) {
+    //@PostMapping(value="/saveStarsAndComment/{coffeeSiteId}", headers = {"content-type=application/json"}, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value="/saveStarsAndComment/{coffeeSiteId}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<List<CommentDTO>> saveCommentAndStarsForSite(@RequestBody @Valid StarsAndCommentModel starsAndComment,
+                                                           @PathVariable("coffeeSiteId") Long coffeeSiteId) {
         // Ulozit hodnoceni if not empty
         starsForCoffeeSiteService.saveStarsForCoffeeSite(coffeeSiteId, starsAndComment.getStars().getNumOfStars());
         
         CoffeeSite cs = coffeeSiteService.findOneById(coffeeSiteId);
         
-        if ((starsAndComment.getComment() != null) && !starsAndComment.getComment().isEmpty())
+        // Ulozit Comment for the CoffeeSite, if not empty
+        if ((starsAndComment.getComment() != null) && !starsAndComment.getComment().isEmpty()) {
             commentsService.saveTextAsComment(starsAndComment.getComment(), cs);
+        }
         
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        // Gets all comments for this coffeeSite
+        List<CommentDTO> comments = commentsService.getAllCommentsForSiteId(coffeeSiteId);
+        
+        return (comments == null) ? new ResponseEntity<List<CommentDTO>>(HttpStatus.NOT_FOUND)
+                                  : new ResponseEntity<List<CommentDTO>>(comments, HttpStatus.OK);
+        
+        //return new ResponseEntity<Void>(HttpStatus.OK);
     }
     
     /**
      * Zpracuje DELETE pozadavek na smazani komentare k jednomu CoffeeSitu.<br>
-     * Muze byt volano pouze ADMINEM ... <br>
-     * 
-     * NOT YET USED in REST CONTROLLER
+     * Muze byt volano pouze ADMINEM nebo prihlasenym autorem hodnoceni s roli USER.<br>
      * 
      * @param id of the Comment to delete
      * @return
      */
-    @DeleteMapping("/deleteComment/{commentId}") 
-    public ResponseEntity<Void> deleteCommentAndStarsForSite(@PathVariable Integer commentId) {
+    @DeleteMapping("/deleteComment/{commentId}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<Void> deleteCommentAndStarsForSite(@PathVariable("commentId") Integer commentId) {
         // Smazat komentar - need to have site Id to give it to /showSite Controller
         Long siteId = commentsService.deleteCommentById(commentId);
         
-        if (siteId != null) {
-           return new ResponseEntity<Void>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
-        }
+        return (siteId != null) ? new ResponseEntity<Void>(HttpStatus.OK)
+                                : new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
     }
 
 }

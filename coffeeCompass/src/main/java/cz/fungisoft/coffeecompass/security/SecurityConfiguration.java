@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,8 +22,11 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import cz.fungisoft.coffeecompass.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
@@ -67,14 +71,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
      * @param userDetailsService
      * @param accessDeniedHandler
      */
-    public SecurityConfiguration(@Qualifier("customUserDetailsService") UserDetailsService userDetailsService,
-                                                                        CustomOAuth2UserService customOAuth2UserService,
-                                                                        @Lazy
-                                                                        OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
-                                                                        @Lazy
-                                                                        OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler,
-                                                                        AccessDeniedHandler accessDeniedHandler,
-                                                                        UserSecurityService userSecurityService) {
+    public SecurityConfiguration(@Qualifier("customUserDetailsService")
+                                 UserDetailsService userDetailsService,
+                                 CustomOAuth2UserService customOAuth2UserService,
+                                 @Lazy
+                                 OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
+                                 @Lazy
+                                 OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler,
+                                 AccessDeniedHandler accessDeniedHandler,
+                                 UserSecurityService userSecurityService) {
         super();
         this.userDetailsService = userDetailsService;
         this.customOAuth2UserService = customOAuth2UserService;
@@ -100,6 +105,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
     @Override
     protected void configure(HttpSecurity http) throws Exception {    
 
+        // Swithes off CSRF protection for REST i.e. for URL path with /rest/ at the begining
+        http.csrf()
+            .requireCsrfProtectionMatcher(new AndRequestMatcher(CsrfFilter.DEFAULT_CSRF_MATCHER, new RegexRequestMatcher("^(?!/rest/)", null)));
+        
         http.authorizeRequests()
             .antMatchers("/","/home", "/about").permitAll()
             .antMatchers("/oauth2/**").permitAll()
@@ -118,22 +127,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
             .formLogin().loginPage("/login").defaultSuccessUrl("/home", false).permitAll()
             .and()
             .logout().permitAll().logoutUrl("/logout")
-            .logoutSuccessUrl("/home")
-            .and()
-             // REST security login params
-//            .sessionManagement()
-//            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//            .and()
-            .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
+            .logoutSuccessUrl("/home");
+        
+        // REST security login params
+        http.exceptionHandling().accessDeniedHandler(accessDeniedHandler) //TODO How to create two Access denied handlers for Thymeleaf and REST?
             .defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_REST_URLS)
             .and() 
             .addFilterBefore(restAuthenticationFilter(), AnonymousAuthenticationFilter.class)
             .authorizeRequests()
             .requestMatchers(PROTECTED_REST_URLS)
-            .authenticated()
-            .and()
-            // OAuth2 login parameters
-            .oauth2Login()
+            .authenticated();
+        
+        // OAuth2 login parameters
+        http.oauth2Login()
             .loginPage("/login")
             .defaultSuccessUrl("/oauth2/loginSuccess")
             .authorizationEndpoint()

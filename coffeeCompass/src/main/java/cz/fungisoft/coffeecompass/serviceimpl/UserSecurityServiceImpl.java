@@ -41,8 +41,6 @@ public class UserSecurityServiceImpl implements UserSecurityService
     
     private CustomRESTUserAuthenticationService restUserDetailsService;
     
-//    private TokenService tokens;
-    
     public UserSecurityServiceImpl(IAuthenticationFacade authenticationFacade,
                                    CustomUserDetailsService userDetailsService,
                                    @Lazy
@@ -53,7 +51,6 @@ public class UserSecurityServiceImpl implements UserSecurityService
         this.authenticationFacade = authenticationFacade;
         this.userDetailsService = userDetailsService;
         this.restUserDetailsService = restUserDetailsService;
-//        this.tokens = tokens;
     }
 
     @Override
@@ -80,7 +77,7 @@ public class UserSecurityServiceImpl implements UserSecurityService
     
     /**
      * Used for authentication using REST token, within Authentication filter, where UserDetails
-     * are fetche from jwt token send from client.
+     * are fetched from jwt token send from client.
      */
     @Override
     public Authentication authWithToken(String token) {
