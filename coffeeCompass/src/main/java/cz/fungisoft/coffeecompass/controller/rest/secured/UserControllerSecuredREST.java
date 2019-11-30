@@ -8,21 +8,17 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
 import cz.fungisoft.coffeecompass.controller.rest.UsersControllerPublicREST;
@@ -59,7 +55,6 @@ public class UserControllerSecuredREST
       */
     @Autowired
     public UserControllerSecuredREST(UserService userService,
-                                     //@Qualifier("jwtTokenUserAuthenticationService")
                                     UserSecurityService userSecurityService) {
         super();
         this.userService = userService;
@@ -85,7 +80,7 @@ public class UserControllerSecuredREST
     public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long id) {
         logger.info("Fetching User with id " + id);
         Optional<UserDTO> user = userService.findByIdToTransfer(id);
-        if (user.isPresent()) {
+        if (!user.isPresent()) {
             logger.info("User with id " + id + " not found");
             return new ResponseEntity<UserDTO>(HttpStatus.NOT_FOUND);
         }

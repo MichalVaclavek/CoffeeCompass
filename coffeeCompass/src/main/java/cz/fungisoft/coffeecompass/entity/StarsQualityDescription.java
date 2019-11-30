@@ -52,6 +52,15 @@ public class StarsQualityDescription
         }
     }
     
+    /**
+     * Basic constructor for this class.
+     * Sets default values for {@code numOfStars} and for {@code quality} properties.
+     */
+    public StarsQualityDescription() {
+        setNumOfStars(3);
+    }
+    
+    
     @Id
     @NotNull
     @Column(name = "pocet_hvezdicek")

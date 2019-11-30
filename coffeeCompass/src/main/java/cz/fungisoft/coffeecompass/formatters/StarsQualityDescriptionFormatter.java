@@ -23,7 +23,7 @@ public class StarsQualityDescriptionFormatter implements Formatter<StarsQualityD
 
     @Override
     public String print(StarsQualityDescription starsQuality, Locale locale) {
-        return (starsQuality != null ? Integer.toString(starsQuality.getNumOfStars()) : "");
+        return (starsQuality != null) ? Integer.toString(starsQuality.getNumOfStars()) : "";
     }
 
     @Override

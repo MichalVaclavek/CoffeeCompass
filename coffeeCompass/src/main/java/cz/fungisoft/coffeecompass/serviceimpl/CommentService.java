@@ -107,12 +107,6 @@ public class CommentService implements ICommentService
 	    return modifyToTransfer(commentsRepo.findAll());
 	}
 	
-	private CommentDTO convertCommentToDto(Comment comment) {
-	    CommentDTO retValComment = mapperFacade.map(comment, CommentDTO.class);
-	    retValComment.setCanBeDeleted(isDeletable(retValComment));
-	    return retValComment;
-	}
-	
 	/**
      * Adds attributes to CoffeeSite to identify what operations can be done with CoffeeSite in UI
      * 
@@ -122,9 +116,7 @@ public class CommentService implements ICommentService
     private List<CommentDTO> modifyToTransfer(List<Comment> comments) {
         List<CommentDTO> commentsTransfer = mapperFacade.mapAsList(comments, CommentDTO.class);
         
-        for (CommentDTO comment : commentsTransfer) {
-            comment.setCanBeDeleted(isDeletable(comment));
-        }
+        commentsTransfer.forEach(comment -> comment.setCanBeDeleted(isDeletable(comment)));
         
         return commentsTransfer;
     }

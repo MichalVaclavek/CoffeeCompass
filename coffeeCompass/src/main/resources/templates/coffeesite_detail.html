@@ -88,12 +88,12 @@
 					
 							<tr th:if="${#lists.size(coffeeSite.cupTypes) > 0}">
 							   <td th:text="#{site.cupTypes}">Cup Types</td>
-							  <td class="w3-right-align w3-sand" style="font-weight: bold"><span th:each="cupType, iterStat : ${coffeeSite.cupTypes}" th:text="!${iterStat.last} ? ${cupType}+', ' : ${cupType}">Cup Types</span></td> 
+							   <td class="w3-right-align w3-sand" style="font-weight: bold"><span th:each="cupType, iterStat : ${coffeeSite.cupTypes}" th:text="!${iterStat.last} ? ${cupType}+', ' : ${cupType}">Cup Types</span></td> 
 							 </tr>
 					
 							<tr th:if="${coffeeSite.numOfCoffeeAutomatyVedleSebe} > 0">
-							  <td th:text="#{site.numOfCoffeeMachines}">Number of coffee machines together</td>
-							  <td class="w3-right-align w3-sand" th:text="${coffeeSite.numOfCoffeeAutomatyVedleSebe}" style="font-weight: bold">Number of coffee machines together</td>
+							   <td th:text="#{site.numOfCoffeeMachines}">Number of coffee machines together</td>
+							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.numOfCoffeeAutomatyVedleSebe}" style="font-weight: bold">Number of coffee machines together</td>
 							</tr>
 							  
 							<tr th:if= "${coffeeSite.dodavatelPodnik.nameOfCompany != ''}">
@@ -102,8 +102,8 @@
 							</tr>
 							  
 							<tr th:if="${#lists.size(coffeeSite.nextToMachineTypes) > 0}">
-							  <td th:text="#{site.nextToMachineTypes}">Other neighbering machines types</td>
-							  <td class="w3-right-align w3-sand" style="font-weight: bold"><span th:each="ntmType, iterStat : ${coffeeSite.nextToMachineTypes}" th:text="!${iterStat.last} ? ${ntmType}+', ' : ${ntmType}">Other neighbering machines types</span></td>
+							   <td th:text="#{site.nextToMachineTypes}">Other neighbering machines types</td>
+							   <td class="w3-right-align w3-sand" style="font-weight: bold"><span th:each="ntmType, iterStat : ${coffeeSite.nextToMachineTypes}" th:text="!${iterStat.last} ? ${ntmType}+', ' : ${ntmType}">Other neighbering machines types</span></td>
 							</tr>
 							  
 							<tr th:if= "${coffeeSite.pristupnostDny != ''} AND ${coffeeSite.pristupnostHod != ''}">
@@ -117,8 +117,8 @@
 							</tr>
 							  
 							<tr th:if= "${coffeeSite.mesto != ''}">
-							  <td th:text="#{site.city}">City</td>		  		
-							  <td class="w3-right-align w3-sand" th:text="${coffeeSite.mesto}" style="font-weight: bold">City</td>
+							   <td th:text="#{site.city}">City</td>		  		
+							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.mesto}" style="font-weight: bold">City</td>
 							</tr>
 							  
 							<tr th:if= "${coffeeSite.uliceCP != ''}">	  
@@ -135,8 +135,7 @@
 							   				<p th:text="#{site.latitude.short}+' '+${coffeeSite.zemSirka}"></p>
 							   			</div>
 							   			<div class="w3-cell w3-cell-middle w3-container w3-border-left">
-							   				<form 
-								             	   action="#"
+							   				<form  action="#"
 								             	   th:action="@{'/showSiteInMap/' + ${coffeeSite.id}}"
 								             	   th:method="GET" >
 									             <input type="hidden" name="_method" value="get" />
@@ -380,8 +379,8 @@
 		    
 		    <!-- Comments list  -->
 		    <!--  Every comment has button Delete in case of ADMIN user is logged-in or USER who created the comment -->
-		    <div class="w3-container"> 
-				<b><h3 th:text="#{site.listOfComments}" class="w3-border-bottom w3-bottombar  w3-margin-top">Comments: </h3></b>
+		    <div class="w3-container w3-margin-top"> 
+				<b><h3 th:text="#{site.listOfComments}" class="w3-border-bottom w3-bottombar">Comments: </h3></b>
 				<div class="w3-margin-top w3-small" style="font-style: italic" th:if="${#lists.isEmpty(comments)}" th:text="#{site.noComments}"></div>
 				<div class="w3-container w3-margin-top" th:if="${NOT #lists.isEmpty(comments)}">
 					<div th:each="comment : ${comments}" class="w3-border-bottom w3-margin-top">

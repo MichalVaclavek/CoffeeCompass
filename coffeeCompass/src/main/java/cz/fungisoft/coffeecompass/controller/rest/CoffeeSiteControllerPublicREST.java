@@ -2,47 +2,19 @@ package cz.fungisoft.coffeecompass.controller.rest;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
-import cz.fungisoft.coffeecompass.entity.CoffeeSite;
-import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
-import cz.fungisoft.coffeecompass.entity.CoffeeSiteType;
-import cz.fungisoft.coffeecompass.entity.CoffeeSort;
-import cz.fungisoft.coffeecompass.entity.CupType;
-import cz.fungisoft.coffeecompass.entity.NextToMachineType;
-import cz.fungisoft.coffeecompass.entity.OtherOffer;
-import cz.fungisoft.coffeecompass.entity.PriceRange;
-import cz.fungisoft.coffeecompass.entity.SiteLocationType;
-import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
-import cz.fungisoft.coffeecompass.service.CSStatusService;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
-import cz.fungisoft.coffeecompass.service.CoffeeSiteTypeService;
-import cz.fungisoft.coffeecompass.service.CoffeeSortService;
-import cz.fungisoft.coffeecompass.service.CupTypeService;
-import cz.fungisoft.coffeecompass.service.NextToMachineTypeService;
-import cz.fungisoft.coffeecompass.service.OtherOfferService;
-import cz.fungisoft.coffeecompass.service.PriceRangeService;
-import cz.fungisoft.coffeecompass.service.SiteLocationTypeService;
-import cz.fungisoft.coffeecompass.service.StarsQualityService;
 import io.swagger.annotations.Api;
 
 /**

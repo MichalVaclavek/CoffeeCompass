@@ -169,8 +169,8 @@ public class JwtTokenProviderService implements Clock, TokenService
             final ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
             for (final Map.Entry<String, Object> e : claims.entrySet()) {
                 builder.put(e.getKey(), String.valueOf(e.getValue()));
-          }
-          return builder.build();
+            }
+            return builder.build();
         } catch (final IllegalArgumentException | JwtException e) {
             return ImmutableMap.of();
         }

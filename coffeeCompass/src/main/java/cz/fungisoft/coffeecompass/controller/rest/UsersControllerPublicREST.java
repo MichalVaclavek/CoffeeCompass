@@ -2,7 +2,6 @@ package cz.fungisoft.coffeecompass.controller.rest;
 
 import lombok.NonNull;
 
-import java.util.Date;
 import java.util.Optional;
 
 import javax.validation.Valid;

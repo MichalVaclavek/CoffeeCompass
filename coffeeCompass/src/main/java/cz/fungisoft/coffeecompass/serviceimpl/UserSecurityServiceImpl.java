@@ -100,8 +100,7 @@ public class UserSecurityServiceImpl implements UserSecurityService
     @Override
     public String getCurrentLoggedInUserName() {
         Authentication authentication = authenticationFacade.getAuthentication();
-        return  (authentication != null) ? authentication.getName()
-                                         : "";
+        return  (authentication != null) ? authentication.getName() : "";
     }
     
     /**

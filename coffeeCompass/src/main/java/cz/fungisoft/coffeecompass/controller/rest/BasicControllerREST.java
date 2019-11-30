@@ -18,7 +18,7 @@ import io.swagger.annotations.Api;
  *
  */
 @Api // Anotace Swagger
-@RestController // Ulehcuje zpracovani HTTP/JSON pozadavku z clienta a automaticky vytvari i HTTP/JSON response odpovedi na HTTP/JSON requesty
+@RestController
 @RequestMapping("/rest") // uvadi se, pokud vsechny dotazy v kontroleru maji zacinat timto retezcem
 public class BasicControllerREST
 {

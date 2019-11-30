@@ -3,7 +3,6 @@ package cz.fungisoft.coffeecompass.controller.models;
 import javax.validation.constraints.Size;
 
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
-import cz.fungisoft.coffeecompass.entity.StarsQualityDescription.StarsQualityEnum;
 import lombok.Data;
 
 /**
@@ -26,7 +25,8 @@ public class StarsAndCommentModel
     
     
     public StarsAndCommentModel() {
-        stars = new StarsQualityDescription(); 
+        stars = new StarsQualityDescription();
+        comment = "";
     }
     
 }

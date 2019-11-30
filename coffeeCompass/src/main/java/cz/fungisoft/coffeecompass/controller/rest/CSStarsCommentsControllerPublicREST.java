@@ -46,9 +46,15 @@ public class CSStarsCommentsControllerPublicREST
     }
 
     /**
-     * Returns all comments of the CoffeeSite of id=siteId
+     * Returns all comments of the CoffeeSite of id=siteId.
+     * <p>
+     * It returns CommentDTO.canBeDeleted = false in case of REST.<br>
+     * But the comment Delete request can be sent containing respective JWT<br>
+     * of the loged-in user. Therefore, the client decides if the<br>
+     * comment can be deleted based on valid JWT token it received<br>
+     * during login of the user.
      * 
-     * @param siteId
+     * @param siteId id of coffeeSite who's comments are requested
      * @return
      */
     @GetMapping("/comments/{siteId}") // napr. http://localhost:8080/rest/public/starsAndComments/comments/2
@@ -62,8 +68,8 @@ public class CSStarsCommentsControllerPublicREST
     }
     
     /**
-     * A method, which gets all valid/possible slovni hodnoceni
-     * kvality kavy to be selected by user during hodnoceni.
+     * A method, which gets all valid/possible slovni hodnoceni<br>
+     * kvality kavy to be selected by user during hodnoceni.<br>
      * Used as an options on form to rate coffee site's coffee quality.
      * 
      * @return

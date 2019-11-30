@@ -78,7 +78,7 @@ public class CSStarsCommentsControllerSecuredREST
     @PostMapping(value="/saveStarsAndComment/{coffeeSiteId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<CommentDTO>> saveCommentAndStarsForSite(@RequestBody @Valid StarsAndCommentModel starsAndComment,
-                                                           @PathVariable("coffeeSiteId") Long coffeeSiteId) {
+                                                                       @PathVariable("coffeeSiteId") Long coffeeSiteId) {
         // Ulozit hodnoceni if not empty
         starsForCoffeeSiteService.saveStarsForCoffeeSite(coffeeSiteId, starsAndComment.getStars().getNumOfStars());
         
@@ -94,25 +94,23 @@ public class CSStarsCommentsControllerSecuredREST
         
         return (comments == null) ? new ResponseEntity<List<CommentDTO>>(HttpStatus.NOT_FOUND)
                                   : new ResponseEntity<List<CommentDTO>>(comments, HttpStatus.OK);
-        
-        //return new ResponseEntity<Void>(HttpStatus.OK);
     }
     
     /**
      * Zpracuje DELETE pozadavek na smazani komentare k jednomu CoffeeSitu.<br>
      * Muze byt volano pouze ADMINEM nebo prihlasenym autorem hodnoceni s roli USER.<br>
+     * Vrati siteID coffee situ, ke kteremu smazanuy komentar patril.
      * 
-     * @param id of the Comment to delete
-     * @return
+     * @param id of the Comment to be deleted
+     * @return siteID of the coffeeSite where the deleted comment belonged to
      */
     @DeleteMapping("/deleteComment/{commentId}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<Void> deleteCommentAndStarsForSite(@PathVariable("commentId") Integer commentId) {
-        // Smazat komentar - need to have site Id to give it to /showSite Controller
+    public ResponseEntity<Long> deleteCommentAndStarsForSite(@PathVariable("commentId") Integer commentId) {
         Long siteId = commentsService.deleteCommentById(commentId);
         
-        return (siteId != null) ? new ResponseEntity<Void>(HttpStatus.OK)
-                                : new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+        return (siteId != null) ? new ResponseEntity<Long>(siteId, HttpStatus.OK)
+                                : new ResponseEntity<Long>(HttpStatus.BAD_REQUEST);
     }
 
 }
