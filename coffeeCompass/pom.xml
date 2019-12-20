@@ -5,7 +5,7 @@
 
 	<groupId>cz.fungisoft</groupId>
 	<artifactId>coffeecompass</artifactId>
-	<version>0.9.8-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Coffee Compass</name>
@@ -211,6 +211,7 @@
 		</plugins>
 	</build>
 
-	<description>Server pro ukládání a vyhledávání informací o místech, kde se dá koupit káva - zvláště automaty, ale i bistra, kavárny apod.</description>
+	<description>Server pro ukládání a vyhledávání informací o místech, kde se dá koupit káva - zvláště automaty, ale i bistra, kavárny, benzinky apod.</description>
 	
+	<url>www.coffeecompass.cz</url>
 </project>

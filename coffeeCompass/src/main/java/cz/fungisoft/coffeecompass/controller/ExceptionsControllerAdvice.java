@@ -1,9 +1,5 @@
 package cz.fungisoft.coffeecompass.controller;
 
-import cz.fungisoft.coffeecompass.exception.BadAuthorizationRequestException;
-import cz.fungisoft.coffeecompass.exception.EntityNotFoundException;
-import cz.fungisoft.coffeecompass.exception.OAuth2AuthenticationProcessingException;
-
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
 
@@ -16,16 +12,24 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import cz.fungisoft.coffeecompass.exceptions.BadAuthorizationRequestException;
+import cz.fungisoft.coffeecompass.exceptions.EntityNotFoundException;
+import cz.fungisoft.coffeecompass.exceptions.OAuth2AuthenticationProcessingException;
+import cz.fungisoft.coffeecompass.exceptions.UserNotFoundException;
 
 /**
  * Centralizovane zachycovani vyjimek a prirazovani textu a View vsem druhum vyjimek
  * pro pripad pouziti Thymeleaf procesingu.
  */
 @ControllerAdvice
+@Order(2)
 public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
 {
     private static final Logger logger = LogManager.getLogger(ExceptionsControllerAdvice.class);
@@ -42,6 +46,19 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
         model.addObject("error", "Requested Entity not found!");
         model.addObject("status", "Try another page/item.");
         model.addObject("errorMessage", e.getMessage());
+        model.setViewName("error/404");
+        return model;
+    }
+    
+    @ExceptionHandler({ UserNotFoundException.class })
+    public ModelAndView handleRESTUserNotFound(UserNotFoundException ex) {
+        
+        logger.error("404 - Chyba: user Not Found {}", ex.getMessage());
+        
+        ModelAndView model = new ModelAndView();
+        model.addObject("error", "Requested User not found!");
+        model.addObject("status", "Try another page/item.");
+        model.addObject("errorMessage", ex.getMessage());
         model.setViewName("error/404");
         return model;
     }
@@ -128,8 +145,7 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
     @ExceptionHandler
     public ModelAndView handleOtherExceptions(Exception e) {
         
-        logger.error("Chyba:"
-                + " {}", e.getMessage());
+        logger.error("Chyba: {}", e.getMessage());
         
         ModelAndView model = new ModelAndView();
         model.addObject("error", "Sorry user, error!");

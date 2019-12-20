@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cz.fungisoft.coffeecompass.exception;
+package cz.fungisoft.coffeecompass.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  */
 @ResponseStatus(value=HttpStatus.NOT_FOUND, reason="File Not Found Exception!")
-public class MyFileNotFoundException extends RuntimeException
+public class FileNotFoundException extends RuntimeException
 {
     private static final long serialVersionUID = -6348014814749638612L;
 
-    public MyFileNotFoundException(String message) {
+    public FileNotFoundException(String message) {
         super(message);
     }
 
-    public MyFileNotFoundException(String message, Throwable cause) {
+    public FileNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
 }

@@ -1,4 +1,4 @@
-package cz.fungisoft.coffeecompass.exception;
+package cz.fungisoft.coffeecompass.exceptions.rest;
 
 /**
  * General REST Exception
@@ -11,14 +11,14 @@ public class RESTException extends RuntimeException
     
     private static final long serialVersionUID = 9071059486273080298L;
     
-    private String localizedMessageCode;
+    protected String localizedErrorMessage;
 
-    public String getLocalizedMessageCode() {
-        return localizedMessageCode;
+    public String getLocalizedErrorMessage() {
+        return localizedErrorMessage;
     }
 
-    public void setLocalizedMessageCode(String localizedMessageCode) {
-        this.localizedMessageCode = localizedMessageCode;
+    public void setLocalizedErrorMessage(String localizedMessage) {
+        this.localizedErrorMessage = localizedMessage;
     }
 
     public RESTException(String message) {

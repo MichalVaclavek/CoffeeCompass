@@ -1,10 +1,17 @@
-package cz.fungisoft.coffeecompass.exception;
+package cz.fungisoft.coffeecompass.exceptions.rest;
 
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;
 
+/**
+ * Exception to be thrown when requested app. resource is not found. For example, User, CoffeeSite and so on.
+ * upon search request.
+ * 
+ * @author Michal Vaclavek
+ *
+ */
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class ResourceNotFoundException extends RuntimeException {
+public class ResourceNotFoundException extends RESTException {
     
     private static final long serialVersionUID = 5708262961739783284L;
     
@@ -12,8 +19,6 @@ public class ResourceNotFoundException extends RuntimeException {
     private String fieldName;
     private Object fieldValue;
     
-    private String localizedMessageCode;
-
     public ResourceNotFoundException(String resourceName, String fieldName, Object fieldValue) {
         super(String.format("%s not found with %s : '%s'", resourceName, fieldName, fieldValue));
         this.resourceName = resourceName;
@@ -33,11 +38,4 @@ public class ResourceNotFoundException extends RuntimeException {
         return fieldValue;
     }
 
-    public String getLocalizedMessageCode() {
-        return localizedMessageCode;
-    }
-
-    public void setLocalizedMessageCode(String localizedMessageCode) {
-        this.localizedMessageCode = localizedMessageCode;
-    }
 }

@@ -15,7 +15,7 @@ import org.springframework.util.StringUtils;
 
 import cz.fungisoft.coffeecompass.controller.models.AuthProviders;
 import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.exception.OAuth2AuthenticationProcessingException;
+import cz.fungisoft.coffeecompass.exceptions.OAuth2AuthenticationProcessingException;
 import cz.fungisoft.coffeecompass.security.UserPrincipal;
 import cz.fungisoft.coffeecompass.security.oauth2.user.OAuth2UserInfo;
 import cz.fungisoft.coffeecompass.security.oauth2.user.OAuth2UserInfoFactory;

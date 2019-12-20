@@ -34,7 +34,7 @@ import cz.fungisoft.coffeecompass.controller.models.DeleteUserAccountModel;
 import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
-import cz.fungisoft.coffeecompass.exception.UserNotFoundException;
+import cz.fungisoft.coffeecompass.exceptions.UserNotFoundException;
 import cz.fungisoft.coffeecompass.listeners.OnRegistrationCompleteEvent;
 import cz.fungisoft.coffeecompass.service.UserProfileService;
 import cz.fungisoft.coffeecompass.service.UserSecurityService;
@@ -181,11 +181,6 @@ public class UserController
                 if (!userService.isEmailUnique(null, userDto.getEmail())) {
                     result.rejectValue("email", "error.user.emailused", "There is already an account registered with that e-mail address.");
                 }
-                
-//                existing = userService.findByEmail(userDto.getEmail());
-//                if (existing.isPresent()) {
-//                    result.rejectValue("email", "error.user.emailused", "There is already an account registered with that e-mail address.");
-//                }
             }
         }
         
@@ -264,7 +259,7 @@ public class UserController
         if (!model.containsAttribute("user")) {
             user = userService.findByUserNameToTransfer(userName);
             if (user.isPresent()) {
-                mav.addObject("user", user);
+                mav.addObject("user", user.get());
             } else {
                 logger.error("User name {} not found.", userName);
                 throw new UserNotFoundException("User name " + userName + " not found.");

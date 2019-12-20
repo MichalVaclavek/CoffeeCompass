@@ -24,7 +24,7 @@ import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
 import cz.fungisoft.coffeecompass.controller.rest.UsersControllerPublicREST;
 import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.exception.ResourceNotFoundException;
+import cz.fungisoft.coffeecompass.exceptions.rest.ResourceNotFoundException;
 import cz.fungisoft.coffeecompass.service.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import io.swagger.annotations.Api;
@@ -121,25 +121,30 @@ public class UserControllerSecuredREST
       
     @DeleteMapping(("/delete/{userName}"))
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<User> deleteUser(@PathVariable("userName") String userName) {
+    public ResponseEntity<Boolean> deleteUser(@PathVariable("userName") String userName) {
         logger.info("Fetching & Deleting User with username {} ", userName);
   
         Optional<User> currentUser = userService.findByUserName(userName);
         if (!currentUser.isPresent()) {
             logger.info("Unable to delete. User with username '{}' not found.", userName);
-            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
-        }
+            //return new ResponseEntity<Boolean>(false, HttpStatus.NOT_FOUND);
+            throw new ResourceNotFoundException("User", "username", userName);
+        } 
   
         userService.deleteUserById(currentUser.get().getId());
-        return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<Boolean>(true, HttpStatus.OK);
     }
     
     /** Gets the current REST User loged-in **/
     
     @GetMapping("/current")
     @PreAuthorize("hasRole('USER')")
-    public UserDTO getCurrent(@AuthenticationPrincipal final String userName) {
-        return userService.findByUserNameToTransfer(userName).orElseThrow(() -> new ResourceNotFoundException("User", "username", userName));
+    //public UserDTO getCurrent(@AuthenticationPrincipal final String userName) {
+    public ResponseEntity<UserDTO> getCurrent(@AuthenticationPrincipal final String userName) {
+        Optional<UserDTO> currentUser = userService.findByUserNameToTransfer(userName);
+        //if (currentUser.isPresent())
+        return new ResponseEntity<UserDTO>(currentUser.orElseThrow(() -> new ResourceNotFoundException("User", "username", userName)), HttpStatus.OK);
+        
     }
     
     /**

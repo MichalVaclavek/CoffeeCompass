@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import cz.fungisoft.coffeecompass.entity.User;
+import cz.fungisoft.coffeecompass.exceptions.rest.BadAuthorizationRESTRequestException;
 import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
 import cz.fungisoft.coffeecompass.security.IAuthenticationFacade;
 import cz.fungisoft.coffeecompass.service.CustomRESTUserAuthenticationService;
@@ -87,7 +88,10 @@ public class UserSecurityServiceImpl implements UserSecurityService
         Optional<UserDetails> userDetails = restUserDetailsService.findByToken(token);
         if (userDetails.isPresent()) {
             auth = new UsernamePasswordAuthenticationToken(userDetails.get().getUsername(), userDetails.get().getPassword(), userDetails.get().getAuthorities());
+        } else {
+            throw new BadAuthorizationRESTRequestException("Bad authorization.");
         }
+        
         authenticationFacade.getContext().setAuthentication(auth);
         return auth;
     }

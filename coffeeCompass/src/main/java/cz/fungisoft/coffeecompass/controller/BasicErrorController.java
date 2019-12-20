@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author Michal Vaclavek
  *
  */
-@Controller
-public class MyErrorController implements ErrorController
+//@Controller
+public class BasicErrorController implements ErrorController
 {
     @RequestMapping("/error")
     public String handleError(HttpServletRequest request) {

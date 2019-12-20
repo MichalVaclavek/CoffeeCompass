@@ -16,7 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.exception.BadAuthorizationRequestException;
+import cz.fungisoft.coffeecompass.exceptions.BadAuthorizationRequestException;
 import cz.fungisoft.coffeecompass.security.JwtTokenProviderService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import lombok.extern.log4j.Log4j2;

@@ -2,6 +2,7 @@ package cz.fungisoft.coffeecompass.configuration;
 
 import java.util.Locale;
 
+import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,7 @@ import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.Comment;
 import cz.fungisoft.coffeecompass.entity.User;
+import cz.fungisoft.coffeecompass.exceptions.GeneralErrorAttributes;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
@@ -80,17 +82,17 @@ public class CoffeeCompassConfiguration implements WebMvcConfigurer
         
         // Only userName is needed for CoffeeSiteDto object
         mapperFactory.classMap(CoffeeSite.class, CoffeeSiteDTO.class)
-                                        .field("originalUser.userName", "originalUserName")
-                                        .field("lastEditUser.userName", "lastEditUserName")
-                                        .byDefault()
-                                        .register();
+                     .field("originalUser.userName", "originalUserName")
+                     .field("lastEditUser.userName", "lastEditUserName")
+                     .byDefault()
+                     .register();
         
         // Only userName and CoffeeSiteID is needed for CommentDTO object
         mapperFactory.classMap(Comment.class, CommentDTO.class)
-                                        .field("user.userName", "userName")
-                                        .field("coffeeSite.id", "coffeeSiteID")
-                                        .byDefault()
-                                        .register();
+                     .field("user.userName", "userName")
+                     .field("coffeeSite.id", "coffeeSiteID")
+                     .byDefault()
+                     .register();
      
         return mapperFactory.getMapperFacade();
     }    
@@ -117,6 +119,16 @@ public class CoffeeCompassConfiguration implements WebMvcConfigurer
         LocalValidatorFactoryBean validatorFactory = new LocalValidatorFactoryBean();
         validatorFactory.setValidationMessageSource(messageSource);
         return validatorFactory;
+    }
+    
+    /**
+     * We override the default {@link DefaultErrorAttributes}
+     *
+     * @return A custom implementation of ErrorAttributes
+     */
+    @Bean
+    public ErrorAttributes errorAttributes() {
+        return new GeneralErrorAttributes();
     }
     
 }

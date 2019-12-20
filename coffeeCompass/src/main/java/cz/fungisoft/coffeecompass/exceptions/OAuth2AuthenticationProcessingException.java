@@ -1,4 +1,4 @@
-package cz.fungisoft.coffeecompass.exception;
+package cz.fungisoft.coffeecompass.exceptions;
 
 import org.springframework.security.core.AuthenticationException;
 

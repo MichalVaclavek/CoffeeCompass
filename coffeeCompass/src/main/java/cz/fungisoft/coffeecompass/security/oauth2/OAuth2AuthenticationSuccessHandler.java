@@ -6,7 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import cz.fungisoft.coffeecompass.configuration.JwtAndOAuth2Properties;
-import cz.fungisoft.coffeecompass.exception.BadAuthorizationRequestException;
+import cz.fungisoft.coffeecompass.exceptions.BadAuthorizationRequestException;
 import cz.fungisoft.coffeecompass.security.JwtTokenProviderService;
 import lombok.extern.log4j.Log4j2;
 

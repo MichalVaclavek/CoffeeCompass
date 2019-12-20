@@ -3,7 +3,7 @@ package cz.fungisoft.coffeecompass.security.oauth2.user;
 import java.util.Map;
 
 import cz.fungisoft.coffeecompass.controller.models.AuthProviders;
-import cz.fungisoft.coffeecompass.exception.OAuth2AuthenticationProcessingException;
+import cz.fungisoft.coffeecompass.exceptions.OAuth2AuthenticationProcessingException;
 
 /**
  * Factory class to get concrete implementation of the OAuth2UserInfo class according provider.

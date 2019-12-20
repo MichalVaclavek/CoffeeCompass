@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.Image;
-import cz.fungisoft.coffeecompass.exception.StorageFileException;
+import cz.fungisoft.coffeecompass.exceptions.StorageFileException;
 import cz.fungisoft.coffeecompass.repository.ImageRepository;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.ImageStorageService;

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cz.fungisoft.coffeecompass.dto.CommentDTO;
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
+import cz.fungisoft.coffeecompass.exceptions.rest.ResourceNotFoundException;
 import cz.fungisoft.coffeecompass.service.ICommentService;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
 import io.swagger.annotations.Api;
@@ -63,8 +64,13 @@ public class CSStarsCommentsControllerPublicREST
         // Gets all comments for this coffeeSite
         List<CommentDTO> comments = commentsService.getAllCommentsForSiteId(siteId);
         
-        return (comments == null) ? new ResponseEntity<List<CommentDTO>>(HttpStatus.NOT_FOUND)
-                                  : new ResponseEntity<List<CommentDTO>>(comments, HttpStatus.OK); 
+//        return (comments == null) ? new ResponseEntity<List<CommentDTO>>(HttpStatus.NOT_FOUND)
+//                                  : new ResponseEntity<List<CommentDTO>>(comments, HttpStatus.OK);
+        if (comments == null) {
+            throw new ResourceNotFoundException("Comments", "coffeeSiteId", siteId);
+        }
+        
+        return new ResponseEntity<List<CommentDTO>>(comments, HttpStatus.OK);
     }
     
     /**

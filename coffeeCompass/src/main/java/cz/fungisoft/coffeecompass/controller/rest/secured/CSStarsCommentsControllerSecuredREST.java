@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cz.fungisoft.coffeecompass.controller.models.StarsAndCommentModel;
 import cz.fungisoft.coffeecompass.dto.CommentDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
+import cz.fungisoft.coffeecompass.exceptions.rest.ResourceNotFoundException;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.ICommentService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
@@ -92,8 +93,10 @@ public class CSStarsCommentsControllerSecuredREST
         // Gets all comments for this coffeeSite
         List<CommentDTO> comments = commentsService.getAllCommentsForSiteId(coffeeSiteId);
         
-        return (comments == null) ? new ResponseEntity<List<CommentDTO>>(HttpStatus.NOT_FOUND)
-                                  : new ResponseEntity<List<CommentDTO>>(comments, HttpStatus.OK);
+        if (comments == null) {
+            throw new ResourceNotFoundException("Comments", "coffeeSiteId", coffeeSiteId);
+        }
+        return new ResponseEntity<List<CommentDTO>>(comments, HttpStatus.OK);
     }
     
     /**
@@ -107,10 +110,16 @@ public class CSStarsCommentsControllerSecuredREST
     @DeleteMapping("/deleteComment/{commentId}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Long> deleteCommentAndStarsForSite(@PathVariable("commentId") Integer commentId) {
-        Long siteId = commentsService.deleteCommentById(commentId);
         
-        return (siteId != null) ? new ResponseEntity<Long>(siteId, HttpStatus.OK)
-                                : new ResponseEntity<Long>(HttpStatus.BAD_REQUEST);
+        Long siteId = null;
+        siteId = commentsService.deleteCommentById(commentId);
+        
+        if (siteId == null) {
+            throw new ResourceNotFoundException("Comment", "commentId", commentId);
+        }
+         
+        return new ResponseEntity<Long>(siteId, HttpStatus.OK);
+            
     }
 
 }

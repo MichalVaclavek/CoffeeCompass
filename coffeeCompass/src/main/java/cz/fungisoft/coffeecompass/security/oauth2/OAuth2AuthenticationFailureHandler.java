@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import cz.fungisoft.coffeecompass.configuration.JwtAndOAuth2Properties;
-import cz.fungisoft.coffeecompass.exception.OAuth2AuthenticationProcessingException;
+import cz.fungisoft.coffeecompass.exceptions.OAuth2AuthenticationProcessingException;
 import cz.fungisoft.coffeecompass.utils.CookieUtils;
 import lombok.extern.log4j.Log4j2;
 

@@ -124,14 +124,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
             .antMatchers("/imageUpload", "/deleteImage/**").hasAnyRole("ADMIN", "DBA", "USER")
             .antMatchers("/user/updatePassword**", "/updatePassword**").hasAuthority("CHANGE_PASSWORD_PRIVILEGE")
             .and()
+            .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
+            .and()
             .formLogin().loginPage("/login").defaultSuccessUrl("/home", false).permitAll()
             .and()
             .logout().permitAll().logoutUrl("/logout")
             .logoutSuccessUrl("/home");
         
         // REST security login params
-        http.exceptionHandling().accessDeniedHandler(accessDeniedHandler) //TODO How to create two Access denied handlers for Thymeleaf and REST?
-            .defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_REST_URLS)
+        //http.exceptionHandling().accessDeniedHandler(accessDeniedHandler) //TODO How to create two Access denied handlers for Thymeleaf and REST?
+        http.exceptionHandling().defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_REST_URLS)
             .and() 
             .addFilterBefore(restAuthenticationFilter(), AnonymousAuthenticationFilter.class)
             .authorizeRequests()

@@ -58,6 +58,7 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
          
        } catch (Exception ex) {
            logger.error("Could not set user authentication in security context", ex);
+           throw ex;
        }
       return auth;
     }
