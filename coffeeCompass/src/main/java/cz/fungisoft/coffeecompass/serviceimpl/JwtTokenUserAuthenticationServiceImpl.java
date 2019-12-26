@@ -50,12 +50,17 @@ public class JwtTokenUserAuthenticationServiceImpl implements CustomRESTUserAuth
     }
 
     /**
-     * Login using username and password. Returns token.
+     * Login using username and password. Returns token.<br>
+     * 'userName' can be email address too
      */
     @Override
     public Optional<String> login(final String userName, final String password, final String deviceID) {
         
         Optional<User> user = usersService.findByUserName(userName);
+        
+        if (!user.isPresent()) {
+            user = usersService.findByEmail(userName);
+        }
         
         Map<String, String> tokenAttributes = ImmutableMap.of("deviceID", deviceID, "userName", userName);
         

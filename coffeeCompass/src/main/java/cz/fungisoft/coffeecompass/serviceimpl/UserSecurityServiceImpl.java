@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,7 +17,6 @@ import cz.fungisoft.coffeecompass.exceptions.rest.BadAuthorizationRESTRequestExc
 import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
 import cz.fungisoft.coffeecompass.security.IAuthenticationFacade;
 import cz.fungisoft.coffeecompass.service.CustomRESTUserAuthenticationService;
-import cz.fungisoft.coffeecompass.service.TokenService;
 import cz.fungisoft.coffeecompass.service.UserSecurityService;
 
 /**

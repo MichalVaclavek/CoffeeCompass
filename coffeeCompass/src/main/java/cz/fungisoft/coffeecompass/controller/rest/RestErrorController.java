@@ -1,4 +1,4 @@
-package cz.fungisoft.coffeecompass.controller;
+package cz.fungisoft.coffeecompass.controller.rest;
 
 import java.util.Map;
 
@@ -11,10 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cz.fungisoft.coffeecompass.controller.ExceptionsControllerAdvice;
+import cz.fungisoft.coffeecompass.controller.ExceptionsControllerRESTAdvice;
+
 /**
  * Controller pro obsluhu obecnych chyb. Pouzije se namisto "Whiteable Error Page".<br>
  * Aplikace tedy bude vzdy vracet REST JSON response v pripade, ze dojde k nejake<br>
- * vyjimce, kterou neosetruji {@link ExceptionsControllerAdvice} nebo<br>
+ * vyjimce, kterou neosetruji {@link ExceptionsControllerAdvice} nebo<br>.
  * {@link ExceptionsControllerRESTAdvice}
  * 
  * @author Michal Vaclavek

@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 import lombok.Data;
 
 /**
- * A DTO object for accepting REST register request from mobile
+ * A DTO object for accepting REST register aor login request from mobile
  * client app.<br>
  * It is simlified version of {@link cz.fungisoft.coffeecompass.dto.UserDTO}.
  * but deviceID attribute is added to distinquish what device

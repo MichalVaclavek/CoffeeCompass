@@ -1,6 +1,6 @@
 package cz.fungisoft.coffeecompass.controller;
 
-import cz.fungisoft.coffeecompass.controller.models.CommonRestError;
+import cz.fungisoft.coffeecompass.controller.models.rest.CommonRestError;
 import cz.fungisoft.coffeecompass.exceptions.rest.BadAuthorizationRESTRequestException;
 import cz.fungisoft.coffeecompass.exceptions.rest.BadRESTRequestException;
 import cz.fungisoft.coffeecompass.exceptions.rest.InvalidParameterValueException;
@@ -35,7 +35,6 @@ public class ExceptionsControllerRESTAdvice extends ResponseEntityExceptionHandl
     private MessageSource messages;
     
     
-    
     /** REST Exception handlers for errors during User handling **/
     
 //    @ExceptionHandler({ UserNotFoundException.class })
@@ -51,7 +50,9 @@ public class ExceptionsControllerRESTAdvice extends ResponseEntityExceptionHandl
     @ExceptionHandler({ MailAuthenticationException.class })
     public ResponseEntity<CommonRestError> handleMail(MailAuthenticationException ex, WebRequest request) {
         logger.error("40X Status Code", ex);
-        CommonRestError bodyOfErrorResponse = new CommonRestError(messages.getMessage("message.email.config.error.rest", null, request.getLocale()), "MailError");
+        CommonRestError bodyOfErrorResponse = new CommonRestError(messages.getMessage("message.email.config.error.rest",
+                                                                                      null, request.getLocale()),
+                                                                                      "MailError");
          
         return new ResponseEntity<>(bodyOfErrorResponse, HttpStatus.UNAUTHORIZED);
     }
@@ -59,21 +60,19 @@ public class ExceptionsControllerRESTAdvice extends ResponseEntityExceptionHandl
     @ExceptionHandler({ BadRESTRequestException.class })
     public ResponseEntity<CommonRestError> handleBadRESTRequest(BadRESTRequestException ex, WebRequest request) {
         logger.error("40X Status Code", ex);
-        CommonRestError bodyOfErrorResponse = new CommonRestError(messages.getMessage("message.error.bad.request",
-                                                                                             null,
-                                                                                             request.getLocale()),
-                                                                                             "Bad request");
-         
+        CommonRestError bodyOfErrorResponse = new CommonRestError("/errors/bad_request", "Bad request",
+                                                                  400, ex.getLocalizedMessage(),
+                                                                  request.getDescription(false));
         return new ResponseEntity<>(bodyOfErrorResponse, HttpStatus.BAD_REQUEST);
     }
-    
     
     
     @ExceptionHandler({ BadCredentialsException.class })
     public ResponseEntity<CommonRestError> handleBadCredentialsRESTRequest(BadCredentialsException ex, WebRequest request) {
         logger.error("401 Status Code", ex);
-        CommonRestError bodyOfErrorResponse = new CommonRestError("/errors/authentication", "Wrong authentication", 401, ex.getLocalizedMessage(), request.getContextPath());
- 
+        CommonRestError bodyOfErrorResponse = new CommonRestError("/errors/authentication", "Wrong authentication",
+                                                                  401, ex.getLocalizedMessage(),
+                                                                  request.getDescription(false));
         return new ResponseEntity<>(bodyOfErrorResponse, HttpStatus.UNAUTHORIZED);
     }
     
@@ -81,7 +80,9 @@ public class ExceptionsControllerRESTAdvice extends ResponseEntityExceptionHandl
     @ExceptionHandler({ InvalidParameterValueException.class })
     public ResponseEntity<CommonRestError> handleInvalidParameterRESTRequest(InvalidParameterValueException ex, WebRequest request) {
         logger.error("409 Status Code", ex);
-        CommonRestError bodyOfErrorResponse = new CommonRestError("/errors/input_parameters", "Wrong parameter", 409, ex.getLocalizedErrorMessage(), request.getContextPath());
+        CommonRestError bodyOfErrorResponse = new CommonRestError("/errors/input_parameters", "Wrong parameter",
+                                                                  409, ex.getLocalizedErrorMessage(),
+                                                                  request.getDescription(false));
         bodyOfErrorResponse.setErrorParameter(ex.getFieldName());
         bodyOfErrorResponse.setErrorParameterValue(ex.getFieldValue().toString());
         return new ResponseEntity<>(bodyOfErrorResponse, HttpStatus.CONFLICT);
@@ -90,7 +91,10 @@ public class ExceptionsControllerRESTAdvice extends ResponseEntityExceptionHandl
     @ExceptionHandler({ ResourceNotFoundException.class })
     public ResponseEntity<CommonRestError> handleResourceNotFoundRESTRequest(ResourceNotFoundException ex, WebRequest request) {
         logger.error("40X Status Code", ex);
-        CommonRestError bodyOfErrorResponse = new CommonRestError("/errors/resources", "Resource not found.", 404, ex.getLocalizedErrorMessage(), request.getContextPath());
+        CommonRestError bodyOfErrorResponse = new CommonRestError("/errors/resources",
+                                                                  "Resource not found: " + ex.getResourceName(),
+                                                                  404, ex.getLocalizedErrorMessage(),
+                                                                  request.getDescription(false));
         bodyOfErrorResponse.setErrorParameter(ex.getFieldName());
         bodyOfErrorResponse.setErrorParameterValue(ex.getFieldValue().toString());
         return new ResponseEntity<>(bodyOfErrorResponse, HttpStatus.NOT_FOUND);
@@ -99,7 +103,9 @@ public class ExceptionsControllerRESTAdvice extends ResponseEntityExceptionHandl
     @ExceptionHandler({ BadAuthorizationRESTRequestException.class })
     public ResponseEntity<CommonRestError> handleBadAuthorizationRESTRequest(BadAuthorizationRESTRequestException ex, WebRequest request) {
         logger.error("401 Status Code", ex);
-        CommonRestError bodyOfErrorResponse = new CommonRestError("/errors/authentication", "Wrong authentication", 401, ex.getLocalizedErrorMessage(), request.getContextPath());
+        CommonRestError bodyOfErrorResponse = new CommonRestError("/errors/authentication", "Wrong authentication",
+                                                                  401, ex.getLocalizedErrorMessage(),
+                                                                  request.getDescription(false));
  
         return new ResponseEntity<>(bodyOfErrorResponse, HttpStatus.UNAUTHORIZED);
     }
@@ -111,8 +117,7 @@ public class ExceptionsControllerRESTAdvice extends ResponseEntityExceptionHandl
     public ResponseEntity<Object> handleRESTInternal(RESTException ex, WebRequest request) {
         logger.error("500 Status Code", ex);
         CommonRestError bodyOfResponse = new CommonRestError(messages.getMessage("message.error",
-                                                                     null,
-                                                                     request.getLocale()),
+                                                                     null, request.getLocale()),
                                                                      "InternalError");
          
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);

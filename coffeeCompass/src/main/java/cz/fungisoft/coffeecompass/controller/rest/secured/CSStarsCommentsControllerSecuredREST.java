@@ -30,8 +30,8 @@ import io.swagger.annotations.Api;
  * REST verze<br>
  * Obsluhuje operace souvisejici s vkladanim/mazanim hodnoceni a komentare ke CoffeeSitu  
  * <br>
- * Pro ziskani techto informaci ke CoffeeSitu se pouziva Controler CoffeeSiteController,
- * ktery vola prislusne Service, ktere dodaji Comments a prumerne hodnoceni k danemu
+ * Pro ziskani techto informaci ke CoffeeSitu se pouziva Controler CoffeeSiteController,<br>
+ * ktery vola prislusne Service, ktere dodaji Comments a prumerne hodnoceni k danemu<br>
  * CoffeeSitu.
  * 
  * @author Michal Vaclavek
@@ -102,7 +102,7 @@ public class CSStarsCommentsControllerSecuredREST
     /**
      * Zpracuje DELETE pozadavek na smazani komentare k jednomu CoffeeSitu.<br>
      * Muze byt volano pouze ADMINEM nebo prihlasenym autorem hodnoceni s roli USER.<br>
-     * Vrati siteID coffee situ, ke kteremu smazanuy komentar patril.
+     * Vrati siteID coffee situ, ke kteremu smazanuy komentar patril.<br>
      * 
      * @param id of the Comment to be deleted
      * @return siteID of the coffeeSite where the deleted comment belonged to

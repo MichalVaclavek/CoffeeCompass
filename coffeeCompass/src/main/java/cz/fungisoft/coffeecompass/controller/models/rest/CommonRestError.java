@@ -1,4 +1,4 @@
-package cz.fungisoft.coffeecompass.controller.models;
+package cz.fungisoft.coffeecompass.controller.models.rest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -96,7 +96,7 @@ public class CommonRestError
                                    (String) defaultErrorAttributes.getOrDefault("path", "no instance available"));
     }
 
-    // utility method to return a map of serialized root attributes
+    // Utility method to return a map of serialized root attributes
     public Map<String, Object> toAttributeMap() {
         
         Map<String, Object> attributesMap = new HashMap<>();

@@ -121,7 +121,7 @@ public class UserControllerSecuredREST
       
     @DeleteMapping(("/delete/{userName}"))
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Boolean> deleteUser(@PathVariable("userName") String userName) {
+    public ResponseEntity<String> deleteUser(@PathVariable("userName") String userName) {
         logger.info("Fetching & Deleting User with username {} ", userName);
   
         Optional<User> currentUser = userService.findByUserName(userName);
@@ -132,7 +132,7 @@ public class UserControllerSecuredREST
         } 
   
         userService.deleteUserById(currentUser.get().getId());
-        return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+        return new ResponseEntity<String>(userName, HttpStatus.OK);
     }
     
     /** Gets the current REST User loged-in **/

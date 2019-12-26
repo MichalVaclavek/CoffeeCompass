@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Controller pro obsluhu obecnych chyb. Pouzije se namisto "Whiteable Error Page"
+ * Probabaly not needed as new RestErrorController is handling such error requests.
  * 
  * @author Michal Vaclavek
  *

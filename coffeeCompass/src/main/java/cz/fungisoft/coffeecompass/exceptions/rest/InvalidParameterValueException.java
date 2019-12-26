@@ -7,15 +7,12 @@ import org.springframework.http.HttpStatus;
  * Exception class to send error message to client in case of POST, PUT requests,
  * when the parametr value is not valid, cannot be used etc.
  * 
- * @author Michal
+ * @author Michal V.
  *
  */
 @ResponseStatus(HttpStatus.CONFLICT)
 public class InvalidParameterValueException extends RESTException {
     
-    /**
-     * 
-     */
     private static final long serialVersionUID = -3507077783107847764L;
     
     // Name of resource, like User, CoffeeSite etc
