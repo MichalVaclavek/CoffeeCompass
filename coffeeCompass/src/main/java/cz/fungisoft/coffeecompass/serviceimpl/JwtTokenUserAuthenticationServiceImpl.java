@@ -69,16 +69,16 @@ public class JwtTokenUserAuthenticationServiceImpl implements CustomRESTUserAuth
     }
 
     /**
-     * Login using token
+     * Login using token.
      */
     @Override
     @Transactional
     public Optional<UserDetails> findByToken(final String token) {
         
         return Optional.of(tokens.verify(token))
-                       .map(map -> map.get("userName"))
-                       .map(usersService::findByUserName) //userName -> usersService.findByUserName(userName)
-                       .map(user -> UserPrincipal.create(user.get()));
+                .map(map -> map.get("userName"))
+                .map(nameOrEmail -> usersService.findByUserName(nameOrEmail).map(Optional::of).orElseGet(() -> usersService.findByEmail(nameOrEmail))) // https://stackoverflow.com/questions/24599996/get-value-from-one-optional-or-another 
+                .map(user -> UserPrincipal.create(user.get()));
     }
 
     @Override
