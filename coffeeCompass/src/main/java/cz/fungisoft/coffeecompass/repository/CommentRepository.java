@@ -18,6 +18,9 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>
     @Query("select cl from Comment cl where coffeeSite.id=?1")
     public List<Comment> getAllCommentsForSite(Long coffeeSiteID);
     
+    @Query("select count(*) from Comment cl where coffeeSite.id=?1")
+    public Integer getNumberOfCommentsForSite(Long coffeeSiteID);
+    
     @Query("select cl from Comment cl where user.id=?1")
     public List<Comment> getAllCommentsFromUser(Long userID);
     

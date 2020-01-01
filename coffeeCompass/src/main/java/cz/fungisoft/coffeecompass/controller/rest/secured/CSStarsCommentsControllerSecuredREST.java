@@ -102,14 +102,14 @@ public class CSStarsCommentsControllerSecuredREST
     /**
      * Zpracuje DELETE pozadavek na smazani komentare k jednomu CoffeeSitu.<br>
      * Muze byt volano pouze ADMINEM nebo prihlasenym autorem hodnoceni s roli USER.<br>
-     * Vrati siteID coffee situ, ke kteremu smazanuy komentar patril.<br>
+     * Vrati aktualni pocet Comments pro coffee site, ke kteremu patril smazany komentar.<br>
      * 
      * @param id of the Comment to be deleted
-     * @return siteID of the coffeeSite where the deleted comment belonged to
+     * @return number of Comments of the coffeeSite where the deleted comment belonged to
      */
     @DeleteMapping("/deleteComment/{commentId}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<Long> deleteCommentAndStarsForSite(@PathVariable("commentId") Integer commentId) {
+    public ResponseEntity<Integer> deleteCommentAndStarsForSite(@PathVariable("commentId") Integer commentId) {
         
         Long siteId = null;
         siteId = commentsService.deleteCommentById(commentId);
@@ -117,9 +117,15 @@ public class CSStarsCommentsControllerSecuredREST
         if (siteId == null) {
             throw new ResourceNotFoundException("Comment", "commentId", commentId);
         }
-         
-        return new ResponseEntity<Long>(siteId, HttpStatus.OK);
+        Integer commentsNumber = commentsService.getNumberOfCommentsForSiteId(siteId);
+        
+        if (commentsNumber == null) {
+            commentsNumber = new Integer(0);
+        }
             
+        return new ResponseEntity<Integer>(commentsNumber, HttpStatus.OK);
+            
+        //return new ResponseEntity<Long>(siteId, HttpStatus.OK);
     }
 
 }

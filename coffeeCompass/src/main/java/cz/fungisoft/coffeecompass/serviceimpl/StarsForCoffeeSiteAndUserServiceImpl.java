@@ -134,8 +134,25 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     @Override
     public Integer getStarsForCoffeeSiteAndUser(CoffeeSite coffeeSite, User user) {
         return (user != null && coffeeSite != null) 
-            ? avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), user.getId()).getStars().getNumOfStars()
+            ? getStarsForCoffeeSiteAndUser(coffeeSite.getId(), user.getId())
             : 0;
+    }
+    
+    /**
+     * Returns number of stars for CoffeeSiteId and userID already entered by user.
+     * If no star were already save, returns 0
+     */
+    @Override
+    public Integer getStarsForCoffeeSiteAndUser(Long coffeeSiteId, Long userId) {
+        if (coffeeSiteId != null && userId != null) {
+            StarsForCoffeeSiteAndUser stars = avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSiteId, userId);
+            if (stars != null) {
+                return stars.getStars().getNumOfStars();
+            }
+        }
+        // in all other cases return 0
+        return 0;
+        
     }
 
     @Override

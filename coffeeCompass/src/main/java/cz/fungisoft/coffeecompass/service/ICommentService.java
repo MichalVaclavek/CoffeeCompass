@@ -32,12 +32,20 @@ public interface ICommentService
 	public Comment getById(Integer id);
 	
 	/**
-	 * Gets list of all saved Comments for given Article id.
+	 * Gets list of all saved Comments for given CoffeeSite id.
 	 * 
 	 * @param siteId id of the CoffeeSite for which the comments are required.
 	 * @return all Comments for given CoffeeSite id
 	 */
-	public List<CommentDTO> getAllCommentsForSiteId(Long siteId);	
+	public List<CommentDTO> getAllCommentsForSiteId(Long siteId);
+	
+	/**
+     * Gets number of all saved Comments for given CoffeeSite id.
+     * 
+     * @param siteId id of the CoffeeSite for which the comments are required.
+     * @return all Comments for given CoffeeSite id
+     */
+    public Integer getNumberOfCommentsForSiteId(Long siteId);   
 	
 	/**
 	 * Gets lis of all saved Comments from given {@code User}

@@ -47,8 +47,7 @@ public class UsersControllerPublicREST
                                      CustomRESTUserAuthenticationService authentication,
                                      @NonNull UserService usersService,
                                      TokenService tokens,
-                                     MessageSource messages
-                                     ) {
+                                     MessageSource messages) {
         super();
         this.authentication = authentication;
         this.usersService = usersService;

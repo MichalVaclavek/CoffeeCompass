@@ -74,6 +74,25 @@ public class CSStarsCommentsControllerPublicREST
     }
     
     /**
+     * Returns number of Comments created for this CoffeeSiteID.
+     * 
+     * @param siteId
+     * @return
+     */
+    @GetMapping("/comments/number/{siteId}") // napr. http://localhost:8080/rest/public/starsAndComments/comments/number/2
+    public ResponseEntity<Integer> numberOfCommentsForSiteId(@PathVariable("siteId") Long siteId) {
+        
+        // Gets number of all comments for this coffeeSite
+        Integer commentsNumber = commentsService.getNumberOfCommentsForSiteId(siteId);
+        
+        if (commentsNumber == null) {
+            commentsNumber = new Integer(0);
+        }
+        
+        return new ResponseEntity<Integer>(commentsNumber, HttpStatus.OK);
+    }
+    
+    /**
      * A method, which gets all valid/possible slovni hodnoceni<br>
      * kvality kavy to be selected by user during hodnoceni.<br>
      * Used as an options on form to rate coffee site's coffee quality.

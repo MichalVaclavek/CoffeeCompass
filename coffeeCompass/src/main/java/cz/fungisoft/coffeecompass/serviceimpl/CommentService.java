@@ -101,6 +101,11 @@ public class CommentService implements ICommentService
     public List<CommentDTO> getAllCommentsForSiteId(Long coffeeSiteID) {
 	    return modifyToTransfer(commentsRepo.getAllCommentsForSite(coffeeSiteID));
     }
+	
+	@Override
+    public Integer getNumberOfCommentsForSiteId(Long siteId) {
+        return commentsRepo.getNumberOfCommentsForSite(siteId);
+    }
 
 	@Override
 	public List<CommentDTO> getAllComments() {

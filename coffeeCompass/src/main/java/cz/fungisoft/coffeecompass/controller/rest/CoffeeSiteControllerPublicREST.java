@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
+import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import io.swagger.annotations.Api;
 
 /**
@@ -36,6 +37,8 @@ public class CoffeeSiteControllerPublicREST
     
     private CoffeeSiteService coffeeSiteService;
     
+    private IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService;
+    
     /**
      * Dependency Injection pomoci konstruktoru, neni potreba uvadet @Autowired u atributu, Spring toto umi automaticky.<br>
      * Lze ale uvest u konstruktoru, aby bylo jasne, ze Injection provede Spring.
@@ -47,9 +50,11 @@ public class CoffeeSiteControllerPublicREST
      * @param coffeeSiteService
      */
     @Autowired
-    public CoffeeSiteControllerPublicREST(CoffeeSiteService coffeeSiteService) {
+    public CoffeeSiteControllerPublicREST(CoffeeSiteService coffeeSiteService,
+                                          IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService) {
         super();
         this.coffeeSiteService = coffeeSiteService;
+        this.starsForCoffeeSiteService = starsForCoffeeSiteService;
     }
 
     /**
@@ -183,6 +188,26 @@ public class CoffeeSiteControllerPublicREST
             return new ResponseEntity<List<CoffeeSiteDTO>>(HttpStatus.NOT_FOUND); 
         } else
             return new ResponseEntity<List<CoffeeSiteDTO>>(result, HttpStatus.OK); 
+    }
+    
+    /**
+     * REST endpoint for obtaining number of stars gived by userID to coffeeSiteID
+     * If there was no rating for this site and user yet, then returns zero 0.
+     * URL example: https://localhost:8443/rest/site/stars/?siteID=2&userID=1
+     * 
+     * @param siteID
+     * @param userID
+     * @return
+     */
+    @GetMapping("/stars/number/")
+    public ResponseEntity<Integer> getNumberOfStarsForSiteFromUser(@RequestParam(value="siteID") Long siteID, @RequestParam(value="userID") Long userID) {
+        Integer numOfStars = starsForCoffeeSiteService.getStarsForCoffeeSiteAndUser(siteID, userID);
+        
+        if (numOfStars == null) {
+            numOfStars = new Integer(0);
+        }
+        
+        return new ResponseEntity<Integer>(numOfStars, HttpStatus.OK);
     }
     
 }

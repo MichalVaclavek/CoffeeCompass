@@ -55,7 +55,7 @@ import io.swagger.annotations.Api;
  */
 @Api // Anotace Swagger
 @RestController // Ulehcuje zpracovani HTTP/JSON pozadavku z clienta a automaticky vytvari i HTTP/JSON response odpovedi na HTTP/JSON requesty
-@RequestMapping("/rest/site") // vsechny http dotazy v kontroleru maji zacinat timto retezcem
+@RequestMapping("/rest/secured/site") // vsechny http dotazy v kontroleru maji zacinat timto retezcem
 //@RequiredArgsConstructor //TODO dodelat s pouzitim lombok, bez Autowired na fields
 public class CoffeeSiteControllerSecuredREST
 {
@@ -134,7 +134,7 @@ public class CoffeeSiteControllerSecuredREST
     }
     
 
-    @PutMapping("/update/{id}") // Mapovani http PUT na DB operaci UPDATE tj. zmena zaznamu c. id polozkou coffeeSite, napr. http://localhost:8080/rest/site/update/2
+    @PutMapping("/update/{id}") // Mapovani http PUT na DB operaci UPDATE tj. zmena zaznamu c. id polozkou coffeeSite, napr. http://localhost:8080/rest/secured/site/update/2
     public ResponseEntity<CoffeeSiteDTO> updateRest(@PathVariable Long id, @Valid @RequestBody CoffeeSiteDTO coffeeSite) {
         coffeeSite.setId(id);
         
@@ -154,7 +154,7 @@ public class CoffeeSiteControllerSecuredREST
      * 
      * @param id
      */
-    @DeleteMapping("/delete/{id}") // Mapovani http DELETE na DB operaci delete, napr. http://localhost:8080/rest/site/delete/2
+    @DeleteMapping("/delete/{id}") // Mapovani http DELETE na DB operaci delete, napr. http://localhost:8080/rest/secured/site/delete/2
     public ResponseEntity<CoffeeSiteDTO> delete(@PathVariable Long id) {
         coffeeSiteService.delete(id);
         return new ResponseEntity<CoffeeSiteDTO>(HttpStatus.NO_CONTENT);

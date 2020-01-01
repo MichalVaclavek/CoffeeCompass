@@ -7,10 +7,10 @@ import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
 import cz.fungisoft.coffeecompass.entity.User;
 
 /**
- * Serisni vrstva pro ziskavani udaju u prumernem hodnoceni urciteho CoffeeSite nebo
+ * Serisni vrstva pro ziskavani udaju u prumernem hodnoceni urciteho CoffeeSite nebo<br>
  * o prumernem hodnoceni urciteho uzivatele.<br>
  * Vyuziva StarsForCoffeeSiteAndUserRepository
- * @author Michal
+ * @author Michal Vaclavek
  *
  */
 public interface IStarsForCoffeeSiteAndUserService
@@ -23,6 +23,8 @@ public interface IStarsForCoffeeSiteAndUserService
      * @return
      */
     public Integer getStarsForCoffeeSiteAndUser(CoffeeSite coffeeSite, User user);
+    public Integer getStarsForCoffeeSiteAndUser(Long coffeeSiteId, Long userId);
+    
     public String getStarsForCoffeeSiteAndUser(CoffeeSiteDTO coffeeSite, User user);
     public String getStarsStringForCoffeeSiteAndLoggedInUser(CoffeeSiteDTO coffeeSite);
     public StarsQualityDescription getStarsForCoffeeSiteAndLoggedInUser(CoffeeSiteDTO coffeeSite);
@@ -36,4 +38,5 @@ public interface IStarsForCoffeeSiteAndUserService
     public double avgStarsForUser(Long userID);
     
     public AverageStarsForSiteDTO getStarsAndNumOfHodnoceniForSite(Long coffeeSiteID);
+    
 }

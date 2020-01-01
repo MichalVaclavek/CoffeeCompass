@@ -48,6 +48,7 @@ import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.security.SecurityConfiguration;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
+import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.service.UserProfileService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import cz.fungisoft.coffeecompass.testutils.CoffeeSiteFactory;
@@ -72,6 +73,9 @@ public class CoffeeSiteControllerTests
  
     @Mock
     private CoffeeSiteService csService;
+    
+    @Mock
+    private IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService;
      
     @Autowired
     private MapperFacade mapperFacade;
@@ -104,7 +108,7 @@ public class CoffeeSiteControllerTests
     
     @Before
     public void setUp() {
-        coffeeSiteController = new CoffeeSiteControllerPublicREST(csService);
+        coffeeSiteController = new CoffeeSiteControllerPublicREST(csService, starsForCoffeeSiteService);
         
         mvc = MockMvcBuilders.standaloneSetup(coffeeSiteController).build();
     }
