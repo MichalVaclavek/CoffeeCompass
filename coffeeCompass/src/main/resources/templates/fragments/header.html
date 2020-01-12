@@ -49,7 +49,7 @@
                 <a sec:authorize="hasRole('ADMIN')" th:href="@{/user/all}" th:text="#{mainmenu.allusers}" class="w3-bar-item w3-button">Users</a>
                 <!-- link to show all sites, for admin user user, with loader image after click -->
 				<div sec:authorize="hasRole('ADMIN') OR hasRole('DBA')"
-				     th:onclick="'javascript:referenceClickedWithLoaderImage(\'' + '/allSites' + '\');'" th:text="#{mainmenu.allsites}" class="w3-bar-item w3-button">Coffee sites of the user</div> 
+				     th:onclick="'javascript:referenceClickedWithLoaderImage(\'' + '/allSites/?orderBy=createdOn&direction=desc' + '\');'" th:text="#{mainmenu.allsites}" class="w3-bar-item w3-button">Coffee sites of the user</div> 
 				<!-- link to show sites created by logged-in user -->
                 <div sec:authorize="hasAnyRole('USER', 'ADMIN', 'DBA')"
                      th:onclick="'javascript:referenceClickedWithLoaderImage(\'' + '/mySites' + '\');'"

@@ -116,7 +116,7 @@ public class CoffeeSiteIT {
         
         csRepository.saveAndFlush(cs);
      
-        mvc.perform(get("/rest/site/allSites")
+        mvc.perform(get("/rest/site/allSites/")
           .contentType(MediaType.APPLICATION_JSON))
           .andExpect(status().isOk())
           .andExpect(content()

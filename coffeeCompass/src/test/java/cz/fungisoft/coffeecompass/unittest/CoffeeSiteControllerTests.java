@@ -141,7 +141,7 @@ public class CoffeeSiteControllerTests
      
         given(csService.findAll("siteName", "ASC")).willReturn(allSites);
      
-        mvc.perform(get("/rest/site/allSites")
+        mvc.perform(get("/rest/site/allSites/")
            .contentType(MediaType.APPLICATION_JSON))
            .andExpect(status().isOk())
            .andExpect(jsonPath("$", hasSize(1)))

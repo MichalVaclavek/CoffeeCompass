@@ -34,7 +34,7 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
     @Query(nativeQuery = true, value = "SELECT count(*) FROM coffee_site") // SQL
     public long countItems();
     
-    @Query("select cs from CoffeeSite cs where originalUser.id=?1")
+    @Query("select cs from CoffeeSite cs where originalUser.id=?1 order by cs.createdOn desc")
     public List<CoffeeSite> findSitesFromUserID(long userId);
     
     @Query("select cs from CoffeeSite cs where cs.recordStatus.status=?1 order by cs.siteName asc")

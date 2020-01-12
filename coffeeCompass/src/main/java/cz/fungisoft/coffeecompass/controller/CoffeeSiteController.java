@@ -128,7 +128,7 @@ public class CoffeeSiteController
      * @param direction
      * @return
      */
-    @GetMapping("/allSites")
+    @GetMapping("/allSites/")
     public ModelAndView sites(@RequestParam(defaultValue = "id") String orderBy, @RequestParam(defaultValue = "asc") String direction) {
         
         ModelAndView mav = new ModelAndView();
@@ -136,7 +136,7 @@ public class CoffeeSiteController
         Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
         
         if (loggedInUser.isPresent() &&  userService.hasADMINorDBARole(loggedInUser.get()))
-            mav.addObject("allSites", coffeeSiteService.findAll(orderBy, direction));  
+            mav.addObject("allSites", coffeeSiteService.findAll(orderBy, direction));
         else
             mav.addObject("allSites", coffeeSiteService.findAllWithRecordStatus(CoffeeSiteRecordStatusEnum.ACTIVE));
         

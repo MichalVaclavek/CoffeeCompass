@@ -262,7 +262,6 @@ public class UserController
         Optional<UserDTO> user = Optional.empty();
         user = userService.findByUserNameToTransfer(userName);
         if (user.isPresent()) {
-            //user.get().setToManageItself(true);
             mav.addObject("user", user.get());
         } else {
             logger.error("User name {} not found.", userName);

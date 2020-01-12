@@ -67,7 +67,7 @@ public class CoffeeSiteControllerPublicREST
      * @param direction
      * @return
      */
-    @GetMapping("/allSites") 
+    @GetMapping("/allSites/") 
     public ResponseEntity<List<CoffeeSiteDTO>> sites(@RequestParam(defaultValue = "id") String orderBy,
                                                      @RequestParam(defaultValue = "asc") String direction) {
         
