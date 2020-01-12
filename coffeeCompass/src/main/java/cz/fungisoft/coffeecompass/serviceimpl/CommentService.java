@@ -51,12 +51,18 @@ public class CommentService implements ICommentService
 	    this.mapperFacade = mapperFacade;
 	}
 	
+	/**
+	 * Can return null, if the User or CoffeeSite are not found based on it's id
+	 */
 	@Override
     public Comment saveTextAsComment(String commentText, Long userID, Long coffeeSiteID) {
-	    User user = userService.findById(userID);
+	    Optional<User> user = userService.findById(userID);
         CoffeeSite cs = coffeeSiteRepo.findById(coffeeSiteID).orElse(null);             
-       
-        return saveTextAsComment(commentText, user, cs);
+        if (user.isPresent() && cs != null) {
+            return saveTextAsComment(commentText, user.get(), cs);
+        } else {
+            return null;
+        }
     }
 
     @Override

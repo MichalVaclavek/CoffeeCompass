@@ -20,7 +20,7 @@ public class StarsAndCommentModel
 {
     private StarsQualityDescription stars;
 
-    @Size(max=240)
+    @Size(max=320)
     private String comment;
     
     

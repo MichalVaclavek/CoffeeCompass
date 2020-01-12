@@ -17,7 +17,7 @@ public interface UserService
     Optional<UserDTO> findByIdToTransfer(Long id);
     
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    User findById(Long id);
+    Optional<User> findById(Long id);
     
     Optional<UserDTO> findByUserNameToTransfer(String userName);
     Optional<User> findByUserName(String userName);

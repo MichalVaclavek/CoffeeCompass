@@ -20,9 +20,17 @@ public class SignUpAndLoginRESTDto {
     
     @NotBlank
     private String userName;
+    
+    public void setUserName(String userName) {
+        this.userName = userName.trim();
+    }
 
     @Email
     private String email;
+    
+    public void setEmail(String email) {
+        this.email = email.trim();
+    }
 
     @NotBlank
     private String password;

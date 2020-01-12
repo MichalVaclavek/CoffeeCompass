@@ -26,6 +26,10 @@ public class UserDTO
      
     @Size(min=3, max=30)
     private String userName;
+    
+    public void setUserName(String userName) {
+        this.userName = userName.trim();
+    }
          
     @Size(max=30)
     private String firstName;
@@ -36,6 +40,10 @@ public class UserDTO
     @ValidEmail(canbeempty = true) // e-mail is not obligatory, can be empty
     @Size(max=64)
     private String email;
+    
+    public void setEmail(String email) {
+        this.email = email.trim();
+    }
     
     // Can be empty as the USER or ADMIN don't want to change the password. Is evaluated in UserController
     @JsonIgnore
@@ -65,7 +73,8 @@ public class UserDTO
     /**
      * True if this user is to be managed by itself
      */
-    public boolean toManageItself = true; // default value. Used in case of a new User to be created
+    //public boolean toManageItself = true; // default value. Used in case of a new User to be created
+    public boolean toManageItself = false; // needed for case, when userProfile is edited by ADMIN user
     
     @JsonIgnore
     private boolean enabled;

@@ -29,7 +29,7 @@ public class CommentDTO
         this.text = text.trim();
     }
     
-    @JsonFormat(pattern = "dd.MM. yyyy HH:mm")
+    @JsonFormat(pattern = "dd.MM. yyyy HH:mm", timezone="Europe/Prague")
     private Date created;
     
     private Integer coffeeSiteID;

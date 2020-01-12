@@ -133,6 +133,8 @@ public class UserController
         ModelAndView mav = new ModelAndView();
         
         user.setId(0l); // set Id to 0 of type long
+        // we need to know, that this is a user managing its own profile
+        user.setToManageItself(true);
         mav.addObject("user", user);
         mav.setViewName("user_registration");
         return mav;
@@ -194,6 +196,7 @@ public class UserController
         }
         
         if (result.hasErrors()) { // In case of error, show the user_reg. page again with error labels
+            userDto.setToManageItself(true);
             mav.addObject(userDto);
             return mav;
         }
@@ -236,6 +239,8 @@ public class UserController
     // ------------------- Update a User -------------------------------------------------------- //
     
     /**
+     * //TODO change usage of userName in Controllers to userID!!! userName can be changed, threfore cannot be used fo identification
+     * 
      * This method will provide the page with Form to update an existing user.
      * 
      * @param userName - user name of the User to be edited here.
@@ -252,18 +257,16 @@ public class UserController
                                         Locale locale) {    
     
         ModelAndView mav = new ModelAndView();
+        mav.setViewName("user_registration");
 
-        // Model uz muze atribut "user" obsahovat a to v pripade, ze predchozi update/put daneho usera obsahoval chyby
-        // a presmeroval na tento handler
         Optional<UserDTO> user = Optional.empty();
-        if (!model.containsAttribute("user")) {
-            user = userService.findByUserNameToTransfer(userName);
-            if (user.isPresent()) {
-                mav.addObject("user", user.get());
-            } else {
-                logger.error("User name {} not found.", userName);
-                throw new UserNotFoundException("User name " + userName + " not found.");
-            }
+        user = userService.findByUserNameToTransfer(userName);
+        if (user.isPresent()) {
+            //user.get().setToManageItself(true);
+            mav.addObject("user", user.get());
+        } else {
+            logger.error("User name {} not found.", userName);
+            throw new UserNotFoundException("User name " + userName + " not found.");
         }
         
         if (user.isPresent() && "true".equals(firstOAuth2Login)) {
@@ -274,7 +277,6 @@ public class UserController
         mav.addObject("firstOAuth2Login", "true".equals(firstOAuth2Login));
         mav.addObject("userName", userName);
         
-        mav.setViewName("user_registration");
         return mav;
     }
     
@@ -300,13 +302,16 @@ public class UserController
      * @return
      */
     @PutMapping("/edit-put")
-    public String editUserAccount(@ModelAttribute("user")
-                                  @Valid 
-                                  UserDTO userDto,
-                                  BindingResult result,
-                                  ModelMap model,
-                                  HttpServletRequest request,
-                                  RedirectAttributes attr) {
+    public ModelAndView editUserAccount(  @ModelAttribute("user")
+                                          @Valid 
+                                          UserDTO userDto,
+                                          BindingResult result,
+                                          ModelMap model,
+                                          HttpServletRequest request,
+                                          RedirectAttributes attr) {
+        
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("user_registration");
         
         // Neprihlaseny uzivatel muze byt editovany ADMINem - ten muze menit pouze Password a ROLES, pokud nejde taky o ADMIN usera.
         // ADMIN nemuze byt editovan jinym ADMINem.
@@ -340,13 +345,15 @@ public class UserController
             }
         }
         
-        if (result.hasErrors()) { // In case of error, show the user edit page again with errors          
-            // Pokud se maji predat bindingResult, ktery obsahuje chyby do dalsiho redirect View, musi se prenest timto zpusobem
-            attr.addFlashAttribute("org.springframework.validation.BindingResult.user", result);
-            attr.addFlashAttribute("user", userDto);
-            return "redirect:/user/edit/?userName=" + userDto.getUserName();
+        if (result.hasErrors()) { // In case of error, show the user edit page again with errors
+            // Prihlaseny uzivatel edituje svuj profil - musi se nastavit prislusny flag, aby zustaly ve formulari vsechny plozky editovatelne
+            // i v pripade predchozi chyby ve formulari
+           if (loggedInUser.isPresent() && userDto.getId() == loggedInUser.get().getId()) { 
+               userDto.setToManageItself(true);
+           }
+           return mav;
         }
-        
+                
         boolean userModifySuccess = false;
         
         User updatedUser = userService.updateUser(userDto);
@@ -382,8 +389,8 @@ public class UserController
         
         attr.addFlashAttribute("userModifySuccess", userModifySuccess);
         attr.addFlashAttribute("userName", updatedUser.getUserName());
-//        return "redirect:/user/edit/?userName=" + encodedUserName; // while redirecting encoding of cz/cs chars is required
-        return "redirect:/home/?userName=" + encodedUserName; // while redirecting encoding of cz/cs chars is required
+        mav.setViewName("redirect:/home/?userName=" + encodedUserName);
+        return mav;
     }
     
     
@@ -420,17 +427,17 @@ public class UserController
     @GetMapping(value = "/delete/")
     public ModelAndView getDeleteUserAndRelatedItemsForm(@RequestParam("userID") Long id) {
         
-        User user = userService.findById(id);
+        Optional<User> user = userService.findById(id);
         ModelAndView mav = new ModelAndView();
         
-        if (user == null) {
+        if (!user.isPresent()) {
             logger.info("Unable to delete. User with id " + id + " not found");
         } else {
             DeleteUserAccountModel userToDeleteModel = new DeleteUserAccountModel();
             
             userToDeleteModel.setUserId(id);
-            userToDeleteModel.setUserName(user.getUserName());
-            userToDeleteModel.setUserToDeleteItself(userService.isLoggedInUserToManageItself(user));
+            userToDeleteModel.setUserName(user.get().getUserName());
+            userToDeleteModel.setUserToDeleteItself(userService.isLoggedInUserToManageItself(user.get()));
     
             // if user created comments, ...
             if (commentsService.getAllCommentsFromUser(id).size() > 0) {
@@ -438,7 +445,7 @@ public class UserController
             }
             
             // if user created CoffeeSites ....
-            if (coffeeSiteService.findAllFromUser(user).size() > 0) {
+            if (coffeeSiteService.findAllFromUser(user.get()).size() > 0) {
                 userToDeleteModel.setDeleteUsersCoffeeSites(true);
             }
             

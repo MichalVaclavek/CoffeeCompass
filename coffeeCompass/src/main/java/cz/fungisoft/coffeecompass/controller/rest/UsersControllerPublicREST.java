@@ -72,6 +72,7 @@ public class UsersControllerPublicREST
             throw new InvalidParameterValueException("User", "password", "", messages.getMessage("error.user.password.empty", null, locale));
         }
       
+        // Remove blank characters at the end of user name and e-mail
         usersService.registerNewRESTUser(registerRequest);
             
         return login(registerRequest, locale);

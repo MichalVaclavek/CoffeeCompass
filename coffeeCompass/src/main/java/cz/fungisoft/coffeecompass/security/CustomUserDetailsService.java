@@ -91,13 +91,13 @@ public class CustomUserDetailsService implements UserDetailsService
     @Transactional
     public UserDetails loadUserById(Long id) {
         
-        User user = userService.findById(id);
-        if (user == null) {
+        Optional<User> user = userService.findById(id);
+        if (!user.isPresent()) {
             logger.info("User with id {} not found.", id);
             throw new UsernameNotFoundException("There is no user with this id: " + id);
         }
 
-        return UserPrincipal.create(user);
+        return UserPrincipal.create(user.get());
     }
     
     /**

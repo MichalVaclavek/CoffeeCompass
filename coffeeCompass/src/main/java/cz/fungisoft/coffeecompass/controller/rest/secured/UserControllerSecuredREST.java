@@ -1,3 +1,4 @@
+
 package cz.fungisoft.coffeecompass.controller.rest.secured;
 
 import java.util.List;
@@ -55,7 +56,7 @@ public class UserControllerSecuredREST
       */
     @Autowired
     public UserControllerSecuredREST(UserService userService,
-                                    UserSecurityService userSecurityService) {
+                                     UserSecurityService userSecurityService) {
         super();
         this.userService = userService;
         this.userSecurityService = userSecurityService;
@@ -121,7 +122,7 @@ public class UserControllerSecuredREST
       
     @DeleteMapping(("/delete/{userName}"))
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<String> deleteUser(@PathVariable("userName") String userName) {
+    public ResponseEntity<String> deleteUserByName(@PathVariable("userName") String userName) {
         logger.info("Fetching & Deleting User with username {} ", userName);
   
         Optional<User> currentUser = userService.findByUserName(userName);
@@ -135,6 +136,23 @@ public class UserControllerSecuredREST
         return new ResponseEntity<String>(userName, HttpStatus.OK);
     }
     
+    @DeleteMapping(("/delete/{userId}"))
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Long> deleteUserById(@PathVariable("userId") long userId) {
+        logger.info("Fetching & Deleting User with userID {} ", userId);
+  
+        Optional<User> user = userService.findById(userId);
+        if (!user.isPresent()) {
+            logger.info("Unable to delete. User with ID='{}' not found.", userId);
+            //return new ResponseEntity<Boolean>(false, HttpStatus.NOT_FOUND);
+            throw new ResourceNotFoundException("User", "username", userId);
+        } 
+  
+        userService.deleteUserById(user.get().getId());
+        return new ResponseEntity<Long>(userId, HttpStatus.OK);
+    }
+    
+    
     /** Gets the current REST User loged-in **/
     
     @GetMapping("/current")
@@ -142,13 +160,12 @@ public class UserControllerSecuredREST
     //public UserDTO getCurrent(@AuthenticationPrincipal final String userName) {
     public ResponseEntity<UserDTO> getCurrent(@AuthenticationPrincipal final String userName) {
         Optional<UserDTO> currentUser = userService.findByUserNameToTransfer(userName);
-        //if (currentUser.isPresent())
         return new ResponseEntity<UserDTO>(currentUser.orElseThrow(() -> new ResourceNotFoundException("User", "username", userName)), HttpStatus.OK);
         
     }
     
     /**
-     * REST logout
+     * REST logout by username. Kept because of backward compatibility.
      * 
      * @param user
      * @return
@@ -157,6 +174,23 @@ public class UserControllerSecuredREST
     public boolean logout(@AuthenticationPrincipal final String userName) {
         userSecurityService.logout(userName);
         return true;
+    }
+    
+    /**
+     * REST logout by userID
+     * 
+     * @param user
+     * @return
+     */
+    @GetMapping("/logout/{userId}")
+    public boolean logoutByUserId(@PathVariable("userId") long userId) {
+        Optional<User> user = userService.findById(userId);
+        if (user.isPresent()) {
+            userSecurityService.logout(user.get().getUserName());
+            return true;
+        } else {
+            return false;
+        }
     }
   
 }

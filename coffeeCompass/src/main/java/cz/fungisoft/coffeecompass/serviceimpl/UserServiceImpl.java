@@ -80,15 +80,15 @@ public class UserServiceImpl implements UserService
     @Override
     @Transactional
     public Optional<UserDTO> findByIdToTransfer(Long id) {        
-        User user = findById(id);
-        return addNonPersistentInfoToUser(user);
+        //User user = findById(id);
+        return addNonPersistentInfoToUser(findById(id).orElse(null));
     }
     
     @Override
-    public User findById(Long id) {
-        User user = usersRepository.findById(id).orElse(null);
+    public Optional<User> findById(Long id) {
+        Optional<User> user = usersRepository.findById(id);
         
-        if (user == null) {
+        if (!user.isPresent()) {
             log.warn("User with id {} not found.", id);
         }
         else {

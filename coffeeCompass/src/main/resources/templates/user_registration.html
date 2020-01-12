@@ -69,9 +69,9 @@
 	                    <label for="userName" th:text="#{user.username}">User name</label> *
 	                    <div th:classappend="${#fields.hasErrors('userName')} ? 'has-error':''"> 
 	                         <input th:readonly="*{!toManageItself}"
-	                         		th:disabled="*{!toManageItself}"  
 	                  	            id="userName"
 	                      	        class="w3-input w3-border"
+	                      	        th:classappend="*{!toManageItself} ? 'w3-disabled'"
 	                         	    th:field="*{userName}"/>
 	                    </div>
 	                    <p class="error-message"
@@ -81,11 +81,11 @@
 	
 	                <div class="w3-container">
 	                    <label for="firstName" th:text="#{user.firstname}">First name</label>
-						<div th:classappend="${#fields.hasErrors('firstName')} ? 'has-error':''"> 		
+						<div th:classappend="${#fields.hasErrors('firstName')} ? 'has-error':''"> 
 	                       <input th:readonly="*{!toManageItself}"
-	                       		  th:disabled="*{!toManageItself}"  	  
 	                              id="firstName"
 	                              class="w3-input w3-border"
+	                              th:classappend="*{!toManageItself} ? 'w3-disabled'"
 	                              th:field="*{firstName}"/>
 	                    </div>
 	                    <p class="error-message"
@@ -96,9 +96,9 @@
 	                    <label for="lastName" th:text="#{user.lastname}">Last name</label>
 	                    <div th:classappend="${#fields.hasErrors('lastName')} ? 'has-error':''"> 
 	                       <input th:readonly="*{!toManageItself}"
-	                              th:disabled="*{!toManageItself}"   
 	                              id="lastName"
 	                              class="w3-input w3-border"
+	                              th:classappend="*{!toManageItself} ? 'w3-disabled'"
 	                              th:field="*{lastName}"/>
 	                    </div>
 	                    <p class="error-message"
@@ -107,13 +107,13 @@
 	                </div>
 	                <div class="w3-container">
 	                    <label for="email" th:text="#{user.email}">E-mail</label>
-	                    <div  th:classappend="${#fields.hasErrors('email')} ? 'has-error':''">
-	                       <input id="email" 
-	                              th:readonly="*{!toManageItself}"
-	                              th:disabled="*{!toManageItself}" 
-	                              class="w3-input w3-border"
-	                              th:field="*{email}"
-	                              th:placeholder="#{user.email.placeholder}"/>
+	                    <div th:classappend="${#fields.hasErrors('email')} ? 'has-error':''">
+	                        <input id="email" 
+			                       th:readonly="*{!toManageItself}"
+			                       class="w3-input w3-border"
+			                       th:classappend="*{!toManageItself} ? 'w3-disabled'"
+			                       th:field="*{email}"
+			                       th:placeholder="#{user.email.placeholder}"/>
 	                    </div>
 	                    <p class="error-message"
 	                       th:each="error : ${#fields.errors('email')}"
@@ -157,7 +157,7 @@
 			               			 <input type="checkbox"
 			               			 		class="w3-check"
 			               			 		th:classappend="( (${userProfile.type} == 'ADMIN') AND *{hasADMINRole} AND *{!toManageItself}) ? 'w3-disabled'"
-			               			 		th:disabled="( (${userProfile.type} == 'ADMIN') AND *{hasADMINRole} AND *{!toManageItself})"
+			               			 		th:readonly="( (${userProfile.type} == 'ADMIN') AND *{hasADMINRole} AND *{!toManageItself})"
 			                	 		    th:field="*{userProfiles}"
 			                	  		    th:value="${userProfile}" />
 			               			 <label th:for="${userProfile.id}" th:text="${userProfile}">User profiles</label>
@@ -177,7 +177,7 @@
 		               			 <input type="checkbox"
 		               			 		class="w3-check"
 		               			 		th:classappend="(*{hasADMINRole} AND *{!toManageItself}) ? 'w3-disabled'"
-		               			 		th:disabled="(*{hasADMINRole} AND *{!toManageItself})"
+		               			 		th:readonly="(*{hasADMINRole} AND *{!toManageItself})"
 		                	 		    th:field="*{banned}"
 		                	  		    th:value="*{banned}"/>
 			               			  

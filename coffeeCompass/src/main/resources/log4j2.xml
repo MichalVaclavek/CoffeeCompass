@@ -29,6 +29,7 @@
     <Loggers>
         <Logger name="cz.fungisoft.coffeecompass" level="debug" additivity="false">
             <AppenderRef ref="ConsoleAppender" />
+            <AppenderRef ref="FileAppender"/>
         </Logger>
 
         <Root level="info">
