@@ -73,7 +73,6 @@ public class UserDTO
     /**
      * True if this user is to be managed by itself
      */
-    //public boolean toManageItself = true; // default value. Used in case of a new User to be created
     public boolean toManageItself = false; // needed for case, when userProfile is edited by ADMIN user
     
     @JsonIgnore
