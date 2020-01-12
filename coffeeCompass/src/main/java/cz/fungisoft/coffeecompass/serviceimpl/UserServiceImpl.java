@@ -156,7 +156,7 @@ public class UserServiceImpl implements UserService
     /**
      * Used to save user. Checks if User has at least one ROLE assigned
      * and if it has other obligatory attributes set.
-     * Used especially for savin new users created via REST interface. 
+     * Used especially for saving new users created via REST interface. 
      */
     @Override
     public User saveUser(User user) {
