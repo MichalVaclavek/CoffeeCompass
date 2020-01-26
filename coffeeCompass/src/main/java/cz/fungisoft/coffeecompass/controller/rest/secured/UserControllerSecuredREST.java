@@ -136,7 +136,7 @@ public class UserControllerSecuredREST
         return new ResponseEntity<String>(userName, HttpStatus.OK);
     }
     
-    @DeleteMapping(("/delete/{userId}"))
+    @DeleteMapping(("/delete/id/{userId}"))
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Long> deleteUserById(@PathVariable("userId") long userId) {
         logger.info("Fetching & Deleting User with userID {} ", userId);
@@ -145,7 +145,7 @@ public class UserControllerSecuredREST
         if (!user.isPresent()) {
             logger.info("Unable to delete. User with ID='{}' not found.", userId);
             //return new ResponseEntity<Boolean>(false, HttpStatus.NOT_FOUND);
-            throw new ResourceNotFoundException("User", "username", userId);
+            throw new ResourceNotFoundException("User", "userId", userId);
         } 
   
         userService.deleteUserById(user.get().getId());
@@ -157,7 +157,6 @@ public class UserControllerSecuredREST
     
     @GetMapping("/current")
     @PreAuthorize("hasRole('USER')")
-    //public UserDTO getCurrent(@AuthenticationPrincipal final String userName) {
     public ResponseEntity<UserDTO> getCurrent(@AuthenticationPrincipal final String userName) {
         Optional<UserDTO> currentUser = userService.findByUserNameToTransfer(userName);
         return new ResponseEntity<UserDTO>(currentUser.orElseThrow(() -> new ResourceNotFoundException("User", "username", userName)), HttpStatus.OK);

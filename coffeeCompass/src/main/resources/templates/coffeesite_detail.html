@@ -96,7 +96,7 @@
 							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.numOfCoffeeAutomatyVedleSebe}" style="font-weight: bold">Number of coffee machines together</td>
 							</tr>
 							  
-							<tr th:if= "${coffeeSite.dodavatelPodnik.nameOfCompany != ''}">
+							<tr th:if= "${coffeeSite.dodavatelPodnik != null}">
 							   <td th:text="#{site.supplier}">Supplier</td>
 							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.dodavatelPodnik.nameOfCompany}" style="font-weight: bold">Supplier</td>
 							</tr>

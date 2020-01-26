@@ -1,6 +1,5 @@
 package cz.fungisoft.coffeecompass.controller.rest.secured;
 
-import java.util.List;
 
 import javax.validation.Valid;
 
@@ -11,7 +10,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,25 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
-import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
-import cz.fungisoft.coffeecompass.entity.CoffeeSiteType;
-import cz.fungisoft.coffeecompass.entity.CoffeeSort;
-import cz.fungisoft.coffeecompass.entity.CupType;
-import cz.fungisoft.coffeecompass.entity.NextToMachineType;
-import cz.fungisoft.coffeecompass.entity.OtherOffer;
-import cz.fungisoft.coffeecompass.entity.PriceRange;
-import cz.fungisoft.coffeecompass.entity.SiteLocationType;
-import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
-import cz.fungisoft.coffeecompass.service.CSStatusService;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
-import cz.fungisoft.coffeecompass.service.CoffeeSiteTypeService;
-import cz.fungisoft.coffeecompass.service.CoffeeSortService;
-import cz.fungisoft.coffeecompass.service.CupTypeService;
-import cz.fungisoft.coffeecompass.service.NextToMachineTypeService;
-import cz.fungisoft.coffeecompass.service.OtherOfferService;
-import cz.fungisoft.coffeecompass.service.PriceRangeService;
-import cz.fungisoft.coffeecompass.service.SiteLocationTypeService;
-import cz.fungisoft.coffeecompass.service.StarsQualityService;
 import io.swagger.annotations.Api;
 
 /**
@@ -60,33 +40,6 @@ import io.swagger.annotations.Api;
 public class CoffeeSiteControllerSecuredREST
 {
     private static final Logger log = LoggerFactory.getLogger(CoffeeSiteControllerSecuredREST.class);
-    
-    @Autowired
-    private OtherOfferService offerService;
-    
-    @Autowired
-    private CSStatusService csStatusService;
-    
-    @Autowired
-    private StarsQualityService starsQualityService;
-    
-    @Autowired
-    private PriceRangeService priceRangeService;
-    
-    @Autowired
-    private SiteLocationTypeService locationTypesService;
-    
-    @Autowired
-    private CupTypeService cupTypesService;
-    
-    @Autowired
-    private CoffeeSortService coffeeSortService;
-    
-    @Autowired
-    private NextToMachineTypeService ntmtService;
-    
-    @Autowired
-    private CoffeeSiteTypeService coffeeSiteTypeService;
     
     private CoffeeSiteService coffeeSiteService;
     
@@ -116,37 +69,39 @@ public class CoffeeSiteControllerSecuredREST
      * @return
      */
     @PostMapping("/create") // Mapovani http POST na DB save/INSERT
-    public ResponseEntity<Void> insert(@Valid @RequestBody CoffeeSiteDTO coffeeSite, UriComponentsBuilder ucBuilder) {
+    public ResponseEntity<Long> insert(@Valid @RequestBody CoffeeSiteDTO coffeeSite, UriComponentsBuilder ucBuilder) {
     
        CoffeeSite cs = coffeeSiteService.save(coffeeSite);
        
        HttpHeaders headers = new HttpHeaders();
        if (cs != null) {
            log.info("New Coffee site created.");
-           headers.setLocation(ucBuilder.path("/rest/site/{id}").buildAndExpand(coffeeSite.getId()).toUri());
-           return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+           headers.setLocation(ucBuilder.path("/rest/site/{id}").buildAndExpand(cs.getId()).toUri());
+           return new ResponseEntity<Long>(cs.getId(), headers, HttpStatus.CREATED);
        }
        else {
            log.error("Coffee site creation failed");
-           headers.setLocation(ucBuilder.path("/rest/site/create}").buildAndExpand(coffeeSite.getId()).toUri());
-           return new ResponseEntity<Void>(headers, HttpStatus.BAD_REQUEST);
+           headers.setLocation(ucBuilder.path("/rest/site/create").buildAndExpand(coffeeSite.getId()).toUri());
+           return new ResponseEntity<Long>(0L, headers, HttpStatus.BAD_REQUEST);
        }
     }
     
 
     @PutMapping("/update/{id}") // Mapovani http PUT na DB operaci UPDATE tj. zmena zaznamu c. id polozkou coffeeSite, napr. http://localhost:8080/rest/secured/site/update/2
-    public ResponseEntity<CoffeeSiteDTO> updateRest(@PathVariable Long id, @Valid @RequestBody CoffeeSiteDTO coffeeSite) {
+    public ResponseEntity<Long> updateRest(@PathVariable Long id, @Valid @RequestBody CoffeeSiteDTO coffeeSite) {
         coffeeSite.setId(id);
         
-        CoffeeSiteDTO cs = null;
-        if (coffeeSiteService.save(coffeeSite) != null) {
+        //CoffeeSite cs = coffeeSiteService.save(coffeeSite);
+        CoffeeSite cs = coffeeSiteService.updateSite(coffeeSite);
+        if (cs != null) {
             log.info("Coffee site update successful.");
-            cs = coffeeSiteService.findOneToTransfer(id);
-        } else
-            log.error("Coffee site update failed.");
+            //cs = coffeeSiteService.findOneToTransfer(id);
+        } else {
+            log.error("Coffee site update failed." + coffeeSite.getId());
+        }
         
-        return (cs != null) ? new ResponseEntity<CoffeeSiteDTO>(cs, HttpStatus.CREATED)
-                            : new ResponseEntity<CoffeeSiteDTO>(HttpStatus.BAD_REQUEST);
+        return (cs == null) ? new ResponseEntity<Long>(0L, HttpStatus.BAD_REQUEST)
+                            : new ResponseEntity<Long>(cs.getId(), HttpStatus.CREATED);
     }
     
     /**
@@ -160,51 +115,4 @@ public class CoffeeSiteControllerSecuredREST
         return new ResponseEntity<CoffeeSiteDTO>(HttpStatus.NO_CONTENT);
     }
     
-    /* *** Atributes needed for client creating/editing Coffee site **** */
-    
-    @ModelAttribute("allOffers")
-    public List<OtherOffer> populateOffers() {
-        return offerService.getAllOtherOffers();
-    }
-       
-    @ModelAttribute("allSiteStatuses")
-    public List<CoffeeSiteStatus> populateSiteStatuses() {
-        return csStatusService.getAllCoffeeSiteStatuses();
-    }
-    
-    @ModelAttribute("allHodnoceniKavyStars")
-    public List<StarsQualityDescription> populateQualityStars() {
-        return starsQualityService.getAllStarsQualityDescriptions();
-    }
-    
-    @ModelAttribute("allPriceRanges")
-    public List<PriceRange> populatePriceRanges() {
-        return priceRangeService.getAllPriceRanges();
-    }
-    
-    @ModelAttribute("allLocationTypes")
-    public List<SiteLocationType> populateLocationTypes() {
-        return locationTypesService.getAllSiteLocationTypes();
-    }
-    
-    @ModelAttribute("allCupTypes")
-    public List<CupType> populateCupTypes() {
-        return cupTypesService.getAllCupTypes();
-    }
-        
-    @ModelAttribute("allCoffeeSorts")
-    public List<CoffeeSort> populateCoffeeSorts() {
-        return coffeeSortService.getAllCoffeeSorts();
-    }
-       
-    @ModelAttribute("allNextToMachineTypes")
-    public List<NextToMachineType> populateNextToMachineTypes() {
-        return ntmtService.getAllNextToMachineTypes();
-    }
-    
-    @ModelAttribute("allCoffeeSiteTypes")
-    public List<CoffeeSiteType> populateCoffeeSiteTypes() {
-        return coffeeSiteTypeService.getAllCoffeeSiteTypes();
-    }
-
 }

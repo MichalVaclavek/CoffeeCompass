@@ -307,15 +307,17 @@ public class CoffeeSiteController
         String returnView = "redirect:/showSite/";        
         String returnSuffix = "?createSuccess";
         
-        if (coffeeSite.getId() != 0)
+        CoffeeSite cs = null;
+        
+        if (coffeeSite.getId() != 0) { // modify CoffeeSite
             returnSuffix = "?modifySuccess";
+            cs = coffeeSiteService.updateSite(coffeeSite);
+        } else {
+            cs = coffeeSiteService.save(coffeeSite);
+        }
         
-        CoffeeSite cs = coffeeSiteService.save(coffeeSite);
-        
-        if (cs != null)
-            returnView = returnView + cs.getId() + returnSuffix;
-        else
-            returnView = "404";
+        returnView = (cs != null) ? returnView + cs.getId() + returnSuffix
+                                  : "404";
         
         return returnView;
     }
@@ -377,7 +379,7 @@ public class CoffeeSiteController
         String siteName = coffeeSiteService.findOneById(id).getSiteName();
         redirectAttributes.addFlashAttribute("deletedSiteName", siteName);
         coffeeSiteService.delete(id);
-        return "redirect:/allSites";
+        return "redirect:/allSites/";
     }
     
     /* *** Atributes for coffeesite_create.html and other Forms **** */

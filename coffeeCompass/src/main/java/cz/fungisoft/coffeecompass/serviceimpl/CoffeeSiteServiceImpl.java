@@ -218,7 +218,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      * Metoda pro provedeni akci pred ulozenim CoffeeSitu a zavolani metody save() z Repository.
      * Tato metoda by mela byt volatelna pouze prihlasenym uzivatelem.
      * 
-     * @param - CoffeeSite k ulozeni. Muze jit o novy nebo updatovany CoffeeSite.
+     * @param - CoffeeSite k ulozeni. Melo by ukladat pouze novy CoffeeSite.
      */
     @Override
     public CoffeeSite save(CoffeeSite coffeeSite) {
@@ -231,20 +231,22 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
                 coffeeSite.setRecordStatus(coffeeSiteRecordStatus);
                 coffeeSite.setOriginalUser(user);
                 user.setCreatedSites(user.getCreatedSites() + 1);
+                if (coffeeSite.getCreatedOn() == null) {
+                    coffeeSite.setCreatedOn(new Timestamp(new Date().getTime()));
+                }
                 userService.saveUser(user);
-            }
-            else { // modifikace stavajiciho CoffeeSitu
-                updateSite(coffeeSite);
             }
         }
             
         // Zjisteni, jestli Company je nove nebo ne
-        Company comp = companyService.findCompanyByName(coffeeSite.getDodavatelPodnik().toString());
-        
-        if (comp == null) {
-            comp = companyService.saveCompany(coffeeSite.getDodavatelPodnik().toString());
+        if (coffeeSite.getDodavatelPodnik() != null) {
+            Company comp = companyService.findCompanyByName(coffeeSite.getDodavatelPodnik().toString());
+            
+            if (comp == null) { // Save new company
+                comp = companyService.saveCompany(coffeeSite.getDodavatelPodnik().toString());
+            }
+            coffeeSite.setDodavatelPodnik(comp);
         }
-        coffeeSite.setDodavatelPodnik(comp);
         log.info("CoffeeSite name {} saved into DB.", coffeeSite.getSiteName());
         return coffeeSiteRepo.save(coffeeSite);
     }
@@ -253,27 +255,16 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     public CoffeeSite save(CoffeeSiteDTO cs) {
         
         CoffeeSite csToSave = mapperFacade.map(cs, CoffeeSite.class);
-        
-        // Insert original user, which was removed during maping from CoffeeSite to CoffeeSiteDto when sending to client
-        // asnOnly user name is mapped into CoffeeSiteDTO from CoffeeSite
-        Optional<User> origUser = userService.findByUserName(cs.getOriginalUserName());
-        if (origUser.isPresent()) {
-            csToSave.setOriginalUser(origUser.get());
-        }
-        Optional<User> lastEditUser = userService.findByUserName(cs.getLastEditUserName());
-        if (lastEditUser.isPresent()) {
-            csToSave.setLastEditUser(lastEditUser.get());
-        }
- 
         return save(csToSave);
     }
     
+    
     /**
-     * Ulozeni modifikovaneho CoffeeSite.
+     * Ulozeni modifikovaneho CoffeeSiteDTO.
      * 
      * @param coffeeSite
      */
-    private void updateSite(CoffeeSite coffeeSite)
+    public CoffeeSite updateSite(CoffeeSiteDTO coffeeSite)
     {
         CoffeeSite entityFromDB = coffeeSiteRepo.findById(coffeeSite.getId()).orElse(null);
         
@@ -281,6 +272,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             loggedInUser = userService.getCurrentLoggedInUser();
             
             entityFromDB.setUpdatedOn(new Timestamp(new Date().getTime()));
+            
             if (loggedInUser.isPresent()) {
                 User user = loggedInUser.get();
                 user.setUpdatedSites(user.getUpdatedSites() + 1);
@@ -303,11 +295,14 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
                 entityFromDB.getOtherOffers().add(oo);
             }
             
-            Company comp = companyService.findCompanyByName(coffeeSite.getDodavatelPodnik().toString());
-            
-            if (comp == null) {
-                comp = companyService.saveCompany(coffeeSite.getDodavatelPodnik().toString());
+            Company comp = null;
+            if (coffeeSite.getDodavatelPodnik() != null) {
+                comp = companyService.findCompanyByName(coffeeSite.getDodavatelPodnik().toString());
+                if (comp == null) {
+                    comp = companyService.saveCompany(coffeeSite.getDodavatelPodnik().toString());
+                }
             }
+            
             entityFromDB.setDodavatelPodnik(comp);
            
             entityFromDB.setMesto(coffeeSite.getMesto());           
@@ -320,10 +315,18 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             entityFromDB.setUliceCP(coffeeSite.getUliceCP());
             entityFromDB.setZemDelka(coffeeSite.getZemDelka());
             entityFromDB.setZemSirka(coffeeSite.getZemSirka());
-            entityFromDB.setRecordStatus(coffeeSite.getRecordStatus());
+            entityFromDB.setInitialComment(coffeeSite.getInitialComment());
+            
+            if (coffeeSite.getRecordStatus() != null) {
+                entityFromDB.setRecordStatus(coffeeSite.getRecordStatus());
+            }
             
             log.info("CoffeeSite name {} updated.", coffeeSite.getSiteName());
         }
+        
+        //coffeeSiteRepo.save(entityFromDB);
+        return entityFromDB;
+        
     }
     
     /**

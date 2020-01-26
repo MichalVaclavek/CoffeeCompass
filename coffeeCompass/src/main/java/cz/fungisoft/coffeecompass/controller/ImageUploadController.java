@@ -17,7 +17,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import cz.fungisoft.coffeecompass.entity.Image;
 import cz.fungisoft.coffeecompass.service.ImageStorageService;
-import io.swagger.annotations.Api;
 
 /**
  * Controller to handle operations concerning upload or delete CoffeeSite's image file.

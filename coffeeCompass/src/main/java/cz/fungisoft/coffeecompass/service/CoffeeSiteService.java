@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.service;
 import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
@@ -171,5 +172,7 @@ public interface CoffeeSiteService
     
     @PreAuthorize("isAuthenticated()")
     public void deleteCoffeeSitesFromUser(Long userId);
+    @Transactional
+    CoffeeSite updateSite(CoffeeSiteDTO cs);
     
 }

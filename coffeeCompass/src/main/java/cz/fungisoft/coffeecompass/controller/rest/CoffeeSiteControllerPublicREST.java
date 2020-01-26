@@ -2,11 +2,13 @@ package cz.fungisoft.coffeecompass.controller.rest;
 
 import java.util.List;
 
+import org.apache.catalina.manager.StatusManagerServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jca.cci.RecordTypeNotSupportedException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,8 +16,28 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
+import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
+import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
+import cz.fungisoft.coffeecompass.entity.CoffeeSiteType;
+import cz.fungisoft.coffeecompass.entity.CoffeeSort;
+import cz.fungisoft.coffeecompass.entity.CupType;
+import cz.fungisoft.coffeecompass.entity.NextToMachineType;
+import cz.fungisoft.coffeecompass.entity.OtherOffer;
+import cz.fungisoft.coffeecompass.entity.PriceRange;
+import cz.fungisoft.coffeecompass.entity.SiteLocationType;
+import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
+import cz.fungisoft.coffeecompass.service.CSRecordStatusService;
+import cz.fungisoft.coffeecompass.service.CSStatusService;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
+import cz.fungisoft.coffeecompass.service.CoffeeSiteTypeService;
+import cz.fungisoft.coffeecompass.service.CoffeeSortService;
+import cz.fungisoft.coffeecompass.service.CupTypeService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
+import cz.fungisoft.coffeecompass.service.NextToMachineTypeService;
+import cz.fungisoft.coffeecompass.service.OtherOfferService;
+import cz.fungisoft.coffeecompass.service.PriceRangeService;
+import cz.fungisoft.coffeecompass.service.SiteLocationTypeService;
+import cz.fungisoft.coffeecompass.service.StarsQualityService;
 import io.swagger.annotations.Api;
 
 /**
@@ -34,6 +56,36 @@ import io.swagger.annotations.Api;
 public class CoffeeSiteControllerPublicREST
 {
     private static final Logger log = LoggerFactory.getLogger(CoffeeSiteControllerPublicREST.class);
+    
+    @Autowired
+    private OtherOfferService offerService;
+    
+    @Autowired
+    private CSStatusService csStatusService;
+    
+    @Autowired
+    private CSRecordStatusService csRecordStatusService;
+    
+    @Autowired
+    private StarsQualityService starsQualityService;
+    
+    @Autowired
+    private PriceRangeService priceRangeService;
+    
+    @Autowired
+    private SiteLocationTypeService locationTypesService;
+    
+    @Autowired
+    private CupTypeService cupTypesService;
+    
+    @Autowired
+    private CoffeeSortService coffeeSortService;
+    
+    @Autowired
+    private NextToMachineTypeService ntmtService;
+    
+    @Autowired
+    private CoffeeSiteTypeService coffeeSiteTypeService;
     
     private CoffeeSiteService coffeeSiteService;
     
@@ -93,10 +145,8 @@ public class CoffeeSiteControllerPublicREST
         
         CoffeeSiteDTO cs = coffeeSiteService.findOneToTransfer(id);
         
-        if (cs == null) {
-            return new ResponseEntity<CoffeeSiteDTO>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<CoffeeSiteDTO>(cs, HttpStatus.OK);
+        return (cs == null) ? new ResponseEntity<CoffeeSiteDTO>(HttpStatus.NOT_FOUND)
+                            : new ResponseEntity<CoffeeSiteDTO>(cs, HttpStatus.OK);
     }
     
 
@@ -111,10 +161,8 @@ public class CoffeeSiteControllerPublicREST
         
         CoffeeSiteDTO cs = coffeeSiteService.findByName(name);
         
-        if (cs == null) {
-            return new ResponseEntity<CoffeeSiteDTO>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<CoffeeSiteDTO>(cs, HttpStatus.OK);
+        return (cs == null) ? new ResponseEntity<CoffeeSiteDTO>(HttpStatus.NOT_FOUND)
+                            : new ResponseEntity<CoffeeSiteDTO>(cs, HttpStatus.OK);
     }
     
     
@@ -128,9 +176,10 @@ public class CoffeeSiteControllerPublicREST
      * @return
      */
     @GetMapping("/dist/") // napr. http://localhost:8080/rest/site/dist/?lat1=50.235&lon1=14.235&lat2=50.335&lon2=14.335
-    public double distance(@RequestParam(value="lat1") double lat1, @RequestParam(value="lon1") double lon1,
+    public ResponseEntity<Double> distance(@RequestParam(value="lat1") double lat1, @RequestParam(value="lon1") double lon1,
                            @RequestParam(value="lat2") double lat2, @RequestParam(value="lon2") double lon2) {
-        return coffeeSiteService.getDistance(lat1, lon1, lat2, lon2);
+        return new ResponseEntity<Double>(coffeeSiteService.getDistance(lat1, lon1, lat2, lon2), HttpStatus.OK);
+        //return coffeeSiteService.getDistance(lat1, lon1, lat2, lon2);
     }
     
     /**
@@ -208,6 +257,58 @@ public class CoffeeSiteControllerPublicREST
         }
         
         return new ResponseEntity<Integer>(numOfStars, HttpStatus.OK);
+    }
+    
+/* *** Atributes needed for client creating/editing Coffee site **** */
+    
+    @GetMapping("/allOtherOffers")
+    public List<OtherOffer> populateOtherOffers() {
+        return offerService.getAllOtherOffers();
+    }
+       
+    @GetMapping("/allSiteStatuses")
+    public List<CoffeeSiteStatus> populateSiteStatuses() {
+        return csStatusService.getAllCoffeeSiteStatuses();
+    }
+    
+    @GetMapping("/allSiteRecordStatuses")
+    public List<CoffeeSiteRecordStatus> populateSiteRecordStatuses() {
+        return csRecordStatusService.getAllCSRecordStatuses();
+    }
+    
+    @GetMapping("/allHodnoceniKavyStars")
+    public List<StarsQualityDescription> populateQualityStars() {
+        return starsQualityService.getAllStarsQualityDescriptions();
+    }
+    
+    @GetMapping("/allPriceRanges")
+    public List<PriceRange> populatePriceRanges() {
+        return priceRangeService.getAllPriceRanges();
+    }
+    
+    @GetMapping("/allLocationTypes")
+    public List<SiteLocationType> populateLocationTypes() {
+        return locationTypesService.getAllSiteLocationTypes();
+    }
+    
+    @GetMapping("/allCupTypes")
+    public List<CupType> populateCupTypes() {
+        return cupTypesService.getAllCupTypes();
+    }
+        
+    @GetMapping("/allCoffeeSorts")
+    public List<CoffeeSort> populateCoffeeSorts() {
+        return coffeeSortService.getAllCoffeeSorts();
+    }
+       
+    @GetMapping("/allNextToMachineTypes")
+    public List<NextToMachineType> populateNextToMachineTypes() {
+        return ntmtService.getAllNextToMachineTypes();
+    }
+    
+    @GetMapping("/allCoffeeSiteTypes")
+    public List<CoffeeSiteType> populateCoffeeSiteTypes() {
+        return coffeeSiteTypeService.getAllCoffeeSiteTypes();
     }
     
 }
