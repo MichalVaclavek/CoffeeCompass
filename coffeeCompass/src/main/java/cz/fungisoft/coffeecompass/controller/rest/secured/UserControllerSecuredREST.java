@@ -128,7 +128,6 @@ public class UserControllerSecuredREST
         Optional<User> currentUser = userService.findByUserName(userName);
         if (!currentUser.isPresent()) {
             logger.info("Unable to delete. User with username '{}' not found.", userName);
-            //return new ResponseEntity<Boolean>(false, HttpStatus.NOT_FOUND);
             throw new ResourceNotFoundException("User", "username", userName);
         } 
   
@@ -144,7 +143,6 @@ public class UserControllerSecuredREST
         Optional<User> user = userService.findById(userId);
         if (!user.isPresent()) {
             logger.info("Unable to delete. User with ID='{}' not found.", userId);
-            //return new ResponseEntity<Boolean>(false, HttpStatus.NOT_FOUND);
             throw new ResourceNotFoundException("User", "userId", userId);
         } 
   

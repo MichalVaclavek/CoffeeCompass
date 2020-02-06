@@ -358,7 +358,9 @@ public class CoffeeSiteController
     }
 
     /**
-     * Pomocna metoda zdruzujici Controller prikazy pro některé modifikace stavu CoffeeSitu
+     * Pomocna metoda zdruzujici Controller prikazy pro některé modifikace stavu CoffeeSitu.
+     * Pouzito ale jen pro CoffeeSiteRecordStatusEnum.INACTIVE a CoffeeSiteRecordStatusEnum.CANCELED
+     * ostatni maji specialni redirect
      */
     private String modifyStatusAndReturnSameView(Long csID, CoffeeSiteRecordStatusEnum newStatus) {
         CoffeeSite cs = coffeeSiteService.findOneById(csID);

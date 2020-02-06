@@ -62,8 +62,9 @@
 
 			  <td th:text="${site.siteName}">SiteName</td>
 			  <td th:text="${site.statusZarizeni.status}">SiteStatus</td>
-			  <td th:text="${#dates.format(site.createdOn, 'dd. MM. yyyy , HH:mm')}"></td> 
-			  <td th:text="${site.typPodniku.coffeeSiteType}">TypPodniku</td>
+			  <td th:text="${#dates.format(site.createdOn, 'dd. MM. yyyy , HH:mm')}"></td>
+			   
+			  <td th:text="!${site.typPodniku == null} ? ${site.typPodniku.coffeeSiteType} : ''">TypPodniku</td>
 			  <td><span th:each="offer, iterStat : ${site.otherOffers}" th:text="!${iterStat.last} ? ${offer}+', ' : ${offer}">Other Offer</span></td>
 			  <!-- <td th:text="${site.otherOffers}">Offer</td>  -->
 			  <td><span th:each="sort, iterStat : ${site.coffeeSorts}" th:text="!${iterStat.last} ? ${sort}+', ' : ${sort}">Coffee Sorts</span></td>

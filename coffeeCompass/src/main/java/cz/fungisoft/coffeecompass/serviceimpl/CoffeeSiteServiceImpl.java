@@ -179,6 +179,32 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     }
     
     @Override
+    public Integer getNumberOfSitesFromUserId(long userId) {
+        Integer numberOfSitesFromUser = coffeeSiteRepo.getNumberOfSitesFromUserID(userId);
+        return (numberOfSitesFromUser != null) ? numberOfSitesFromUser : 0;
+    }
+    
+    @Override
+    public Integer getNumberOfSitesFromLoggedInUser() {
+        loggedInUser = userService.getCurrentLoggedInUser();
+        return (loggedInUser.isPresent()) ? getNumberOfSitesFromUserId(loggedInUser.get().getId())
+                                          : 0;
+    }
+    
+    @Override
+    public Integer getNumberOfSitesNotCanceledFromUserId(long userId) {
+        Integer numberOfSitesFromUser = coffeeSiteRepo.getNumberOfSitesNotCanceledFromUserID(userId);
+        return (numberOfSitesFromUser != null) ? numberOfSitesFromUser : 0;
+    }
+
+    @Override
+    public Integer getNumberOfSitesNotCanceledFromLoggedInUser() {
+        loggedInUser = userService.getCurrentLoggedInUser();
+        return (loggedInUser.isPresent()) ? getNumberOfSitesNotCanceledFromUserId(loggedInUser.get().getId())
+                                          : 0;
+    }
+    
+    @Override
     public List<CoffeeSiteDTO> findAllFromUserName(String userName) {
         Optional<User> user = userService.findByUserName(userName);
         return (user.isPresent()) ? findAllFromUser(user.get()) : null;
@@ -282,17 +308,26 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             
             entityFromDB.setCena(coffeeSite.getCena());
             
-            for (CoffeeSort cs : coffeeSite.getCoffeeSorts()) {
-                entityFromDB.getCoffeeSorts().add(cs);
-            }            
-            for (CupType cp : coffeeSite.getCupTypes()) {
-                entityFromDB.getCupTypes().add(cp);
+            if (coffeeSite.getCoffeeSorts() != null) {
+                for (CoffeeSort cs : coffeeSite.getCoffeeSorts()) {
+                    entityFromDB.getCoffeeSorts().add(cs);
+                }
             }
-            for (NextToMachineType ntmt : coffeeSite.getNextToMachineTypes()) {
-                entityFromDB.getNextToMachineTypes().add(ntmt);
+            
+            if (coffeeSite.getCupTypes() != null) {
+                for (CupType cp : coffeeSite.getCupTypes()) {
+                    entityFromDB.getCupTypes().add(cp);
+                }
             }
-            for (OtherOffer oo : coffeeSite.getOtherOffers()) {
-                entityFromDB.getOtherOffers().add(oo);
+            if (coffeeSite.getNextToMachineTypes() != null) {
+                for (NextToMachineType ntmt : coffeeSite.getNextToMachineTypes()) {
+                    entityFromDB.getNextToMachineTypes().add(ntmt);
+                }
+            }
+            if (coffeeSite.getOtherOffers() != null) {
+                for (OtherOffer oo : coffeeSite.getOtherOffers()) {
+                    entityFromDB.getOtherOffers().add(oo);
+                }
             }
             
             Company comp = null;
@@ -305,12 +340,13 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             
             entityFromDB.setDodavatelPodnik(comp);
            
-            entityFromDB.setMesto(coffeeSite.getMesto());           
+            entityFromDB.setMesto(coffeeSite.getMesto());
             entityFromDB.setNumOfCoffeeAutomatyVedleSebe(coffeeSite.getNumOfCoffeeAutomatyVedleSebe());           
             entityFromDB.setPristupnostDny(coffeeSite.getPristupnostDny());
             entityFromDB.setPristupnostHod(coffeeSite.getPristupnostHod());
             entityFromDB.setSiteName(coffeeSite.getSiteName());
             entityFromDB.setStatusZarizeni(coffeeSite.getStatusZarizeni());
+            entityFromDB.setTypPodniku(coffeeSite.getTypPodniku());
             entityFromDB.setTypLokality(coffeeSite.getTypLokality());
             entityFromDB.setUliceCP(coffeeSite.getUliceCP());
             entityFromDB.setZemDelka(coffeeSite.getZemDelka());
@@ -717,6 +753,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     public void deleteCoffeeSitesFromUser(Long userId) {
         coffeeSiteRepo.deleteAllFromUser(userId);
     }
+
 
     
     //TODO dalsi vyhledavaci metody podle ruznych kriterii?

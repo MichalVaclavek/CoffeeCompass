@@ -179,7 +179,6 @@ public class CoffeeSiteControllerPublicREST
     public ResponseEntity<Double> distance(@RequestParam(value="lat1") double lat1, @RequestParam(value="lon1") double lon1,
                            @RequestParam(value="lat2") double lat2, @RequestParam(value="lon2") double lon2) {
         return new ResponseEntity<Double>(coffeeSiteService.getDistance(lat1, lon1, lat2, lon2), HttpStatus.OK);
-        //return coffeeSiteService.getDistance(lat1, lon1, lat2, lon2);
     }
     
     /**
@@ -259,7 +258,7 @@ public class CoffeeSiteControllerPublicREST
         return new ResponseEntity<Integer>(numOfStars, HttpStatus.OK);
     }
     
-/* *** Atributes needed for client creating/editing Coffee site **** */
+    /* *** Atributes needed for client creating/editing Coffee site **** */
     
     @GetMapping("/allOtherOffers")
     public List<OtherOffer> populateOtherOffers() {

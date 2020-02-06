@@ -66,7 +66,7 @@
 							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.statusZarizeni.status}" style="font-weight: bold">Site status</td>
 							</tr>
 						    
-							<tr>
+							<tr th:if="${coffeeSite.typPodniku != null}">
 							   <td th:text="#{site.type}">TypPodniku</td>
 							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.typPodniku.coffeeSiteType}" style="font-weight: bold">TypPodniku</td>
 							</tr>
@@ -81,7 +81,7 @@
 							   <td class="w3-right-align w3-sand" style="font-weight: bold"><span th:each="offer, iterStat : ${coffeeSite.otherOffers}" th:text="!${iterStat.last} ? ${offer}+', ' : ${offer}">Other Offer</span></td>
 							</tr>
 							  
-							<tr>
+							<tr th:if="${coffeeSite.cena != null}">
 							   <td th:text="#{site.pricerange}">Price range</td>
 							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.cena.priceRange}" style="font-weight: bold">Price range</td>
 							</tr>
@@ -96,7 +96,7 @@
 							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.numOfCoffeeAutomatyVedleSebe}" style="font-weight: bold">Number of coffee machines together</td>
 							</tr>
 							  
-							<tr th:if= "${coffeeSite.dodavatelPodnik != null}">
+							<tr th:if= "${coffeeSite.dodavatelPodnik != null AND coffeeSite.dodavatelPodnik.nameOfCompany != ''}">
 							   <td th:text="#{site.supplier}">Supplier</td>
 							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.dodavatelPodnik.nameOfCompany}" style="font-weight: bold">Supplier</td>
 							</tr>
@@ -111,7 +111,7 @@
 							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.pristupnostDny} + ', ' + ${coffeeSite.pristupnostHod}" style="font-weight: bold">Opening days/hours</td>
 							</tr>
 							  
-							<tr>
+							<tr th:if="${coffeeSite.typLokality != null}">
 							   <td th:text="#{site.locationtype}">Location type</td>
 							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.typLokality.locationType}" style="font-weight: bold">Location type</td>
 							</tr>

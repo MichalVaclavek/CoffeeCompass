@@ -24,6 +24,10 @@ public interface CoffeeSiteService
     public List<CoffeeSiteDTO> findAllFromUser(User user);
     public List<CoffeeSiteDTO> findAllFromUserName(String userName);
     public List<CoffeeSiteDTO> findAllFromLoggedInUser();
+    public Integer getNumberOfSitesFromUserId(long userId);
+    public Integer getNumberOfSitesFromLoggedInUser();
+    public Integer getNumberOfSitesNotCanceledFromUserId(long userId);
+    public Integer getNumberOfSitesNotCanceledFromLoggedInUser();
     
     public CoffeeSiteDTO findOneToTransfer(Long siteId);
     public CoffeeSite findOneById(Long id);
@@ -152,6 +156,7 @@ public interface CoffeeSiteService
     public CoffeeSite save(CoffeeSite cs);
     
     @PreAuthorize("isAuthenticated()")
+    @Transactional
     public CoffeeSite save(CoffeeSiteDTO cs);
     
     @PreAuthorize("isAuthenticated()")
@@ -172,7 +177,8 @@ public interface CoffeeSiteService
     
     @PreAuthorize("isAuthenticated()")
     public void deleteCoffeeSitesFromUser(Long userId);
+    
     @Transactional
-    CoffeeSite updateSite(CoffeeSiteDTO cs);
+    public CoffeeSite updateSite(CoffeeSiteDTO cs);
     
 }
