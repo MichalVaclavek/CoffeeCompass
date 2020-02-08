@@ -46,8 +46,8 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService
     @Override
     public StatisticsToShow getCurrentStatisticalInfoToShow() {
         statsToShow.setNumOfAllSites(csRepo.getNumOfAllActiveSites());
-        statsToShow.setNumOfNewSitesToday(csRepo.getNumOfSitesCreatedToday());
-        statsToShow.setNumOfNewSitesLast7Days(csRepo.getNumOfSitesCreatedLast7Days());
+        statsToShow.setNumOfNewSitesToday(csRepo.getNumOfSitesCreatedAndActiveToday());
+        statsToShow.setNumOfNewSitesLast7Days(csRepo.getNumOfSitesCreatedAndActiveInLast7Days());
         
         statsToShow.setNumOfAllUsers(usersRepo.countAllEnabledUsers());
         statsToShow.setNumOfNewUsersThisWeek(usersRepo.getNumOfUsersRegisteredLast7Days());

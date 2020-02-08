@@ -130,7 +130,8 @@
 							   <td th:text="#{site.location}">Poloha</td>	
 							   <td class="w3-left-align w3-sand" style="font-weight: bold">
 							   		<div >
-							   			<div class="w3-cell w3-container">
+							   			<div class="w3-cell w3-container"
+							   			     th:classappend="${coffeeSite.anyOtherSiteActiveOnSamePosition AND coffeeSite.canBeModified} ? 'has-error' : ''"> <!-- isAnyOtherSiteActiveOnSamePosition -->
 							   				<p th:text="#{site.longitude.short}+' '+${coffeeSite.zemDelka}"></p>
 							   				<p th:text="#{site.latitude.short}+' '+${coffeeSite.zemSirka}"></p>
 							   			</div>
@@ -165,7 +166,7 @@
 							</tr>
 							  
 							<tr sec:authorize="isAuthenticated()">
-							  <td th:text="#{site.recordStatus}">Initial comment</td>			  
+							  <td th:text="#{site.recordStatus}">Record status</td>			  
 							  <td class="w3-right-align w3-sand" th:text="${coffeeSite.recordStatus.status}" style="font-weight: bold">Status of record</td>
 							</tr>
 						</table>
@@ -199,7 +200,7 @@
 						                  th:action="@{'/activateSite/' + ${coffeeSite.id}}" 
 						                  th:method="PUT" >
 						               <input type="hidden" name="_method" value="put" />
-						               <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.status.activate}" class="w3-btn w3-light-green w3-border w3-round w3-small">X</button>
+						               <button th:disabled="${coffeeSite.canBeDeactivated OR coffeeSite.anyOtherSiteActiveOnSamePosition}" type="submit" id="submitButton" th:text="#{site.status.activate}" class="w3-btn w3-light-green w3-border w3-round w3-small">X</button>
 						            </form>
 						          </div>
 						         
@@ -214,7 +215,7 @@
 						            </form> 
 						          </div>
 						         
-					         	  <!-- Zmena record statusu na Cancel. Ne finalni delete, to muze provest pouze ADMIN -->
+					         	  <!-- Zmena record statusu na CANCEL. Finalni DELETE muze provest pouze ADMIN -->
 						          <div class="w3-cell">
 						            <form th:if="${coffeeSite.canBeCanceled} OR ${coffeeSite.canBeDeactivated}" 
 						                  action="#" 
@@ -235,9 +236,16 @@
 						               <button type="submit" id="submitButton" th:text="#{site.delete}" class="w3-btn w3-red w3-border w3-round w3-small">X</button>
 						            </form>
 						          </div>
-					 			
+						          
 			    			</div> <!-- w3.cell.row -->
 						</div> <!-- w3.row -->
+						
+						<div th:if=${coffeeSite.anyOtherSiteActiveOnSamePosition} 
+						     class="w3-margin-top"> <!-- ${coffeeSite.anyOtherSiteActiveOnSamePosition} -->
+						     <span class="w3-text-red"
+						           th:text="#{site.position.occupied.by.otheractivesite.error}">Cannot be activate due to occupied position by another ACTIVE site.</span>
+						</div>
+						
 					</div>
 				</td>	<!-- End of Coffee site detailes table -->
 				

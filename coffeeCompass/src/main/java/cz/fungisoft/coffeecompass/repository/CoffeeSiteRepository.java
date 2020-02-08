@@ -37,23 +37,29 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
     @Query("select cs from CoffeeSite cs where originalUser.id=?1 order by cs.createdOn desc")
     public List<CoffeeSite> findSitesFromUserID(long userId);
     
-    @Query("select count(*) from CoffeeSite cs where originalUser.id=?1")
+    @Query("select count(id) from CoffeeSite cs where originalUser.id=?1")
     public Integer getNumberOfSitesFromUserID(long userId);
     
-    @Query("select count(*) from CoffeeSite cs where originalUser.id=?1 and NOT cs.recordStatus.status='CANCELED'")
+    @Query("select count(id) from CoffeeSite cs where originalUser.id=?1 and NOT cs.recordStatus.status='CANCELED'")
     public Integer getNumberOfSitesNotCanceledFromUserID(long userId);
     
     @Query("select cs from CoffeeSite cs where cs.recordStatus.status=?1 order by cs.siteName asc")
     public List<CoffeeSite> findSitesWithRecordStatus(String csRecordStatus);  
      
-    @Query("select count(*) from CoffeeSite cs where cs.recordStatus.status='ACTIVE'")
+    @Query("select count(id) from CoffeeSite cs where cs.recordStatus.status='ACTIVE'")
     public Long getNumOfAllActiveSites();
     
     @Query("select count(id) from CoffeeSite cs where date(cs.createdOn) = current_date")
     public Long getNumOfSitesCreatedToday();
     
+    @Query("select count(id) from CoffeeSite cs where date(cs.createdOn) = current_date AND cs.recordStatus.status='ACTIVE'")
+    public Long getNumOfSitesCreatedAndActiveToday();
+    
     @Query("select count(id) from CoffeeSite cs where date(cs.createdOn) > (current_date - 7)")
     public Long getNumOfSitesCreatedLast7Days();
+    
+    @Query("select count(id) from CoffeeSite cs where (date(cs.createdOn) > (current_date - 7)) AND cs.recordStatus.status='ACTIVE'")
+    public Long getNumOfSitesCreatedAndActiveInLast7Days();
     
     /**
      * Retrieves all CoffeeSites with ACTIVE record staus in city which starts with cityName parameter value
@@ -109,6 +115,22 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
      */
     @Query(nativeQuery = true, name = "numberOfSitesWithinRange") // varianta, kdy je Query, se jmenem "numberOfSitesWithinRange", nadefinovano v jine tride pomoci @NamedNativeQuery anotace, v tomto pripade v CoffeeSite tride
     public Long getNumberOfSitesWithinRange(double sirka, double delka, long rangeMeters);  
+    
+    /**
+     * Vrati pocet CoffeeSites v danem okruhu "rangeMeters" od zadanych souradnic "sirka" a "delka".<br>
+     * a s danym statusem zaznamu.
+     * Vyuziva se predevsim pro urceni, zda dana lokace/souradnice neni uz obsazena jinym CoffeeSite v ACTIVE
+     * stavu.
+     *   
+     * @param sirka - zemepisna sirka bodu od ktereho se vyhledava
+     * @param delka - zemepisna delka od ktereho se vyhledava
+     * @param rangeMeters - vzdalenost/okruh v metrech od bodu s polohou  "sirka" a "delka", kde se maji spocitat jiz vytvorene CoffeeSite. Defaultne cca 5m.
+     * @param recordStatusId - id pozadovaneho statusu, napr. ACTIVE
+     * 
+     * @return pocet CoffeeSites v danem okruhu "rangeMeters" od zadanych souradnic.
+     */
+    @Query(nativeQuery = true, name = "numberOfSitesWithinRangeInGivenStatus") // varianta, kdy je Query, se jmenem "numberOfSitesWithinRange", nadefinovano v jine tride pomoci @NamedNativeQuery anotace, v tomto pripade v CoffeeSite tride
+    public Long getNumberOfSitesWithinRangeInGivenStatus(double sirka, double delka, long rangeMeters, int recordStatusId); 
     
     /** 
      * Pomocna metoda pro otestovani, ze funguje volani Stored procedure v DB.

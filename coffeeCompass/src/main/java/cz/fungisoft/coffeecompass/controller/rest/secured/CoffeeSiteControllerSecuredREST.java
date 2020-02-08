@@ -87,7 +87,8 @@ public class CoffeeSiteControllerSecuredREST
     
         // Location already occupied?
         if (coffeeSite.getZemSirka() != null && coffeeSite.getZemDelka() != null) {
-            if (coffeeSiteService.isLocationAlreadyOccupied(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5, coffeeSite.getId())) {
+            //if (coffeeSiteService.isLocationAlreadyOccupied(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5, coffeeSite.getId())) {
+            if (coffeeSiteService.isLocationAlreadyOccupiedByActiveSite(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5, coffeeSite.getId())) {
                // new ResponseEntity<Long>(0L, HttpStatus.BAD_REQUEST); messages.getMessage("user.register.social.firstlogin.message.socialloginavailable", new Object[] {oAuth2ProviderName}, locale)
                 //throw new InvalidParameterValueException("CoffeeSite", "latitude/longitude", coffeeSite.getZemSirka(), "Na této pozici je lokace již vytvořena.");
                 throw new InvalidParameterValueException("CoffeeSite", "latitude/longitude", coffeeSite.getZemSirka(), messages.getMessage("coffeesite.create.wrong.location.rest.error", null, locale));
@@ -120,7 +121,8 @@ public class CoffeeSiteControllerSecuredREST
         
         // Location already occupied?
         if (coffeeSite.getZemSirka() != null && coffeeSite.getZemDelka() != null) {
-            if (coffeeSiteService.isLocationAlreadyOccupied(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5, coffeeSite.getId())) {
+//            if (coffeeSiteService.isLocationAlreadyOccupied(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5, coffeeSite.getId())) {
+            if (coffeeSiteService.isLocationAlreadyOccupiedByActiveSite(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5, coffeeSite.getId())) {
                 //new ResponseEntity<Long>(0L, HttpStatus.BAD_REQUEST);
                 throw new InvalidParameterValueException("CoffeeSite", "latitude/longitude", coffeeSite.getZemSirka(), messages.getMessage("coffeesite.create.wrong.location.rest.error", null, locale));
             }
@@ -135,17 +137,12 @@ public class CoffeeSiteControllerSecuredREST
             
             return (csDTO == null) ? new ResponseEntity<CoffeeSiteDTO>(HttpStatus.NOT_FOUND)
                                    : new ResponseEntity<CoffeeSiteDTO>(csDTO, HttpStatus.CREATED);
-//            return (cs == null) ? new ResponseEntity<Long>(0L, HttpStatus.BAD_REQUEST)
-//                    : new ResponseEntity<Long>(cs.getId(), HttpStatus.CREATED);
             
         } else {
             log.error("Coffee site update failed." + coffeeSite.getId());
             //throw new ResourceNotFoundException("CoffeeSite", "siteId", id);
             throw new BadRESTRequestException(messages.getMessage("coffeesite.update.rest.error", null, locale));
         }
-        
-//        return (cs == null) ? new ResponseEntity<Long>(0L, HttpStatus.BAD_REQUEST)
-//                            : new ResponseEntity<Long>(cs.getId(), HttpStatus.CREATED);
     }
     
     /**
@@ -165,20 +162,30 @@ public class CoffeeSiteControllerSecuredREST
     }
     
     /**
-     *  Zpracovani pozadavku na zmenu stavu CoffeeSite do stavu ACTIVE, INACTIVE a CANMCEL.<br>
-     *  Pokud aktivaci provedl ADMIN, zobrazi se mu nasledni seznam vsech CoffeeSites,
-     *  jinak se zobrazi seznam všech CoffeeSites, které vytvořil daný user. 
+     *  Zpracovani pozadavku na zmenu stavu CoffeeSite do stavu ACTIVE<br>
+     *  Pred zmenou do ACTIVE stavu je ptreba zkontrolovat, jestli na dane pozici neni jiny jiz ACTIVE CoffeeSite
      */
     @PutMapping("/{id}/activate") 
     public ResponseEntity<CoffeeSiteDTO> activateCoffeeSite(@PathVariable(name = "id") Long id, UriComponentsBuilder ucBuilder, Locale locale) {
+        CoffeeSite cs = coffeeSiteService.findOneById(id);
+        if (coffeeSiteService.isLocationAlreadyOccupiedByActiveSite(cs.getZemSirka(), cs.getZemDelka(), 5, cs.getId())) {
+            //new ResponseEntity<Long>(0L, HttpStatus.BAD_REQUEST);
+            throw new InvalidParameterValueException("CoffeeSite", "latitude/longitude", cs.getZemSirka(), messages.getMessage("coffeesite.create.wrong.location.rest.error", null, locale));
+        }
         return modifyStatus(id, CoffeeSiteRecordStatusEnum.ACTIVE, ucBuilder, locale);
     }
     
+    /**
+     *  Zpracovani pozadavku na zmenu stavu CoffeeSite do stavu INACTIVE<br>
+     */
     @PutMapping("/{id}/deactivate") 
     public ResponseEntity<CoffeeSiteDTO> deactivateCoffeeSite(@PathVariable(name = "id") Long id, UriComponentsBuilder ucBuilder, Locale locale) {
         return modifyStatus(id, CoffeeSiteRecordStatusEnum.INACTIVE, ucBuilder, locale);
     }
 
+    /**
+     *  Zpracovani pozadavku na zmenu stavu CoffeeSite do stavu CANCELED<br>
+     */
     @PutMapping("/{id}/cancel") 
     public ResponseEntity<CoffeeSiteDTO> cancelStatusSite(@PathVariable(name = "id") Long id, UriComponentsBuilder ucBuilder, Locale locale) {
         return modifyStatus(id, CoffeeSiteRecordStatusEnum.CANCELED, ucBuilder, locale);

@@ -167,7 +167,8 @@
 		        	<h3 th:text="#{home.statistics.label}" class="w3-margin-top">Statistics and news:</h3>
 		        		<div class="w3-center">
 				        	<span th:text="#{home.statistics.allsites.label}" class="w3-left" >Number of all sites: </span><span class="w3-right" th:text="${stats.numOfAllSites}"></span><br>
-				        	<span th:text="#{home.statistics.todaysites.label}" class="w3-left" >Number of sites created today: </span><span class="w3-right" th:text="${stats.numOfNewSitesToday}"></span><br>
+				        	 <!--<span th:text="#{home.statistics.todaysites.label}" class="w3-left" >Number of sites created today: </span><span class="w3-right" th:text="${stats.numOfNewSitesToday}"></span><br> -->
+				        	<span th:text="#{home.statistics.todaysites.activated.label}" class="w3-left" >Number of sites activated today: </span><span class="w3-right" th:text="${stats.numOfNewSitesToday}"></span><br>
 				        	<span th:text="#{home.statistics.last7daysites.label}" class="w3-left" >Number of sites created within last 7 days: </span><span class="w3-right" th:text="${stats.numOfNewSitesLast7Days}"></span><br>
 				        	<br>
 				        	<span th:text="#{home.statistics.allUsers.label}" class="w3-left" >Number of all users: </span><span class="w3-right" th:text="${stats.numOfAllUsers}"></span><br>

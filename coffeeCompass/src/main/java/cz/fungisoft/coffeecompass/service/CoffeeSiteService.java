@@ -150,6 +150,19 @@ public interface CoffeeSiteService
      * @return - true, if the location is already occupied by another CoffeeSite, otherwise false.
      */
     public boolean isLocationAlreadyOccupied(double zemSirka, double zemDelka, long rangeMeters, Long siteId);
+    
+    /**
+     * Checks if there is a CoffeeSites already created and in ACTIVE state within meters circle from 'zemSirka' and 'zemDelka'.<br>
+     * Used especially when creating/modifying CoffeeSite to check if it's location is not already occupied by another CoffeeSite.
+     * 
+     * @param zemSirka - zemepisna sirka bodu od ktereho se ma vyhledatvat (obvykle zem. sirka noveho/modifikovaneho CoffeeSite)
+     * @param zemDelka - zemepisna delka bodu od ktereho se ma vyhledatvat (obvykle zem. delka noveho/modifikovaneho CoffeeSite)
+     * @param rangeMeters - vzdalenost v metrech od vyhledavaciho bodu, kde se maji vyhledat CoffeeSites
+     * @param siteId - id of the CoffeeSites whose location is to be checked
+
+     * @return - true, if the location is already occupied by another CoffeeSite, otherwise false.
+     */
+    public boolean isLocationAlreadyOccupiedByActiveSite(double zemSirka, double zemDelka, long rangeMeters, Long siteId);
      
     
     @PreAuthorize("isAuthenticated()")

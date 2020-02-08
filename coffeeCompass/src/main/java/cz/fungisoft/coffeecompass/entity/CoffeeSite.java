@@ -92,6 +92,11 @@ import java.util.Set;
             name = "numberOfSitesWithinRange",
             query = "SELECT COUNT(*) AS cnt FROM (SELECT id, poloha_gps_sirka, poloha_gps_delka FROM coffeecompass.coffee_site WHERE distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3) AS items", 
             resultSetMapping = "LongResult"
+    ),
+    @NamedNativeQuery( // Counts number of already created CoffeeSites on selected location within defined meters range from the location in given status  
+            name = "numberOfSitesWithinRangeInGivenStatus",
+            query = "SELECT COUNT(*) AS cnt FROM (SELECT id, status_zaznamu_id, poloha_gps_sirka, poloha_gps_delka FROM coffeecompass.coffee_site WHERE distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3) AS items WHERE status_zaznamu_id=?4", 
+            resultSetMapping = "LongResult"
     )
 })
 /**

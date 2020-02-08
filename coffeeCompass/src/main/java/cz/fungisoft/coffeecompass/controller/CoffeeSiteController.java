@@ -294,7 +294,8 @@ public class CoffeeSiteController
 
         // Overeni, zda zadana pozice CoffeeSitu neni jiz pouzita.
         if (coffeeSite.getZemSirka() != null && coffeeSite.getZemDelka() != null) {
-            if (coffeeSiteService.isLocationAlreadyOccupied(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5, coffeeSite.getId())) {
+            //if (coffeeSiteService.isLocationAlreadyOccupied(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5, coffeeSite.getId())) {
+            if (coffeeSiteService.isLocationAlreadyOccupiedByActiveSite(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5, coffeeSite.getId())) {
                 bindingResult.rejectValue("zemSirka", "error.site.coordinate.latitude", "Location already occupied.");
                 bindingResult.rejectValue("zemDelka", "error.site.coordinate.longitude", "Location already occupied.");
             }
@@ -325,12 +326,27 @@ public class CoffeeSiteController
     /**
      *  Zpracovani pozadavku na zmenu stavu CoffeeSite do stavu ACTIVE.<br>
      *  Pokud aktivaci provedl ADMIN, zobrazi se mu nasledni seznam vsech CoffeeSites,
-     *  jinak se zobrazi seznam všech CoffeeSites, které vytvořil daný user. 
+     *  jinak se zobrazi seznam všech CoffeeSites, které vytvořil daný user.
+     *  Před aktivací se provede i kontrola, jestli na dané pozici není již jiná
+     *  aktivní lokace.
      */
     @PutMapping("/activateSite/{id}") 
     public String activateCoffeeSite(@PathVariable(name = "id") Long id) {
-        // After CoffeeSite activation, go to the same page and show confirmation message
+        
         CoffeeSite cs = coffeeSiteService.findOneById(id);
+        
+     // Overeni, zda zadana pozice CoffeeSitu neni jiz pouzita.
+//            //if (coffeeSiteService.isLocationAlreadyOccupied(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5, coffeeSite.getId())) {
+//            if (coffeeSiteService.isLocationAlreadyOccupiedByActiveSite(cs.getZemSirka(), cs.getZemDelka(), 5, cs.getId())) {
+//                bindingResult.rejectValue("zemSirka", "error.site.coordinate.latitude", "Location already occupied.");
+//                bindingResult.rejectValue("zemDelka", "error.site.coordinate.longitude", "Location already occupied.");
+//            }
+//        
+//        if (bindingResult.hasErrors()) {
+//            return "coffeesite_create";
+//        }
+        
+        // After CoffeeSite activation, go to the same page and show confirmation message
         cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, CoffeeSiteRecordStatusEnum.ACTIVE);
         return "redirect:/showSite/" + cs.getId() + "?activationSuccess";
     }

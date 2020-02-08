@@ -119,6 +119,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         site.setVisible(isVisible(site));
         site.setCanBeCommented(canBeCommented(site));
         site.setCanBeRatedByStars(canBeRateByStars(site));
+        site.setAnyOtherSiteActiveOnSamePosition(isLocationAlreadyOccupiedByActiveSite(site.getZemSirka(), site.getZemDelka(), 5, site.getId()));
+        
         site.setMainImageURL(getMainImageURL(site));
         
         return site;
@@ -404,10 +406,36 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     public boolean isLocationAlreadyOccupied(double zemSirka, double zemDelka, long meters, Long siteId) {
         long numOfSites = coffeeSiteRepo.getNumberOfSitesWithinRange(zemSirka, zemDelka, meters);
         // If only one site is found in the neighborhood, check if it is a new site or curently modified site
-        // if it is current modified site, then the location is considered to be available. Means only move of the CoffeeSite to correct new position with no other neighbors
+        // if it is current modified site, then the location is considered to be available.
+        // Means only move of the CoffeeSite to correct new position with no other neighbors
         if (numOfSites == 1 && siteId > 0) {
             CoffeeSite neighborSite = findOneById(siteId);
-            if (neighborSite != null) {
+            if (neighborSite != null) { // its only requested site here, so, the position is not ocupied
+                return false;
+            }
+        }
+            
+        return numOfSites > 0;
+    }
+    
+    
+    /**
+     * True, if there is already created and ACTIVE different CoffeeSite on 'zemSirka', 'zemDelka' location within meters range,
+     * otherwise false.
+     */
+    @Override
+    public boolean isLocationAlreadyOccupiedByActiveSite(double zemSirka, double zemDelka, long meters, Long siteId) {
+        
+        CoffeeSiteRecordStatus activeRecordStatus = csRecordStatusService.findCSRecordStatus(CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum.ACTIVE);
+        
+        long numOfSites = coffeeSiteRepo.getNumberOfSitesWithinRangeInGivenStatus(zemSirka, zemDelka, meters, activeRecordStatus.getId());
+        // If only one site is found in the neighborhood, check if it is a new site or curently modified site
+        // if it is current modified site, then the location is considered to be available.
+        // Means only move of the CoffeeSite to correct new position with no other ACTIVE neighbors
+        if (numOfSites == 1 && siteId > 0) {
+            CoffeeSite neighborSite = findOneById(siteId);
+            if (neighborSite != null 
+                && neighborSite.getRecordStatus().getRecordStatus() == CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum.ACTIVE) { // its only requested site with ACTIVE status here, so, the position is not ocupied by any other ACTIVE site
                 return false;
             }
         }
@@ -608,12 +636,18 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
                                      || cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.INACTIVE));
     }
 
+    /**
+     * Position cannot be occupied by any other ACTIVE CoffeeSite before activating.
+     * @param cs
+     * @return
+     */
     private boolean canBeActivated(CoffeeSiteDTO cs) {
         return siteUserMatch(cs) // all authenticated users can modify from Created to Active or Inactive to Active
                && 
                (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CREATED)
                 || cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.INACTIVE)
-               );    
+               );
+               //&& !isLocationAlreadyOccupiedByActiveSite(cs.getZemSirka(), cs.getZemDelka(), 5, cs.getId()); 
     }
 
     private boolean canBeDeactivated(CoffeeSiteDTO cs) {
@@ -628,13 +662,12 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
 
     /**
      * 
-     * According new definition (from 17.2. 2017), DBA user cannot Cancel Coffee Site
-     * 
      * @param cs
      * @return
      */
     private boolean canBeCanceled(CoffeeSiteDTO cs) {
-        return siteUserMatch(cs) && !userService.hasDBARole(loggedInUser.get()) // all users allowed to modify are also allowed change status from Inactive to Cancel or from CREATED to Cancel, except those with DBA role
+        //return siteUserMatch(cs) && !userService.hasDBARole(loggedInUser.get()) // all users allowed to modify are also allowed change status from Inactive to Cancel or from CREATED to Cancel, except those with DBA role
+        return siteUserMatch(cs) // all users allowed to modify are also allowed change status from Inactive to Cancel or from CREATED to Cancel
                &&
                (
                   cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.INACTIVE)
