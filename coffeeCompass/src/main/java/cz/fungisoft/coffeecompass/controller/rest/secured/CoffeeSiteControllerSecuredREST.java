@@ -21,16 +21,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
-import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
 import cz.fungisoft.coffeecompass.exceptions.rest.BadRESTRequestException;
 import cz.fungisoft.coffeecompass.exceptions.rest.InvalidParameterValueException;
-import cz.fungisoft.coffeecompass.exceptions.rest.ResourceNotFoundException;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import io.swagger.annotations.Api;
 
@@ -85,16 +82,6 @@ public class CoffeeSiteControllerSecuredREST
     @PostMapping("/create") // Mapovani http POST na DB save/INSERT
     public ResponseEntity<CoffeeSiteDTO> insert(@Valid @RequestBody CoffeeSiteDTO coffeeSite, UriComponentsBuilder ucBuilder, Locale locale) {
     
-        // Location already occupied?
-        if (coffeeSite.getZemSirka() != null && coffeeSite.getZemDelka() != null) {
-            //if (coffeeSiteService.isLocationAlreadyOccupied(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5, coffeeSite.getId())) {
-            if (coffeeSiteService.isLocationAlreadyOccupiedByActiveSite(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5, coffeeSite.getId())) {
-               // new ResponseEntity<Long>(0L, HttpStatus.BAD_REQUEST); messages.getMessage("user.register.social.firstlogin.message.socialloginavailable", new Object[] {oAuth2ProviderName}, locale)
-                //throw new InvalidParameterValueException("CoffeeSite", "latitude/longitude", coffeeSite.getZemSirka(), "Na této pozici je lokace již vytvořena.");
-                throw new InvalidParameterValueException("CoffeeSite", "latitude/longitude", coffeeSite.getZemSirka(), messages.getMessage("coffeesite.create.wrong.location.rest.error", null, locale));
-            }
-        } 
-        
        CoffeeSite cs = coffeeSiteService.save(coffeeSite);
        
        HttpHeaders headers = new HttpHeaders();
@@ -118,15 +105,6 @@ public class CoffeeSiteControllerSecuredREST
 
     @PutMapping("/update/{id}") // Mapovani http PUT na DB operaci UPDATE tj. zmena zaznamu c. id polozkou coffeeSite, napr. http://localhost:8080/rest/secured/site/update/2
     public ResponseEntity<CoffeeSiteDTO> updateRest(@PathVariable Long id, @Valid @RequestBody CoffeeSiteDTO coffeeSite, UriComponentsBuilder ucBuilder, Locale locale) {
-        
-        // Location already occupied?
-        if (coffeeSite.getZemSirka() != null && coffeeSite.getZemDelka() != null) {
-//            if (coffeeSiteService.isLocationAlreadyOccupied(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5, coffeeSite.getId())) {
-            if (coffeeSiteService.isLocationAlreadyOccupiedByActiveSite(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5, coffeeSite.getId())) {
-                //new ResponseEntity<Long>(0L, HttpStatus.BAD_REQUEST);
-                throw new InvalidParameterValueException("CoffeeSite", "latitude/longitude", coffeeSite.getZemSirka(), messages.getMessage("coffeesite.create.wrong.location.rest.error", null, locale));
-            }
-        } 
         
         coffeeSite.setId(id);
         
@@ -202,15 +180,13 @@ public class CoffeeSiteControllerSecuredREST
             throw new BadRESTRequestException(messages.getMessage("coffeesite.status.change.rest.error", null, locale));    
         } else {
             HttpHeaders headers = new HttpHeaders();
-            log.info("New Coffee site created.");
+            log.info("CoffeeSite's status modified. New status: " + newStatus.getSiteRecordStatus());
             headers.setLocation(ucBuilder.path("/rest/site/{id}").buildAndExpand(cs.getId()).toUri());
             CoffeeSiteDTO csDTO = coffeeSiteService.findOneToTransfer(csID);
             
             return (csDTO == null) ? new ResponseEntity<CoffeeSiteDTO>(HttpStatus.NOT_FOUND)
                                    : new ResponseEntity<CoffeeSiteDTO>(csDTO, HttpStatus.OK);
         }
-        //return new ResponseEntity<Long>(csID, HttpStatus.OK);
-        
     }
     
     /**
@@ -261,6 +237,5 @@ public class CoffeeSiteControllerSecuredREST
                 : new ResponseEntity<Integer>(0, HttpStatus.NOT_FOUND);
         
     }
-    
     
 }

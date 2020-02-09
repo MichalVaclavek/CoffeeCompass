@@ -37,9 +37,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Hlavni model objekt aplikace. Obsahuje vsechny potrebne informace o "Coffee situ".
+ * Hlavni model objekt aplikace. Obsahuje vsechny potrebne informace o "Coffee situ".<br>
  * Atributy obsahuji anotace pro Hibernate.<br>
- * 
+ * <p>
  * Prvni Stored procedure je jen pro otestovani, ze funguje volani stored procedure v DB.
  * 
  * @author Michal Vaclavek
@@ -93,7 +93,7 @@ import java.util.Set;
             query = "SELECT COUNT(*) AS cnt FROM (SELECT id, poloha_gps_sirka, poloha_gps_delka FROM coffeecompass.coffee_site WHERE distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3) AS items", 
             resultSetMapping = "LongResult"
     ),
-    @NamedNativeQuery( // Counts number of already created CoffeeSites on selected location within defined meters range from the location in given status  
+    @NamedNativeQuery( // Counts number of already created CoffeeSites in given status on selected location within defined meters range from the location. 
             name = "numberOfSitesWithinRangeInGivenStatus",
             query = "SELECT COUNT(*) AS cnt FROM (SELECT id, status_zaznamu_id, poloha_gps_sirka, poloha_gps_delka FROM coffeecompass.coffee_site WHERE distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3) AS items WHERE status_zaznamu_id=?4", 
             resultSetMapping = "LongResult"

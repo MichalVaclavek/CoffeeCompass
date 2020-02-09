@@ -42,7 +42,7 @@ public class CoffeeSiteDTO
         }
     }
     
-    @JsonFormat(pattern = "dd. MM. yyyy HH:mm")
+    @JsonFormat(pattern = "dd. MM. yyyy HH:mm", timezone="Europe/Prague")
     private Date createdOn;
     
     private Set<CoffeeSort> coffeeSorts;

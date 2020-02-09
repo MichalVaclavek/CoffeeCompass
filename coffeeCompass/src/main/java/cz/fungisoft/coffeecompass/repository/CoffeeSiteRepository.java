@@ -43,7 +43,7 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
     @Query("select count(id) from CoffeeSite cs where originalUser.id=?1 and NOT cs.recordStatus.status='CANCELED'")
     public Integer getNumberOfSitesNotCanceledFromUserID(long userId);
     
-    @Query("select cs from CoffeeSite cs where cs.recordStatus.status=?1 order by cs.siteName asc")
+    @Query("select cs from CoffeeSite cs where cs.recordStatus.status=?1 order by cs.createdOn desc")
     public List<CoffeeSite> findSitesWithRecordStatus(String csRecordStatus);  
      
     @Query("select count(id) from CoffeeSite cs where cs.recordStatus.status='ACTIVE'")
@@ -68,7 +68,7 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
      * @return
      */
     @Query("select cs from CoffeeSite cs where lower(cs.mesto) like lower(CONCAT(?1,'%')) AND cs.recordStatus.status='ACTIVE'")
-    public List<CoffeeSite> getAllSitesInCity(String cityName);  
+    public List<CoffeeSite> getAllActiveSitesInCity(String cityName);  
     
     /**
      * Retrieves all CoffeeSites with ACTIVE record staus in given city name.
@@ -89,13 +89,13 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
     public List<CoffeeSite> getLatestSites(int maxNumOfLatestSites, int daysAgo);
     
     
-    /*
+    /**
      * Dotaz s vyuzitim Postgres FUNCTION, ktera pocita vzdalenost CoffeeSite od souradnic
      * double sirka, double delka a vraci takove CoffeeSite, ktere maji tuto vzdalenost menzi jako rangeMeters:
-     * 
+     * <p>
      * 1) HQL varianta, nefunguje, tato syntaxe asi neni spravna
      * @Query("SELECT cs FROM CoffeeSite cs WHERE distance(?1, ?2, cs.zemSirka, cs.zemDelka) < ?3") 
-     * 
+     * <p>
      * 2) Varianta "native" query - funguje     
      * @Query(nativeQuery = true, value = "SELECT *, poloha_gps_sirka, poloha_gps_delka"
      *                                + " FROM coffeecompass.coffee_site WHERE distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3")

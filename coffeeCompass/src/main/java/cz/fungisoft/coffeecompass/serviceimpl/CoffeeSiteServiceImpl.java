@@ -543,7 +543,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     
     @Override
     public List<CoffeeSiteDTO> findAllByCityNameAtStart(String cityName) {
-        List<CoffeeSite> items = coffeeSiteRepo.getAllSitesInCity(cityName);
+        List<CoffeeSite> items = coffeeSiteRepo.getAllActiveSitesInCity(cityName);
         log.info("All Coffee sites in city name starting with '{}' retrieved: {}", cityName, items.size());
         return modifyToTransfer(items);
     }
@@ -637,7 +637,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     }
 
     /**
-     * Position cannot be occupied by any other ACTIVE CoffeeSite before activating.
+     * Evaluates if the CoffeeSite can be activated based on logged-in user Privileges and CoffeeSite's current status.
+     * 
      * @param cs
      * @return
      */

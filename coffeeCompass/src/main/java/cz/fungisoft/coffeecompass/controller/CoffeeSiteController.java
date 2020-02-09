@@ -260,10 +260,11 @@ public class CoffeeSiteController
     }
     
     /**
-     * Obsluha pozadavku GET se stranky se seznamem CoffeeSite (coffeesites_info), po stisku tlacitka Modify, tj.
+     * Obsluha pozadavku GET se stranky se seznamem CoffeeSite (coffeesites_info), po stisku tlacitka Modify, tj.<br>
      * pozadavek na Modifikaci daneho CoffeeSite.
      * <br>
-     * Ukaze formular pro modifikaci/vytvoreni CoffeeSite "coffeesite_create.html" se spravne vyplnenymi polozkami daneho CoffeeSite id.
+     * Ukaze formular pro modifikaci/vytvoreni CoffeeSite "coffeesite_create.html" se spravne vyplnenymi polozkami<br>
+     * daneho CoffeeSite id.
      * 
      * @param id
      * @return
@@ -280,10 +281,14 @@ public class CoffeeSiteController
    
     /**
      * Zpracuje POST request/formular ze stranky pro vytvareni/modifikaci CoffeeSite objektu.<br>
-     * Po uspesnem zpracovani pozadavku na vytvoreni noveho CoffeeSite se zobrazi stranka coffeesite_detail,
+     * Po uspesnem zpracovani pozadavku na vytvoreni noveho CoffeeSite se zobrazi stranka coffeesite_detail,<br>
      * ktera umozni aktivovat novy site nebo ho modifikovat.<br>
-     * Po uspesnem zpracovani pozadavku na modifikaci CoffeeSite se zobrazi stejna stranka tj. umoznuje
+     * Po uspesnem zpracovani pozadavku na modifikaci CoffeeSite se zobrazi stejna stranka tj. umoznuje<br>
      * provest dalsi modifikace na prave editovanem CoffeeSitu.
+     * <p>
+     * Overeni, zda zadana pozice CoffeeSitu neni jiz pouzita neni potreba, protoze se overuje az pri<br>
+     * pokusu o aktivaci, resp. vlozi se jako atribut do CoffeeSiteDTO objektu pri jeho vytvarni pred<br>
+     * jeho odeslanim na server resp. pred zpracovanim Thymeleafem.
      * 
      * @param coffeeSite - novy/modifikovany objekt CoffeeSite z modelu, ktery vrati Spring/Thymeleaf, ktery ho vytvoril z formulare
      *                     pro vytvoreni/modifikaci CoffeeSite
@@ -292,15 +297,6 @@ public class CoffeeSiteController
     @PostMapping("/createModifySite") // Mapovani http POST na DB SAVE/UPDATE
     public String createOrUpdateCoffeeSite(@ModelAttribute("coffeeSite") @Valid CoffeeSiteDTO coffeeSite, final BindingResult bindingResult) {
 
-        // Overeni, zda zadana pozice CoffeeSitu neni jiz pouzita.
-        if (coffeeSite.getZemSirka() != null && coffeeSite.getZemDelka() != null) {
-            //if (coffeeSiteService.isLocationAlreadyOccupied(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5, coffeeSite.getId())) {
-            if (coffeeSiteService.isLocationAlreadyOccupiedByActiveSite(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5, coffeeSite.getId())) {
-                bindingResult.rejectValue("zemSirka", "error.site.coordinate.latitude", "Location already occupied.");
-                bindingResult.rejectValue("zemDelka", "error.site.coordinate.longitude", "Location already occupied.");
-            }
-        }
-        
         if (bindingResult.hasErrors()) {
             return "coffeesite_create";
         }
@@ -325,26 +321,13 @@ public class CoffeeSiteController
     
     /**
      *  Zpracovani pozadavku na zmenu stavu CoffeeSite do stavu ACTIVE.<br>
-     *  Pokud aktivaci provedl ADMIN, zobrazi se mu nasledni seznam vsech CoffeeSites,
-     *  jinak se zobrazi seznam všech CoffeeSites, které vytvořil daný user.
-     *  Před aktivací se provede i kontrola, jestli na dané pozici není již jiná
-     *  aktivní lokace.
+     *  Pokud aktivaci provedl ADMIN, zobrazi se mu nasledni seznam vsech CoffeeSites,<br>
+     *  jinak se zobrazi seznam všech CoffeeSites, které vytvořil daný user.<br>
      */
     @PutMapping("/activateSite/{id}") 
     public String activateCoffeeSite(@PathVariable(name = "id") Long id) {
         
         CoffeeSite cs = coffeeSiteService.findOneById(id);
-        
-     // Overeni, zda zadana pozice CoffeeSitu neni jiz pouzita.
-//            //if (coffeeSiteService.isLocationAlreadyOccupied(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), 5, coffeeSite.getId())) {
-//            if (coffeeSiteService.isLocationAlreadyOccupiedByActiveSite(cs.getZemSirka(), cs.getZemDelka(), 5, cs.getId())) {
-//                bindingResult.rejectValue("zemSirka", "error.site.coordinate.latitude", "Location already occupied.");
-//                bindingResult.rejectValue("zemDelka", "error.site.coordinate.longitude", "Location already occupied.");
-//            }
-//        
-//        if (bindingResult.hasErrors()) {
-//            return "coffeesite_create";
-//        }
         
         // After CoffeeSite activation, go to the same page and show confirmation message
         cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, CoffeeSiteRecordStatusEnum.ACTIVE);
