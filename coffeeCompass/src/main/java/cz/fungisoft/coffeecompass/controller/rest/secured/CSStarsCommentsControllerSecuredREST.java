@@ -124,8 +124,6 @@ public class CSStarsCommentsControllerSecuredREST
         }
             
         return new ResponseEntity<Integer>(commentsNumber, HttpStatus.OK);
-            
-        //return new ResponseEntity<Long>(siteId, HttpStatus.OK);
     }
 
 }
