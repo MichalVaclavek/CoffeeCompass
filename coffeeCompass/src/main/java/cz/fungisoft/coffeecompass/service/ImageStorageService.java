@@ -13,14 +13,31 @@ import org.springframework.web.multipart.MultipartFile;
 public interface ImageStorageService
 {
     /**
-     * Save Image and return db ID of the saved image
+     * Save Image and return db ID of the saved image.
+     * This is version used for saving Image inserted via web form in Thymeleaf
      * 
-     * @param image
-     * @param file
-     * @param siteID
+     * @param image to be saved
+     * @param file file containing image
+     * @param siteID - site ID to which the image belongs to
+     * @param rezize - if the image should be resized to 'standard' size i.e. width 1280 and height 960 currently.
+     * Usualy true as it is expected that image is larger
+     *  
      * @return id of the saved Image
      */
-    public Integer storeImageFile(Image image, MultipartFile file, Long siteID);
+    public Integer storeImageFile(Image image, MultipartFile file, Long siteID, boolean resize);
+    
+    /**
+     * Save Image and return db ID of the saved image.
+     * This is version for savin image file uploaded via REST api.
+     * 
+     * @param file file containing image
+     * @param siteID - site ID to which the image belongs to
+     * @param rezize - if the image should be resized to 'standard' size i.e. width 1280 and height 960 currently
+     *  can be sent via REST, default is false as for example from Android it is sent already resized to 1280x960
+     *  
+     * @return id of the saved Image
+     */
+    public Integer storeImageFile(MultipartFile file, Long siteID, boolean resize);
     
     public void saveImageToDB(Image image);
 

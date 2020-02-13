@@ -57,13 +57,13 @@ public class ImageControllerSecuredREST
     public ResponseEntity<Integer> handleFileUpload(@RequestParam("file") MultipartFile file,
                                                     @RequestParam("coffeeSiteId") Long coffeeSiteId,
                                                     Locale locale) {
-       Image newImage = new Image();
+       //Image newImage = new Image();
        
        if (file == null) {
            throw new BadRESTRequestException(messages.getMessage("coffeesite.image.upload.rest.error", null, locale));
        }
        
-       Integer imageId = imageStorageService.storeImageFile(newImage, file, coffeeSiteId);
+       Integer imageId = imageStorageService.storeImageFile(file, coffeeSiteId, false);
        if (imageId == null || imageId == 0) {
            return new ResponseEntity<Integer>(0, HttpStatus.NOT_FOUND);
        }

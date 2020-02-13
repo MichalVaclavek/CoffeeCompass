@@ -131,7 +131,7 @@ public class ImageStorageServiceImpl implements ImageStorageService
      */
     @Override
     @Transactional
-    public Integer storeImageFile(Image image, MultipartFile file, Long siteID) {
+    public Integer storeImageFile(Image image, MultipartFile file, Long siteID, boolean resize) {
         
         Integer retVal = 0;
         CoffeeSite cs = coffeeSiteService.findOneById(siteID);
@@ -147,10 +147,12 @@ public class ImageStorageServiceImpl implements ImageStorageService
                 image.setCoffeeSite(cs);
                 image.setSavedOn(new Timestamp(new Date().getTime()));
             } catch (IOException e) {
-                log.warn("Error during resizing Image. File name: {}. CoffeeSite name: {}. Exception: {}", image.getFileName(), cs.getSiteName(), e.getMessage());
+                log.warn("Error during creating Image object. File name: {}. CoffeeSite name: {}. Exception: {}", image.getFileName(), cs.getSiteName(), e.getMessage());
             }
             try {
-                image = imageResizer.resize(image);
+                if (resize) {
+                    image = imageResizer.resize(image);
+                }
             } catch (IOException e) {
                 log.warn("Error during resizing Image. File name: {}. CoffeeSite name: {}. Exception: {}", image.getFileName(), cs.getSiteName(), e.getMessage());
             }
@@ -158,6 +160,51 @@ public class ImageStorageServiceImpl implements ImageStorageService
             cs.setImage(image);
             log.info("Image saved. File name: {}. CoffeeSite name: {}", image.getFileName(), cs.getSiteName());
             retVal = image.getId();
+        } 
+        
+        return retVal;
+    }
+    
+    /**
+     * Saves the image file into DB and creates Image object for CoffeeSite with siteID
+     */
+    @Override
+    @Transactional
+    public Integer storeImageFile(MultipartFile file, Long siteID, boolean resize) {
+        
+        Integer retVal = 0;
+        Image image = null;
+        CoffeeSite cs = coffeeSiteService.findOneById(siteID);
+        if (cs != null) {
+            try {
+                // Check if there is already image assigned to the CS. If yes, delete the old image first
+                if (cs.getImage() != null) {
+                    Image oldImage = cs.getImage();
+                    imageRepo.delete(oldImage);
+                }
+                image = new Image(); 
+                image.setImageBytes(file.getBytes());
+                image.setFile(file);
+                image.setCoffeeSite(cs);
+                image.setSavedOn(new Timestamp(new Date().getTime()));
+            } catch (IOException e) {
+                if (image != null) {
+                    log.warn("Error during creating Image object. File name: {}. CoffeeSite name: {}. Exception: {}", image.getFileName(), cs.getSiteName(), e.getMessage());
+                }
+            }
+            try {
+                if (resize && image != null) {
+                    image = imageResizer.resize(image);
+                }
+            } catch (IOException e) {
+                log.warn("Error during resizing Image. File name: {}. CoffeeSite name: {}. Exception: {}", image.getFileName(), cs.getSiteName(), e.getMessage());
+            }
+            if (image != null) {
+                imageRepo.save(image);
+                cs.setImage(image);
+                log.info("Image saved. File name: {}. CoffeeSite name: {}", image.getFileName(), cs.getSiteName());
+                retVal = image.getId();
+            }
         } 
         
         return retVal;

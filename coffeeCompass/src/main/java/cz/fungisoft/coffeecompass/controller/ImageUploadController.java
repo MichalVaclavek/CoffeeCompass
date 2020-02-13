@@ -54,7 +54,7 @@ public class ImageUploadController
            return "redirect:/showSite/" + siteId;
        }
         
-       imageStorageService.storeImageFile(newImage, newImage.getFile(), siteId);
+       imageStorageService.storeImageFile(newImage, newImage.getFile(), siteId, true);
        redirectAttributes.addFlashAttribute("savedFileName", newImage.getFile().getOriginalFilename());
        redirectAttributes.addFlashAttribute("uploadSuccessMessage", "You have successfully uploaded " + newImage.getFileName() + "!");
 
