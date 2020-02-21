@@ -91,6 +91,7 @@ public class CoffeeCompassConfiguration implements WebMvcConfigurer
         mapperFactory.classMap(Comment.class, CommentDTO.class)
                      .field("user.userName", "userName")
                      .field("coffeeSite.id", "coffeeSiteID")
+                     .field("user.id", "userId")
                      .byDefault()
                      .register();
      

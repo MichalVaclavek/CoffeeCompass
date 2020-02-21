@@ -267,21 +267,32 @@ public class ImageStorageServiceImpl implements ImageStorageService
     }
 
     /**
-     * @return id of the CoffeeSites this image was belonging to before delete
+     * @return id of the CoffeeSites this image was belonging to before delete or 0 if image delete failed
      */
     @Transactional
     @Override
     public Long deleteSiteImageById(Integer imageId) {
-        Long siteId = imageRepo.getSiteIdForImage(imageId);
-        imageRepo.deleteById(imageId);
-        log.info("Image deleted for CoffeeSite id: {}", siteId);
+        Long siteId = 0L;
+        try {
+            siteId = imageRepo.getSiteIdForImage(imageId);
+            imageRepo.deleteById(imageId);
+        } catch (Exception ex) {
+            log.error("Image delete failed for Image id: {}", imageId);
+            throw ex;
+        }
+        log.info("Image id {} deleted for CoffeeSite id: {}", imageId, siteId);
         return siteId;
     }
     
     @Transactional
     @Override
     public Long deleteSiteImageBySiteId(Long coffeeSiteId) {
-        imageRepo.deleteBySiteId(coffeeSiteId);
+        try {
+            imageRepo.deleteBySiteId(coffeeSiteId);
+        } catch (Exception ex) {
+            log.error("Image delete failed for CoffeeSite id: {}", coffeeSiteId);
+            throw ex;
+        }
         log.info("Image deleted for CoffeeSite id: {}", coffeeSiteId);
         return coffeeSiteId;
     }

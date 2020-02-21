@@ -20,6 +20,7 @@ import cz.fungisoft.coffeecompass.exceptions.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
 import cz.fungisoft.coffeecompass.repository.CommentRepository;
 import cz.fungisoft.coffeecompass.service.ICommentService;
+import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
@@ -44,11 +45,19 @@ public class CommentService implements ICommentService
     private CommentRepository commentsRepo;
     
     private MapperFacade mapperFacade;
+    
+    /**
+     * Used to add rating of the CoffeeSite from user to comments of the CoffeeSite from the same User
+     */
+    private IStarsForCoffeeSiteAndUserService starsForCoffeeSiteAndUserService;
 		
 	@Autowired
-	public CommentService(CommentRepository commentsRepo, MapperFacade mapperFacade) {
+	public CommentService(CommentRepository commentsRepo,
+	                      MapperFacade mapperFacade,
+	                      IStarsForCoffeeSiteAndUserService starsForCoffeeSiteAndUserService) {
 	    this.commentsRepo = commentsRepo;
 	    this.mapperFacade = mapperFacade;
+	    this.starsForCoffeeSiteAndUserService = starsForCoffeeSiteAndUserService;
 	}
 	
 	/**
@@ -125,9 +134,13 @@ public class CommentService implements ICommentService
      * @return
      */
     private List<CommentDTO> modifyToTransfer(List<Comment> comments) {
+        
         List<CommentDTO> commentsTransfer = mapperFacade.mapAsList(comments, CommentDTO.class);
         
         commentsTransfer.forEach(comment -> comment.setCanBeDeleted(isDeletable(comment)));
+        commentsTransfer.forEach(comment -> comment.setStarsFromUser(starsForCoffeeSiteAndUserService.getStarsForCoffeeSiteAndUser(comment.getCoffeeSiteID(), comment.getUserId())));
+        // Removing userId as it was needed only for evaluation of Stars from USer
+        commentsTransfer.forEach(comment -> comment.setUserId(0));
         
         return commentsTransfer;
     }

@@ -1,6 +1,7 @@
 package cz.fungisoft.coffeecompass.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import cz.fungisoft.coffeecompass.entity.Image;
@@ -22,6 +23,7 @@ public interface ImageRepository extends JpaRepository<Image, Integer>
     @Query("select im.id from Image im WHERE coffeeSite.id=?1")
     public Integer getImageIdForSiteId(Long siteID);
     
+    @Modifying // required by Hibernate, otherwise there is an Exception ' ... Illegal state ...'
     @Query("delete from Image im WHERE coffeeSite.id=?1")
     public void deleteBySiteId(Long coffeeSiteId);
 

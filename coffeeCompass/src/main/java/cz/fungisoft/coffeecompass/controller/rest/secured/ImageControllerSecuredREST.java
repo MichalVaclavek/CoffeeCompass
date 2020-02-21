@@ -2,8 +2,8 @@ package cz.fungisoft.coffeecompass.controller.rest.secured;
 
 import java.util.Locale;
 
-import javax.validation.Valid;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -16,8 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import cz.fungisoft.coffeecompass.entity.Image;
+import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.exceptions.rest.BadRESTRequestException;
+import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.ImageStorageService;
 import io.swagger.annotations.Api;
 
@@ -33,13 +34,20 @@ import io.swagger.annotations.Api;
 @RequestMapping("/rest/secured/image")
 public class ImageControllerSecuredREST
 {
+    private static final Logger log = LoggerFactory.getLogger(ImageControllerSecuredREST.class);
+    
     private final ImageStorageService imageStorageService;
+    
+    private CoffeeSiteService coffeeSiteService;
     
     private MessageSource messages;
 
     @Autowired
-    public ImageControllerSecuredREST(ImageStorageService storageService, MessageSource messages) {
+    public ImageControllerSecuredREST(ImageStorageService storageService,
+                                      CoffeeSiteService coffeeSiteService,
+                                      MessageSource messages) {
         this.imageStorageService = storageService;
+        this.coffeeSiteService = coffeeSiteService;
         this.messages = messages;
     }
 
@@ -51,23 +59,23 @@ public class ImageControllerSecuredREST
      * @param image uploaded Image from View. Contains file to be uploaded and ID of the coffeeSite the image belongs to.
      * @param result for checking errors during form validation
      * @param redirectAttributes attributes to be passed to other Controller after redirection from this View/Controller.
-     * @return newly saved image ID. But bettter is to send 'load URL'  of the new Image  
+     * @return load URL of the new image - used to assign to the edited CoffeeSite as a new CoffeeSite's image URL 
      */
     @PostMapping("/upload") // POST https://coffeecompass.cz/rest/secured/image/upload?coffeeSiteId=2 a správné Body
-    public ResponseEntity<Integer> handleFileUpload(@RequestParam("file") MultipartFile file,
+    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file,
                                                     @RequestParam("coffeeSiteId") Long coffeeSiteId,
                                                     Locale locale) {
-       //Image newImage = new Image();
-       
        if (file == null) {
            throw new BadRESTRequestException(messages.getMessage("coffeesite.image.upload.rest.error", null, locale));
        }
        
        Integer imageId = imageStorageService.storeImageFile(file, coffeeSiteId, false);
        if (imageId == null || imageId == 0) {
-           return new ResponseEntity<Integer>(0, HttpStatus.NOT_FOUND);
+           return new ResponseEntity<String>( HttpStatus.NOT_FOUND);
        }
-       return new ResponseEntity<Integer>(imageId, HttpStatus.OK);
+       log.info("Image uploaded. CoffeeSite id: {}. Image id: {}", coffeeSiteId, imageId);
+       CoffeeSiteDTO cs = coffeeSiteService.findOneToTransfer(coffeeSiteId);
+       return new ResponseEntity<String>(cs.getMainImageURL(), HttpStatus.OK);
     }
     
     /**
@@ -76,14 +84,15 @@ public class ImageControllerSecuredREST
      * @param id of the Image to delete
      * @return coffeeSiteId the image belonged to before deleting
      */
-    @DeleteMapping("/delete/{id}") 
+    @DeleteMapping("/delete/{imageId}") 
     public ResponseEntity<Long> deleteImageByImageId(@PathVariable Integer imageId) {
-        // Smazat Image daneho coffeeSite - need to have site Id to give it to /showSite Controller
+        
         Long siteId = imageStorageService.deleteSiteImageById(imageId);
         
         if (siteId == null || siteId == 0) {
             return new ResponseEntity<Long>(0L, HttpStatus.NOT_FOUND);
         }
+        log.info("Image deleted. Image id: {}", imageId);
         return new ResponseEntity<Long>(siteId, HttpStatus.OK);
     }
     
@@ -94,15 +103,15 @@ public class ImageControllerSecuredREST
      * @return coffeeSiteId the image belonged to before deleting. Can be used to compare if requested coffeeSiteId
      * is same as returned one
      */
-    @DeleteMapping("/delete/site/{id}") 
+    @DeleteMapping("/delete/site/{coffeeSiteId}") 
     public ResponseEntity<Long> deleteImageBySiteId(@PathVariable Long coffeeSiteId) {
-        // Smazat Image daneho coffeeSite - need to have site Id to give it to /showSite Controller
-        //Long siteId = imageStorageService.deleteSiteImageById(id);
+        
         Long siteId = imageStorageService.deleteSiteImageBySiteId(coffeeSiteId);
         
         if (siteId == null || siteId == 0) {
             return new ResponseEntity<Long>(0L, HttpStatus.NOT_FOUND);
         }
+        log.info("Image deleted. CoffeeSite id: {}.", coffeeSiteId);
         return new ResponseEntity<Long>(siteId, HttpStatus.OK);
     }
     

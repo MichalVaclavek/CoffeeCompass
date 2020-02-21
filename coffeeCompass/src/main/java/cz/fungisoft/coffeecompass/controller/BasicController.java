@@ -94,6 +94,15 @@ public class BasicController
         return "login";
     }
     
+    /**
+     * Stranka pro zobrazeni udaju o ochrane soukromi
+     * @return
+     */
+    @GetMapping("/privacypolicy")
+    public String privacyPolicy() {
+        return "privacy_policy";
+    }
+    
     @GetMapping("/403")
     public String error403() {
         return "error/403";

@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-130556148-1"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+	
+	  gtag('config', 'UA-130556148-1');
+	</script>
+	
+    <div th:replace="fragments/header :: header-css"/>
+</head>
+
+<body>
+
+	<div th:replace="fragments/header :: header"/>
+		
+	<div>
+	    <h2 th:text="#{privacypolicy.page.label}" class="w3-light-grey w3-margin-bottom w3-center">Zasady ochrany osobnich udaju</h2><br>
+	    
+	    <div class="w3-content">
+	    
+	    	<div th:text="#{privacypolicy.page.div1}"></div>
+	    	  
+	    	<ul>
+			  <li th:text="#{privacypolicy.page.li1}"></li>
+			  <li th:text="#{privacypolicy.page.li2}"></li>
+			  <li th:text="#{privacypolicy.page.li3}"></li>
+			</ul>  
+			
+	       <p>
+	          <span th:text="#{privacypolicy.page.p2.s1}"></span>
+	       	  <span th:text="#{privacypolicy.page.p2.s2}"></span>
+           </p>
+           
+           <p>
+              <span th:text="#{privacypolicy.page.p3}"></span>
+	       </p>
+	       
+	       <p>
+	       	  <span th:text="#{privacypolicy.page.p4.s1}"></span>
+	          <span th:text="#{privacypolicy.page.p4.s2}"></span>
+	       	  <span th:text="#{privacypolicy.page.p4.s3}"></span>
+	       </p>
+	       
+	       <p>
+	       	   <span th:text="#{privacypolicy.page.p5}"></span>
+	       </p>
+	       
+	    </div>
+	
+	</div>
+
+	<div th:replace="fragments/footer :: footer"/>
+
+</body>
+</html>

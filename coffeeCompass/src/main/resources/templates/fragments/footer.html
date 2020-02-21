@@ -7,21 +7,25 @@
 <div th:fragment="footer">
 
 <!-- this is footer -->
-        <footer>
-            <div>
-                <div sec:authorize="isAuthenticated()">  
-		            <div  class="w3-left w3-small w3-container">
-	                    <span th:text="#{app.footer.loggedinuser}" ></span> <span sec:authentication="name">User name</span> |
-	                    <span th:text="#{user.created_sites} + ${loggedInUser.createdSites}">Number of sites created by logged-in user</span>
-	    	        </div>
-				</div>
-				
-				<div class="w3-right w3-small w3-container">
-					<span th:text="#{app.info.version}"></span> | <span th:text="#{app.info.author}"></span>
-				</div>
-				
-			</div>
-        </footer>
+      <footer>
+          <div>
+              <div sec:authorize="isAuthenticated()">  
+              <div  class="w3-left w3-small w3-container">
+                  <span th:text="#{app.footer.loggedinuser}" ></span> <span sec:authentication="name">User name</span> |
+                  <span th:text="#{user.created_sites} + ${loggedInUser.createdSites}">Number of sites created by logged-in user</span>
+   	          </div>
+		      </div>
+		
+			  <div class="w3-right w3-small w3-container">
+				  <span th:text="#{app.info.version}"></span> | <span th:text="#{app.info.author}"></span>
+			  </div>
+			  
+			  <div class="w3-right w3-small w3-container">
+				  <a th:href="@{/privacypolicy}" th:text="#{privacypolicy.link.label}">Link to privacy policy page</a>
+			  </div>
+		
+	    </div>
+    </footer>
     
 </div>
 </body>

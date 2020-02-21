@@ -788,7 +788,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         coffeeSiteRepo.deleteAllFromUser(userId);
     }
 
-
     
     //TODO dalsi vyhledavaci metody podle ruznych kriterii?
     // CriteriaQuery a CriteriaQueryBuilder

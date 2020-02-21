@@ -127,15 +127,15 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     @Override
     public String getStarsForCoffeeSiteAndUser(CoffeeSiteDTO coffeeSite, User user) {
         return (user != null && coffeeSite != null) 
-            ? avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), user.getId()).getStars().getQuality()
-            : "";
+                ? avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), user.getId()).getStars().getQuality()
+                : "";
     }
     
     @Override
     public Integer getStarsForCoffeeSiteAndUser(CoffeeSite coffeeSite, User user) {
         return (user != null && coffeeSite != null) 
-            ? getStarsForCoffeeSiteAndUser(coffeeSite.getId(), user.getId())
-            : 0;
+               ? getStarsForCoffeeSiteAndUser(coffeeSite.getId(), user.getId())
+               : 0;
     }
     
     /**
