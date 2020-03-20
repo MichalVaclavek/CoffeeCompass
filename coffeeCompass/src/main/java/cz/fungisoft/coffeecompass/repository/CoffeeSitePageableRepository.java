@@ -10,7 +10,7 @@ import cz.fungisoft.coffeecompass.entity.User;
 
 /**
  * Interface to get Lists of found CoffeeSite in Pageable format. Extends Spring interface PagingAndSortingRepository.<br>
- * No implementation required as already implemented by Spring.<br>
+ * No implementation needed as already implemented by Spring.<br>
  * <p>
  * Used by {@link CoffeeSiteServiceImpl}
  * 

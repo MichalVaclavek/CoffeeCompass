@@ -23,7 +23,7 @@ import cz.fungisoft.coffeecompass.pojo.LatLong;
 public interface CoffeeSiteService
 {
     /**
-     * Gets all CoffeeSites ordered in direction
+     * Gets all CoffeeSites ordered by selected CoffeeSite's property in given direction
      * 
      * @param orderBy
      * @param direction

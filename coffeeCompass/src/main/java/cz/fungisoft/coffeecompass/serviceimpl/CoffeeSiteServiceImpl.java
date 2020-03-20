@@ -356,22 +356,26 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             entityFromDB.setCena(coffeeSite.getCena());
             
             if (coffeeSite.getCoffeeSorts() != null) {
+                entityFromDB.getCoffeeSorts().clear();
                 for (CoffeeSort cs : coffeeSite.getCoffeeSorts()) {
                     entityFromDB.getCoffeeSorts().add(cs);
                 }
             }
             
             if (coffeeSite.getCupTypes() != null) {
+                entityFromDB.getCupTypes().clear();
                 for (CupType cp : coffeeSite.getCupTypes()) {
                     entityFromDB.getCupTypes().add(cp);
                 }
             }
             if (coffeeSite.getNextToMachineTypes() != null) {
+                entityFromDB.getNextToMachineTypes().clear();
                 for (NextToMachineType ntmt : coffeeSite.getNextToMachineTypes()) {
                     entityFromDB.getNextToMachineTypes().add(ntmt);
                 }
             }
             if (coffeeSite.getOtherOffers() != null) {
+                entityFromDB.getOtherOffers().clear();
                 for (OtherOffer oo : coffeeSite.getOtherOffers()) {
                     entityFromDB.getOtherOffers().add(oo);
                 }
