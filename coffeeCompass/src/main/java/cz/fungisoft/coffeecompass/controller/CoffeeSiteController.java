@@ -134,24 +134,24 @@ public class CoffeeSiteController
      * @return
      */
     //TODO - not used now, old version, can be deleted ???
-    @GetMapping("/allSites/")
-    public ModelAndView sites(@RequestParam(defaultValue = "id") String orderBy, @RequestParam(defaultValue = "asc") String direction) {
-        
-        ModelAndView mav = new ModelAndView();
-        
-        Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
-        
-        if (loggedInUser.isPresent() &&  userService.hasADMINorDBARole(loggedInUser.get())) {
-            mav.addObject("allSites", coffeeSiteService.findAll(orderBy, direction));
-        }
-        else {
-            mav.addObject("allSites", coffeeSiteService.findAllWithRecordStatus(CoffeeSiteRecordStatusEnum.ACTIVE));
-        }
-        
-        mav.setViewName("coffeesites_info");
-    
-        return mav;       
-    }
+//    @GetMapping("/allSites/")
+//    public ModelAndView sites(@RequestParam(defaultValue = "id") String orderBy, @RequestParam(defaultValue = "asc") String direction) {
+//        
+//        ModelAndView mav = new ModelAndView();
+//        
+//        Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
+//        
+//        if (loggedInUser.isPresent() &&  userService.hasADMINorDBARole(loggedInUser.get())) {
+//            mav.addObject("allSites", coffeeSiteService.findAll(orderBy, direction));
+//        }
+//        else {
+//            mav.addObject("allSites", coffeeSiteService.findAllWithRecordStatus(CoffeeSiteRecordStatusEnum.ACTIVE));
+//        }
+//        
+//        mav.setViewName("coffeesites_info");
+//    
+//        return mav;       
+//    }
     
     /**
      * Zakladni obsluzna metoda pro zobrazeni seznamu CoffeeSite. Tato verze zobrazuje seznam CoffeeSitu po jednotlivych strankach.<br>
@@ -175,7 +175,7 @@ public class CoffeeSiteController
         ModelAndView mav = new ModelAndView();
         
         int currentPage = page.orElse(1);
-        int pageSize = size.orElse(5);
+        int pageSize = size.orElse(15);
         Page<CoffeeSiteDTO> coffeeSitePage;
         
         Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
@@ -265,14 +265,14 @@ public class CoffeeSiteController
      * 
      * @return
      */
-    @GetMapping("/mySites") // napr. http://coffeecompass.cz/mySites
-    public ModelAndView showMySites() {
-        ModelAndView mav = new ModelAndView();
-        mav.addObject("allSites", coffeeSiteService.findAllFromLoggedInUser());
-        mav.setViewName("coffeesites_info");
-    
-        return mav;   
-    }
+//    @GetMapping("/mySites") // napr. http://coffeecompass.cz/mySites
+//    public ModelAndView showMySites() {
+//        ModelAndView mav = new ModelAndView();
+//        mav.addObject("allSites", coffeeSiteService.findAllFromLoggedInUser());
+//        mav.setViewName("coffeesites_info");
+//    
+//        return mav;   
+//    }
     
     /**
      * Method to handle request to show CoffeeSites created by logged in user.
@@ -446,7 +446,7 @@ public class CoffeeSiteController
             cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, CoffeeSiteRecordStatusEnum.CANCELED);
             String siteName = cs.getSiteName();
             redirectAttributes.addFlashAttribute("canceledSiteName", siteName);
-            return "redirect:/mySites";
+            return "redirect:/mySitesPaginated/";
         }
     }
 
