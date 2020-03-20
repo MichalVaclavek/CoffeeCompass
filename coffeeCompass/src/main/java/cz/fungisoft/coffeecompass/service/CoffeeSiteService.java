@@ -2,6 +2,8 @@ package cz.fungisoft.coffeecompass.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,10 +22,21 @@ import cz.fungisoft.coffeecompass.pojo.LatLong;
 */
 public interface CoffeeSiteService
 {
+    /**
+     * Gets all CoffeeSites ordered in direction
+     * 
+     * @param orderBy
+     * @param direction
+     * @return
+     */
     public List<CoffeeSiteDTO> findAll(String orderBy, String direction);
+    public Page<CoffeeSiteDTO> findAllPaginated(Pageable pageable);
+    
     public List<CoffeeSiteDTO> findAllFromUser(User user);
     public List<CoffeeSiteDTO> findAllFromUserName(String userName);
     public List<CoffeeSiteDTO> findAllFromLoggedInUser();
+    public Page<CoffeeSiteDTO> findAllFromLoggedInUserPaginated(Pageable pageable);
+    
     public Integer getNumberOfSitesFromUserId(long userId);
     public Integer getNumberOfSitesFromLoggedInUser();
     public Integer getNumberOfSitesNotCanceledFromUserId(long userId);
@@ -104,6 +117,7 @@ public interface CoffeeSiteService
     public List<CoffeeSiteDTO> findAllWithinRangeWithRecordStatus(double zemSirka, double zemDelka, long rangeMeters,  CoffeeSiteRecordStatus csRecordStatus);
     
     public List<CoffeeSiteDTO> findAllWithRecordStatus(CoffeeSiteRecordStatusEnum csRecordStatus);
+    public Page<CoffeeSiteDTO> findAllWithRecordStatusPaginated(Pageable pageable, CoffeeSiteRecordStatusEnum csRecordStatus);
     
     /**
      * Checks if the CoffeeSite name is already used or not

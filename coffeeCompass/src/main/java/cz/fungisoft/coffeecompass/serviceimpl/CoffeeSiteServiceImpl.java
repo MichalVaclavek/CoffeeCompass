@@ -6,8 +6,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +31,7 @@ import cz.fungisoft.coffeecompass.entity.NextToMachineType;
 import cz.fungisoft.coffeecompass.entity.OtherOffer;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.pojo.LatLong;
+import cz.fungisoft.coffeecompass.repository.CoffeeSitePageableRepository;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRecordStatusRepository;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteStatusRepository;
@@ -54,6 +58,9 @@ import ma.glasnost.orika.MapperFacade;
 public class CoffeeSiteServiceImpl implements CoffeeSiteService
 {
     private CoffeeSiteRepository coffeeSiteRepo;
+    
+    @Autowired
+    private CoffeeSitePageableRepository coffeeSitePaginatedRepo;
     
     private CoffeeSortRepository coffeeSortRepo;
     
@@ -139,14 +146,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      */
     private List<CoffeeSiteDTO> modifyToTransfer(List<CoffeeSite> sites) {
         
-        List<CoffeeSiteDTO> sitesToTransfer = mapperFacade.mapAsList(sites, CoffeeSiteDTO.class);
-        
-        for (CoffeeSiteDTO site : sitesToTransfer) {
-            site = evaluateOperationalAttributes(site);
-            site = evaluateAverageStars(site);
-        }
-        
-        return sitesToTransfer;
+        return sites.stream().map(this::mapOneToTransfer).collect(Collectors.toList());
     }
     
     @Override
@@ -156,12 +156,33 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         return modifyToTransfer(items);
     }
     
+    
+    @Override
+    public Page<CoffeeSiteDTO> findAllPaginated(Pageable pageable) {
+        
+        Page<CoffeeSite> coffeeSitesPage = coffeeSitePaginatedRepo.findAll(pageable);
+        
+        // Transforms content to CoffeeSiteDTO
+        return coffeeSitesPage.map(this::mapOneToTransfer);
+    }
+    
     @Override
     public List<CoffeeSiteDTO> findAllWithRecordStatus(CoffeeSiteRecordStatusEnum csRecordStatus) {
         List<CoffeeSite> items = coffeeSiteRepo.findSitesWithRecordStatus(csRecordStatus.getSiteRecordStatus());
         log.info("All Coffee sites with status {} retrieved: {}",  csRecordStatus.toString(), items.size());
         return modifyToTransfer(items);
     }
+    
+    /**
+     * Same method as findAllWithRecordStatus, but with paginated result
+     */
+    @Override
+    public Page<CoffeeSiteDTO> findAllWithRecordStatusPaginated(Pageable pageable, CoffeeSiteRecordStatusEnum csRecordStatus) {
+        
+        Page<CoffeeSite> coffeeSitesPage = coffeeSitePaginatedRepo.findByRecordStatus(csRecordStatusService.findCSRecordStatus(csRecordStatus), pageable);
+        return coffeeSitesPage.map(this::mapOneToTransfer); // Transforms content to CoffeeSiteDTO
+    }
+
     
     /** 
      * Used to get all CoffeeSites from search point with respective record status. Especially for non logged-in user
@@ -217,10 +238,33 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         loggedInUser = userService.getCurrentLoggedInUser();
         return findAllFromUser(mapperFacade.map(loggedInUser.get(), User.class));
     }
+    
+
+    @Override
+    public Page<CoffeeSiteDTO> findAllFromLoggedInUserPaginated(Pageable pageable) {
+        
+        loggedInUser = userService.getCurrentLoggedInUser();
+        if (loggedInUser.isPresent()) {
+            Page<CoffeeSite> coffeeSitesPage = coffeeSitePaginatedRepo.findByOriginalUser(loggedInUser.get(), pageable);
+            return coffeeSitesPage.map(this::mapOneToTransfer);
+        } else { 
+            // TODO throw exception
+            return null;
+        }
+            
+        
+    }
+
 
     @Override
     public CoffeeSiteDTO findOneToTransfer(Long id) {
         CoffeeSite site = findOneById(id);
+        return mapOneToTransfer(site);
+    }
+    
+    
+    private CoffeeSiteDTO mapOneToTransfer(CoffeeSite site) {
+        
         CoffeeSiteDTO siteDto = null;
         if (site != null) {
             siteDto = mapperFacade.map(site, CoffeeSiteDTO.class);
@@ -230,6 +274,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         }
         return siteDto;
     }
+    
     
     @Override
     public CoffeeSite findOneById(Long id) {

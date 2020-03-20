@@ -12,7 +12,7 @@ import cz.fungisoft.coffeecompass.entity.StatisticsToShow.DBReturnPair;
  * Pomocny interface pro definici metod, ktera umozni volat interni Stored procedure, ktera vraci {@code ResultList},
  * pomoci {@code JpaRepository}. {@code JpaRepository} ma problem s mapovanim parametru pro NamedStoredProceduresQuery.<br>
  * Umoznuje dodatecnou deklaraci a posleze definici i dalsich slozitejsich metod, ktere napr. vyuzivaji {@code CriteriaQuery}.
- * <br><br>
+ * <p>
  * Vytvoreno podle https://stackoverflow.com/questions/46786528/error-in-namedstoredprocedurequery-in-spring-jpa-found-named-stored-procedure/46942745
  * a podle dokumentace na strankach spring.io projektu Spring.
  * <br> 
@@ -20,7 +20,7 @@ import cz.fungisoft.coffeecompass.entity.StatisticsToShow.DBReturnPair;
  *  
  * @author Michal Vaclavek
  */
-public interface CoffeeSiteRepositoryCustom
+public interface CoffeeSiteRepositoryCustom 
 {    
    /**
     * Vyhledani vsech CoffeeSites od bodu sirka, delka v rozmezi meters pomoci ulozene DB procedury.
@@ -81,7 +81,7 @@ public interface CoffeeSiteRepositoryCustom
                                                                           CoffeeSiteRecordStatus csRecordStatus,
                                                                           String cityName);
     
-    public Long getNumOfSitesInGivenState(CoffeeSiteRecordStatus csRecordStatus);
+    public Long countNumOfSitesInGivenState(CoffeeSiteRecordStatus csRecordStatus);
     
     /**
      * Gets 5 cities with most ACTIVE CoffeeSites

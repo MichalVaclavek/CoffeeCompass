@@ -320,7 +320,7 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
     }
 
     @Override
-    public Long getNumOfSitesInGivenState(CoffeeSiteRecordStatus csRecordStatus) {
+    public Long countNumOfSitesInGivenState(CoffeeSiteRecordStatus csRecordStatus) {
         String selectQuery = "SELECT COUNT(*)"
                           + " FROM coffeecompass.coffee_site AS cs"
                           + " WHERE status_zaznamu_id=?1";

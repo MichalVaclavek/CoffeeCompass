@@ -32,6 +32,9 @@ import cz.fungisoft.coffeecompass.service.StarsQualityService;
 import cz.fungisoft.coffeecompass.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -45,6 +48,8 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Základní Controller pro obsluhu požadavků, které se týkají práce s hlavním objektem CoffeeSite.<br>
@@ -120,7 +125,7 @@ public class CoffeeSiteController
      * Priklady http dotazu, ktere vrati serazeny seznam CoffeeSitu jsou:
      *
      * http://localhost:8080/allSites/?orderBy=siteName&direction=asc
-     * http://localhost:8080/allSites/?orderBy=distFromSearchPoint&direction=asc
+     * http://localhost:8080/allSites/?orderBy=dist&direction=asc
      * 
      * apod.
      *
@@ -128,6 +133,7 @@ public class CoffeeSiteController
      * @param direction
      * @return
      */
+    //TODO - not used now, old version, can be deleted ???
     @GetMapping("/allSites/")
     public ModelAndView sites(@RequestParam(defaultValue = "id") String orderBy, @RequestParam(defaultValue = "asc") String direction) {
         
@@ -135,10 +141,61 @@ public class CoffeeSiteController
         
         Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
         
-        if (loggedInUser.isPresent() &&  userService.hasADMINorDBARole(loggedInUser.get()))
+        if (loggedInUser.isPresent() &&  userService.hasADMINorDBARole(loggedInUser.get())) {
             mav.addObject("allSites", coffeeSiteService.findAll(orderBy, direction));
-        else
+        }
+        else {
             mav.addObject("allSites", coffeeSiteService.findAllWithRecordStatus(CoffeeSiteRecordStatusEnum.ACTIVE));
+        }
+        
+        mav.setViewName("coffeesites_info");
+    
+        return mav;       
+    }
+    
+    /**
+     * Zakladni obsluzna metoda pro zobrazeni seznamu CoffeeSite. Tato verze zobrazuje seznam CoffeeSitu po jednotlivych strankach.<br>
+     * Priklady http dotazu, ktere vrati serazeny seznam CoffeeSitu jsou:
+     *
+     * http://localhost:8080/allSitesPaginated/?orderBy=siteName&direction=asc
+     * http://localhost:8080/allSitesPaginated/?orderBy=siteName&direction=asc&page=1&size=5
+     * https://localhost:8443/allSitesPaginated/?orderBy=createdOn&direction=desc&size=5&page=1
+     * https://localhost:8443/allSitesPaginated/?size=5&page=1
+     * 
+     * apod.
+     *
+     * @param orderBy
+     * @param direction
+     * @return
+     */
+    @GetMapping("/allSitesPaginated/")
+    public ModelAndView sitesPaginated(@RequestParam(defaultValue = "createdOn") String orderBy, @RequestParam(defaultValue = "desc") String direction,
+                                       @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+        
+        ModelAndView mav = new ModelAndView();
+        
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(5);
+        Page<CoffeeSiteDTO> coffeeSitePage;
+        
+        Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
+ 
+        if (loggedInUser.isPresent() &&  userService.hasADMINorDBARole(loggedInUser.get())) {
+            coffeeSitePage = coffeeSiteService.findAllPaginated(PageRequest.of(currentPage - 1, pageSize, new Sort(Sort.Direction.fromString(direction.toUpperCase()), orderBy)));
+        } else {
+            coffeeSitePage = coffeeSiteService.findAllWithRecordStatusPaginated(PageRequest.of(currentPage - 1, pageSize, new Sort(Sort.Direction.fromString(direction.toUpperCase()), orderBy)), CoffeeSiteRecordStatusEnum.ACTIVE);
+        }
+ 
+        mav.addObject("coffeeSitePage", coffeeSitePage);
+ 
+
+        int totalPages = coffeeSitePage.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                                                 .boxed()
+                                                 .collect(Collectors.toList());
+            mav.addObject("pageNumbers", pageNumbers);
+        }
         
         mav.setViewName("coffeesites_info");
     
@@ -212,6 +269,43 @@ public class CoffeeSiteController
     public ModelAndView showMySites() {
         ModelAndView mav = new ModelAndView();
         mav.addObject("allSites", coffeeSiteService.findAllFromLoggedInUser());
+        mav.setViewName("coffeesites_info");
+    
+        return mav;   
+    }
+    
+    /**
+     * Method to handle request to show CoffeeSites created by logged in user.
+     * Result is Paginated and sorted by createdOn DESC.
+     * 
+     * @return
+     */
+    @GetMapping("/mySitesPaginated/") // napr. http://coffeecompass.cz/mySitesPaginated/size=5&page=1
+    public ModelAndView showMySitesPaginated(@RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+        
+        ModelAndView mav = new ModelAndView();
+        
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(15);
+        Page<CoffeeSiteDTO> coffeeSitePage;
+        
+        coffeeSitePage = coffeeSiteService.findAllFromLoggedInUserPaginated(PageRequest.of(currentPage - 1, pageSize, new Sort(Sort.Direction.fromString("DESC"), "createdOn")));
+ 
+        if (coffeeSitePage != null) {
+            mav.addObject("coffeeSitePage", coffeeSitePage);
+        }
+ 
+        int totalPages = coffeeSitePage.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                                                 .boxed()
+                                                 .collect(Collectors.toList());
+            mav.addObject("pageNumbers", pageNumbers);
+        }
+        // to distinguish, if the page links on coffeesites_info.html should lead to allSitesPaginated controller method
+        // or to this controller method i.e. to show links to other pages of coffeeSites of the logged-in user 
+        mav.addObject("usersSitesList", true); 
+        
         mav.setViewName("coffeesites_info");
     
         return mav;   
@@ -380,7 +474,7 @@ public class CoffeeSiteController
         String siteName = coffeeSiteService.findOneById(id).getSiteName();
         redirectAttributes.addFlashAttribute("deletedSiteName", siteName);
         coffeeSiteService.delete(id);
-        return "redirect:/allSites/";
+        return "redirect:/allSitesPaginated/";
     }
     
     /* *** Atributes for coffeesite_create.html and other Forms **** */

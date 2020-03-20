@@ -38,74 +38,91 @@
 	</div>
    
     <div class="w3-margin">
-    <table class="w3-table-all w3-hoverable">
-    	<thead>
-        <tr>
-           <th th:text="#{site.siteName}" class="w3-brown"></th>
-           <th th:text="#{site.siteStatus}" class="w3-brown"></th>
-           <th th:text="#{site.createdon}" class="w3-brown"></th>
-           <th th:text="#{site.type}" class="w3-brown"></th>
-           <th th:text="#{site.otherOffers}" class="w3-brown"></th>
-           <th th:text="#{site.coffeeSorts}" class="w3-brown"></th> 
-           <th th:text="#{site.city}" class="w3-brown"></th>
-           <th th:text="#{site.street}" class="w3-brown"></th>            
-           <th th:text="#{site.longitude}" class="w3-brown"></th>
-		   <th th:text="#{site.latitude}" class="w3-brown"></th>   
-           <th th:text="#{site.stars}" class="w3-brown"></th>    
-           <th sec:authorize="isAuthenticated()" th:text="#{site.recordStatus}" class="w3-brown"></th>
-        </tr>
-        <thead>        
-        <tbody>
-	        <tr th:each="site : ${allSites}" style="cursor: pointer"
-	        	th:if="${site.visible}"
-	        	th:onclick="'javascript:rowClicked(\'' + ${site.id} + '\');'"> <!-- Reference na /showSite/{site.id} viz nize -->
-
-			  <td th:text="${site.siteName}">SiteName</td>
-			  <td th:text="${site.statusZarizeni.status}">SiteStatus</td>
-			  <td th:text="${#dates.format(site.createdOn, 'dd. MM. yyyy , HH:mm')}"></td>
-			   
-			  <td th:text="!${site.typPodniku == null} ? ${site.typPodniku.coffeeSiteType} : ''">TypPodniku</td>
-			  <td><span th:each="offer, iterStat : ${site.otherOffers}" th:text="!${iterStat.last} ? ${offer}+', ' : ${offer}">Other Offer</span></td>
-			  <!-- <td th:text="${site.otherOffers}">Offer</td>  -->
-			  <td><span th:each="sort, iterStat : ${site.coffeeSorts}" th:text="!${iterStat.last} ? ${sort}+', ' : ${sort}">Coffee Sorts</span></td>
-			  <!-- <td th:text="${site.coffeeSorts}">CoffeeSorts</td>  -->
-			  <td th:text="${site.mesto}">City</td>	  
-			  <td th:text="${site.uliceCP}">Street</td>	
-			  <td th:text="${site.zemDelka}">Delka</td>	  
-			  <td th:text="${site.zemSirka}">Sirka</td>
-			  <td th:text="${site.averageStarsWithNumOfHodnoceni.common}">Stars</td>
-			  <td sec:authorize="isAuthenticated()" th:text="${site.recordStatus.status}">Record status</td>			  
+	    <table class="w3-table-all w3-hoverable">
+	    	<thead>
+	        <tr>
+	           <th th:text="#{site.siteName}" class="w3-brown"></th>
+	           <th th:text="#{site.siteStatus}" class="w3-brown"></th>
+	           <th th:text="#{site.createdon}" class="w3-brown"></th>
+	           <th th:text="#{site.type}" class="w3-brown"></th>
+	           <th th:text="#{site.otherOffers}" class="w3-brown"></th>
+	           <th th:text="#{site.coffeeSorts}" class="w3-brown"></th> 
+	           <th th:text="#{site.city}" class="w3-brown"></th>
+	           <th th:text="#{site.street}" class="w3-brown"></th>            
+	           <th th:text="#{site.longitude}" class="w3-brown"></th>
+			   <th th:text="#{site.latitude}" class="w3-brown"></th>   
+	           <th th:text="#{site.stars}" class="w3-brown"></th>    
+	           <th sec:authorize="isAuthenticated()" th:text="#{site.recordStatus}" class="w3-brown"></th>
+	        </tr>
+	        <thead>        
+	        <tbody>
+	        <!--
+		        <tr th:each="site : ${coffeeSitePage.content}" style="cursor: pointer"
+		        	th:if="${site.visible}"
+		        	th:onclick="'javascript:rowClicked(\'' + ${site.id} + '\');'"> --> <!-- Reference na /showSite/{site.id} viz nize -->
+		        <tr th:each="site : ${coffeeSitePage.content}" style="cursor: pointer"
+		        	th:onclick="'javascript:rowClicked(\'' + ${site.id} + '\');'">
 	
-	          <!-- Form to generate GET http request with Modify button -->
-	          <!-- Available only for logged-in user who created the site or for DBA or ADMIN user -->
-	          <td  th:if="${site.canBeModified}">
-	            <form action="#" th:action="@{'/modifySite/' + ${site.id}}" th:method="GET" >
-	              <input type="hidden" name="_method" value="get" />
-	              <button type="submit" id="submitButton" th:text="#{site.modify}" class="w3-btn w3-blue w3-round w3-small">X</button>
-	            </form>
-	          </td>
-	          
-	          <!-- Form to generate GET http request with Modify button -->
-	          <!-- Available only for logged-in user who created the site or for DBA or ADMIN user -->
-	          <td  th:if="${site.canBeDeleted}">
-	            <form action="#" th:action="@{'/finalDeleteSite/' + ${site.id}}" th:method="DELETE" >
-	              <input type="hidden" name="_method" value="delete" />
-	              <button type="submit" id="submitButton" th:text="#{site.delete}" class="w3-btn w3-red w3-round w3-small">X</button>
-	            </form>
-	          </td>
-		   </tr>
-		   
-		</tbody>
-	</table>
+				  <td th:text="${site.siteName}">SiteName</td>
+				  <td th:text="${site.statusZarizeni.status}">SiteStatus</td>
+				  <td th:text="${#dates.format(site.createdOn, 'dd. MM. yyyy , HH:mm')}"></td>
+				   
+				  <td th:text="!${site.typPodniku == null} ? ${site.typPodniku.coffeeSiteType} : ''">TypPodniku</td>
+				  <td><span th:each="offer, iterStat : ${site.otherOffers}" th:text="!${iterStat.last} ? ${offer}+', ' : ${offer}">Other Offer</span></td>
+				  <!-- <td th:text="${site.otherOffers}">Offer</td>  -->
+				  <td><span th:each="sort, iterStat : ${site.coffeeSorts}" th:text="!${iterStat.last} ? ${sort}+', ' : ${sort}">Coffee Sorts</span></td>
+				  <!-- <td th:text="${site.coffeeSorts}">CoffeeSorts</td>  -->
+				  <td th:text="${site.mesto}">City</td>	  
+				  <td th:text="${site.uliceCP}">Street</td>	
+				  <td th:text="${site.zemDelka}">Delka</td>	  
+				  <td th:text="${site.zemSirka}">Sirka</td>
+				  <td th:text="${site.averageStarsWithNumOfHodnoceni.common}">Stars</td>
+				  <td sec:authorize="isAuthenticated()" th:text="${site.recordStatus.status}">Record status</td>			  
+		
+		          <!-- Form to generate GET http request with Modify button -->
+		          <!-- Available only for logged-in user who created the site or for DBA or ADMIN user -->
+		          <td  th:if="${site.canBeModified}">
+		            <form action="#" th:action="@{'/modifySite/' + ${site.id}}" th:method="GET" >
+		              <input type="hidden" name="_method" value="get" />
+		              <button type="submit" id="submitButton" th:text="#{site.modify}" class="w3-btn w3-blue w3-round w3-small">X</button>
+		            </form>
+		          </td>
+		          
+		          <!-- Form to generate GET http request with Modify button -->
+		          <!-- Available only for logged-in user who created the site or for DBA or ADMIN user -->
+		          <td  th:if="${site.canBeDeleted}">
+		            <form action="#" th:action="@{'/finalDeleteSite/' + ${site.id}}" th:method="DELETE" >
+		              <input type="hidden" name="_method" value="delete" />
+		              <button type="submit" id="submitButton" th:text="#{site.delete}" class="w3-btn w3-red w3-round w3-small">X</button>
+		            </form>
+		          </td>
+			   </tr>
+			   
+			</tbody>
+		</table>
+		
 	</div>
 	
-	<!-- Reference na /showSite/{site.id} after table row click --> 
+	<!-- Row of button like links to other pages of found Coffee Sites -->
+	<div th:if="${coffeeSitePage.totalPages > 0}" class="w3-container w3-row w3-margin-top w3-center">
+	    <span th:each="pageNumber : ${pageNumbers}"
+	          class="w3-row-item"> 
+       	     <span th:onclick="'javascript:referenceClickedWithLoaderImage(\'' + (${usersSitesList} ? '/mySitesPaginated/' : '/allSitesPaginated/') + '?size=' + ${coffeeSitePage.size} + '&page=' + ${pageNumber} + '\');'" 
+       	           th:text=${pageNumber}
+       	           class="w3-button"
+       	           th:classappend="${pageNumber == coffeeSitePage.number + 1} ? w3-text-red">
+       	     </span>
+       	</span>
+	</div>
+	
+	
+	<!-- Reference to /showSite/{site.id} after table row click --> 
 	<script>
        function rowClicked(value) {
           location.href = "/showSite/" + value;
        }
     </script>
-
+    
 	<!-- <div th:replace="fragments/footer :: footer"/>  --> 
 	
   </body>
