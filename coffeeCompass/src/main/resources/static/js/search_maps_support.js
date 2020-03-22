@@ -61,7 +61,7 @@ createMap = function(lat1, lon1) {
 }
 
 
-map.create =  function(aLatSearchInput, aLonSearchInput, aLatSearchLabel, aLonSearchLabel) {
+map.create = function(aLatSearchInput, aLonSearchInput, aLatSearchLabel, aLonSearchLabel) {
 
 	 latSearchInput = aLatSearchInput;
 	 lonSearchInput = aLonSearchInput;

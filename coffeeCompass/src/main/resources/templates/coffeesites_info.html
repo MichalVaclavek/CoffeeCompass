@@ -3,7 +3,7 @@
 <head>
 	
      <!-- <title th:text="#{app.title}"> Title </title> -->
-      <div th:replace="fragments/header :: header-css"/>
+     <div th:replace="fragments/header :: header-css"/>
 
 </head>
 
@@ -37,7 +37,7 @@
 	    </p>
 	</div>
    
-    <div class="w3-margin">
+    <div class="w3-margin w3-display-container">
 	    <table class="w3-table-all w3-hoverable">
 	    	<thead>
 	        <tr>
@@ -56,12 +56,8 @@
 	        </tr>
 	        <thead>        
 	        <tbody>
-	        <!--
 		        <tr th:each="site : ${coffeeSitePage.content}" style="cursor: pointer"
-		        	th:if="${site.visible}"
-		        	th:onclick="'javascript:rowClicked(\'' + ${site.id} + '\');'"> --> <!-- Reference na /showSite/{site.id} viz nize -->
-		        <tr th:each="site : ${coffeeSitePage.content}" style="cursor: pointer"
-		        	th:onclick="'javascript:rowClicked(\'' + ${site.id} + '\');'">
+		        	th:onclick="'javascript:rowClicked(\'' + ${site.id} + '\');'"> <!-- Reference na /showSite/{site.id} viz nize -->
 	
 				  <td th:text="${site.siteName}">SiteName</td>
 				  <td th:text="${site.statusZarizeni.status}">SiteStatus</td>
@@ -101,18 +97,20 @@
 			</tbody>
 		</table>
 		
-	</div>
-	
-	<!-- Row of button like links to other pages of found Coffee Sites -->
-	<div th:if="${coffeeSitePage.totalPages > 0}" class="w3-container w3-row w3-margin-top w3-center">
-	  <span th:each="pageNumber : ${pageNumbers}"
-	         class="w3-row-item"> 
-          <span th:onclick="'javascript:referenceClickedWithLoaderImage(\'' + (${usersSitesList} ? '/mySitesPaginated/' : '/allSitesPaginated/') + '?size=' + ${coffeeSitePage.size} + '&page=' + ${pageNumber} + '\');'" 
-                th:text=${pageNumber}
-                class="w3-button"
-                th:classappend="${pageNumber == coffeeSitePage.number + 1} ? w3-text-red">
-          </span>
-      </span>
+		<!-- Row of button like links to other pages of found Coffee Sites -->
+		<div th:if="${coffeeSitePage.totalPages > 0}" class="w3-margin-top w3-center">
+		  <div class="w3-bar">
+		  <span th:each="pageNumber : ${pageNumbers}"
+		         class="w3-bar-item"> 
+	          <span th:onclick="'javascript:referenceClickedWithLoaderImage(\'' + (${usersSitesList} ? '/mySitesPaginated/' : '/allSitesPaginated/') + '?size=' + ${coffeeSitePage.size} + '&page=' + ${pageNumber} + '\');'" 
+	                th:text=${pageNumber}
+	                class="w3-button"
+	                th:classappend="${pageNumber == coffeeSitePage.number + 1} ? w3-text-red">
+	          </span>
+	      </span>
+	      </div>
+		</div>
+		
 	</div>
 	
 	

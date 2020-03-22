@@ -52,6 +52,13 @@ table {
 	position : relative;
 }
 
+/* Used for span link on homee.html */
+.spanLikeHref {
+	cursor: pointer;
+     color: blue;
+     text-decoration: underline;
+}
+
 
 /* Loader gif animation */
 .no-js #loader { display: none;  }

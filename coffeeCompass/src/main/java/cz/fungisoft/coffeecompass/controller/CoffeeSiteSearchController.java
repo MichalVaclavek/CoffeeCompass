@@ -11,6 +11,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -49,6 +51,9 @@ public class CoffeeSiteSearchController
     
     private CoffeeSortService coffeeSortService;
     
+    /**
+     * Patern pro povolene jmeno mesta. Alespon 2 znaky a oddelovace pro viceslovna jmena jako mezera, -, .
+     */
     private String allowedCityNamePattern = "^([\\p{IsAlphabetic}]{2})[\\p{IsAlphabetic}\\s-.,]+$";
     
     
@@ -96,9 +101,10 @@ public class CoffeeSiteSearchController
      * @return vrati opet ModelAndView objekt pro vyhledavaci stranku, doplneny o vyhledane CoffeeSites nebo o "flag", ktery oznacuje, ze nebylo nalezeno nic
      */
     @GetMapping("/searchSites") 
-    public ModelAndView searchSitesWithStatusAndCoffeeSort(@ModelAttribute("searchCriteria") @Valid CoffeeSiteSearchCriteriaModel searchCriteria,
-                                                          final BindingResult bindingResultSearchCriteria
-                                                          ) {
+    public ModelAndView searchSitesWithStatusAndCoffeeSort(@ModelAttribute("searchCriteria")
+                                                           @Valid
+                                                           CoffeeSiteSearchCriteriaModel searchCriteria,
+                                                           final BindingResult bindingResultSearchCriteria) {
        
         ModelAndView mav = new ModelAndView();
         mav.setViewName("coffeesite_search");
@@ -128,19 +134,20 @@ public class CoffeeSiteSearchController
         if (indexOfCarka != -1) {
             currentSearchCity = currentSearchCity.substring(0, indexOfCarka);
         }
-       
-        List<CoffeeSiteDTO> foundSites = null;
+        
+        List<CoffeeSiteDTO> foundSites = new ArrayList<>();
        
         if (searchCriteria.getLat1() != null
             && searchCriteria.getLon1() != null
-            && searchCriteria.getRange() != null) {
+            && searchCriteria.getRange() != null
+            && currentSearchCity.isEmpty()) {
             
             foundSites = coffeeSiteService.findAllWithinCircleAndCityWithCSStatusAndCoffeeSort(searchCriteria.getLat1(),
-                                                                                                searchCriteria.getLon1(),
-                                                                                                searchCriteria.getRange(),
-                                                                                                searchCriteria.getCoffeeSort(),
-                                                                                                searchCriteria.getCoffeeSiteStatus(),
-                                                                                                currentSearchCity);
+                                                                                               searchCriteria.getLon1(),
+                                                                                               searchCriteria.getRange(),
+                                                                                               searchCriteria.getCoffeeSort(),
+                                                                                               searchCriteria.getCoffeeSiteStatus(),
+                                                                                               currentSearchCity);
         } else {
             String encodedCityName = "";
             try {
@@ -148,22 +155,26 @@ public class CoffeeSiteSearchController
             } catch (UnsupportedEncodingException e) {
                 log.warn("City name URL encoding error. City name '{}'.", currentSearchCity);
             }
-            ModelAndView mavRedirect = new ModelAndView(new RedirectView("/searchSitesInCityForm/?cityName=" + encodedCityName + "&searchCityNameExactly=false", true));
+            ModelAndView mavRedirect = new ModelAndView(new RedirectView("/searchSitesInCityForm/?cityName=" + encodedCityName + "&searchCityNameExactly=" + searchCriteria.isSearchCityNameExactly(), true));
            
             mavRedirect.addObject("searchCriteria", searchCriteria);
             return mavRedirect;
         }
         
-        mav.addObject("foundSites", foundSites);
-        if (foundSites == null || foundSites.size() == 0)
+        if (foundSites != null && foundSites.size() == 0) {
             mav.addObject("emptyResult", true); // nothing found, let to know to model
+        }
+        mav.addObject("foundSites", foundSites);
         
         searchCriteria.setSortSelected(false); // set deault value before next searching
         searchCriteria.setCityName(currentSearchCity); // set city name used for searching
         
+        mav.addObject("searchCriteria", searchCriteria);
+        
         mav.setViewName("coffeesite_search");
         return mav;
    }
+    
    
    
    /**
@@ -180,22 +191,28 @@ public class CoffeeSiteSearchController
        CoffeeSiteDTO coffeeSite = coffeeSiteService.findOneToTransfer(siteId);
        
        CoffeeSiteSearchCriteriaModel searchCriteria = new CoffeeSiteSearchCriteriaModel();
-       OneStringModel cityNameModel = new OneStringModel();
        List<CoffeeSiteDTO> foundSites = new ArrayList<>();
        
-       if ( coffeeSite == null) {
+       if (coffeeSite == null) {
            mav.addObject("emptyResult", true); // nothing found, let to know to model
        } else {
            foundSites.add(coffeeSite);
            LatLong searchFromLoc = coffeeSiteService.getSearchFromLocation(coffeeSite, 200);
            searchCriteria.setLon1(searchFromLoc.getLongitude());
            searchCriteria.setLat1(searchFromLoc.getLatitude());
-           cityNameModel.setInput(coffeeSite.getMesto());
+           searchCriteria.setCityName(coffeeSite.getMesto());
+       }
+       
+       if (foundSites.size() == 1) {
+           // To be visible in the table, which expects Page object
+           Page<CoffeeSiteDTO> foundSitesPage = coffeeSiteService.getPageOfCoffeeSitesFromList(PageRequest.of(0, 1), foundSites);
+           if (foundSitesPage != null) {
+             mav.addObject("foundSitesPage", foundSitesPage);
+          }
        }
        
        mav.addObject("foundSites", foundSites);
        mav.addObject("searchCriteria", searchCriteria);
-       mav.addObject("cityName", cityNameModel);
        
        return mav;
    }
@@ -222,6 +239,7 @@ public class CoffeeSiteSearchController
        ModelAndView mav = new ModelAndView(new RedirectView("/searchSitesInCityForm/?cityName=" + encodedCityName + "&searchCityNameExactly=true", true));
        
        CoffeeSiteSearchCriteriaModel searchCriteria = new CoffeeSiteSearchCriteriaModel();
+       searchCriteria.setSearchCityNameExactly(true);
        mav.addObject("searchCriteria", searchCriteria);
        
        return mav;
@@ -248,8 +266,7 @@ public class CoffeeSiteSearchController
    public ModelAndView  showCitySitesFromForm(@RequestParam(value="cityName", defaultValue="") String cityName,
                                               @RequestParam(value="searchCityNameExactly", defaultValue="false") boolean searchExactly,
                                               @ModelAttribute("searchCriteria") CoffeeSiteSearchCriteriaModel searchCriteria,
-                                              final BindingResult bindingResultSearchCriteria
-                                             ) {
+                                              final BindingResult bindingResultSearchCriteria) {
        
        ModelAndView mav = new ModelAndView("coffeesite_search");
        
@@ -273,31 +290,47 @@ public class CoffeeSiteSearchController
            foundSites = (searchExactly) ? coffeeSiteService.findAllByCityNameExactly(currentSearchCity)
                                         : coffeeSiteService.findAllByCityNameAtStart(currentSearchCity);
            
-           if ( foundSites.size() == 0) { // nothing found, let to know to model
+           if (foundSites != null && foundSites.size() == 0) { // nothing found, let to know to model
                mav.addObject("emptyResult", true); 
-           } else {
-               if ( foundSites.size() == 1) { // only one CoffeeSite found in city, define searchFrom point for this CoffeeSite
-                   LatLong searchFromLoc = coffeeSiteService.getSearchFromLocation(foundSites.get(0), 200);
-                   searchCriteria.setLon1(searchFromLoc.getLongitude());
-                   searchCriteria.setLat1(searchFromLoc.getLatitude());
-               }
-               else {
-                   /**
-                    * Initial request to find CoffeeSites was not based on location (but the city name was the search parameter),
-                    * therefore the CoffeeSiteSearchCriteriaModel must be filled-up using found CoffeeSites.
-                    * Average longitude and latitude of found CoffeeSites is used.
-                    */
-                   LatLong avgSitesLocation = coffeeSiteService.getAverageLocation(foundSites);
-                   searchCriteria.setLon1(avgSitesLocation.getLongitude());
-                   searchCriteria.setLat1(avgSitesLocation.getLatitude());
-               }
+           } 
+           else {
+               searchCriteria = addAverageLocationToSearchCriteriaForFoundCoffeeSites(searchCriteria, foundSites);
            }
        }
        
        mav.addObject("foundSites", foundSites);
+       searchCriteria.setCityName(currentSearchCity);
+       searchCriteria.setSearchCityNameExactly(searchExactly);
+      
        mav.addObject("searchCriteria", searchCriteria);
        
        return mav;
+   }
+   
+   /**
+    * Helper method.
+    * Used for setting up searchcriteria model object (longitude and latitude) in case a list of CoffeeSites is found based on city name.
+    * @return
+    */
+   private CoffeeSiteSearchCriteriaModel addAverageLocationToSearchCriteriaForFoundCoffeeSites(CoffeeSiteSearchCriteriaModel searchCriteria, List<CoffeeSiteDTO> foundSites) {
+       
+       if (foundSites.size() == 1) { // only one CoffeeSite found in city, define searchFrom point for this CoffeeSite
+            LatLong searchFromLoc = coffeeSiteService.getSearchFromLocation(foundSites.get(0), 200);
+            searchCriteria.setLon1(searchFromLoc.getLongitude());
+            searchCriteria.setLat1(searchFromLoc.getLatitude());
+       }
+       else {
+            /**
+             * Initial request to find CoffeeSites was not based on location (but the city name was the search parameter),
+             * therefore the CoffeeSiteSearchCriteriaModel must be filled-up using found CoffeeSites.
+             * Average longitude and latitude of found CoffeeSites is used.
+             */
+            LatLong avgSitesLocation = coffeeSiteService.getAverageLocation(foundSites);
+            searchCriteria.setLon1(avgSitesLocation.getLongitude());
+            searchCriteria.setLat1(avgSitesLocation.getLatitude());
+     }
+       
+     return searchCriteria; 
    }
    
    

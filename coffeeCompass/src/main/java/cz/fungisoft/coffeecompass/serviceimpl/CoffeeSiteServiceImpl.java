@@ -2,6 +2,7 @@ package cz.fungisoft.coffeecompass.serviceimpl;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +11,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -251,8 +254,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             // TODO throw exception
             return null;
         }
-            
-        
     }
 
 
@@ -835,6 +836,27 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     @Override
     public void deleteCoffeeSitesFromUser(Long userId) {
         coffeeSiteRepo.deleteAllFromUser(userId);
+    }
+
+    
+    @Override
+    public Page<CoffeeSiteDTO> getPageOfCoffeeSitesFromList(Pageable pageable, List<CoffeeSiteDTO> coffeeSitesList) {
+        
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startItem = currentPage * pageSize;
+        List<CoffeeSiteDTO> list;
+ 
+        if (coffeeSitesList.size() < startItem) {
+            list = Collections.emptyList();
+        } else {
+            int toIndex = Math.min(startItem + pageSize, coffeeSitesList.size());
+            list = coffeeSitesList.subList(startItem, toIndex);
+        }
+ 
+        Page<CoffeeSiteDTO> coffeeSitesPage = new PageImpl<CoffeeSiteDTO>(list, PageRequest.of(currentPage, pageSize), coffeeSitesList.size());
+ 
+        return coffeeSitesPage;
     }
 
     

@@ -120,6 +120,16 @@ public interface CoffeeSiteService
     public Page<CoffeeSiteDTO> findAllWithRecordStatusPaginated(Pageable pageable, CoffeeSiteRecordStatusEnum csRecordStatus);
     
     /**
+     * A method to create a Page of CoffeeSites from given list of CoffeeSites.
+     * Usualy used on pages showing CoffeeSites found on location or city criteria, like coffeesite_search.html
+     * 
+     * @param pageable
+     * @param coffeeSitesList
+     * @return
+     */
+    public Page<CoffeeSiteDTO> getPageOfCoffeeSitesFromList(Pageable pageable, List<CoffeeSiteDTO> coffeeSitesList);
+    
+    /**
      * Checks if the CoffeeSite name is already used or not
      * 
      * @param siteId

@@ -56,11 +56,6 @@
 			        	<!-- <div class="w3-cell-row w3-margin-top">  --> <!-- row for Latitude and Longitude -->
 			          	<div class="w3-cell-row"> 
 				        	<div class="w3-cell">
-				        		<!--
-				            	<label for="Latitude">
-				              		<span th:text="#{sitesearch.latitude}">Latitude</span>
-				            	</label>
-				            	-->
 				            	<div th:classappend="${#fields.hasErrors('lat1')} ? 'has-error' : ''">
 				            		<!-- <input type="number" step="any" th:field="*{lat1}" th:errorclass="fieldError" class="w3-input w3-border w3-round" id="lat1"/> -->
 				            		<input th:type="hidden" step="any" th:field="*{lat1}" th:errorclass="fieldError" class="w3-input w3-border w3-round" id="lat1"/>
@@ -83,7 +78,6 @@
 			          	</div>
 			          	
 			          	<!-- Selection of the places/cities found by mapy.cz -->
-			          	
 		          		<div>
 	               			<label for="cityInput" th:text="#{sitesearch.city}">City</label> 
 	               			<i><label id="selectfromlistSpan"
@@ -168,7 +162,6 @@
 			        	</button> 
 			          		
 				    </div>
-			   
 			 </div> 
 
 		
@@ -198,8 +191,9 @@
 	    	</div>
 	    	
 		    <!--  Table containing the results of search. Table row is clickable and opens CoffeeSite detailes page -->
-			<div th:if="${NOT #lists.isEmpty(foundSites)}" class="w3-container w3-threequarter w3-right">
-			    <table class="w3-table-all w3-hoverable  w3-margin-top">
+			<div th:if="${NOT #lists.isEmpty(foundSites)}" class="w3-container w3-threequarter w3-right w3-center">
+			
+			    <table class="w3-table-all w3-hoverable w3-margin-top">
 			    	<thead>
 			        <tr>
 			           <th th:text="#{site.siteName}" class="w3-brown"></th>
@@ -212,11 +206,14 @@
 			           <th th:text="#{site.stars}" class="w3-brown"></th>    
 			        </tr>
 			        <thead>        
-			        <tbody>
+			        <tbody id="foundSitesTableBody">
+			        <!-- Table body content is inserted within JS insertSitesToTable(/*[[${foundSites}]]*/, document.getElementById('foundSitesTableBody')); -->
+			        
+			        <!--
 				        <tr th:each="site : ${foundSites}" style="cursor: pointer"
 				        	th:if="${site.visible}"
-				        	th:onclick="'javascript:rowClicked(\'' + ${site.id} + '\');'"> <!-- Reference na js /showSite/{site.id} viz nize -->
-			
+				        	th:onclick="'javascript:rowClicked(\'' + ${site.id} + '\');'"> --> <!-- Reference na js /showSite/{site.id} viz nize -->
+						<!--
 						  <td th:text="${site.siteName}">SiteName</td>
 						  <td th:text="${site.mesto}">City name</td>
 						  <td th:text="${site.statusZarizeni.status}">SiteStatus</td>
@@ -226,13 +223,23 @@
 						  <td th:text="${site.distFromSearchPoint}">Distance</td>
 			  			  <td th:text="${site.averageStarsWithNumOfHodnoceni.common}">Stars</td>
 					   </tr>
+					   -->
 				    </tbody>
 				</table>
-			</div>
+				
+				<!-- Links to prevoius and next page of found CoffeeSites list -->
+				<div class="w3-margin-top">
+				    <a href="javascript:prevPage()" id="btn_prev" th:text="#{sitesearch.table.previous.page}">Predchozi</a>
+				    <span>&nbsp;</span>
+					<a href="javascript:nextPage()" id="btn_next" th:text="#{sitesearch.table.next.page}">Dalsi</a>
+					<span th:text="#{sitesearch.table.page}"> strana: </span><span id="pageInfo"></span>
+			   </div>
 			
 		</div> <!-- <div class="w3-row w3-content"> -->
 	
 	</div> <!-- <div class="w3-display-container"> -->
+	
+	
 	
 	<!-- Script to swap two div element. Used for cityNameInput and cityNameSelect --> 
 	<script type="text/javascript">
@@ -320,6 +327,15 @@
      			document.getElementById("searchByCoordinatesForm").submit();
      		}
      	}
+     </script>
+     
+     <!--  JS code for paginating table with found Coffee Sites */  -->
+     <script type="text/javascript" src="/js/search_map_pagination.js"></script>
+     
+     <script th:inline="javascript">
+	     /*<![CDATA[*/
+	     insertSitesToTable(/*[[${foundSites}]]*/, document.getElementById('foundSitesTableBody'));
+	     /*]]>*/
      </script>
 
 	

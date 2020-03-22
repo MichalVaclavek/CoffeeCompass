@@ -25,12 +25,10 @@ import lombok.Data;
 @Data
 public class CoffeeSiteSearchCriteriaModel
 {
-//    @NotNull
     @DecimalMax(value="180.0")
     @DecimalMin(value="-180.0")
     private Double lat1 = 49.8250401; // defaultni hodnoty, stred CR
     
-//    @NotNull
     @DecimalMax(value="180.0")
     @DecimalMin(value="-180.0")
     private Double lon1 = 15.4190817; // defaultni hodnoty, stred CR
@@ -50,6 +48,12 @@ public class CoffeeSiteSearchCriteriaModel
     private String coffeeSort = CoffeeSortEnum.ESPRESSO.getCoffeeType();
     
     private String cityName = "";
+    
+    /**
+     * To specify, if the cityName search criteria is used as city name searched in CoffeeSites
+     * or if it is input for api.mapy.cz to find geo location of search point.
+     */
+    private boolean searchCityNameExactly;
     
     /**
      * Reset search criteria model in case another Form was used for searching

@@ -121,39 +121,6 @@ public class CoffeeSiteController
     }
 
     /**
-     * Zakladni obsluzna metoda pro zobrazeni seznamu CoffeeSite.<br>
-     * Priklady http dotazu, ktere vrati serazeny seznam CoffeeSitu jsou:
-     *
-     * http://localhost:8080/allSites/?orderBy=siteName&direction=asc
-     * http://localhost:8080/allSites/?orderBy=dist&direction=asc
-     * 
-     * apod.
-     *
-     * @param orderBy
-     * @param direction
-     * @return
-     */
-    //TODO - not used now, old version, can be deleted ???
-//    @GetMapping("/allSites/")
-//    public ModelAndView sites(@RequestParam(defaultValue = "id") String orderBy, @RequestParam(defaultValue = "asc") String direction) {
-//        
-//        ModelAndView mav = new ModelAndView();
-//        
-//        Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
-//        
-//        if (loggedInUser.isPresent() &&  userService.hasADMINorDBARole(loggedInUser.get())) {
-//            mav.addObject("allSites", coffeeSiteService.findAll(orderBy, direction));
-//        }
-//        else {
-//            mav.addObject("allSites", coffeeSiteService.findAllWithRecordStatus(CoffeeSiteRecordStatusEnum.ACTIVE));
-//        }
-//        
-//        mav.setViewName("coffeesites_info");
-//    
-//        return mav;       
-//    }
-    
-    /**
      * Zakladni obsluzna metoda pro zobrazeni seznamu CoffeeSite. Tato verze zobrazuje seznam CoffeeSitu po jednotlivych strankach.<br>
      * Priklady http dotazu, ktere vrati serazeny seznam CoffeeSitu jsou:
      *
@@ -175,7 +142,7 @@ public class CoffeeSiteController
         ModelAndView mav = new ModelAndView();
         
         int currentPage = page.orElse(1);
-        int pageSize = size.orElse(15);
+        int pageSize = size.orElse(20);
         Page<CoffeeSiteDTO> coffeeSitePage;
         
         Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
@@ -188,9 +155,8 @@ public class CoffeeSiteController
  
         mav.addObject("coffeeSitePage", coffeeSitePage);
  
-
         int totalPages = coffeeSitePage.getTotalPages();
-        if (totalPages > 0) {
+        if (totalPages > 1) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
                                                  .boxed()
                                                  .collect(Collectors.toList());
@@ -260,19 +226,6 @@ public class CoffeeSiteController
         return mav;
     }
     
-    /**
-     * Method to handle request to show CoffeeSites created by logged in user.
-     * 
-     * @return
-     */
-//    @GetMapping("/mySites") // napr. http://coffeecompass.cz/mySites
-//    public ModelAndView showMySites() {
-//        ModelAndView mav = new ModelAndView();
-//        mav.addObject("allSites", coffeeSiteService.findAllFromLoggedInUser());
-//        mav.setViewName("coffeesites_info");
-//    
-//        return mav;   
-//    }
     
     /**
      * Method to handle request to show CoffeeSites created by logged in user.
@@ -280,7 +233,7 @@ public class CoffeeSiteController
      * 
      * @return
      */
-    @GetMapping("/mySitesPaginated/") // napr. http://coffeecompass.cz/mySitesPaginated/size=5&page=1
+    @GetMapping("/mySitesPaginated/") // napr. http://coffeecompass.cz/mySitesPaginated/?size=5&page=1
     public ModelAndView showMySitesPaginated(@RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
         
         ModelAndView mav = new ModelAndView();
@@ -296,7 +249,7 @@ public class CoffeeSiteController
         }
  
         int totalPages = coffeeSitePage.getTotalPages();
-        if (totalPages > 0) {
+        if (totalPages > 1) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
                                                  .boxed()
                                                  .collect(Collectors.toList());
@@ -438,10 +391,10 @@ public class CoffeeSiteController
         // ADMIN or DBA can still continue in CoffeeSite view page to modify site's status
         Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
         
-        if (loggedInUser.isPresent() &&  userService.hasADMINorDBARole(loggedInUser.get()))
+        if (loggedInUser.isPresent() &&  userService.hasADMINorDBARole(loggedInUser.get())) {
             return modifyStatusAndReturnSameView(id, CoffeeSiteRecordStatusEnum.CANCELED);
-        else // Normal USER is redirected to list of his/her sites after cancelling site
-        {
+        }
+        else { // Normal USER is redirected to list of his/her sites after cancelling site
             CoffeeSite cs = coffeeSiteService.findOneById(id);
             cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, CoffeeSiteRecordStatusEnum.CANCELED);
             String siteName = cs.getSiteName();

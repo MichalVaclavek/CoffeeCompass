@@ -181,12 +181,14 @@
 			        		<div class="w3-half w3-justify w3-container w3-margin-top">
 				        		<b><h4 th:text="#{home.statistics.topcities.label}" >Cities with most active sites: </h4></b>
 				        		<div class="w3-margin-top">
-				        			<!-- <div th:each="city : ${stats.top5CitiesMostCoffeeSites}" 
-				        				 th:text="${city}">  -->
 			        				 <div th:each="city : ${stats.top5CitiesMostCoffeeSites}" >
-			        				 	<a th:text="${city.strVal}" th:href="@{'/showCitySites/?cityName='+${city.strVal}}"></a><span th:text="' ('+${city.intVal}+')'">Number of sites</span>
+			        				 
+				        				 <span th:onclick="'javascript:referenceClickedWithLoaderImage(\'' + @{'/showCitySites/?cityName='+${city.strVal}} + '\');'"
+									        th:text="${city.strVal}"
+									        class="spanLikeHref"></span> 
+									      
+				        				 <span th:text="' ('+${city.intVal}+')'">Number of sites</span>
 			        				 </div> 
-				        				 
 				        		</div>
 				        	</div>	
 				        	<div class="w3-half w3-justify w3-container w3-margin-top">
