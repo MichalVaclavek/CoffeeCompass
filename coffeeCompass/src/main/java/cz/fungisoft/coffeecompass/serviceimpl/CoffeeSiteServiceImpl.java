@@ -412,9 +412,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             log.info("CoffeeSite name {} updated.", coffeeSite.getSiteName());
         }
         
-        //coffeeSiteRepo.save(entityFromDB);
         return entityFromDB;
-        
     }
     
     /**
@@ -698,7 +696,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
                (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CREATED)
                 || cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.INACTIVE)
                );
-               //&& !isLocationAlreadyOccupiedByActiveSite(cs.getZemSirka(), cs.getZemDelka(), 5, cs.getId()); 
     }
 
     private boolean canBeDeactivated(CoffeeSiteDTO cs) {

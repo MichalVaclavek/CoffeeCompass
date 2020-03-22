@@ -27,8 +27,13 @@ public interface UserService
     // Pro ulozeni nove vytvoreneho usera z DTO objektu ve formulari
     User save(UserDTO registration);
     
-    // Pro ulozeni nove vytvoreneho usera z POST requestu pres REST
-    // rozhrani tj. prevazne z mob. app.
+    /**
+     *  Pro ulozeni nove vytvoreneho usera z POST requestu pres REST
+     *  rozhrani tj. prevazne z mob. app.
+     *  
+     * @param restRegisterDTO
+     * @return
+     */
     User registerNewRESTUser(SignUpAndLoginRESTDto restRegisterDTO);
     
     /**

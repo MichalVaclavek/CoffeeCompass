@@ -18,6 +18,7 @@ import cz.fungisoft.coffeecompass.entity.UserVerificationToken;
 import cz.fungisoft.coffeecompass.service.UserService;
 import cz.fungisoft.coffeecompass.service.ValidateTokenService;
 import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
+import cz.fungisoft.coffeecompass.service.UserSecurityService;
 
 /**
  * Controller to process click on User registration e-mail verification link.
@@ -33,6 +34,8 @@ public class RegistrationController
     
     private ValidateTokenService validateTokenService;
     
+    private UserSecurityService userSecurityService;
+    
     /**
      * 
      * @param userService
@@ -41,15 +44,20 @@ public class RegistrationController
      */
     public RegistrationController(UserService userService,
                                   TokenCreateAndSendEmailService verificationTokenService,
-                                  ValidateTokenService validateTokenService) {
+                                  ValidateTokenService validateTokenService,
+                                  UserSecurityService userSecurityService) {
         super();
         this.userService = userService;
         this.userVerificationTokenService = verificationTokenService;
         this.validateTokenService = validateTokenService;
+        this.userSecurityService = userSecurityService;
     }
 
     /**
      * Handles click to verification e-mail link.
+     * 
+     * Logout first if any user is already logged-in. It can happen, when one user is loged-in in browser
+     * and second one performs new registration via REST.
      * 
      * @param locale
      * @param model
@@ -65,7 +73,7 @@ public class RegistrationController
         if ("invalidToken".equals(tokenValidationResult)) {
             attr.addFlashAttribute("tokenInvalid", true);
             return (userService.getCurrentLoggedInUser().isPresent()) ? "redirect:/home"
-                                                                  : "redirect:/registrationTokenFailure";
+                                                                      : "redirect:/registrationTokenFailure";
         }
 
         // Token expired ?
@@ -80,26 +88,28 @@ public class RegistrationController
 
             UserVerificationToken verificationToken = userVerificationTokenService.getUserVerificationToken(token);
 
-            User user = verificationToken.getUser();
-            userService.saveVerifiedRegisteredUser(user, token);
+            User newUser = verificationToken.getUser();
+            userService.saveVerifiedRegisteredUser(newUser, token);
             
             // Deletes already used confirmation token from DB. This makes it invalid.
             userVerificationTokenService.deleteRegistrationToken(token);
             
-            attr.addFlashAttribute("userName", user.getUserName());
+            attr.addFlashAttribute("userName", newUser.getUserName());
             attr.addFlashAttribute("emailVerified", true);
             
             Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
-            // If already logged-in user confirmed, then go to home page
-            if ( loggedInUser.isPresent() 
-                 && loggedInUser.get().getId() == user.getId()) {
-                return "redirect:/home";
-            } else { // default go to login page, after e-mail confirm success
-                return "redirect:/login/?lang=" + locale.getLanguage(); 
+            // If email confirmed by already logged-in user, then go to home page
+            // Default go to login page, after e-mail confirm success, but first log-out user if it is different from new user, whio confirmed email
+            if (loggedInUser.isPresent()) {
+                if (loggedInUser.get().getId() == newUser.getId()) {
+                   return "redirect:/home";
+                } else { // new user is different from current logged-in user - logout current user
+                    userSecurityService.logout();
+                }
             }
         }
         
-        return "redirect:/home";
+        return "redirect:/login/?lang=" + locale.getLanguage(); 
     }
     
     @GetMapping(value = "/registrationTokenFailure")

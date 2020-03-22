@@ -7,9 +7,11 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +22,9 @@ import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.exceptions.rest.BadAuthorizationRESTRequestException;
 import cz.fungisoft.coffeecompass.exceptions.rest.InvalidParameterValueException;
+import cz.fungisoft.coffeecompass.listeners.OnRegistrationCompleteEvent;
 import cz.fungisoft.coffeecompass.service.CustomRESTUserAuthenticationService;
+import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
 import cz.fungisoft.coffeecompass.service.TokenService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import io.swagger.annotations.Api;
@@ -41,10 +45,13 @@ public class UsersControllerPublicREST
     
     private MessageSource messages;
     
+    private TokenCreateAndSendEmailService verificationTokenSendEmailService;
+    
     
     public UsersControllerPublicREST(@NonNull
                                      @Qualifier("jwtTokenUserAuthenticationService")
                                      CustomRESTUserAuthenticationService authentication,
+                                     TokenCreateAndSendEmailService verificationTokenSendEmailService,
                                      @NonNull UserService usersService,
                                      TokenService tokens,
                                      MessageSource messages) {
@@ -53,6 +60,7 @@ public class UsersControllerPublicREST
         this.usersService = usersService;
         this.tokens = tokens;
         this.messages = messages;
+        this.verificationTokenSendEmailService = verificationTokenSendEmailService;
     }
 
 
@@ -73,8 +81,14 @@ public class UsersControllerPublicREST
         }
       
         // Remove blank characters at the end of user name and e-mail
-        usersService.registerNewRESTUser(registerRequest);
-            
+        User newUser = usersService.registerNewRESTUser(registerRequest);
+        
+        // Sent new user's e-mail address verification e-mail
+        if (newUser != null && !newUser.getEmail().isEmpty()) {
+            verificationTokenSendEmailService.setUserVerificationData(newUser, locale);
+            verificationTokenSendEmailService.createAndSendVerificationTokenEmail();
+        }
+        
         return login(registerRequest, locale);
     }
     

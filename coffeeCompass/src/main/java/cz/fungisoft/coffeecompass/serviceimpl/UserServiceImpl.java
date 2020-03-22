@@ -24,6 +24,7 @@ import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
 import cz.fungisoft.coffeecompass.repository.UserVerificationTokenRepository;
 import cz.fungisoft.coffeecompass.repository.UsersRepository;
 import cz.fungisoft.coffeecompass.security.oauth2.user.OAuth2UserInfo;
+import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
 import cz.fungisoft.coffeecompass.service.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import lombok.extern.log4j.Log4j2;
@@ -187,8 +188,11 @@ public class UserServiceImpl implements UserService
         user.setEnabled(true);
         user.setCreatedOn(new Timestamp(new Date().getTime()));
         
-        log.info("Saving user name: {}", user.getUserName());
-        return usersRepository.save(user);
+        log.info("Saving new REST user name: {}", user.getUserName());
+        User newUser = usersRepository.save(user);
+        log.info("New REST user saved. {}", newUser.getUserName());
+        
+        return newUser;
     }
     
     /**

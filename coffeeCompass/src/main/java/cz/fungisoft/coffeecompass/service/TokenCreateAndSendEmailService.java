@@ -10,7 +10,6 @@ import cz.fungisoft.coffeecompass.entity.UserVerificationToken;
  * Service to create user verification token and to send e-mail with verification link to a User.
  * 
  * @author Michal Vaclavek
- *
  */
 public interface TokenCreateAndSendEmailService
 {

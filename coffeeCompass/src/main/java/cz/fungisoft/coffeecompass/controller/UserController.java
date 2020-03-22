@@ -1,3 +1,4 @@
+
 package cz.fungisoft.coffeecompass.controller;
 
 import java.io.UnsupportedEncodingException;

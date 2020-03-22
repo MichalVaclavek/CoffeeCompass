@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -61,12 +62,20 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
         this.messages = messagesSource;
         this.userVerificationTokenRepository = userVerificationTokenRepository;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
+        this.locale = LocaleContextHolder.getLocale();
     }
     
+    /**
+     * Enters User data and locale (to get correct language for the e-mail texts) to send
+     * e-mail for user's e-mail address validation.
+     * Locale can be null
+     */
     @Override
     public void setUserVerificationData(User user, Locale locale) {
         this.user = user;
-        this.locale = locale;
+        if (locale != null) {
+            this.locale = locale;
+        }
     }
        
     @Override
@@ -90,8 +99,9 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
             this.sendEmailService.sendEmail(fromEmail, recipientAddress, subject, message + "\r\n" + confirmationUrl);
             
             return token;
-        } else
+        } else {
             throw new InvalidParameterException("User is null.");
+        }
     }
 
     /**
