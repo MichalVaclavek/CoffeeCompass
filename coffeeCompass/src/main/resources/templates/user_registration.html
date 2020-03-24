@@ -120,7 +120,22 @@
 	                       th:text="${error}">Validation error</p>
 	                </div>
 	                
-	                <div class="w3-container"> 
+	                <!-- User's email address confirmed check box - editable for ADMIN user -->
+	                <div class="w3-container w3-right">
+		               <!-- <div sec:authorize="hasRole('ROLE_ADMIN')"> -->
+	                    <label for="userBan" th:text="#{user.edit.emailaddress.confirmed}">Email address confirmed?</label>
+	               			 <input type="checkbox"
+	               			 		class="w3-check"
+	               			 		th:classappend="(*{!hasADMINRole} AND *{toManageItself}) ? 'w3-disabled'"
+	               			 		th:disabled="(*{!hasADMINRole} AND *{toManageItself})"
+	               			 		th:readonly="(*{!hasADMINRole} AND *{toManageItself})"
+	                	  		    th:value="*{registerEmailConfirmed}"
+	                	  		    th:field="*{registerEmailConfirmed}"/>
+			               			  
+		                 <!-- </div> -->
+	                </div>
+	                
+	                <div class="w3-container w3-margin-top"> 
 	                    <label for="password" th:text="#{user.register.password}">Password</label> <label th:if="${user.id} == 0"> *</label>
 	                    <div th:classappend="${#fields.hasErrors('password')} ? 'has-error':''">
 	                       <input id="password"
@@ -172,16 +187,16 @@
 	                	
 		                <!-- Ban user option -->
 		                <div class="w3-cell-bottom w3-container w3-right">
-		                <div sec:authorize="hasRole('ROLE_ADMIN')">
-		                    <label for="userBan" th:text="#{user.edit.ban}">Ban user?</label>
-		               			 <input type="checkbox"
-		               			 		class="w3-check"
-		               			 		th:classappend="(*{hasADMINRole} AND *{!toManageItself}) ? 'w3-disabled'"
-		               			 		th:readonly="(*{hasADMINRole} AND *{!toManageItself})"
-		                	 		    th:field="*{banned}"
-		                	  		    th:value="*{banned}"/>
-			               			  
-		                </div>
+			                <div sec:authorize="hasRole('ROLE_ADMIN')">
+			                    <label for="userBan" th:text="#{user.edit.ban}">Ban user?</label>
+			               			 <input type="checkbox"
+			               			 		class="w3-check"
+			               			 		th:classappend="(*{hasADMINRole} AND *{!toManageItself}) ? 'w3-disabled'"
+			               			 		th:readonly="(*{hasADMINRole} AND *{!toManageItself})"
+			                	 		    th:field="*{banned}"
+			                	  		    th:value="*{banned}"/>
+				               			  
+			                </div>
 		                </div>
 	                </div>
 	                

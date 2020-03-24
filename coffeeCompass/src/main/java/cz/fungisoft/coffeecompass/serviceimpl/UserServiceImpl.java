@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
 import cz.fungisoft.coffeecompass.controller.models.AuthProviders;
 import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
 import cz.fungisoft.coffeecompass.dto.UserDTO;
@@ -24,7 +25,6 @@ import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
 import cz.fungisoft.coffeecompass.repository.UserVerificationTokenRepository;
 import cz.fungisoft.coffeecompass.repository.UsersRepository;
 import cz.fungisoft.coffeecompass.security.oauth2.user.OAuth2UserInfo;
-import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
 import cz.fungisoft.coffeecompass.service.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import lombok.extern.log4j.Log4j2;
@@ -60,6 +60,8 @@ public class UserServiceImpl implements UserService
     @Autowired
     private UserSecurityService userSecurityService;
     
+    private ConfigProperties config;
+    
      
     /**
      * Konstruktor, ktery vyuzije Spring pro injection zavislosti. Neni potreba uvadet anotaci @Autowired na atributech
@@ -69,11 +71,12 @@ public class UserServiceImpl implements UserService
      * @param mapperFacade
      */
     @Autowired
-    public UserServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder, MapperFacade mapperFacade) {
+    public UserServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder, MapperFacade mapperFacade, ConfigProperties configProperties) {
         super();
         this.usersRepository = usersRepository;
         this.passwordEncoder = passwordEncoder;
         this.mapperFacade = mapperFacade;
+        this.config = configProperties;
     }
     
     // ** Findind User ** /
@@ -233,6 +236,9 @@ public class UserServiceImpl implements UserService
                 entity.setEmail(user.getEmail());
             }
             
+            // can be edited by ADMIN user - overrides value calculated by other conditions
+            entity.setRegisterEmailConfirmed(user.getRegisterEmailConfirmed()); 
+            
             // User profiles can be empty during update - means remove all roles - this is not applicable for ADMIN user
             // ADMIN cannot remove ADMIN role of another user
             
@@ -255,12 +261,16 @@ public class UserServiceImpl implements UserService
                     newUserProfiles.add(userProfileRepository.searchByType("USER"));
             }
             
-            // If user's e-mail is not confirmed, remove DBA role
-            if (!entity.isRegisterEmailConfirmed()) {
-                newUserProfiles.remove(userProfileRepository.searchByType("DBA"));
+            entity.setUserProfiles(newUserProfiles);
+            
+            // If user's e-mail is not confirmed, remove a configured role
+            if (!entity.isRegisterEmailConfirmed()
+                 && config.isAddRoleWhenUsersEmailIsConfirmed() && !config.getRoleToAddWhenUsersEmailIsConfirmed().isEmpty()) {
+                newUserProfiles.remove(userProfileRepository.searchByType(config.getRoleToAddWhenUsersEmailIsConfirmed()));
             }
             
-            entity.setUserProfiles(newUserProfiles);
+            
+            entity.setBanned(user.isBanned());
             
             // User name can be empty, if ADMIN is editing another user
             if (user.getUserName() != null && !user.getUserName().isEmpty()) {
@@ -340,12 +350,12 @@ public class UserServiceImpl implements UserService
         Set<UserProfile> userProfiles = new HashSet<UserProfile>();
         // Only basic USER role can be assigned to commom new user 
         userProfiles.add(userProfileRepository.searchByType("USER"));
-        // If user's e-mail is confirmed, add DBA role
-        if (user.isRegisterEmailConfirmed()) {
-            userProfiles.add(userProfileRepository.searchByType("DBA"));
+        // If user's e-mail is confirmed, add a role according configuration
+        if (user.isRegisterEmailConfirmed()
+            && config.isAddRoleWhenUsersEmailIsConfirmed() && !config.getRoleToAddWhenUsersEmailIsConfirmed().isEmpty()) {
+            userProfiles.add(userProfileRepository.searchByType(config.getRoleToAddWhenUsersEmailIsConfirmed()));
         } 
         user.setUserProfiles(userProfiles);
-//        user.setImageUrl(oAuth2UserInfo.getImageUrl());
         user.setCreatedOn(new Timestamp(new Date().getTime()));
         
         log.info("Saving new OAuth2 user name {}", user.getUserName());
@@ -365,12 +375,12 @@ public class UserServiceImpl implements UserService
 //        existingUser.setImageUrl(oAuth2UserInfo.getImageUrl());
         
         Set<UserProfile> existingUserProfiles = existingUser.getUserProfiles();
-        // If user's e-mail is not confirmed, remove DBA role
-        if (!existingUser.isRegisterEmailConfirmed()) {
-            existingUserProfiles.remove(userProfileRepository.searchByType("DBA"));
-        } else { // user's e-mail confirmed, add DBA ROLE if it is not already assigned
-            if (!hasDBARole(existingUser)) { // probably not needed as userProfiles is a Set<UserProfile> and one UserProfile cannot be twice in one Set
-                existingUserProfiles.add(userProfileRepository.searchByType("DBA"));
+        // If user's e-mail is not confirmed, remove a configured role
+        if( config.isAddRoleWhenUsersEmailIsConfirmed() && !config.getRoleToAddWhenUsersEmailIsConfirmed().isEmpty()) {
+            if (!existingUser.isRegisterEmailConfirmed()) {
+                existingUserProfiles.remove(userProfileRepository.searchByType(config.getRoleToAddWhenUsersEmailIsConfirmed()));
+            } else { // user's e-mail confirmed, add configured ROLE if it is not already assigned
+                existingUserProfiles.add(userProfileRepository.searchByType(config.getRoleToAddWhenUsersEmailIsConfirmed()));
             }
         }
         
@@ -487,8 +497,10 @@ public class UserServiceImpl implements UserService
         user.setRegisterEmailConfirmed(true);
         
         Set<UserProfile> currentUserProfiles = user.getUserProfiles();
-        // E-mail confirmed, higher privileges can be added to User
-        currentUserProfiles.add(userProfileRepository.searchByType("DBA"));
+        // E-mail confirmed, higher privileges ROLE can be added to User, if configured
+        if (config.isAddRoleWhenUsersEmailIsConfirmed() && !config.getRoleToAddWhenUsersEmailIsConfirmed().isEmpty()) {
+            currentUserProfiles.add(userProfileRepository.searchByType(config.getRoleToAddWhenUsersEmailIsConfirmed()));
+        }
         user.setUserProfiles(currentUserProfiles);
         usersRepository.save(user);
     }

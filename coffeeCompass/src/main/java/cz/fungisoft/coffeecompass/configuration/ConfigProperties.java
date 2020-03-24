@@ -33,7 +33,6 @@ public class ConfigProperties
      */
     @Value("${site.image.baseurlpath.rest}")
     private String baseURLPathforImages = "/rest/image/bytes/";
-//    private String baseURLforImages = "http://coffeecompass.cz/rest/image/bytes/";
     
     /**
      * number of days back from now for the statistics overview of newest CoffeeSites
@@ -56,4 +55,16 @@ public class ConfigProperties
     
     @Value("${image.upload.max-file-size}")
     private Long maxUploadFileByteSize;
+    
+    /**
+     * Should be a role automaticaly added to user's profile (list of roles), when user confirms it's email address?
+     */
+    @Value("${user.addrole.whenemailaddress.confirmed}")
+    private boolean addRoleWhenUsersEmailIsConfirmed = false;
+    
+    /**
+     * A role to be automaticaly added to user's profile (list of roles), when user confirms it's email address?
+     */
+    @Value("${user.addrole.whenemailaddress.confirmed.role}")
+    private String roleToAddWhenUsersEmailIsConfirmed = "DBA";
 }

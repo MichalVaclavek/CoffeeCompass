@@ -129,14 +129,15 @@ public class CoffeeSiteServiceImplTest
         @MockBean
         public static IAuthenticationFacade authenticationFacade;
         
+        
+        @MockBean
+        public static ConfigProperties configProps;
  
         @MockBean
         private CustomUserDetailsService userDetailService;
         
         private PasswordEncoder passwordEncoder = Mockito.mock(PasswordEncoder.class);
         
-//        @MockBean
-//        private MapperFacade mapperFacade;
         
         @MockBean
         public static UsersRepository usersRepository;
@@ -144,7 +145,7 @@ public class CoffeeSiteServiceImplTest
         @Bean
         public UserService userService() {
             
-            return new UserServiceImpl(usersRepository, passwordEncoder, mapperFacadeMock);
+            return new UserServiceImpl(usersRepository, passwordEncoder, mapperFacadeMock, configProps);
         }
     }
     

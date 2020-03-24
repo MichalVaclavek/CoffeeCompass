@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
@@ -55,6 +56,9 @@ public class UserServiceImplTest
     private CustomUserDetailsService userDetService;
     
     @MockBean
+    public static ConfigProperties configProps;
+    
+    @MockBean
     private SecurityConfiguration securityConfig;
     
     @TestConfiguration
@@ -70,7 +74,7 @@ public class UserServiceImplTest
         
         @Bean
         public UserService userService() {
-            return new UserServiceImpl(usersRepository, passwordEncoder, mapperFacade);
+            return new UserServiceImpl(usersRepository, passwordEncoder, mapperFacade, configProps);
         }
     }
     
