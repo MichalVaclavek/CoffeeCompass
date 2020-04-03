@@ -7,3 +7,7 @@
 /application-prod.properties
 /configprops.properties
 /keystore_selfsigned.p12
+/application-dev_docker_db.properties
+/application-dev_https.properties
+/application-prod_docker_db.properties
+/application-prod_https.properties
