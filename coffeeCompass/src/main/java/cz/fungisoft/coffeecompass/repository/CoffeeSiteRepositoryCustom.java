@@ -44,7 +44,7 @@ public interface CoffeeSiteRepositoryCustom
     
     /**
      * Vyhledani vsech CoffeeSites od bodu sirka, delka v rozmezi meters a s typem kavy,
-     * vse s pomoci NamedQuery a EntityManageru.
+     * vse s pomoci NamedQuery a/nebo EntityManageru v prislusne implementaci.
      *  
      * @param sirka
      * @param delka
@@ -62,7 +62,10 @@ public interface CoffeeSiteRepositoryCustom
     public List<CoffeeSite> findSitesWithCoffeeSortAndSiteStatus(double sirka, double delka, long rangeMeters, CoffeeSort sort,
                                                                  CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus);
     /**
-     * Varianta predchoziho dotazu, kdy se k zakladnim vyhledavacim parametrum, jako je poloha, pridava jeste vyhledavani podle jmena.
+     * Varianta zakladniho dotazu, kdy se k zakladnim vyhledavacim parametrum, jako je poloha, pridava jeste vyhledavani podle:
+     *  {@link CoffeeSort},
+     *  {@link CoffeeSiteStatus},
+     *  {@link CoffeeSiteRecordStatus}.<br>
      * Vyuzito pro vyhledavani v mape, kdy uzivatel zada vyhledavani podle mesta. Z mapy.cz API se ziskaji souradnice tohoto mesta
      * a lze pak podle souradnic najit i ty CoffeeSite zaznamy, ktere nemaji vyplneno pole 'mesto' nebo je toto pole zadane spatne.
      *  

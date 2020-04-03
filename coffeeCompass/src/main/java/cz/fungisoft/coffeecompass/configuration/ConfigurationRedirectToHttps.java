@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Profile;
  * @author Michal Václavek
  */
 @Configuration
-@Profile({"https_prod","https_dev"})
+@Profile({"prod_https","dev_https"})
 public class ConfigurationRedirectToHttps 
 {  
     @Bean

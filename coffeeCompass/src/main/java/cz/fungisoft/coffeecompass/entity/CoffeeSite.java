@@ -40,7 +40,10 @@ import java.util.Set;
  * Hlavni model objekt aplikace. Obsahuje vsechny potrebne informace o "Coffee situ".<br>
  * Atributy obsahuji anotace pro Hibernate.<br>
  * <p>
- * Prvni Stored procedure je jen pro otestovani, ze funguje volani stored procedure v DB.
+ * Prvni Stored procedure je jen pro otestovani, ze funguje volani stored procedure v DB.<br>
+ * Druha Stored procedure se zatim nepouziva. Pro realne pripady je pouzita implementace metody<br>
+ * {@link cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository#findSitesWithSortAndSiteStatusAndRangeAndCity(double, double , long ,CoffeeSort, CoffeeSiteStatus, CoffeeSiteRecordStatus, String)},
+ * ktera pracuje i s dalsimi vstup. parametry, jako napr. coffeesite_record_status 
  * 
  * @author Michal Vaclavek
  */
@@ -72,7 +75,8 @@ import java.util.Set;
         )
  })
 
-/** Jde o variantu definice SQL dotazu pro zpracovani JPA Springem. Na jmeno "getSitesWithinRange" esp. "numberOfSitesWithinRange" se pak lze odkazovat 
+/** 
+ * Jde o variantu definice SQL dotazu pro zpracovani JPA Springem. Na jmeno "getSitesWithinRange" esp. "numberOfSitesWithinRange" se pak lze odkazovat 
  * pomoci @Query(nativeQuery = true, name = "getSitesWithinRange") v napr. Repository tride.<br>
  * Vysledek tohoto Query by melo byt mozne pouzit jako vstup do dalsich dotazu, Repository metod, ktere filtruji podle dalsich kriterii
  * jako napr. oteviraci doba nebo nabidka kavy, celkova nabidka apod.
@@ -105,6 +109,7 @@ import java.util.Set;
 @SqlResultSetMapping(name="LongResult",
     columns={@ColumnResult(name="cnt", type = Long.class)}
 )
+
 public class CoffeeSite
 {
     @Id

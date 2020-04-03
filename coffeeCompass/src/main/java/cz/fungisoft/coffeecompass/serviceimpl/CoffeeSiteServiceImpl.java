@@ -681,7 +681,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      */
     private boolean canBeModified(CoffeeSiteDTO cs) {
         return siteUserMatch(cs) && (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CREATED)
-                                     || cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.INACTIVE));
+                                 || cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.INACTIVE));
     }
 
     /**
@@ -691,7 +691,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      * @return
      */
     private boolean canBeActivated(CoffeeSiteDTO cs) {
-        return siteUserMatch(cs) // all authenticated users can modify from Created to Active or Inactive to Active
+        return siteUserMatch(cs) /* all authenticated users can modify from Created to Active or Inactive to Active */
                && 
                (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CREATED)
                 || cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.INACTIVE)
@@ -699,7 +699,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     }
 
     private boolean canBeDeactivated(CoffeeSiteDTO cs) {
-        return siteUserMatch(cs) // all allowed users modify from Active to Inactive
+        return siteUserMatch(cs) /* all allowed users modify from Active to Inactive */
                &&
                (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.ACTIVE)
                 || (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CANCELED) // Admin or DBA users can modify from CANCELED to INACTIVE or Inactive to Active
@@ -714,8 +714,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      * @return
      */
     private boolean canBeCanceled(CoffeeSiteDTO cs) {
-        //return siteUserMatch(cs) && !userService.hasDBARole(loggedInUser.get()) // all users allowed to modify are also allowed change status from Inactive to Cancel or from CREATED to Cancel, except those with DBA role
-        return siteUserMatch(cs) // all users allowed to modify are also allowed change status from Inactive to Cancel or from CREATED to Cancel
+        return siteUserMatch(cs) /* all users allowed to modify are also allowed change status from Inactive to Cancel or from CREATED to Cancel */
                &&
                (
                   cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.INACTIVE)

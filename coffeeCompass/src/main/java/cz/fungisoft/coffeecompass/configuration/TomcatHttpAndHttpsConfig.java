@@ -15,7 +15,7 @@ import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
  *
  */
 //@Configuration
-@Profile({"https_prod","https_dev"})
+@Profile({"prod_https","dev_https"})
 public class TomcatHttpAndHttpsConfig {
 
     @Bean

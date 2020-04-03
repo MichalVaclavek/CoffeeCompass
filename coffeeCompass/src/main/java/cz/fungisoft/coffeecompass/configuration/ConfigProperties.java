@@ -43,12 +43,11 @@ public class ConfigProperties
     
     /**
      * Attributes to store configuration parameters of the image File.
-    * <p>
-    * Can be used in case uploaded image files are saved to file system, not to DB.
-    * and for validation/limitation of the image file size.
-    **/ 
-    /**
-     * Directory to save images to
+     * <p>
+     * Can be used in case uploaded image files are saved to file system, not to DB.
+     * and for validation/limitation of the image file size.
+     * 
+     * Directory to save uploaded images to.
      */
     @Value("${file.upload-dir}")
     private String uploadDir;

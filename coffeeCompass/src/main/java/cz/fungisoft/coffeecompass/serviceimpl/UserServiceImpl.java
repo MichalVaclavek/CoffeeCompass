@@ -84,7 +84,6 @@ public class UserServiceImpl implements UserService
     @Override
     @Transactional
     public Optional<UserDTO> findByIdToTransfer(Long id) {        
-        //User user = findById(id);
         return addNonPersistentInfoToUser(findById(id).orElse(null));
     }
     
@@ -521,7 +520,7 @@ public class UserServiceImpl implements UserService
      */
     @Override
     public boolean changeUserPassword(User user, String newPassword) {
-        if (user == null || newPassword == null || newPassword.isEmpty()) {
+        if ( (user == null) || (newPassword == null) || newPassword.isEmpty()) {
             return false;
         }
         user.setPassword(passwordEncoder.encode(newPassword));
