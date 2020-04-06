@@ -74,7 +74,7 @@ public class ContactMeMessageServiceImpl implements IContactMeMessageService
 
     @Override
     public ContactMeMessage saveContactMeMessage(ContactMeMessage message) {
-        sendMeEmailService.sendMeSimpleEmail(message.getAuthorName(), message.getEmail(), config.getContactMeEmailTo(), message.getTextOfMessage());
+        sendMeEmailService.sendMeSimpleEmail(message.getAuthorName(), message.getEmail(), config.getContactMeEmailFrom(), config.getContactMeEmailTo(), message.getTextOfMessage());
         log.info("Contact me message from user e-mail {} sent to me.", message.getEmail());
         return contactMeMessageRepo.save(message);
     }

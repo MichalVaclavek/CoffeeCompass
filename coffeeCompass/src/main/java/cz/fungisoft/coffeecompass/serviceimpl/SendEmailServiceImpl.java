@@ -24,33 +24,35 @@ public class SendEmailServiceImpl implements ISendEmailService
     }
 
     @Override
-    public void sendMeSimpleEmail(String fromName, String fromEmail, String toEmail, String messageText) throws MailException {
-        SimpleMailMessage message = new SimpleMailMessage(); 
+    public void sendMeSimpleEmail(String fromName, String authorEmail, String fromEmail, String toEmail, String messageText) throws MailException {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromEmail);
         message.setTo(toEmail);
-        message.setSubject("Zpráva z CoffeeCompass, od: " + fromName + " , email: " + fromEmail); 
+        message.setSubject("Zpráva z CoffeeCompass, od: " + fromName + " , email: " + authorEmail); 
         message.setText(messageText);
         try {
             emailSender.send(message);
-            logger.info("ODESLÁNO - zpráva z CoffeeCompass, od: {} , email: {}", fromName, fromEmail);
+            logger.info("ODESLÁNO - zpráva z CoffeeCompass, od: {} , email: {}", fromName, authorEmail);
         }
         catch (MailException e) {
-            logger.error("Chyba při odesílaní 'Contact me' e-mailu z adresy: {}. Exception: {}", fromEmail, e.getMessage());
+            logger.error("Chyba při odesílaní 'Contact me' e-mailu z adresy: {}. Exception: {}", authorEmail, e.getMessage());
             throw e;
         }
     }
 
     @Override
     public void sendEmail(String from, String to, String subject, String messageText) throws MailException {
-        SimpleMailMessage message = new SimpleMailMessage(); 
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(from);
         message.setTo(to);
         message.setSubject(subject); 
         message.setText(messageText);
         try {
             emailSender.send(message);
-            logger.info("E-mail sent to: {}. Subject: {}", to, subject);
+            logger.info("E-mail sent from {} to: {}. Subject: {}", from, to, subject);
         }
         catch (MailException e) {
-            logger.error("Chyba při odesílaní e-mailu na adresu {}. Exception: {}", to, e.getMessage());
+            logger.error("Chyba při odesílaní e-mailu na adresu {} z {}. Exception: {}", to, from, e.getMessage());
             throw e;
         }
     }

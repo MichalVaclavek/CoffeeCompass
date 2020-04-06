@@ -26,6 +26,10 @@ public class ConfigProperties
     @Value("${contactme.mail.to}")
     private String contactMeEmailTo = "sadlokan@email.cz";
     
+    @Email
+    @Value("${contactme.mail.from}")
+    private String contactMeEmailFrom = "vaclavek.michal@gmail.com";
+    
     /**
      * Base path part of the URL for requesting images for CoffeeSites
      * The othe parts of complete URL is the CoffeeSite id and the protocol and server at the begining
