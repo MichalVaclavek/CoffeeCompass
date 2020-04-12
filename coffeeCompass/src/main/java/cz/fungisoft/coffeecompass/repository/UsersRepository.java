@@ -30,6 +30,4 @@ public interface UsersRepository extends JpaRepository<User, Long>, UsersReposit
     @Query("select count(id) from User u WHERE date(u.createdOn) > (current_date - 7) AND u.enabled=true")
     public Long getNumOfUsersRegisteredLast7Days();
 
-//    @Query("update User set password='' firstName='' lastName='' email='' banned='true' enabled='false' WHERE id= ?1")
-//    public void clearById(Long userId);
 }

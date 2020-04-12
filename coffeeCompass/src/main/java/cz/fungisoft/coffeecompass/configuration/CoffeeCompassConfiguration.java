@@ -71,14 +71,16 @@ public class CoffeeCompassConfiguration implements WebMvcConfigurer
         MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
         
         // Uprava pro mapovano z User na UserDataDTO - pro prenaseni na clienta neni potreba prenaset heslo
-        mapperFactory.classMap(User.class, UserDTO.class).exclude("password")
-                                                         .mapNulls(false)
-                                                         .byDefault()
-                                                         .register();
+        mapperFactory.classMap(User.class, UserDTO.class)
+                     .mapNulls(false)
+                     .exclude("password")
+                     .byDefault()
+                     .register();
         
-        mapperFactory.classMap(UserDTO.class, User.class).mapNulls(false)
-                                                         .byDefault()
-                                                         .register();
+        mapperFactory.classMap(UserDTO.class, User.class)
+                     .mapNulls(false)
+                     .byDefault()
+                     .register();
         
         // Only userName is needed for CoffeeSiteDto object
         mapperFactory.classMap(CoffeeSite.class, CoffeeSiteDTO.class)

@@ -69,12 +69,12 @@ public class UsersControllerPublicREST
         
         Optional<User> existing = usersService.findByUserName(registerRequest.getUserName());
         if (existing.isPresent()) {
-            //throw new BadRequestException("Name already in use.");
             throw new InvalidParameterValueException("User", "userName", registerRequest.getUserName(), messages.getMessage("error.user.name.used", null, locale));
         }
-        if (!usersService.isEmailUnique(null, registerRequest.getEmail())) {
-            //throw new BadRequestException("Email address already in use.");
-            throw new InvalidParameterValueException("User", "email", registerRequest.getEmail(), messages.getMessage("error.user.emailused", null, locale));
+        if (registerRequest.getEmail() != null && !registerRequest.getEmail().isEmpty()) {
+            if (!usersService.isEmailUnique(null, registerRequest.getEmail())) {
+                throw new InvalidParameterValueException("User", "email", registerRequest.getEmail(), messages.getMessage("error.user.emailused", null, locale));
+            }
         }
         if (registerRequest.getPassword().isEmpty()) {
             throw new InvalidParameterValueException("User", "password", "", messages.getMessage("error.user.password.empty", null, locale));
@@ -84,7 +84,7 @@ public class UsersControllerPublicREST
         User newUser = usersService.registerNewRESTUser(registerRequest);
         
         // Sent new user's e-mail address verification e-mail
-        if (newUser != null && !newUser.getEmail().isEmpty()) {
+        if (newUser != null && newUser.getEmail() != null && !newUser.getEmail().isEmpty()) {
             verificationTokenSendEmailService.setUserVerificationData(newUser, locale);
             verificationTokenSendEmailService.createAndSendVerificationTokenEmail();
         }

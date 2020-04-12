@@ -28,7 +28,9 @@ public class UserDTO
     private String userName;
     
     public void setUserName(String userName) {
-        this.userName = userName.trim();
+        if (userName != null) {
+            this.userName = userName.trim();
+        }
     }
          
     @Size(max=30)
@@ -42,7 +44,9 @@ public class UserDTO
     private String email;
     
     public void setEmail(String email) {
-        this.email = email.trim();
+        if (email != null) {
+            this.email = email.trim();
+        }
     }
     
     // Can be empty as the USER or ADMIN don't want to change the password. Is evaluated in UserController

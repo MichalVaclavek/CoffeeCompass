@@ -124,7 +124,7 @@ public class UserServiceImpl implements UserService
     /**
      * Pomocna metoda k doplneni aktualnich dat o User uctu, ktery se prenasi na klienta. 
      * 
-     * @param userName
+     * @param user
      * @return
      */
     private Optional<UserDTO> addNonPersistentInfoToUser(User user) {
@@ -174,9 +174,11 @@ public class UserServiceImpl implements UserService
         
         user.setUserName(restRegisterDTO.getUserName());
         user.setPassword(passwordEncoder.encode(restRegisterDTO.getPassword()));
-        user.setEmail(restRegisterDTO.getEmail());
-        user.setRegisterEmailConfirmed(false);
+        if (restRegisterDTO.getEmail() != null) {
+            user.setEmail(restRegisterDTO.getEmail());
+        }
         
+        user.setRegisterEmailConfirmed(false);
         user.setUpdatedSites(0);
         user.setCreatedSites(0);
         user.setDeletedSites(0);    
