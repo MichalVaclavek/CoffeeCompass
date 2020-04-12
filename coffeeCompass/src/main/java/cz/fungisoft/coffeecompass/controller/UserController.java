@@ -397,42 +397,19 @@ public class UserController
     // ------------------- Delete a User -------------------------------------------------------- //
       
     /**
-     * Deletes user account, without verifiyng if there are any related records in another
-     * tables/entities. Usualy called from the page listing all the user accounts by ADMIN
-     * user.
-     * 
-     * @param id - id of the user to be deleted
-     * @return
-     */
-    @DeleteMapping(value = "/delete/{id}")
-    public String deleteUser(@PathVariable("id") Long id) {
-        
-        Optional<UserDTO> user = userService.findByIdToTransfer(id);
-        
-        if (user.isPresent()) {
-            userService.deleteUserById(id);
-        } else {
-            logger.info("Unable to delete. User with id " + id + " not found");
-        }
-        
-        return "redirect:/user/all";
-    }
-    
-    /**
      * Creates/prepares form to confirm user account deletition.
      * 
      * @param id
      * @return
      */
     @GetMapping(value = "/delete/")
-    public ModelAndView getDeleteUserAndRelatedItemsForm(@RequestParam("userID") Long id) {
+    public ModelAndView getDeleteUserAndRelatedItemsForm(@RequestParam("userID") Long id, RedirectAttributes attr) {
         
-        Optional<User> user = userService.findById(id);
         ModelAndView mav = new ModelAndView();
         
-        if (!user.isPresent()) {
-            logger.info("Unable to delete. User with id " + id + " not found");
-        } else {
+        Optional<User> user = userService.findById(id);
+        
+        if (user.isPresent()) {
             DeleteUserAccountModel userToDeleteModel = new DeleteUserAccountModel();
             
             userToDeleteModel.setUserId(id);
@@ -451,31 +428,72 @@ public class UserController
             
             mav.addObject("userDataModelToDelete", userToDeleteModel);
             mav.setViewName("user_delete");
+            
+        } else {
+            logger.error("Unable to delete user with id {}. Probably already deleted.", id);
+            return redirectToHomeAfterFailedUserDelete(id, attr);
         }
         return mav;
     }
     
     /**
+     * Deletes user account, without verifiyng if there are any related records in another
+     * tables/entities. Usualy called from the page listing all the user accounts by ADMIN
+     * user.
+     * 
+     * @param id - id of the user to be deleted
+     * @return
+     */
+    @DeleteMapping(value = "/delete/{id}")
+    public ModelAndView deleteUser(@PathVariable("id") Long id, RedirectAttributes attr) {
+        
+        ModelAndView mav = new ModelAndView();
+        
+        Optional<UserDTO> user = userService.findByIdToTransfer(id);
+        boolean deleteOK = false;
+        
+        if (user.isPresent()) {
+            try {
+                userService.deleteUserById(id);
+                deleteOK = true;
+            } catch (Exception ex) {
+                logger.error("Unable to delete user with id " + id + ". Probably already deleted. Exception: " + ex.getMessage());
+            }
+        }
+        
+        if (deleteOK) {
+            mav.setViewName("redirect:/user/all");
+            return mav;
+        } else {
+            return redirectToHomeAfterFailedUserDelete(id, attr);
+        }
+    }
+    
+    
+    /**
      * Deletes user and all related data (comments, coffee sites, ...) if requested.<br>
      * If related data are not requested to delete, it deletes user's data in DB,<br>
      * except userID and username. So, the user record is kept to allow all<br>
-     * related items be link to user record.  
+     * related items be link to user's record.  
      * 
      * @param id
      * @return
      */
     @DeleteMapping(value = "/delete/")
-    public String deleteUserAndRelatedItems(@ModelAttribute("userDataModelToDelete") DeleteUserAccountModel userDataToDelete,
+    public ModelAndView deleteUserAndRelatedItems(@ModelAttribute("userDataModelToDelete") DeleteUserAccountModel userDataToDelete,
                                             RedirectAttributes attr) {
         
-       Optional<UserDTO> user = userService.findByIdToTransfer(userDataToDelete.getUserId());
-       Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
-       
-       String userName = "";
+        ModelAndView mav = new ModelAndView();
         
-       if (user.isPresent() && loggedInUser.isPresent()) {
+        Optional<UserDTO> user = userService.findByIdToTransfer(userDataToDelete.getUserId());
+        Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
+        
+        String userName = "";
+       
+        if (user.isPresent() && loggedInUser.isPresent()) {
             
            userName = user.get().getUserName();
+           
            // Prihlaseny uzivatel maze svoje data?
            // Pokud jineho usera maze ADMIN, neodhlasovat z app
            if (user.get().getId() == loggedInUser.get().getId()
@@ -495,17 +513,61 @@ public class UserController
 
            if (commentsService.getAllCommentsFromUser(user.get().getId()).size() == 0
                && coffeeSiteService.findAllFromUserName(userName).size() == 0) { // user's comments and CoffeeSites deleted, now User can be deleted too
-               userService.deleteUserById(userDataToDelete.getUserId());
+               try {
+                   userService.deleteUserById(userDataToDelete.getUserId());
+               } catch (Exception ex) {
+                   logger.error("Unable to delete user with id " + userDataToDelete.getUserId() + ". Probably already deleted.");
+                   attr.addFlashAttribute("userDeleteFailure", true);
+                   return redirectToHomeAfterFailedUserDelete(userDataToDelete.getUserId(), attr);
+               }
            } else { // clear user's data as either user's CoffeeSites or comments are not deleted
                userService.clearUserDataById(userDataToDelete.getUserId());   
            }
-           attr.addFlashAttribute("userDeleteSuccess", true);
-       } else {
+        } else {
            logger.info("Unable to delete. User with id " + userDataToDelete.getUserId() + " not found or not registered currently.");
-       }
+           attr.addFlashAttribute("userDeleteFailure", true);
+           return redirectToHomeAfterFailedUserDelete(userDataToDelete.getUserId(), attr);
+        }
        
-       attr.addFlashAttribute("userName", userName);
-       return "redirect:/home/"; 
+        attr.addFlashAttribute("userDeleteSuccess", true);
+        attr.addFlashAttribute("userName", userName);
+        mav.setViewName("redirect:/home/");
+        return mav;
+    }
+    
+    /**
+     * Helper method to simplify call to home page after User delete cannot be performed.
+     * 
+     * @param id
+     * @param attr
+     * @return
+     */
+    private ModelAndView redirectToHomeAfterFailedUserDelete(Long id, RedirectAttributes attr) {
+        
+        ModelAndView mav = new ModelAndView();
+        
+        Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
+        
+        // Uzivatel, pravdepodobne jiz smazany z jineho zarizeni, se pokousi smazat svuj ucet
+        // z aktualniho zarizeni, kde vypada stale prohlaseny. Je potreba provest logout explicitne.
+        if (!loggedInUser.isPresent()) {
+            userSecurityService.logout();
+        }
+        
+        // Prihlaseny uzivatel maze svoje data?
+        // Pokud jineho usera maze ADMIN, neodhlasovat z app
+        if (loggedInUser.isPresent() && id == loggedInUser.get().getId()
+                && !userService.isADMINloggedIn()) { 
+            userSecurityService.logout();
+        }
+        
+        logger.info("Unable to delete. User with id " + id + " not found");
+        attr.addFlashAttribute("userName", id);
+        attr.addFlashAttribute("userDeleteFailure", true);
+        
+        mav.setViewName("redirect:/home/");
+        
+        return mav;
     }
   
     /**

@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.stereotype.Service;
@@ -430,7 +431,7 @@ public class UserServiceImpl implements UserService
  
     @Override
     public List<UserDTO> findAllUsers() {
-        List<UserDTO> usersDTO = mapperFacade.mapAsList(usersRepository.findAll(), UserDTO.class);
+        List<UserDTO> usersDTO = mapperFacade.mapAsList(usersRepository.findAll(Sort.by(Sort.Direction.fromString("DESC".toUpperCase()), "createdOn")), UserDTO.class);
         
         for (UserDTO userDTO : usersDTO) {
             userDTO.setHasADMINRole(hasADMINRole(mapperFacade.map(userDTO,  User.class)));
