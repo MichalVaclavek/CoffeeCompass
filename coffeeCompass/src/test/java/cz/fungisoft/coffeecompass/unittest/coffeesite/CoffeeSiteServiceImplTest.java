@@ -1,4 +1,4 @@
-package cz.fungisoft.coffeecompass.unittest;
+package cz.fungisoft.coffeecompass.unittest.coffeesite;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,42 +12,34 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
+import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
-import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
-import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
-import cz.fungisoft.coffeecompass.entity.CoffeeSiteType;
-import cz.fungisoft.coffeecompass.entity.CoffeeSort;
-import cz.fungisoft.coffeecompass.entity.Company;
-import cz.fungisoft.coffeecompass.entity.CupType;
-import cz.fungisoft.coffeecompass.entity.NextToMachineType;
-import cz.fungisoft.coffeecompass.entity.OtherOffer;
-import cz.fungisoft.coffeecompass.entity.PriceRange;
-import cz.fungisoft.coffeecompass.entity.SiteLocationType;
-import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
-import cz.fungisoft.coffeecompass.entity.StarsQualityDescription.StarsQualityEnum;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus.CoffeeSiteStatusEnum;
 import cz.fungisoft.coffeecompass.entity.CupType.CupTypeEnum;
 import cz.fungisoft.coffeecompass.entity.NextToMachineType.NextToMachineTypeEnum;
+import cz.fungisoft.coffeecompass.repository.CoffeeSitePageableRepository;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRecordStatusRepository;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteStatusRepository;
 import cz.fungisoft.coffeecompass.repository.CoffeeSortRepository;
+import cz.fungisoft.coffeecompass.repository.PasswordResetTokenRepository;
 import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
+import cz.fungisoft.coffeecompass.repository.UserVerificationTokenRepository;
 import cz.fungisoft.coffeecompass.repository.UsersRepository;
 import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
 import cz.fungisoft.coffeecompass.security.IAuthenticationFacade;
@@ -56,37 +48,33 @@ import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.CompanyService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.service.ImageStorageService;
+import cz.fungisoft.coffeecompass.service.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import cz.fungisoft.coffeecompass.serviceimpl.CoffeeSiteServiceImpl;
 import cz.fungisoft.coffeecompass.serviceimpl.UserServiceImpl;
 import cz.fungisoft.coffeecompass.testutils.CoffeeSiteBuilder;
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.impl.DefaultMapperFactory;
 
 /**
  * Testuje Service vrstvu pro praci s objekty CoffeeSite.
  * 
- * @author Michal
+ * @author Michal Vaclavek
  *
  */
 @RunWith(SpringRunner.class)
-//@SpringBootTest
 public class CoffeeSiteServiceImplTest
 {
-   
-    @Autowired
-    private CoffeeSiteService coffeeSiteService;
-   
-    @Autowired
-    private MapperFacade mapperFacade;
-  
-    @MockBean
-    private static MapperFacade mapperFacadeMock;
     
     @MockBean
-    private static CoffeeSiteRepository coffeeSiteRepository;
+    private CoffeeSiteRepository coffeeSiteRepository;
     
     @MockBean
     private static CoffeeSiteRecordStatusRepository coffeeSiteRecordStatusRepository;
+    
+    @MockBean
+    private static CoffeeSitePageableRepository coffeeSitePageableRepository;
     
     @MockBean
     private static CompanyService compService;
@@ -101,23 +89,16 @@ public class CoffeeSiteServiceImplTest
     private static ImageStorageService imageStorageService; 
     
     @MockBean
-    private static ConfigProperties configProperties; 
+    private static UserSecurityService userSecurityService;
+
+    @MockBean
+    private static UserVerificationTokenRepository userVerificationTokenRepository;
+
+    @MockBean
+    private static PasswordResetTokenRepository passwordResetTokenRepository;
     
-    @TestConfiguration
-    static class CoffeeSiteServiceImplTestContextConfiguration {
-  
-        @MockBean
-        private CoffeeSiteStatusRepository coffeeSiteStatusRepository;
-        
-        @MockBean
-        private CoffeeSortRepository coffeeSortRepository;
-        
-        
-        @Bean
-        public CoffeeSiteService coffeeSiteService() {
-            return new CoffeeSiteServiceImpl(coffeeSiteRepository, coffeeSortRepository, coffeeSiteStatusRepository, mapperFacadeMock);
-        }
-    }
+    @Autowired
+    private MapperFacade mapperFacade;
     
     
     @TestConfiguration
@@ -129,7 +110,6 @@ public class CoffeeSiteServiceImplTest
         @MockBean
         public static IAuthenticationFacade authenticationFacade;
         
-        
         @MockBean
         public static ConfigProperties configProps;
  
@@ -138,16 +118,38 @@ public class CoffeeSiteServiceImplTest
         
         private PasswordEncoder passwordEncoder = Mockito.mock(PasswordEncoder.class);
         
-        
         @MockBean
         public static UsersRepository usersRepository;
         
+        
         @Bean
-        public UserService userService() {
+        public MapperFacade getMapperFacade() {
+            MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
             
-            return new UserServiceImpl(usersRepository, passwordEncoder, mapperFacadeMock, configProps);
+            // Only userName is needed for CoffeeSiteDto object
+            mapperFactory.classMap(CoffeeSite.class, CoffeeSiteDTO.class)
+                         .field("originalUser.userName", "originalUserName")
+                         .field("lastEditUser.userName", "lastEditUserName")
+                         .byDefault()
+                         .register();
+            
+            return mapperFactory.getMapperFacade();
         }
     }
+    
+    
+    @MockBean
+    private UserService userService;
+    
+    @MockBean
+    private CoffeeSiteStatusRepository coffeeSiteStatusRepository;
+    
+    @MockBean
+    private CoffeeSortRepository coffeeSortRepository;
+    
+    
+    private CoffeeSiteService coffeeSiteService;
+    
     
     // Nutne pro kontrolu CoffeeSiteDto, ktere obvykle vraci CoffeeSiteService
     // pro porovnani s pripravenym testovacim CoffeeSite coffeeS
@@ -189,11 +191,14 @@ public class CoffeeSiteServiceImplTest
     private int numOfCoffeeMachines = 2;
        
     private User origUser = new User();
-
+    
    
     @Before
     public void setUp()
     {
+        coffeeSiteService = new CoffeeSiteServiceImpl(coffeeSiteRepository, coffeeSortRepository, coffeeSiteStatusRepository, mapperFacade);
+
+        
         // Priprava uzivatele, ktery CoffeeSite zalozil - origUser
         UserProfile userProfUser = new UserProfile();
         userProfUser.setType("USER");
@@ -248,10 +253,6 @@ public class CoffeeSiteServiceImplTest
         Mockito.when(coffeeSiteRepository.searchByName(coffeeS.getSiteName()))
             .thenReturn(coffeeS);
         
-        CoffeeSiteDTO csDTO = mapperFacade.map(coffeeS, CoffeeSiteDTO.class);
-        
-        Mockito.when(mapperFacadeMock.map(Mockito.isA(CoffeeSite.class), Mockito.eq(CoffeeSiteDTO.class)))
-            .thenReturn(csDTO);
     }
     
     @Test
@@ -278,7 +279,7 @@ public class CoffeeSiteServiceImplTest
           .isEqualTo(numOfCoffeeMachines);
                
         assertThat(found.getOriginalUserName())
-          .isEqualTo(mapperFacade.map(coffeeS, CoffeeSiteDTO.class).getOriginalUserName() );
+          .isEqualTo(coffeeS.getOriginalUser().getUserName() );
         
         assertThat(found.getStatusZarizeni().getStatus())
           .isEqualTo(siteStatE.getSiteStatus());

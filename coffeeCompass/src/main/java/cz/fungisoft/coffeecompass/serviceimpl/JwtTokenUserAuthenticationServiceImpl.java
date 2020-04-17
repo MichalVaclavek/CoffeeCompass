@@ -20,7 +20,7 @@ import cz.fungisoft.coffeecompass.service.UserService;
 
 /**
  * This class is responsible of performing logging in and out operations for the users,<br>
- * as well as deliver the authentication tokens.<br>
+ * as well as deliver the authentication tokens for REST requests.<br>
  * 
  * @see https://octoperf.com/blog/2018/03/08/securing-rest-api-spring-security/
  * 
@@ -77,9 +77,9 @@ public class JwtTokenUserAuthenticationServiceImpl implements CustomRESTUserAuth
     public Optional<UserDetails> findByToken(final String token) {
         
         return Optional.of(tokens.verify(token))
-                .map(map -> map.get("userName"))
-                .map(nameOrEmail -> usersService.findByUserName(nameOrEmail).map(Optional::of).orElseGet(() -> usersService.findByEmail(nameOrEmail))) // https://stackoverflow.com/questions/24599996/get-value-from-one-optional-or-another 
-                .map(user -> UserPrincipal.create(user.get()));
+                       .map(map -> map.get("userName"))
+                       .map(nameOrEmail -> usersService.findByUserName(nameOrEmail).map(Optional::of).orElseGet(() -> usersService.findByEmail(nameOrEmail))) // https://stackoverflow.com/questions/24599996/get-value-from-one-optional-or-another 
+                       .map(user -> UserPrincipal.create(user.get()));
     }
 
     @Override

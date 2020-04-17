@@ -63,7 +63,7 @@ public class UserPrincipal implements OAuth2User, UserDetails
         this.enabled = enabled;
     }
 
-//    @Transactional
+
     public static UserPrincipal create(User user) {
 
         return new UserPrincipal(

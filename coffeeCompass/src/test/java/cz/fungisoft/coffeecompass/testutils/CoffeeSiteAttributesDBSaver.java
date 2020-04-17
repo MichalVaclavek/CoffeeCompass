@@ -53,6 +53,8 @@ public class CoffeeSiteAttributesDBSaver
     private static CoffeeSiteStatus siteStatus = new CoffeeSiteStatus();
     private static CoffeeSiteType siteType = new CoffeeSiteType();
     
+    
+    
     public CoffeeSiteAttributesDBSaver(TestEntityManager entityManager2) {
         this.entityManager = entityManager2;
     }

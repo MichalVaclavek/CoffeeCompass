@@ -1,18 +1,16 @@
-package cz.fungisoft.coffeecompass.integrattest;
+package cz.fungisoft.coffeecompass.integrationtests.coffeesite;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.reset;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
+import cz.fungisoft.coffeecompass.CoffeeCompassApplication;
+import cz.fungisoft.coffeecompass.entity.CoffeeSite;
+import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
+import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
+import cz.fungisoft.coffeecompass.entity.User;
+import cz.fungisoft.coffeecompass.entity.UserProfile;
+import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
+import cz.fungisoft.coffeecompass.repository.UsersRepository;
+import cz.fungisoft.coffeecompass.service.CSRecordStatusService;
+import cz.fungisoft.coffeecompass.testutils.CoffeeSiteAttributesDBSaver;
+import cz.fungisoft.coffeecompass.testutils.CoffeeSiteFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,21 +19,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
 
-import cz.fungisoft.coffeecompass.CoffeeCompassApplication;
-import cz.fungisoft.coffeecompass.entity.CoffeeSite;
-import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
-import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.entity.UserProfile;
-import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
-import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
-import cz.fungisoft.coffeecompass.repository.UsersRepository;
-import cz.fungisoft.coffeecompass.repository.UsersRepositoryCustom;
-import cz.fungisoft.coffeecompass.service.CSRecordStatusService;
-import cz.fungisoft.coffeecompass.testutils.CoffeeSiteAttributesDBSaver;
-import cz.fungisoft.coffeecompass.testutils.CoffeeSiteFactory;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Class for Integration testing of Coffee site actions.
@@ -46,8 +40,6 @@ import cz.fungisoft.coffeecompass.testutils.CoffeeSiteFactory;
 //@SpringBootTest(SpringBootTest.WebEnvironment.MOCK, classes = Application.class)
 @SpringBootTest(classes = {CoffeeCompassApplication.class, CoffeeSiteAttributesDBSaver.class})
 @AutoConfigureMockMvc
-//@TestPropertySource(
-//  locations = "classpath:application-integrationtest.properties")
 public class CoffeeSiteIT {
  
     @Autowired
@@ -124,5 +116,5 @@ public class CoffeeSiteIT {
           .andExpect(jsonPath("$[0].name", is("Integration test site")));
         
     }
-    
+
 }

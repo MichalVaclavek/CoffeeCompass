@@ -25,6 +25,7 @@
    		<thymeleaf-layout-dialect.version>2.2.2</thymeleaf-layout-dialect.version>
    		<jwt.version>0.9.1</jwt.version>
 		<java.version>1.8</java.version>
+		<testcontainers.version>1.11.2</testcontainers.version> <!-- For integration testing with PostgreSQL DB -->
 	</properties>
 
 
@@ -129,7 +130,7 @@
             <scope>test</scope>
         </dependency>
        
-        <!-- Ovladace pro lokalni HSQL DB na D:\Java\skoleni-spring\hsqldb-eshop - POTREBUJEM ??? -->
+        <!-- Ovladace pro lokalni HSQL DB - POTREBUJEM ??? -->
         <!--
 		<dependency>
 			<groupId>org.hsqldb</groupId>
@@ -176,6 +177,21 @@
 			<artifactId>spring-boot-starter-log4j2</artifactId>
 		</dependency>	
 		
+		<!--	Test Dependencies	- for Integration tests using Postgre SQL DB	-->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers</artifactId>
+			<version>${testcontainers.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${testcontainers.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
@@ -193,9 +209,6 @@
 		</dependency>
 
 
-
-
-		
 	</dependencies>
 
 	<!-- Plugin, ktery umi, mimo jine, pracovat napr. s -->

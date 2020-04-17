@@ -481,7 +481,7 @@ public class UserController
      */
     @DeleteMapping(value = "/delete/")
     public ModelAndView deleteUserAndRelatedItems(@ModelAttribute("userDataModelToDelete") DeleteUserAccountModel userDataToDelete,
-                                            RedirectAttributes attr) {
+                                                  RedirectAttributes attr) {
         
         ModelAndView mav = new ModelAndView();
         

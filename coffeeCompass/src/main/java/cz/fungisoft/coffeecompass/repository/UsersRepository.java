@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import cz.fungisoft.coffeecompass.entity.User;
 
 /**
- * JpaRepository<User, Integer> - Integer znamena ze primarni klic pro User je typu Integer
+ * JpaRepository<User, Long> - Long znamena ze primarni klic pro User je typu Long
  */
 public interface UsersRepository extends JpaRepository<User, Long>, UsersRepositoryCustom
 {

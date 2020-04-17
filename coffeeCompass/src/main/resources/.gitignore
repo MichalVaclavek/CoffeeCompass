@@ -11,3 +11,4 @@
 /application-dev_https.properties
 /application-prod_docker_db.properties
 /application-prod_https.properties
+/application-prod_docker_https.properties

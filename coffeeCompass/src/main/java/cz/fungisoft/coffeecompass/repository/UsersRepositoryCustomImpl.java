@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.repository;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -36,14 +37,11 @@ public class UsersRepositoryCustomImpl implements UsersRepositoryCustom
 
        Query users = em.createNativeQuery(selectQuery);
 
-       List<DBReturnPair> retVal = new ArrayList<>();
-      
        List<Object[]> results = users.getResultList();
       
-       results.stream().filter(record -> !((String)record[0]).isEmpty())
-                      .forEach(record -> { retVal.add(new DBReturnPair((String)record[0], (BigInteger)record[1])); });
-
-       return retVal;
+       return results.stream().filter(record -> !((String)record[0]).isEmpty())
+                     .map(record -> new DBReturnPair((String)record[0], (BigInteger)record[1]))
+                     .collect(Collectors.toList());
 
     }
 

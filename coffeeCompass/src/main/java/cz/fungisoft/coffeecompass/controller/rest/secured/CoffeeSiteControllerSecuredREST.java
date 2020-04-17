@@ -44,7 +44,6 @@ import io.swagger.annotations.Api;
 @Api // Anotace Swagger
 @RestController // Ulehcuje zpracovani HTTP/JSON pozadavku z clienta a automaticky vytvari i HTTP/JSON response odpovedi na HTTP/JSON requesty
 @RequestMapping("/rest/secured/site") // vsechny http dotazy v kontroleru maji zacinat timto retezcem
-//@RequiredArgsConstructor //TODO dodelat s pouzitim lombok, bez Autowired na fields
 public class CoffeeSiteControllerSecuredREST
 {
     private static final Logger log = LoggerFactory.getLogger(CoffeeSiteControllerSecuredREST.class);
@@ -92,7 +91,6 @@ public class CoffeeSiteControllerSecuredREST
            
            return (csDTO == null) ? new ResponseEntity<CoffeeSiteDTO>(HttpStatus.BAD_REQUEST)
                                   : new ResponseEntity<CoffeeSiteDTO>(csDTO, HttpStatus.CREATED);
-           //return new ResponseEntity<Long>(cs.getId(), headers, HttpStatus.CREATED);
        }
        else {
            log.error("Coffee site creation failed");

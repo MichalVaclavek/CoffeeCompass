@@ -1,39 +1,36 @@
-package cz.fungisoft.coffeecompass.unittest;
+package cz.fungisoft.coffeecompass.unittest.user;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
-
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
+import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
+import cz.fungisoft.coffeecompass.entity.User;
+import cz.fungisoft.coffeecompass.entity.UserProfile;
+import cz.fungisoft.coffeecompass.repository.PasswordResetTokenRepository;
+import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
+import cz.fungisoft.coffeecompass.repository.UserVerificationTokenRepository;
+import cz.fungisoft.coffeecompass.repository.UsersRepository;
+import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
+import cz.fungisoft.coffeecompass.security.IAuthenticationFacade;
+import cz.fungisoft.coffeecompass.security.SecurityConfiguration;
+import cz.fungisoft.coffeecompass.service.UserSecurityService;
+import cz.fungisoft.coffeecompass.service.UserService;
+import cz.fungisoft.coffeecompass.serviceimpl.UserServiceImpl;
+import ma.glasnost.orika.MapperFacade;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
-import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.entity.UserProfile;
-import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
-import cz.fungisoft.coffeecompass.repository.UsersRepository;
-import cz.fungisoft.coffeecompass.repository.UsersRepositoryCustom;
-import cz.fungisoft.coffeecompass.repository.UsersRepositoryCustomImpl;
-import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
-import cz.fungisoft.coffeecompass.security.IAuthenticationFacade;
-import cz.fungisoft.coffeecompass.security.SecurityConfiguration;
-import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
-import cz.fungisoft.coffeecompass.service.UserService;
-import cz.fungisoft.coffeecompass.serviceimpl.CoffeeSiteServiceImpl;
-import cz.fungisoft.coffeecompass.serviceimpl.UserServiceImpl;
-import ma.glasnost.orika.MapperFacade;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Testuje Service vrstvu pro praci s objekty User.
@@ -42,10 +39,9 @@ import ma.glasnost.orika.MapperFacade;
  *
  */
 @RunWith(SpringRunner.class)
-//@SpringBootTest
+@ActiveProfiles("dev")
 public class UserServiceImplTest
 {
-    
     @MockBean
     private static UserProfileRepository userProfileRepository;
 
@@ -54,9 +50,18 @@ public class UserServiceImplTest
     
     @MockBean
     private CustomUserDetailsService userDetService;
+
+    @MockBean
+    private static UserSecurityService userSecurityService;
+
+    @MockBean
+    private static UserVerificationTokenRepository userVerificationTokenRepository;
+
+    @MockBean
+    private static PasswordResetTokenRepository passwordResetTokenRepository;
     
     @MockBean
-    public static ConfigProperties configProps;
+    private static ConfigProperties configProps;
     
     @MockBean
     private SecurityConfiguration securityConfig;
@@ -74,7 +79,7 @@ public class UserServiceImplTest
         
         @Bean
         public UserService userService() {
-            return new UserServiceImpl(usersRepository, passwordEncoder, mapperFacade, configProps);
+            return new UserServiceImpl(usersRepository, passwordEncoder, mapperFacade, null, userVerificationTokenRepository, passwordResetTokenRepository, userSecurityService, configProps);
         }
     }
     
@@ -82,7 +87,8 @@ public class UserServiceImplTest
     private UserService userService;
  
     private UserProfile userProfUser;
-    
+
+    private static String userName = "bert";
     
     @Before
     public void setUp() {
@@ -91,32 +97,30 @@ public class UserServiceImplTest
         
         User genius = new User();
         
-        genius.setUserName("bert");
+        genius.setUserName(userName);
         genius.setFirstName("Albert");
         genius.setLastName("Einstein");
         
         String emailAddr = "bert@princeton.edu";
         genius.setEmail(emailAddr);
         genius.setPassword("gravity");
-        
-        
-        Set<UserProfile> userProfiles = new HashSet<UserProfile>();
+
+        Set<UserProfile> userProfiles = new HashSet<>();
         userProfiles.add(userProfUser);
         genius.setUserProfiles(userProfiles);      
                
-        Mockito.when(UserSiteServiceImplTestContextConfiguration.usersRepository.searchByUsername(genius.getUserName()).get())
-               .thenReturn(genius);
-
+        Mockito.when(UserSiteServiceImplTestContextConfiguration.usersRepository.searchByUsername(Mockito.contains(userName)))
+               .thenReturn(Optional.of(genius));
     }
     
     @Test
     public void whenValidName_thenUserShouldBeFound() {
-        String name = "bert";
+
         String passwd = "gravity";
-        Optional<User> found = userService.findByUserName(name);
+        Optional<User> found = userService.findByUserName(userName);
       
         assertThat(found.isPresent()).isEqualTo(true);
-        assertThat(found.get().getUserName()).isEqualTo(name);
+        assertThat(found.get().getUserName()).isEqualTo(userName);
         assertThat(found.get().getPassword()).isEqualTo(passwd);
     } 
 

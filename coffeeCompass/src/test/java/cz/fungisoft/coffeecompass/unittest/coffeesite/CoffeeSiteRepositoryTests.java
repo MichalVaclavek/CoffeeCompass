@@ -1,4 +1,4 @@
-package cz.fungisoft.coffeecompass.unittest;
+package cz.fungisoft.coffeecompass.unittest.coffeesite;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -24,9 +24,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
@@ -73,10 +76,8 @@ import cz.fungisoft.coffeecompass.testutils.CoffeeSiteAttributesDBSaver;
 // to vse asi pomoci TestEntityManager
 @DataJpaTest
 @ActiveProfiles("test") // pro HSQL db pouzit @ActiveProfiles("testhsql")
-//@SpringBootTest(classes = {CoffeeCompassApplication.class, CoffeeSiteAttributesDBSaver.class})
 //@SqlConfig(separator=org.springframework.jdbc.datasource.init.ScriptUtils.EOF_STATEMENT_SEPARATOR)
 //@SqlConfig(separator="/;")
-//@AutoConfigureTestEntityManager
 public class CoffeeSiteRepositoryTests
 {
     
@@ -90,19 +91,7 @@ public class CoffeeSiteRepositoryTests
     @Autowired
     private CoffeeSiteRepository coffeeRepos;
     
-//    @Autowired
     public CoffeeSiteAttributesDBSaver attribSaver;
-    
-    /*
-    @TestConfiguration
-    static class CoffeeSiteRepositoryTestContextConfiguration {
-  
-        @Bean
-        public CoffeeSiteAttributesDBSaver employeeService() {
-            return new CoffeeSiteAttributesDBSaver(entityManager);
-        }
-    }
-    */
     
     /**
      * Tyto atributy se musi vytvorit a ulozit do DB pred praci s CoffeeSite, ktery na tyto atributy 
@@ -130,7 +119,6 @@ public class CoffeeSiteRepositoryTests
      */
     @Before
     public void setUp() {
-//        attribSaver = new CoffeeSiteAttributesDBSaver();
         attribSaver = new CoffeeSiteAttributesDBSaver(entityManager);
         
         // Inicializace objektů, na které se odkazuje CoffeeSite
@@ -303,7 +291,5 @@ public class CoffeeSiteRepositoryTests
     //TODO update of the CoffeeSite in DB
     
     //TODO delete CoffeeSite in DB
-    
-    
 
 }

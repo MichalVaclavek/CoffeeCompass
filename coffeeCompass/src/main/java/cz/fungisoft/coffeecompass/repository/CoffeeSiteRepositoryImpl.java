@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.repository;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.ParameterMode;
@@ -349,14 +350,11 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
         
         List<Object[]> results = sites.getResultList();
         
-        List<DBReturnPair> retVal = new ArrayList<>();
-        
-        results.stream().filter(record -> !((String)record[0]).isEmpty())
-                        .forEach(record -> { retVal.add(new DBReturnPair((String)record[0], (BigInteger)record[1])); });
-        
         log.info("Top 5 cities statistics retrieved.");
         
-        return retVal;
+        return results.stream().filter(record -> !((String)record[0]).isEmpty())
+                      .map(record -> new DBReturnPair((String)record[0], (BigInteger)record[1]))
+                      .collect(Collectors.toList());
     }
 
 }

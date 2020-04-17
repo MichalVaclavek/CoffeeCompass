@@ -9,11 +9,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
+/**
+ * Data object to be sent after successful REST register or login request to client.
+ * 
+ * @author Michal Vaclavek
+ *
+ */
 @Data
 public class AuthRESTResponse
 {
     private String accessToken;
     private String tokenType = "Bearer";
+    
     @JsonIgnore
     private long jwtExpiryDateFromEpoch;
     @JsonFormat(pattern = "dd.MM.yyyy HH:mm")

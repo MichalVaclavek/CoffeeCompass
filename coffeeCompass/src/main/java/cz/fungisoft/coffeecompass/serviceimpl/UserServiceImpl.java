@@ -28,6 +28,7 @@ import cz.fungisoft.coffeecompass.repository.UsersRepository;
 import cz.fungisoft.coffeecompass.security.oauth2.user.OAuth2UserInfo;
 import cz.fungisoft.coffeecompass.service.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.UserService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
  
@@ -39,46 +40,43 @@ import ma.glasnost.orika.MapperFacade;
  *
  */
 @Service("userService")
+@RequiredArgsConstructor // Creates Constructor with all dependencies (used by Spring to inject them)
 @Transactional
 @Log4j2
 public class UserServiceImpl implements UserService
 {
-    private UsersRepository usersRepository;
+    private final UsersRepository usersRepository;
    
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
         
-    private MapperFacade mapperFacade;
+    private final MapperFacade mapperFacade;
     
-    @Autowired
-    private UserProfileRepository userProfileRepository;
+    private final UserProfileRepository userProfileRepository;
     
-    @Autowired
-    private UserVerificationTokenRepository registartionTokenRepository;
+    private final UserVerificationTokenRepository registartionTokenRepository;
     
-    @Autowired
-    private PasswordResetTokenRepository passwordResetTokenRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
     
-    @Autowired
-    private UserSecurityService userSecurityService;
+    private final UserSecurityService userSecurityService;
     
-    private ConfigProperties config;
+    private final ConfigProperties config;
     
      
-    /**
-     * Konstruktor, ktery vyuzije Spring pro injection zavislosti. Neni potreba uvadet anotaci @Autowired na atributech
-     *         
-     * @param usersRepository
-     * @param passwordEncoder
-     * @param mapperFacade
-     */
-    @Autowired
-    public UserServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder, MapperFacade mapperFacade, ConfigProperties configProperties) {
-        super();
-        this.usersRepository = usersRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.mapperFacade = mapperFacade;
-        this.config = configProperties;
-    }
+//    /**
+//     * Konstruktor, ktery vyuzije Spring pro injection zavislosti. Neni potreba uvadet anotaci @Autowired na atributech
+//     *         
+//     * @param usersRepository
+//     * @param passwordEncoder
+//     * @param mapperFacade
+//     */
+//    @Autowired
+//    public UserServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder, MapperFacade mapperFacade, ConfigProperties configProperties) {
+//        super();
+//        this.usersRepository = usersRepository;
+//        this.passwordEncoder = passwordEncoder;
+//        this.mapperFacade = mapperFacade;
+//        this.config = configProperties;
+//    }
     
     // ** Findind User ** /
 

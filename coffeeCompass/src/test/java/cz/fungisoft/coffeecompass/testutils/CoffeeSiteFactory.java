@@ -6,14 +6,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
@@ -28,10 +22,6 @@ import cz.fungisoft.coffeecompass.entity.SiteLocationType;
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
-import cz.fungisoft.coffeecompass.repository.PriceRangeRepository;
-import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus.CoffeeSiteStatusEnum;
 import cz.fungisoft.coffeecompass.entity.CupType.CupTypeEnum;
 import cz.fungisoft.coffeecompass.entity.NextToMachineType.NextToMachineTypeEnum;
@@ -44,15 +34,8 @@ import cz.fungisoft.coffeecompass.entity.NextToMachineType.NextToMachineTypeEnum
  *
  */
 @Configuration
-//@EnableJpaRepositories(basePackageClasses = PriceRangeRepository.class)
 public class CoffeeSiteFactory
 {      
-    
-    // All atributes assigned to CoffeeSite instance have to be saved into DB.
-    // It should be saved as real local PostgreSQL db is used during Integration testing
-//    @Autowired
-//    private static PriceRangeRepository priceRepo; //TODO - this is not working, pricerepo is not instantcited
-    
     
     public static CoffeeSite getCoffeeSite(String siteName, String coffeeSiteType) {
         
@@ -156,4 +139,7 @@ public class CoffeeSiteFactory
         
         return coffeeS;
     }
+    
+    
+    
 }

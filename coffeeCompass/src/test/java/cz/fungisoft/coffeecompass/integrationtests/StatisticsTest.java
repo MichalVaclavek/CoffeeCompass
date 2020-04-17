@@ -1,4 +1,4 @@
-package cz.fungisoft.coffeecompass.integrattest;
+package cz.fungisoft.coffeecompass.integrationtests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
