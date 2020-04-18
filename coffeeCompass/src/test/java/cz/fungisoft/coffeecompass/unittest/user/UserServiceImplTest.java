@@ -39,7 +39,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  */
 @RunWith(SpringRunner.class)
-@ActiveProfiles("dev")
 public class UserServiceImplTest
 {
     @MockBean

@@ -6,10 +6,16 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 
+import cz.fungisoft.coffeecompass.controller.rest.UsersControllerPublicREST;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
+import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteType;
 import cz.fungisoft.coffeecompass.entity.CoffeeSort;
@@ -25,6 +31,24 @@ import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus.CoffeeSiteStatusEnum;
 import cz.fungisoft.coffeecompass.entity.CupType.CupTypeEnum;
 import cz.fungisoft.coffeecompass.entity.NextToMachineType.NextToMachineTypeEnum;
+import cz.fungisoft.coffeecompass.repository.CoffeeSitePageableRepository;
+import cz.fungisoft.coffeecompass.repository.CoffeeSiteRecordStatusRepository;
+import cz.fungisoft.coffeecompass.repository.CoffeeSiteStatusRepository;
+import cz.fungisoft.coffeecompass.repository.CoffeeSiteTypeRepository;
+import cz.fungisoft.coffeecompass.repository.CoffeeSortRepository;
+import cz.fungisoft.coffeecompass.repository.CompanyRepository;
+import cz.fungisoft.coffeecompass.repository.CupTypeRepository;
+import cz.fungisoft.coffeecompass.repository.NextToMachineTypeRepository;
+import cz.fungisoft.coffeecompass.repository.OfferRepository;
+import cz.fungisoft.coffeecompass.repository.PriceRangeRepository;
+import cz.fungisoft.coffeecompass.repository.SiteLocationTypeRepository;
+import cz.fungisoft.coffeecompass.repository.StarsForCoffeeSiteAndUserRepository;
+import cz.fungisoft.coffeecompass.service.CSRecordStatusService;
+import cz.fungisoft.coffeecompass.service.CompanyService;
+import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
+import cz.fungisoft.coffeecompass.service.ImageStorageService;
+import cz.fungisoft.coffeecompass.service.UserService;
+import ma.glasnost.orika.MapperFacade;
 
 /**
  * Pomocna trida pro vytvoreni nove instance CoffeeSite s defaultnimi hodnotami jeho atributu.
@@ -34,12 +58,28 @@ import cz.fungisoft.coffeecompass.entity.NextToMachineType.NextToMachineTypeEnum
  *
  */
 @Configuration
+//@ContextConfiguration(classes = {SiteLocationTypeRepository.class,
+//                           CupTypeRepository.class,
+//                           OfferRepository.class,
+//                           NextToMachineTypeRepository.class,
+//                           CompanyRepository.class,
+//                           CoffeeSortRepository.class,
+//                           CoffeeSiteStatusRepository.class,
+//                           StarsForCoffeeSiteAndUserRepository.class,
+//                           CoffeeSiteRecordStatusRepository.class,
+//                           CoffeeSiteTypeRepository.class,
+//                           PriceRangeRepository.class})
 public class CoffeeSiteFactory
 {      
-    
+    /**
+     * Creates CoffeeSite instance with some default attribute values.
+     * 
+     * @param siteName
+     * @param coffeeSiteType
+     * @return
+     */
     public static CoffeeSite getCoffeeSite(String siteName, String coffeeSiteType) {
         
-//        PriceRange pr = new PriceRange();
         Set<CoffeeSort> csorts = new HashSet<>();
         Set<CupType> cups = new HashSet<>();
         Company comp = new Company();
@@ -52,8 +92,6 @@ public class CoffeeSiteFactory
         CoffeeSiteType siteType = new CoffeeSiteType();
         CoffeeSiteRecordStatus recordStatus = new CoffeeSiteRecordStatus();
         
-//        PriceRange pr = priceRepo.searchByName("15 - 25 Kč");
-//        pr.setPriceRange("15 - 25 Kč"); 
         PriceRange pr = new PriceRange();
         pr.setPriceRange("15 - 25 Kč");
         
@@ -139,7 +177,5 @@ public class CoffeeSiteFactory
         
         return coffeeS;
     }
-    
-    
     
 }

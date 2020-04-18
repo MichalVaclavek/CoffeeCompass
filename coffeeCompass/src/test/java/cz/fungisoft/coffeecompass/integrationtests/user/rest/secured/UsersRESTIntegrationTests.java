@@ -61,7 +61,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles({"dev,dev_https"})
+@ActiveProfiles({"dev"})
 @ContextConfiguration(initializers = {UsersRESTIntegrationTests.Initializer.class})
 @Sql(scripts= {"/schema_integration_test_docker.sql"},
      config = @SqlConfig(encoding = "utf-8",

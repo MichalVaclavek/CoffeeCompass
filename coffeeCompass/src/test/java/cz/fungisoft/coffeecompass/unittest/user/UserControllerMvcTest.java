@@ -68,8 +68,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest
-//@SpringBootTest(classes = {UsersControllerPublicREST.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("dev")
 public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup
 {
     private MockMvc mockMvc;
@@ -145,7 +143,6 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup
         //given(UserControllerTestContextConfiguration.userService.findByUserName(Mockito.anyString())).willReturn(Optional.of(admin));
         //given(UserControllerTestContextConfiguration.userService.findByEmail(Mockito.anyString())).willReturn(Optional.of(admin));
         
-        
         given(UserControllerTestContextConfiguration.userService.isEmailUnique(Mockito.any(), Mockito.any(String.class))).willReturn(true); //registerNewRESTUser(registerRequest);
         
         Map<String, String> tokenMap = ImmutableMap.of("deviceID", deviceID, "userName", admin.getUserName(), "exp", "10");
@@ -158,7 +155,6 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup
         given(passwordEncoder.matches(Mockito.any(String.class), Mockito.any(String.class))).willReturn(true);
         
         given(authenticationService.login(Mockito.any(String.class), Mockito.any(String.class), Mockito.any(String.class))).willReturn(Optional.of(token));
-        
     }
  
     @Test
@@ -227,7 +223,6 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup
         
         // given
         given(UserControllerTestContextConfiguration.userService.findAllUsers()).willReturn(allUsers);
-        
         
         //userSecurityService
         given(userSecurityService.authWithToken(Mockito.anyString())).willReturn(WithMockCustomUserSecurityContextFactory.getTestAuthentication());

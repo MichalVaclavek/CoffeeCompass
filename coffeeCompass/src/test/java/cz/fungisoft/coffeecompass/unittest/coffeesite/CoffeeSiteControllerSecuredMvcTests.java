@@ -11,58 +11,29 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
-import cz.fungisoft.coffeecompass.controller.CoffeeSiteController;
-import cz.fungisoft.coffeecompass.controller.rest.CoffeeSiteControllerPublicREST;
 import cz.fungisoft.coffeecompass.controller.rest.secured.CoffeeSiteControllerSecuredREST;
-import cz.fungisoft.coffeecompass.controller.rest.secured.UserControllerSecuredREST;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
-import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
-import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.entity.UserProfile;
-import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
-import cz.fungisoft.coffeecompass.repository.UsersRepository;
-import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
-import cz.fungisoft.coffeecompass.security.IAuthenticationFacade;
-import cz.fungisoft.coffeecompass.security.SecurityConfiguration;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
-import cz.fungisoft.coffeecompass.service.UserProfileService;
-import cz.fungisoft.coffeecompass.service.UserService;
 import cz.fungisoft.coffeecompass.testutils.CoffeeSiteFactory;
 import cz.fungisoft.coffeecompass.testutils.JsonUtil;
-import cz.fungisoft.coffeecompass.unittest.MvcControllerUnitTestBaseSetup;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
@@ -74,10 +45,6 @@ import ma.glasnost.orika.impl.DefaultMapperFactory;
  *
  */
 @RunWith(SpringRunner.class)
-//@AutoConfigureMockMvc
-//@WebMvcTest({CoffeeSiteControllerPublicREST.class, CoffeeSiteControllerSecuredREST.class})
-//@SpringBootTest(classes = {UsersControllerPublicREST.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//@ActiveProfiles("dev")
 public class CoffeeSiteControllerSecuredMvcTests
 { 
     //@Autowired

@@ -31,8 +31,7 @@ import cz.fungisoft.coffeecompass.entity.UserProfile;
 /**
  * Pomocna trida pro ulozeni vsech objektovych atributu CoffeeSitu, ktere maji v DB samostatnou
  * tab.
- * 
- * Vyuzivano pri testech, ktere pracuji primo s Repository, bez mockovani.
+ * Zatim nevyuzito, ale lze pouzit pri testech, ktere pracuji primo s Repository, bez mockovani.
  * 
  * @author Michal Vaclavek
  *
@@ -52,7 +51,6 @@ public class CoffeeSiteAttributesDBSaver
     private static User origUser = new User();
     private static CoffeeSiteStatus siteStatus = new CoffeeSiteStatus();
     private static CoffeeSiteType siteType = new CoffeeSiteType();
-    
     
     
     public CoffeeSiteAttributesDBSaver(TestEntityManager entityManager2) {

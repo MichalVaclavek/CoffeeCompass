@@ -3,6 +3,8 @@ package cz.fungisoft.coffeecompass.integrationtests.user.rest.publics;
 import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
+import cz.fungisoft.coffeecompass.integrationtests.IntegrationTestBaseConfig;
+import cz.fungisoft.coffeecompass.repository.CoffeeSiteRecordStatusRepository;
 import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
 import cz.fungisoft.coffeecompass.testutils.JsonUtil;
 
@@ -44,12 +46,8 @@ import org.springframework.test.context.jdbc.SqlConfig.TransactionMode;
  * Integration test for all actions related to User object.
  * Whole context of Spring is loaded, using @SpringBootTest and
  * @ActiveProfiles({"dev,dev_https,test_postgres_docker"}) annotations.
- * Database creation and connection is done via {@code PostgreSQLContainer}
- * which runs Postgres DB in Docker container. Therefore, the tests requier
- * running Docker on test machine.
- * The database structure/schema s created using {@code @Sql(scripts= {"/schema_integration_test_docker.sql"} }
- * annotation. If data are required for running the test, it has to be inserted using Repository
- * methods in  @Before public void setUp() method.
+ * <p>
+ * Database is created in {@link IntegrationTestBaseConfig}
  * 
  * @author Michal Vaclavek
  *
@@ -57,68 +55,27 @@ import org.springframework.test.context.jdbc.SqlConfig.TransactionMode;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles({"dev,dev_https"})
-@ContextConfiguration(initializers = {UsersRESTIntegrationTests.Initializer.class})
-@Sql(scripts= {"/schema_integration_test_docker.sql"},
-     config = @SqlConfig(encoding = "utf-8",
-     transactionMode = TransactionMode.ISOLATED))
-public class UsersRESTIntegrationTests
+@ActiveProfiles({"dev"})
+public class UsersRESTIntegrationTests extends IntegrationTestBaseConfig
 {
+
     @Autowired
     private MockMvc mockMvc;
-    
-    
-    // USER profile
-    private static UserProfile userProfUser;
-    private static Set<UserProfile> userProfiles = new HashSet<>();
-    
-    // ADMIN profile
-    private static UserProfile userProfADMIN;
-    private static Set<UserProfile> userProfilesADMIN = new HashSet<>();
-    
-    // DBA profile
-    private static UserProfile userProfDBA;
-    private static Set<UserProfile> userProfilesDBA = new HashSet<>();
     
     //private static String token = "xy";
     private static String deviceID = "4545454545";
     
-    @Autowired
-    private UserProfileRepository userProfileRepo;
-    
     private User admin = new User();
     private SignUpAndLoginRESTDto signUpAndLoginRESTDtoAdmin;
     
-    
-    /**
-     * Vlozeni zakladnich parametru Postgres DB bezici v Dockeru.
-     */
-    @ClassRule
-    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres")
-                                    .withDatabaseName("coffeecompass")
-                                    .withUsername("postgres")
-                                    .withPassword("postgres_test");
-
+   
     
     @Before
+    @Override
     public void setUp() {
         
-        userProfUser = new UserProfile();
-        userProfUser.setType("USER");
-        userProfileRepo.save(userProfUser);
+        super.setUp(); 
         
-        userProfiles.add(userProfUser);
-               
-        userProfADMIN = new UserProfile();
-        userProfADMIN.setType("ADMIN");
-        userProfileRepo.save(userProfADMIN);
-        userProfilesADMIN.add(userProfADMIN);
-        
-        userProfDBA = new UserProfile();
-        userProfDBA.setType("DBA");
-        userProfileRepo.save(userProfDBA);
-        userProfilesDBA.add(userProfDBA);
-
         // ADMIN user profile returned, when requesting UserDetails
         admin.setUserName("admin");
         admin.setPassword("adminpassword");
@@ -148,7 +105,7 @@ public class UsersRESTIntegrationTests
         john.setId(1L);
         
         john.setCreatedOn(new Timestamp(new Date().getTime()));
-        john.setUserProfiles(userProfiles);
+        john.setUserProfiles(userProfilesUser);
 
         // Testovaci objekt slouzici pro zaregistrovani noveho User uctu
         SignUpAndLoginRESTDto signUpAndLoginRESTDto = new SignUpAndLoginRESTDto();
@@ -166,27 +123,6 @@ public class UsersRESTIntegrationTests
                .andExpect(jsonPath("$.accessToken").isNotEmpty());
     }
     
-    /**
-     * Provede nastaveni Spring/Hibernate promennych pro pripojeni do DB bezici v Docker containeru.
-     * Provede se pred vytvorenim instance testovaci tridy.
-     * 
-     * @author Michal
-     *
-     */
-    static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-        
-        public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-            TestPropertyValues.of(
-                "spring.datasource.url=" + postgres.getJdbcUrl(),
-                "spring.datasource.username=" + postgres.getUsername(),
-                "spring.datasource.password=" + postgres.getPassword(),
-                "spring.jpa.hibernate.ddl-auto=none",
-                "spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect",
-                "spring.jpa.show-sql=true",
-                "spring.jpa.properties.hibernate.format_sql=true"
-                //"spring.datasource.initialization-mode=always",
-            ).applyTo(configurableApplicationContext.getEnvironment());
-        }
-    }
+    
     
 }
