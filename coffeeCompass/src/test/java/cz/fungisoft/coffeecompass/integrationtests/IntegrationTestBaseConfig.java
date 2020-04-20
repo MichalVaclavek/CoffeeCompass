@@ -46,7 +46,6 @@ import cz.fungisoft.coffeecompass.repository.SiteLocationTypeRepository;
 import cz.fungisoft.coffeecompass.repository.StarsForCoffeeSiteAndUserRepository;
 import cz.fungisoft.coffeecompass.repository.StarsQualityDescriptionRepository;
 import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
-//import cz.fungisoft.coffeecompass.testutils.CoffeeSiteITFactory;
 
 
 /**

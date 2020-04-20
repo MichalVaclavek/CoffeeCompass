@@ -5,7 +5,6 @@ import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.service.*;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.internal.verification.VerificationModeFactory;

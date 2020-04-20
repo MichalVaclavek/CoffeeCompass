@@ -90,7 +90,6 @@ public class CoffeeSiteIT extends IntegrationTestBaseConfig
            .andExpect(status().isOk())
            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
            .andExpect(jsonPath("$[0].siteName", is("Integration test site")));
-        
     }
 
 }

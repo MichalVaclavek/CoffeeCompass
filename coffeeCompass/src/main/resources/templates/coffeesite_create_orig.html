@@ -2,19 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
       <div th:replace="fragments/header :: header-css"/>
-      
-      <script type="text/javascript" src="https://api.mapy.cz/loader.js"></script>
-      <script type="text/javascript">Loader.load(null, {suggest: true})</script> <!-- loads mapy.cz API	 --> 
-      
 </head>
 <!-- Stránka pro vytváření nebo editaci CoffeeSitu -->
 <body>
 
 	<div th:replace="fragments/header :: header"/>
 	
-	<div class="w3-display-container  w3-row-padding">
-	
-	<div id="inputForm" class="w3-margin-top w3-card-4 w3-display-topmiddle">
+	<div class="w3-display-container w3-row">
+	<div class="w3-display-topmiddle w3-margin w3-card-4 w3-half">
 
       <form th:object="${coffeeSite}" action="#" th:action="@{/createModifySite}" method="post" class="w3-container w3-round-large w3-light-gray">
         <input th:type="hidden" name="id" th:field="${coffeeSite.id}" />
@@ -36,7 +31,7 @@
         <div class="w3-container w3-border">
           
            <div class="w3-margin-top">
-              <b><label th:text="#{site.siteName}" for="siteName" class="w3-cell-bottom">Site name</label></b> *
+              <label th:text="#{site.siteName}" for="siteName" class="w3-cell-bottom">Site name</label> *
               	  <div th:classappend="${#fields.hasErrors('siteName')} ? 'has-error' : ''">
 	              <input id="siteName"
 	                     class="w3-input w3-border w3-round"
@@ -65,6 +60,27 @@
 	             th:text="${error}">Validation error</p>
            </div>
            
+           <!--  
+           <div class="w3-cell-row"> 
+          
+	          
+	          <div class="w3-container w3-cell">
+	            <label for="numOfCoffeeAutomatyVedle">
+	              <span th:text="#{site.numOfCoffeeMachines}">Number of coffee machines</span>
+	            </label>
+	            <div th:classappend="${#fields.hasErrors('numOfCoffeeAutomatyVedleSebe')} ? 'has-error' : ''">
+	            	<input type="number"
+	            	       th:field="*{numOfCoffeeAutomatyVedleSebe}"
+	            	       class="w3-input w3-border w3-round"/>
+	            </div>
+	            <p class="error-message"
+                    th:each="error: ${#fields.errors('numOfCoffeeAutomatyVedleSebe')}"
+	                th:text="${error}">Validation error</p>
+	          </div>
+          
+          </div>
+          -->
+          
           <div class="w3-cell-row">
 	          <div class="w3-container w3-cell">
 	             <label for="mesto">
@@ -72,7 +88,6 @@
 	             </label>
 	             <div th:classappend="${#fields.hasErrors('mesto')} ? 'has-error' : ''">
 	            	<input type="text"
-	            	       id='cityInput'
 	            	       th:field="*{mesto}"
 	            	       class="w3-input w3-border w3-round"/>
 	             </div>
@@ -96,13 +111,8 @@
 	          </div>
           </div>
           
-          
-          
-          <div class="w3-border w3-margin w3-round">
-          <label for="souradnice">
-	          <b><span th:text="#{site.coordinates}" class="w3-margin-left">City</span></b>
-	      </label>
-	          <div class="w3-cell-row">
+          <div class="w3-cell-row">
+	          
 	          <div class="w3-container w3-cell">
 	             <label for="zemSirka">
 	                <span th:text="#{site.latitude}">Latitude</span> *
@@ -111,8 +121,7 @@
 	            	<input type="number" step="any"
 	            	       th:field="*{zemSirka}" 
 	            	       class="w3-input w3-border w3-round"
-	            	       th:placeholder="#{site.create.latitude.placeholder}"
-	            	       id="lat1"/>
+	            	       th:placeholder="#{site.create.latitude.placeholder}"/>
 	             </div>
 	             <p class="error-message"
 	               	th:each="error: ${#fields.errors('zemSirka')}"
@@ -127,25 +136,13 @@
 		            <input type="number" step="any"
 		                   th:field="*{zemDelka}" 
 		                   class="w3-input w3-border w3-round"
-		                   th:placeholder="#{site.create.longitude.placeholder}"
-		                   id="lon1"/>
+		                   th:placeholder="#{site.create.longitude.placeholder}"/>
 		         </div>
 		         <p class="error-message"
 		            th:each="error: ${#fields.errors('zemDelka')}"
 		            th:text="${error}">Validation error</p>
 	          </div>
 	          
-	          
-	          <!-- Hint to describe how to enter CoffeeSite's geo coordinates -->
-	          <div  class="w3-container w3-left w3-cell w3-cell-bottom">
-	             <div th:text="#{site.create.coordinates.enter.hint}" class="w3-text-grey w3-small"></div>
-	             <!-- Action "button like" label to open map for selecting coordinates -->
-	             <div class="w3-right-align">
-	                <span id="showHideMapButton" th:text="#{site.create.showhidemap}" class="divWithHrefPointer">Show/hide map to select CofeeSite's coordinates</span>
-	             </div>
-	          </div>
-	          
-          </div>
           </div>
           
           <div class="w3-cell-row">
@@ -304,63 +301,15 @@
 		      </div>   
 		      
           </div>
+		       
         </div>
           
       </form>
+        
     </div>
+    </div> <!-- display-container -->
     
-
-   <div  id="mapDiv" class="w3-half" style="display:none;">
-       <!-- Element to insert script for map -->
-       <div  id="map" class="w3-round w3-card-2 w3-margin-top" style="height: 600px; width: 100%;"></div> <!-- "height: 600px; width: 800px;" -->
-       <!-- Map location selection hint -->
-       <div  id="mapInfo" th:text="#{site.create.select.location.instruction}" class="w3-panel w3-pale-red w3-leftbar w3-rightbar w3-border-amber w3-margin-top w3-center" >Move red marker to exact coffee site location</div> <!-- "height: 600px; width: 800px;" -->
-   </div>
-   
- </div> <!---container -->
-    
-    
-  <script type="text/javascript" src="/js/select_location_map_support.js"></script>
-     
-  <!-- Script to handle visibility of map's div element --> 
-  <script type="text/javascript">
-  
-     var latInput = document.getElementById("lat1");
-	 var lonInput = document.getElementById("lon1");
-     var showHideMapButton = document.getElementById("showHideMapButton");
-  
-     showHideMapButton.addEventListener("click", function(e) {
-    	 
-    	 var mapDiv = document.getElementById("mapDiv");
-    	 var cityName = document.getElementById('cityInput').value;
-    	 
-         changeVisibility(mapDiv);
-         
-         if (mapDiv.style.display == "block") { // Reload the map after 'mapDiv' element has corret class/position assigned
-     	 	map.create(latInput, lonInput, cityName, true); 
-     	 	map.enable();
-      	 }
-     });
-  
-  	var changeVisibility = function(node) {
-  		/* node.disabled = !node.disabled; */
-  		if ( node.style.display == "none" ) {
-  			node.style.display = "block";
-  			map.setMapVisible(true);
-  			showHideMapButton.innerHTML = 'Skrýt mapu'; // TODO save original text before change
-  			node.classList.add('w3-half');
-  			document.getElementById("inputForm").classList.add('w3-half');
-  			document.getElementById("inputForm").classList.remove('w3-display-topmiddle');
-  		} else {
-  			node.style.display = "none";
-  			map.setMapVisible(false);
-  			showHideMapButton.innerHTML = 'Vybrat z mapy'; // TODO save original text before change
-  			node.classList.remove('w3-half');
-  			document.getElementById("inputForm").classList.remove('w3-half');
-  			document.getElementById("inputForm").classList.add('w3-display-topmiddle');
-  		}
-  	}
-  </script>   
+	<!-- <div th:replace="fragments/footer :: footer"/> -->
 	
 </body>
 </html> 

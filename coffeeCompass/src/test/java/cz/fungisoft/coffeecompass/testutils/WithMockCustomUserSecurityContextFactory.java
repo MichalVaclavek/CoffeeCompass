@@ -3,7 +3,6 @@ package cz.fungisoft.coffeecompass.testutils;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

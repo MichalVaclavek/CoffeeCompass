@@ -55,8 +55,14 @@ table {
 /* Used for span link on homee.html */
 .spanLikeHref {
 	cursor: pointer;
-     color: blue;
-     text-decoration: underline;
+    color: blue;
+    text-decoration: underline;
+}
+
+/* Used for span link on home.html */
+.divWithHrefPointer {
+	cursor: pointer;
+    color: #2196F3;
 }
 
 

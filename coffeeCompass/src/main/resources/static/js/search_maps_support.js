@@ -138,22 +138,6 @@ map.insertSites = function(foundSites)
 		var cz = m.computeCenterZoom(souradnice); /* Spočítat pozici mapy tak, aby v3echny značky byly vidět */
 		m.setCenterZoom(cz[0], cz[1]);
 	
-		// poslouchani na kliknuti u markeru - Pro zakladni info mame prirazenu card 
-		//- Jake dalsi vyuziti ... vedle mapy mala karta s detaily, ktera by se vyplnila udaji o situ
-		/*
-		m.getSignals().addListener(this, "marker-click", function(e) {
-		  // vybrany marker
-		  var marker = e.target;
-		  var id = marker.getId();
-		  
-		  for (var i = 0; i < markers.length; i++) {
-			if (foundSites[i].id == id) {
-				
-			    break;
-			}
-		  }
-		});  
-		*/
 	}
 }
 
