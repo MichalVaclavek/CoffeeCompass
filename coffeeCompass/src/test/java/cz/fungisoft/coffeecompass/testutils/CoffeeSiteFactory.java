@@ -27,7 +27,7 @@ import cz.fungisoft.coffeecompass.entity.CupType.CupTypeEnum;
 import cz.fungisoft.coffeecompass.entity.NextToMachineType.NextToMachineTypeEnum;
 
 /**
- * Pomocna trida pro vytvoreni nove instance CoffeeSite s defaultnimi hodnotami jeho atributu.
+ * Pomocna trida pro vytvareni novych instanci CoffeeSite s defaultnimi hodnotami jeho atributu.
  * Pro testovaci ucely, zvlastne pro Integracni testy.
  * 
  * @author Michal Vaclavek
@@ -37,7 +37,7 @@ import cz.fungisoft.coffeecompass.entity.NextToMachineType.NextToMachineTypeEnum
 public class CoffeeSiteFactory
 {      
     /**
-     * Creates CoffeeSite instance with some default attribute values.
+     * Creates and returns new CoffeeSite instance with some default attribute values.
      * 
      * @param siteName
      * @param coffeeSiteType

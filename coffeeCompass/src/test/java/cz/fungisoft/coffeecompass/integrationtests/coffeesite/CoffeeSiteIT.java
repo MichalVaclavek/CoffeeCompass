@@ -37,7 +37,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles({"dev"})
 public class CoffeeSiteIT extends IntegrationTestBaseConfig 
 {
- 
     @Autowired
     private MockMvc mvc;
  
@@ -49,7 +48,9 @@ public class CoffeeSiteIT extends IntegrationTestBaseConfig
     
     private User genius;
     
-    
+    /**
+     * Prepares User object to be assigned as author of the newly created CoffeeSite used in tests.
+     */
     @Before
     @Override
     public void setUp() {
@@ -73,6 +74,10 @@ public class CoffeeSiteIT extends IntegrationTestBaseConfig
         //userRepo.delete(genius);
     }
  
+    /**
+     * Tests REST endpoint /rest/site/allSites/  which should return all saved CoffeeSites list.
+     * @throws Exception
+     */
     @Test
     public void givenCoffeeSites_whenGetCoffeeSites_thenStatus200() throws Exception {
      

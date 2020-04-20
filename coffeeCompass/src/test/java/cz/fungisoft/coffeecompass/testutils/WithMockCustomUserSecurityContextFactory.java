@@ -39,6 +39,11 @@ public class WithMockCustomUserSecurityContextFactory implements WithSecurityCon
     }
 
 
+    /**
+     * Creates authentication object in test Security Spring context.
+     * Functional interface {@link WithMockCustomAdminUser} default values are
+     * used as input.
+     */
     @Override
     public SecurityContext createSecurityContext(WithMockCustomAdminUser customUser) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();

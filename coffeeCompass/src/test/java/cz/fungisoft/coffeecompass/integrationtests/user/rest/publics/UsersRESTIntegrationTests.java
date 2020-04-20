@@ -45,7 +45,7 @@ import org.springframework.test.context.jdbc.SqlConfig.TransactionMode;
 /**
  * Integration test for all actions related to User object.
  * Whole context of Spring is loaded, using @SpringBootTest and
- * @ActiveProfiles({"dev,dev_https,test_postgres_docker"}) annotations.
+ * @ActiveProfiles({"dev"}) annotations.
  * <p>
  * Database is created in {@link IntegrationTestBaseConfig}
  * 
@@ -62,7 +62,6 @@ public class UsersRESTIntegrationTests extends IntegrationTestBaseConfig
     @Autowired
     private MockMvc mockMvc;
     
-    //private static String token = "xy";
     private static String deviceID = "4545454545";
     
     private User admin = new User();
@@ -91,9 +90,13 @@ public class UsersRESTIntegrationTests extends IntegrationTestBaseConfig
         signUpAndLoginRESTDtoAdmin.setPassword(admin.getPassword());
         signUpAndLoginRESTDtoAdmin.setEmail(admin.getEmail());
         signUpAndLoginRESTDtoAdmin.setDeviceID(deviceID);
-        
     }
  
+    /**
+     * Integration test for registering a new User entity via REST {@code /rest/public/user/register} endpoint
+     * 
+     * @throws Exception
+     */
     @Test
     public void whenPostUser_thenCreateUser() throws Exception {
         

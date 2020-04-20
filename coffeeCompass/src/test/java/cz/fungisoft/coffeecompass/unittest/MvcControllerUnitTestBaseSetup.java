@@ -40,7 +40,7 @@ import cz.fungisoft.coffeecompass.serviceimpl.CustomOAuth2UserService;
  * <p>
  * The main aim is to mock all Services needed for this testing.
  * <p>
- * All MVC Controller test can extend this class to get basic setup.
+ * All MVC Controller test can extend this class to get basic setup mocked.
  *  
  * @author Michal Vaclavek
  *

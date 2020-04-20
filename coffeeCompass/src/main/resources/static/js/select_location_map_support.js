@@ -74,7 +74,6 @@ map.create = function(aLatSearchInput, aLonSearchInput, aCityName, aIsMapVisible
 	    }
 	    
 		createMap(latInit, lonInit);
-	    
 	}
 }
 
@@ -140,7 +139,6 @@ function odpoved(geocoder) { /* Odpověď */
 		
     } 
     return vysledky.length > 0;
-    /* alert(data.join("\n")); */
 }
 
 /* To indicate if the map is to be refreshed when new city name is selected in suggest.addListener() */

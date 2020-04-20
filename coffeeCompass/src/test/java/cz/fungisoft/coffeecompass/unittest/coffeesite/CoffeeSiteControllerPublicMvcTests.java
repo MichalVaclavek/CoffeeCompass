@@ -39,7 +39,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 
 /**
- * Testovani Controller vrstvy pro praci s CoffeeSite.
+ * Testovani Public REST Controller vrstvy pro praci s CoffeeSite s vyuzitim Spring MVC.
  * 
  * @author Michal Vaclavek
  *
@@ -87,8 +87,6 @@ public class CoffeeSiteControllerPublicMvcTests
                          .byDefault()
                          .register();
             
-            //mapperFactory.classMap(UserDTO.class, User.class).byDefault().register();
-
             return mapperFactory.getMapperFacade();
         }  
     }
@@ -100,7 +98,11 @@ public class CoffeeSiteControllerPublicMvcTests
         mvc = MockMvcBuilders.standaloneSetup(coffeeSiteControllerPublic).build();
     }
  
-    
+    /**
+     * Tests if list of all CoffeeSites are returned after /rest/site/allSites/ REST request.
+     * 
+     * @throws Exception
+     */
     @Test
     public void givenCoffeeSites_whenGetSites_thenReturnJsonArray() throws Exception {
         

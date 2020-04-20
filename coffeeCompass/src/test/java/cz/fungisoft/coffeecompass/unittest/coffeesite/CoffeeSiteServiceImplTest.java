@@ -143,13 +143,12 @@ public class CoffeeSiteServiceImplTest
     @MockBean
     private CoffeeSortRepository coffeeSortRepository;
     
-    
+    // Object to be tested
     private CoffeeSiteService coffeeSiteService;
     
     
     // Nutne pro kontrolu CoffeeSiteDto, ktere obvykle vraci CoffeeSiteService
     // pro porovnani s pripravenym testovacim CoffeeSite coffeeS
-    
     private CoffeeSite coffeeS;
     
     private String testSiteName = "Test5";
@@ -159,7 +158,7 @@ public class CoffeeSiteServiceImplTest
     private CoffeeSiteRecordStatusEnum recStatE = CoffeeSiteRecordStatusEnum.ACTIVE;
     
     private String hodnoceni = "Ujde";
-    private double stars = 2.6d;
+    //private double stars = 2.6d;
     private String cena = "15 - 20 Kč";
     
     private NextToMachineTypeEnum ntmt1 = NextToMachineTypeEnum.NAPOJE;
@@ -188,7 +187,11 @@ public class CoffeeSiteServiceImplTest
        
     private User origUser = new User();
     
-   
+    
+    /**
+     * Setup of test. Creates CoffeeSite fixture prepared to be returned when mocking Service layer,
+     * including User object as an author of the CoffeeSite.
+     */
     @Before
     public void setUp()
     {
@@ -245,12 +248,14 @@ public class CoffeeSiteServiceImplTest
         
         coffeeS.setInitialComment(hodnoceni);
         
-        
         Mockito.when(coffeeSiteRepository.searchByName(coffeeS.getSiteName()))
             .thenReturn(coffeeS);
         
     }
     
+    /**
+     * Tests if correct CoffeeSite is returned when requested by name.
+     */
     @Test
     public void whenValidName_thenSiteShouldBeFound()
     {

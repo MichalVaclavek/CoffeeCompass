@@ -27,7 +27,11 @@ import cz.fungisoft.coffeecompass.entity.UserProfile;
 /**
  * Pomocna trida pro ulozeni vsech objektovych atributu CoffeeSitu, ktere maji v DB samostatnou
  * tab.
+ * <p>
  * Zatim nevyuzito, ale lze pouzit pri testech, ktere pracuji primo s Repository, bez mockovani.
+ * <p>
+ * Pokud by melo byt vyuzito, bude potreba vlozit anotaci @Component aby vlozil Spring? Pravdepodobne ne,
+ * melo by se pouzit jen pro Unit testy a zde neni Spring potreba? 
  * 
  * @author Michal Vaclavek
  *

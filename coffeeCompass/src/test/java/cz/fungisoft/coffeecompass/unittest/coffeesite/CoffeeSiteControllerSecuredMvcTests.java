@@ -39,9 +39,9 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 
 /**
- * Testovani Controller vrstvy pro praci s CoffeeSite.
+ * Testovani REST Controller vrstvy pro praci s CoffeeSite s vyuzitim Spring MVC.
  * 
- * @author Michal
+ * @author Michal Vaclavek
  *
  */
 @RunWith(SpringRunner.class)
@@ -87,8 +87,6 @@ public class CoffeeSiteControllerSecuredMvcTests
                          .byDefault()
                          .register();
             
-            //mapperFactory.classMap(UserDTO.class, User.class).byDefault().register();
-
             return mapperFactory.getMapperFacade();
         }  
     }
@@ -100,6 +98,10 @@ public class CoffeeSiteControllerSecuredMvcTests
         mvc = MockMvcBuilders.standaloneSetup(coffeeSiteControllerSecured).build();
     }
  
+    /**
+     * Tests if user is saved in service layer after calling post /rest/secured/site/create  REST request.
+     * @throws Exception
+     */
     @Test
     public void whenPostSite_thenCreateCoffeeSite() throws Exception {
         

@@ -33,7 +33,9 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 /**
- * Unit Testovani Controller vrstvy pro praci s User.
+ * Unit Testovani Controller vrstvy pro praci s User entitou.
+ * <p>
+ * Service layer is mocked, Spring MVC is not used.
  * 
  * @author Michal Vaclavek
  *
@@ -128,6 +130,11 @@ public class UserRESTPublicControllerTests
                                                                   userService, tokenService, messages);
     }
  
+    /**
+     * Tests creating of a new User object using UsersControllerPublicREST class method register().
+     * 
+     * @throws Exception
+     */
     @Test
     public void whenPostUser_thenCreateUser() throws Exception {
         

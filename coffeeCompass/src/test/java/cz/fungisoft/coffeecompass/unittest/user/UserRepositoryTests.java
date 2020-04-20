@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Testuje "Repository" vrstvu pro objektu User.
+ * Testuje "Repository" vrstvu pro objekt/entitu User.
  * 
  * @author Michal Vaclavek
  *

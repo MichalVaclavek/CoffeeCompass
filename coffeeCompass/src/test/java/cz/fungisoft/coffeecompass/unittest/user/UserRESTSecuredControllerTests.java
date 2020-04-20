@@ -20,7 +20,9 @@ import static org.mockito.Mockito.*;
 
 
 /**
- * Testovani Controller metod pro praci s User.
+ * Testovani Controller metod pro praci s User entitou.
+ * <p>
+ * Service layer is mocked, Spring MVC is not used.
  * 
  * @author Michal Vaclavek
  *
@@ -74,7 +76,6 @@ public class UserRESTSecuredControllerTests
         verify(userService, VerificationModeFactory.times(1)).findAllUsers();
         assertThat(response.getBody().size()).isEqualTo(allUsers.size());
         assertThat(response.getBody().get(0).getUserName()).isEqualTo("dick");
-        
     }
     
 }

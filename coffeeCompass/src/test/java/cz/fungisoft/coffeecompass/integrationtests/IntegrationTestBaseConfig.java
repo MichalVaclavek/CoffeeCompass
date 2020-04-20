@@ -52,9 +52,11 @@ import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
  * Base class to setup configuration of the Integration tests.
  * Includes start of PosgreSQL DB in container and creation of
  * DB tables.
+ * <p>
  * Database creation and connection is done via {@code PostgreSQLContainer}
  * which runs Postgres DB in Docker container. Therefore, the tests requier
  * running Docker on test machine.
+ * <p>
  * The database structure/schema s created using {@code @Sql(scripts= {"/schema_integration_test_docker.sql"} }
  * annotation. If data are required for running the test, it has to be inserted using Repository
  * methods in  @Before public void setUp() method.

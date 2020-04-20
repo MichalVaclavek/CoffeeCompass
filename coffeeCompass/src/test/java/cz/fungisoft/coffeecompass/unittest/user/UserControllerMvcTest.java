@@ -127,7 +127,6 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup
         admin.setId(1L);
         admin.setCreatedOn(new Timestamp(new Date().getTime()));
         admin.setUserProfiles(userProfilesADMIN);
-        
     }
     
     @Before
@@ -144,7 +143,6 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup
         given(UserControllerTestContextConfiguration.userService.isEmailUnique(Mockito.any(), Mockito.any(String.class))).willReturn(true); //registerNewRESTUser(registerRequest);
         
         Map<String, String> tokenMap = ImmutableMap.of("deviceID", deviceID, "userName", admin.getUserName(), "exp", "10");
-        //token = UserControllerTestContextConfiguration.tokenService.expiring(tokenMap);
         
         given(tokenServiceMock.verify(Mockito.anyString())).willReturn(tokenMap);
         given(tokenServiceMock.expiring(Mockito.anyMap())).willReturn(token);
@@ -202,7 +200,7 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup
      * @throws Exception
      */
     @Test
-    @WithMockCustomAdminUser // inserts securityContext by WithMockCustomUserSecurityContextFactory
+    @WithMockCustomAdminUser // @WithMockCustomAdminUser inserts securityContext by WithMockCustomUserSecurityContextFactory
     public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {    
         
         UserDTO johnDto = new UserDTO();
@@ -222,7 +220,7 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup
         // given
         given(UserControllerTestContextConfiguration.userService.findAllUsers()).willReturn(allUsers);
         
-        //userSecurityService
+        // userSecurityService
         given(userSecurityService.authWithToken(Mockito.anyString())).willReturn(WithMockCustomUserSecurityContextFactory.getTestAuthentication());
         
         // Login ADMIN user

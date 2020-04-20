@@ -108,7 +108,12 @@ public class UsersRESTIntegrationTests
                                     .withUsername("postgres")
                                     .withPassword("postgres_test");
 
-    
+    /**
+     * Prepares UserProfile objects and save them into DB.
+     * Creates User object withe ADMIN privileges/profile crearted earlier
+     * and User registering DTO object to be used later in test as input 
+     * REST JSON request body.
+     */
     @Before
     public void setUp() {
         
@@ -157,7 +162,7 @@ public class UsersRESTIntegrationTests
     @Test
     public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {    
         
-        // Create and save some normal Users - START
+        // Create and save some normal Users - START -
         User john = new User();
         john.setUserName("john");
         john.setEmail("john@vonneuman.com");
@@ -178,7 +183,7 @@ public class UsersRESTIntegrationTests
         dick.setPassword("qed");
         UserDTO dickDto = mapperFacade.map(dick, UserDTO.class);
         userService.save(dickDto);
-        // Create and save some normal Users - END
+        // Create and save some normal Users - END -
         
         // When login ADMIN user
         String accessToken = obtainAccessToken(signUpAndLoginRESTDtoAdmin);
@@ -196,9 +201,9 @@ public class UsersRESTIntegrationTests
     private String obtainAccessToken(SignUpAndLoginRESTDto userDto) throws Exception {
         
         ResultActions result = mockMvc.perform(post("/rest/public/user/login").contentType(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(userDto)))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType("application/json;charset=UTF-8"));
+                   .contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(userDto)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"));
      
         String resultString = result.andReturn().getResponse().getContentAsString();
      
@@ -230,5 +235,4 @@ public class UsersRESTIntegrationTests
         }
     }
  
-    
 }
