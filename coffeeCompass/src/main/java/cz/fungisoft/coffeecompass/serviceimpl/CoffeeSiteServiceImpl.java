@@ -21,7 +21,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
+import cz.fungisoft.coffeecompass.domain.weather.WeatherData;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
+import cz.fungisoft.coffeecompass.dto.WeatherDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
@@ -45,6 +47,7 @@ import cz.fungisoft.coffeecompass.service.CompanyService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.service.ImageStorageService;
 import cz.fungisoft.coffeecompass.service.UserService;
+import cz.fungisoft.coffeecompass.service.WeatherApiService;
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
 

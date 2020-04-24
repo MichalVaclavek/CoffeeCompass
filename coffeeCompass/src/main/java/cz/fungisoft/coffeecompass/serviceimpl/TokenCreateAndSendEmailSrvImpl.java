@@ -15,9 +15,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import cz.fungisoft.coffeecompass.entity.PasswordResetToken;
 import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.entity.UserVerificationToken;
+import cz.fungisoft.coffeecompass.entity.UserEmailVerificationToken;
 import cz.fungisoft.coffeecompass.repository.PasswordResetTokenRepository;
-import cz.fungisoft.coffeecompass.repository.UserVerificationTokenRepository;
+import cz.fungisoft.coffeecompass.repository.UserEmailVerificationTokenRepository;
 import cz.fungisoft.coffeecompass.service.ISendEmailService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
@@ -42,7 +42,7 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
     
     private MessageSource messages;
     
-    private UserVerificationTokenRepository userVerificationTokenRepository;
+    private UserEmailVerificationTokenRepository userEmailVerificationTokenRepository;
     
     private PasswordResetTokenRepository passwordResetTokenRepository;
 
@@ -55,12 +55,12 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
     public TokenCreateAndSendEmailSrvImpl(UserService userService,
                                           ISendEmailService sendEmailService,
                                           MessageSource messagesSource,
-                                          UserVerificationTokenRepository userVerificationTokenRepository,
+                                          UserEmailVerificationTokenRepository userEmailVerificationTokenRepository,
                                           PasswordResetTokenRepository passwordResetTokenRepository) {
         this.userService = userService;
         this.sendEmailService = sendEmailService;
         this.messages = messagesSource;
-        this.userVerificationTokenRepository = userVerificationTokenRepository;
+        this.userEmailVerificationTokenRepository = userEmailVerificationTokenRepository;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.locale = LocaleContextHolder.getLocale();
     }
@@ -111,7 +111,7 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
     @Override
     public String reSendUserVerificationTokenEmail(String existingToken) {
         
-        UserVerificationToken newToken = generateNewUserVerificationToken(existingToken);
+        UserEmailVerificationToken newToken = generateNewUserVerificationToken(existingToken);
         this.user = userService.getUserByRegistrationToken(newToken.getToken());
         
         ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequest();
@@ -130,29 +130,29 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
     @Transactional
     @Override
     public void createUserVerificationToken(User user, String token) {
-        UserVerificationToken myToken = new UserVerificationToken(token, user);
-        userVerificationTokenRepository.save(myToken);
+        UserEmailVerificationToken myToken = new UserEmailVerificationToken(token, user);
+        userEmailVerificationTokenRepository.save(myToken);
     }
     
     @Transactional
     @Override
-    public UserVerificationToken generateNewUserVerificationToken(String existingToken) {
-        UserVerificationToken oldToken = getUserVerificationToken(existingToken);
-        UserVerificationToken myToken = new UserVerificationToken(oldToken.getToken(), oldToken.getUser());
-        userVerificationTokenRepository.delete(oldToken);
-        userVerificationTokenRepository.save(myToken);
+    public UserEmailVerificationToken generateNewUserVerificationToken(String existingToken) {
+        UserEmailVerificationToken oldToken = getUserVerificationToken(existingToken);
+        UserEmailVerificationToken myToken = new UserEmailVerificationToken(oldToken.getToken(), oldToken.getUser());
+        userEmailVerificationTokenRepository.delete(oldToken);
+        userEmailVerificationTokenRepository.save(myToken);
         return myToken;
     }
 
     @Override
-    public UserVerificationToken getUserVerificationToken(String verificationToken) {
-        return userVerificationTokenRepository.findByToken(verificationToken);
+    public UserEmailVerificationToken getUserVerificationToken(String verificationToken) {
+        return userEmailVerificationTokenRepository.findByToken(verificationToken);
     }
     
     @Transactional
     @Override
     public void deleteRegistrationToken(String token) {
-        userVerificationTokenRepository.deleteByToken(token);
+        userEmailVerificationTokenRepository.deleteByToken(token);
     }
 
     // ---- Password reset token ------  //

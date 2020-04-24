@@ -14,7 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.entity.UserVerificationToken;
+import cz.fungisoft.coffeecompass.entity.UserEmailVerificationToken;
 import cz.fungisoft.coffeecompass.service.UserService;
 import cz.fungisoft.coffeecompass.service.ValidateTokenService;
 import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
@@ -86,7 +86,7 @@ public class RegistrationController
         // Valid token
         if (tokenValidationResult.isEmpty()) {
 
-            UserVerificationToken verificationToken = userVerificationTokenService.getUserVerificationToken(token);
+            UserEmailVerificationToken verificationToken = userVerificationTokenService.getUserVerificationToken(token);
 
             User newUser = verificationToken.getUser();
             userService.saveVerifiedRegisteredUser(newUser, token);
@@ -156,7 +156,7 @@ public class RegistrationController
         // Standard new page (login) after new verification e-mail sent - used in case user is not logged-in yet
         ModelAndView mav = new ModelAndView("redirect:/login/?lang=" + request.getLocale().getLanguage());
         
-        UserVerificationToken verificationToken = userVerificationTokenService.getUserVerificationToken(existingToken);
+        UserEmailVerificationToken verificationToken = userVerificationTokenService.getUserVerificationToken(existingToken);
         User user = verificationToken.getUser();
         
         String newToken = "";

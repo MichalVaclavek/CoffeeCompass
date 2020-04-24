@@ -24,7 +24,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name="user_verification_token", schema = "coffeecompass")
-public class UserVerificationToken
+public class UserEmailVerificationToken
 {
     private static final int EXPIRATION_MINUTES = 60 * 24; // 24 hours as default
     
@@ -47,7 +47,7 @@ public class UserVerificationToken
     /**
      * Default contructor, required by Hibernate
      */
-    public UserVerificationToken() {
+    public UserEmailVerificationToken() {
     }
 
 
@@ -57,7 +57,7 @@ public class UserVerificationToken
      * @param token2
      * @param user2
      */
-    public UserVerificationToken(String token2, User user2) {
+    public UserEmailVerificationToken(String token2, User user2) {
         this.token = token2;
         this.user = user2;
         setExpiryDate(calculateExpiryDate(EXPIRATION_MINUTES)); // default expiry date

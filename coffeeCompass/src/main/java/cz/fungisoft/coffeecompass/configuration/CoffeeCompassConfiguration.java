@@ -1,6 +1,9 @@
 package cz.fungisoft.coffeecompass.configuration;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.MessageSource;
@@ -14,15 +17,19 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
+import cz.fungisoft.coffeecompass.domain.weather.WeatherData;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.dto.CommentDTO;
 import cz.fungisoft.coffeecompass.dto.UserDTO;
+import cz.fungisoft.coffeecompass.dto.WeatherDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.Comment;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.exceptions.GeneralErrorAttributes;
+import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 
 /**
@@ -96,7 +103,16 @@ public class CoffeeCompassConfiguration implements WebMvcConfigurer
                      .field("user.id", "userId")
                      .byDefault()
                      .register();
-     
+        
+        // Mapping between WeatherData class obtained from openweather API to
+        // WeatherDTO used to sent to client within CoffeeSiteDTO object
+        WeatherCustomMapper customMapper = new WeatherCustomMapper();
+        
+        mapperFactory.classMap(WeatherData.class, WeatherDTO.class)
+                     .customize(customMapper)
+                     .byDefault()
+                     .register();
+        
         return mapperFactory.getMapperFacade();
     }    
     
@@ -133,5 +149,27 @@ public class CoffeeCompassConfiguration implements WebMvcConfigurer
     public ErrorAttributes errorAttributes() {
         return new GeneralErrorAttributes();
     }
+    
+    /**
+     * Inner class to define Custom Mapper between {@code WeatherData.sys.sunrise} and {@code WeatherData.sys.sunset}
+     * into {@code WeatherDTO.sunRiseTime} and {@code WeatherDTO.sunSetTime}
+     * 
+     * @author Michal V.
+     *
+     */
+    static class WeatherCustomMapper extends CustomMapper<WeatherData, WeatherDTO> {
+        
+        @Override
+        public void mapAtoB(WeatherData a, WeatherDTO b, MappingContext context) {
+            
+            LocalDateTime sunriseTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(a.getSys().getSunrise() * 1000), 
+                                            TimeZone.getDefault().toZoneId());  
+            b.setSunRiseTime(sunriseTime.toLocalTime());
+            
+            LocalDateTime sunsetTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(a.getSys().getSunset() * 1000), 
+                                            TimeZone.getDefault().toZoneId());  
+            b.setSunSetTime(sunsetTime.toLocalTime());
+        }
+    };
     
 }

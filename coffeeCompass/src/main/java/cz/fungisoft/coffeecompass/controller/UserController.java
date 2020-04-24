@@ -482,7 +482,6 @@ public class UserController
     @DeleteMapping(value = "/delete/")
     public ModelAndView deleteUserAndRelatedItems(@ModelAttribute("userDataModelToDelete") DeleteUserAccountModel userDataToDelete,
                                                   RedirectAttributes attr) {
-        
         ModelAndView mav = new ModelAndView();
         
         Optional<UserDTO> user = userService.findByIdToTransfer(userDataToDelete.getUserId());
@@ -497,7 +496,7 @@ public class UserController
            // Prihlaseny uzivatel maze svoje data?
            // Pokud jineho usera maze ADMIN, neodhlasovat z app
            if (user.get().getId() == loggedInUser.get().getId()
-               && !userService.isADMINloggedIn()) { 
+                   && !userService.isADMINloggedIn()) { 
                userSecurityService.logout();
            }
             
@@ -510,9 +509,9 @@ public class UserController
            if (userDataToDelete.isDeleteUsersComments()) {
                commentsService.deleteAllCommentsFromUser(userDataToDelete.getUserId());
            }
-
+           
            if (commentsService.getAllCommentsFromUser(user.get().getId()).size() == 0
-               && coffeeSiteService.findAllFromUserName(userName).size() == 0) { // user's comments and CoffeeSites deleted, now User can be deleted too
+                   && coffeeSiteService.findAllFromUserName(userName).size() == 0) { // user's comments and CoffeeSites deleted, now User can be deleted too
                try {
                    userService.deleteUserById(userDataToDelete.getUserId());
                } catch (Exception ex) {

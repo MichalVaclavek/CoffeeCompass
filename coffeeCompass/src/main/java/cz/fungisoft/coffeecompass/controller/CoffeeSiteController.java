@@ -1,8 +1,10 @@
 package cz.fungisoft.coffeecompass.controller;
 
 import cz.fungisoft.coffeecompass.controller.models.StarsAndCommentModel;
+import cz.fungisoft.coffeecompass.domain.weather.WeatherData;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.dto.CommentDTO;
+import cz.fungisoft.coffeecompass.dto.WeatherDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
@@ -30,6 +32,7 @@ import cz.fungisoft.coffeecompass.service.PriceRangeService;
 import cz.fungisoft.coffeecompass.service.SiteLocationTypeService;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
 import cz.fungisoft.coffeecompass.service.UserService;
+import cz.fungisoft.coffeecompass.service.WeatherApiService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -101,6 +104,9 @@ public class CoffeeSiteController
     
     @Autowired
     private ImageStorageService imageStorageService;
+    
+    @Autowired
+    private WeatherApiService weatherService;
 
     private CoffeeSiteService coffeeSiteService;
     
@@ -220,6 +226,10 @@ public class CoffeeSiteController
         // Here inserted on the server, not as URL REST link to be loaded from browser  
         String picString = imageStorageService.getImageAsBase64ForSiteId(cs.getId());
         mav.addObject("pic", picString);
+        
+        // Get Weather info for the geo location of the CofeeSite to be shown
+        WeatherDTO weather = weatherService.getWeatherDTO(cs);
+        mav.addObject("weatherData", weather);
         
         mav.setViewName("coffeesite_detail");
         

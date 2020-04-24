@@ -11,6 +11,10 @@ var rangeSearchLabel; /* field to show current searching range in m */
 
 var souradnice = []; /* souradnice vsech bodu/znacek v mape */
 
+/**
+ * Creates map with movable marker on the lat1, lon1 input coordinates
+ * inserted in the list of all points (CoffeeSites) to be shown in map.
+ */
 createMap = function(lat1, lon1) {
    
 	 var center = SMap.Coords.fromWGS84(lon1, lat1);
@@ -60,7 +64,9 @@ createMap = function(lat1, lon1) {
 	 souradnice.push(center);
 }
 
-
+/**
+ * Main function to be called from html to create map in given div element
+ */
 map.create = function(aLatSearchInput, aLonSearchInput, aLatSearchLabel, aLonSearchLabel) {
 
 	 latSearchInput = aLatSearchInput;
@@ -82,6 +88,11 @@ map.create = function(aLatSearchInput, aLonSearchInput, aLatSearchLabel, aLonSea
 	 createMap(latInit, lonInit);
 }
 
+/*
+ * Inserts all CoffeeSites geo coordinates into the map as markers/icons
+ * with CoffeeSite image and some additional info to be shown on
+ * the mark's card.
+ */
 map.insertSites = function(foundSites)
 {
 	if (foundSites != null && foundSites.length > 0)
@@ -123,6 +134,7 @@ map.insertSites = function(foundSites)
 			
 			card.getBody().innerHTML = textVizitka;
 			
+			// Inserts link to CoffeeSite details page
 			var footerText = "<a href='" + base_url + "/showSite/"; 
 			footerText += site.id + "'>Další detaily ...</a>";
 			
@@ -134,10 +146,8 @@ map.insertSites = function(foundSites)
 			layer.addMarker(znacka);
 		});
 	
-		
 		var cz = m.computeCenterZoom(souradnice); /* Spočítat pozici mapy tak, aby v3echny značky byly vidět */
 		m.setCenterZoom(cz[0], cz[1]);
-	
 	}
 }
 
@@ -148,7 +158,6 @@ map.enable = function() {
 
 
 /* Finding coordinates of the City/town from api.mapy.cz */
-
 var cityName;
 
 map.findCoordinatesAndInsertToForm = function(city) {
@@ -167,6 +176,9 @@ var changeNodeVisibility = function(node) {
 		if (!node.disabled) node.style.visibility = "visible";
 	}
 
+/*
+ * Callback function for SMap.Geocoder() call looking for city/place geo coordinates
+ */
 function odpoved(geocoder) { /* Odpověď */
 	
 	var vysledky = geocoder.getResults()[0].results;
@@ -224,5 +236,4 @@ function odpoved(geocoder) { /* Odpověď */
 	    }
     }
     return vysledky.length > 0;
-    /* alert(data.join("\n")); */
 }

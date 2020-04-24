@@ -4,7 +4,7 @@ import java.util.Locale;
 
 import cz.fungisoft.coffeecompass.entity.PasswordResetToken;
 import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.entity.UserVerificationToken;
+import cz.fungisoft.coffeecompass.entity.UserEmailVerificationToken;
 
 /**
  * Service to create user verification token and to send e-mail with verification link to a User.
@@ -40,9 +40,9 @@ public interface TokenCreateAndSendEmailService
 
     public void createUserVerificationToken(User user, String token);
     
-    public UserVerificationToken generateNewUserVerificationToken(String existingToken); 
+    public UserEmailVerificationToken generateNewUserVerificationToken(String existingToken); 
     
-    public UserVerificationToken getUserVerificationToken(String verificationToken);
+    public UserEmailVerificationToken getUserVerificationToken(String verificationToken);
     
     public void deleteRegistrationToken(String token);
     

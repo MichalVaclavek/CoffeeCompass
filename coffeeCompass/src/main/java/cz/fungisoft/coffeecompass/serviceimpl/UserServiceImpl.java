@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.stereotype.Service;
@@ -18,12 +19,14 @@ import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
 import cz.fungisoft.coffeecompass.controller.models.AuthProviders;
 import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
 import cz.fungisoft.coffeecompass.dto.UserDTO;
+import cz.fungisoft.coffeecompass.entity.PasswordResetToken;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.entity.UserProfileTypeEnum;
+import cz.fungisoft.coffeecompass.entity.UserEmailVerificationToken;
 import cz.fungisoft.coffeecompass.repository.PasswordResetTokenRepository;
 import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
-import cz.fungisoft.coffeecompass.repository.UserVerificationTokenRepository;
+import cz.fungisoft.coffeecompass.repository.UserEmailVerificationTokenRepository;
 import cz.fungisoft.coffeecompass.repository.UsersRepository;
 import cz.fungisoft.coffeecompass.security.oauth2.user.OAuth2UserInfo;
 import cz.fungisoft.coffeecompass.service.UserSecurityService;
@@ -53,7 +56,7 @@ public class UserServiceImpl implements UserService
     
     private final UserProfileRepository userProfileRepository;
     
-    private final UserVerificationTokenRepository registartionTokenRepository;
+    private final UserEmailVerificationTokenRepository userEmailVerificationTokenRepository;
     
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     
@@ -62,6 +65,8 @@ public class UserServiceImpl implements UserService
     private final ConfigProperties config;
     
      
+    /* Constructor created by lombok */
+    
 //    /**
 //     * Konstruktor, ktery vyuzije Spring pro injection zavislosti. Neni potreba uvadet anotaci @Autowired na atributech
 //     *         
@@ -203,7 +208,7 @@ public class UserServiceImpl implements UserService
      * must be changed too.<br>
      * <p>
      * Updates also User data of another user, if logged-in has ADMIN rights. In such case,
-     * only password or Roles (except ADMIN) can be changed.<br>
+     * only password, Roles (except ADMIN) and emailConfirmation flag can be changed.<br>
      * If all ROLES should be removed, then USER role is inserted (User has to have at least one role)<br>
      * If ADMIN removes his ADMIN role, than it is applied also in Spring authentication object, immediately.
      */
@@ -237,7 +242,9 @@ public class UserServiceImpl implements UserService
             }
             
             // can be edited by ADMIN user - overrides value calculated by other conditions
-            entity.setRegisterEmailConfirmed(user.getRegisterEmailConfirmed()); 
+            if (hasADMINRole(entity) && !isLoggedInUserToManageItself(entity)) {
+                entity.setRegisterEmailConfirmed(user.getRegisterEmailConfirmed()); 
+            }
             
             // User profiles can be empty during update - means remove all roles - this is not applicable for ADMIN user
             // ADMIN cannot remove ADMIN role of another user
@@ -390,17 +397,58 @@ public class UserServiceImpl implements UserService
         return usersRepository.save(existingUser);
     }
     
-    
+    /**
+     * Deletes user account. If there are any User related authentication tokens,
+     *  like password change token or e-mail verification token, deltes them
+     *  first, as there is a DB releation and User db item would not be allowed
+     *  to delete with relation to token tables.
+     */
     @Override
     public void deleteUserBySSO(String ssoId) {
-        usersRepository.deleteByUserName(ssoId);
-        log.info("User name {} deleted.", ssoId);
+        
+        Optional<User> userToDelete = findByUserName(ssoId);
+        
+        if (userToDelete.isPresent()) {
+            deleteTokensByUser(userToDelete);
+            usersRepository.deleteByUserName(ssoId);
+            log.info("User name {} deleted.", ssoId);
+        } else {
+            log.error("User name {} does not exist.", ssoId);
+        }
     }
-           
+    
     @Override
     public void deleteUserById(Long id) {
-        usersRepository.deleteById(id);
-        log.info("User id {} deleted.", id);
+        
+        Optional<User> userToDelete = findById(id);
+        
+        if (userToDelete.isPresent()) {
+            deleteTokensByUser(findById(id));
+            usersRepository.deleteById(id);
+            log.info("User id {} deleted.", id);
+        } else {
+            log.error("User with id {} does not exist.", id);
+        }
+    }
+    
+    /**
+     * Deletes e-mail verification token and password reset token
+     * related to given user
+     */
+    private void deleteTokensByUser(@NonNull Optional<User> user) {
+        // Delete any User related authentication tokens, like password change token
+        // or e-mail verification token
+        if (user.isPresent()) {
+            UserEmailVerificationToken registrationToken = userEmailVerificationTokenRepository.findByUser(user.get());
+            if (registrationToken != null) {
+                userEmailVerificationTokenRepository.delete(registrationToken);
+            }
+            
+            PasswordResetToken passwdResetToken = passwordResetTokenRepository.findByUser(user.get());
+            if (passwdResetToken != null) {
+                passwordResetTokenRepository.delete(passwdResetToken);
+            }
+        }
     }
     
     @Override
@@ -507,7 +555,7 @@ public class UserServiceImpl implements UserService
 
     @Override
     public User getUserByRegistrationToken(String verificationToken) {
-        User user = registartionTokenRepository.findByToken(verificationToken).getUser();
+        User user = userEmailVerificationTokenRepository.findByToken(verificationToken).getUser();
         return user;
     }
 

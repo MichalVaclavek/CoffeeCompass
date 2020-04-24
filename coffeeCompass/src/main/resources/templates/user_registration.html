@@ -120,19 +120,18 @@
 	                       th:text="${error}">Validation error</p>
 	                </div>
 	                
-	                <!-- User's email address confirmed check box - editable for ADMIN user -->
+	                <!-- User's email address confirmed check box - editable for ADMIN user only -->
 	                <div class="w3-container w3-right">
-		               <!-- <div sec:authorize="hasRole('ROLE_ADMIN')"> -->
 	                    <label for="userBan" th:text="#{user.edit.emailaddress.confirmed}">Email address confirmed?</label>
+	                   
 	               			 <input type="checkbox"
 	               			 		class="w3-check"
 	               			 		th:classappend="(*{!hasADMINRole} AND *{toManageItself}) ? 'w3-disabled'"
 	               			 		th:disabled="(*{!hasADMINRole} AND *{toManageItself})"
 	               			 		th:readonly="(*{!hasADMINRole} AND *{toManageItself})"
 	                	  		    th:value="*{registerEmailConfirmed}"
-	                	  		    th:field="*{registerEmailConfirmed}"/>
+	                	  		    th:field="*{registerEmailConfirmed}"/> 
 			               			  
-		                 <!-- </div> -->
 	                </div>
 	                
 	                <div class="w3-container w3-margin-top"> 

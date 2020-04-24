@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import cz.fungisoft.coffeecompass.entity.PasswordResetToken;
 import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.entity.UserVerificationToken;
+import cz.fungisoft.coffeecompass.entity.UserEmailVerificationToken;
 import cz.fungisoft.coffeecompass.repository.PasswordResetTokenRepository;
 import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
 import cz.fungisoft.coffeecompass.service.ValidateTokenService;
@@ -68,7 +68,7 @@ public class ValidateTokenServiceImpl implements ValidateTokenService
     @Override
     public String validateUserRegistrationToken(String token) {
         
-        UserVerificationToken verificationToken = userVerificationTokenService.getUserVerificationToken(token);
+        UserEmailVerificationToken verificationToken = userVerificationTokenService.getUserVerificationToken(token);
         
         // Invalid token
         if (verificationToken == null) {

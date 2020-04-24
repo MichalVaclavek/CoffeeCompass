@@ -6,13 +6,21 @@ var isMapVisible = false;
 var coffeeSiteLatInput; /* input field for CoffeeSite's latitude */
 var coffeeSiteLonInput; /* input field for CoffeeSite's longitude */
 
-var souradnice = []; /* souradnice vsech bodu/znacek v mape */
-
+/**
+ * Creates map with movable marker on the lat1, lon1 input coordinates
+ */
 createMap = function(lat1, lon1) {
    
-	 var center = SMap.Coords.fromWGS84(lon1, lat1);
-	 
-	 m = new SMap(JAK.gel("map"), center, 8);
+	 var center;
+	
+	 if (lat1 == 0 && lon1 == 0) {
+		 center = SMap.Coords.fromWGS84('15.4190817', '49.8250401');
+		 m = new SMap(JAK.gel("map"), center, 8);
+	 } else { // coordinates already inserted, let's zoom closer
+		 center = SMap.Coords.fromWGS84(lon1, lat1);
+		 m = new SMap(JAK.gel("map"), center, 16);
+	 }
+		
 	 m.addControl(new SMap.Control.Sync());
 	 m.addDefaultLayer(SMap.DEF_BASE).enable();
 	 m.addDefaultControls();
@@ -49,8 +57,6 @@ createMap = function(lat1, lon1) {
 	 var signals = m.getSignals();
 	 signals.addListener(window, "marker-drag-stop", stop);
 	 signals.addListener(window, "marker-drag-start", start);
-	 
-	 souradnice.push(center);
 }
 
 
@@ -59,8 +65,8 @@ map.create = function(aLatSearchInput, aLonSearchInput, aCityName, aIsMapVisible
 	coffeeSiteLatInput = aLatSearchInput;
 	coffeeSiteLonInput = aLonSearchInput;
 	 
-	var latInit = latInput.value;
-	var lonInit = lonInput.value;
+	var latInit = coffeeSiteLatInput.value;
+	var lonInit = coffeeSiteLonInput.value;
 	
 	isMapVisible = aIsMapVisible;
 	
@@ -68,10 +74,6 @@ map.create = function(aLatSearchInput, aLonSearchInput, aCityName, aIsMapVisible
 	if (aCityName.length > 1 && aIsMapVisible && latInit == 0 && lonInit == 0) {
 		map.findCoordinatesAndShowInMap(aCityName);
 	} else {
-	    if (latInit == 0 && lonInit == 0 && aCityName.length == 0) {
-	       latInit = '49.8250401';
-		   lonInit = '15.4190817';
-	    }
 	    
 		createMap(latInit, lonInit);
 	}
@@ -112,31 +114,32 @@ map.findCoordinatesAndShowInMap = function(city) {
    });
 }
 
-
+/*
+ * Callback function for SMap.Geocoder() call i.e. process the list
+ * of found places and their geo coordinates. 
+ */
 function odpoved(geocoder) { /* Odpověď */
 	
 	var vysledky = geocoder.getResults()[0].results;
     var data = [];
     
-    var latOfCity = '49.8250401'; // defauylt values
-    var lonOfCity = '15.4190817';
-    
-    if (vysledky.length > 0) { // Take only first result
+    if (vysledky.length > 0) { // Take only first result, as it should be the one found earlier by 'Naseptavac' SMap.Suggest(inputEl);
 	
 		var item = vysledky.shift()
-		latOfCity = item.coords.toWGS84()[1]; 
-		lonOfCity = item.coords.toWGS84()[0];
+		var latOfCity = item.coords.toWGS84()[1]; 
+		var lonOfCity = item.coords.toWGS84()[0];
 		
 		createMap(latOfCity, lonOfCity);
 		map.enable();
+		// Coordinates of the city found, but they are not final coordinates of CoffeeSite
+		// so lets zoom into the middle of zoom range
 		m.setCenterZoom(item.coords, 13, false);
 		
 		if (isMapVisible) {
-			// insert coordinates of Marker into input if map is visible
+			// insert coordinates of found city into input fields, if map is visible
 			coffeeSiteLatInput.value = latOfCity;
 			coffeeSiteLonInput.value = lonOfCity;
 		}
-		
     } 
     return vysledky.length > 0;
 }

@@ -36,7 +36,7 @@ import cz.fungisoft.coffeecompass.repository.CoffeeSiteStatusRepository;
 import cz.fungisoft.coffeecompass.repository.CoffeeSortRepository;
 import cz.fungisoft.coffeecompass.repository.PasswordResetTokenRepository;
 import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
-import cz.fungisoft.coffeecompass.repository.UserVerificationTokenRepository;
+import cz.fungisoft.coffeecompass.repository.UserEmailVerificationTokenRepository;
 import cz.fungisoft.coffeecompass.repository.UsersRepository;
 import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
 import cz.fungisoft.coffeecompass.security.IAuthenticationFacade;
@@ -88,7 +88,7 @@ public class CoffeeSiteServiceImplTest
     private static UserSecurityService userSecurityService;
 
     @MockBean
-    private static UserVerificationTokenRepository userVerificationTokenRepository;
+    private static UserEmailVerificationTokenRepository userEmailVerificationTokenRepository;
 
     @MockBean
     private static PasswordResetTokenRepository passwordResetTokenRepository;

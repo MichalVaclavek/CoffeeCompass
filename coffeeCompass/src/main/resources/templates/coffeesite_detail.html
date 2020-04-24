@@ -261,9 +261,9 @@
 				         <img th:src="${pic}" alt="" class="w3-image w3-round"/>
 			        </div>
 			        <div th:if="${coffeeSite.mainImageURL == ''}" th:text="#{site.noImage}" class="w3-small w3-display-middle" style="font-style: italic;"> 
-				       No imagge available message.
+				       No image available message.
 			        </div>
-		       
+			        
 		       		<!-- Element with Form to Rotate image of the CoffeeSite Left by 90 degree  -->	
 			    	<div th:if="${coffeeSite.canBeModified}" class="w3-margin-top" style="width:100%">
 				    	 
@@ -300,6 +300,21 @@
 						     </div> 
 					     </div>
 		     		</div>
+		     		
+		     		<!-- Element to show current weather data and Sunrise, Sunset times  on the CoffeeSite coordinates  -->
+		     		<div class="w3-margin-top" th:if="${!coffeeSite.canBeModified}">	
+				    	<p>
+				    		<span th:text="#{site.detail.weather.label}" class="w3-text-green"></span>
+					    	<b><span th:text="${weatherData.weather[0].description} +' ,'"></span></b>
+				    		<b><span th:text="${weatherData.main.temp}"></span><span> &#176;C</span></b>
+					    </p>
+				    		
+		    			<span th:text="#{site.detail.sunrise.label}"></span><b><span th:text="${weatherData.sunRiseTime}"></span></b>
+		    			<div>
+		    				<span th:text="#{site.detail.sunset.label}"></span><b><span th:text="${weatherData.sunSetTime}"></span></b>
+			    		</div>
+				    		
+	     			</div>
 		     		
 					<!-- Element with Form to Upload image of the CoffeeSite -->
 					<div class="w3-display-bottommiddle" style="width:100%">
