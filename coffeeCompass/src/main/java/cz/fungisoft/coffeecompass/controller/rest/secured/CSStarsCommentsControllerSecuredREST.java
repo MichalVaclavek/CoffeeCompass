@@ -29,7 +29,7 @@ import io.swagger.annotations.Api;
  * Controller for handling addition/deletition of Comment and Stars for CoffeeSite.<br>
  * REST verze<br>
  * Obsluhuje operace souvisejici s vkladanim/mazanim hodnoceni a komentare ke CoffeeSitu  
- * <br>
+ * <p>
  * Pro ziskani techto informaci ke CoffeeSitu se pouziva Controler CoffeeSiteController,<br>
  * ktery vola prislusne Service, ktere dodaji Comments a prumerne hodnoceni k danemu<br>
  * CoffeeSitu.
@@ -37,8 +37,8 @@ import io.swagger.annotations.Api;
  * @author Michal Vaclavek
  *
  */
-@Api // Anotace Swagger
-@RestController // Ulehcuje zpracovani HTTP/JSON pozadavku z clienta a automaticky vytvari i HTTP/JSON response odpovedi na HTTP/JSON requesty
+@Api // Swagger
+@RestController 
 @RequestMapping("/rest/secured/starsAndComments")
 public class CSStarsCommentsControllerSecuredREST
 {

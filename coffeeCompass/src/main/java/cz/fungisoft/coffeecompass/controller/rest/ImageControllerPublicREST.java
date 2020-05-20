@@ -24,8 +24,8 @@ import io.swagger.annotations.Api;
  * @author Michal Vaclavek
  *
  */
-@Api // Anotace Swagger
-@RestController // Ulehcuje zpracovani HTTP/JSON pozadavku z clienta a automaticky vytvari i HTTP/JSON response odpovedi na HTTP/JSON requesty
+@Api // Swagger
+@RestController
 @RequestMapping("/rest/image")
 public class ImageControllerPublicREST
 {

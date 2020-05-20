@@ -39,8 +39,8 @@ import io.swagger.annotations.Api;
  * @author Michal Vaclavek
  *
  */
-@Api // Anotace Swagger
-@RequestMapping("/rest/secured/user") // uvadi se, pokud vsechny dotazy v kontroleru maji zacinat timto retezcem
+@Api // Swagger
+@RequestMapping("/rest/secured/user")
 @RestController
 public class UserControllerSecuredREST
 {  

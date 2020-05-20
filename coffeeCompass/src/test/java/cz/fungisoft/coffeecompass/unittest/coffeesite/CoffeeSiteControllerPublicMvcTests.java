@@ -47,7 +47,6 @@ import ma.glasnost.orika.impl.DefaultMapperFactory;
 @RunWith(SpringRunner.class)
 public class CoffeeSiteControllerPublicMvcTests
 { 
-    //@Autowired
     private MockMvc mvc;
     
     /**

@@ -7,11 +7,9 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,14 +20,13 @@ import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.exceptions.rest.BadAuthorizationRESTRequestException;
 import cz.fungisoft.coffeecompass.exceptions.rest.InvalidParameterValueException;
-import cz.fungisoft.coffeecompass.listeners.OnRegistrationCompleteEvent;
 import cz.fungisoft.coffeecompass.service.CustomRESTUserAuthenticationService;
 import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
 import cz.fungisoft.coffeecompass.service.TokenService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import io.swagger.annotations.Api;
 
-@Api // Anotace Swagger
+@Api // Swagger
 @RestController
 @RequestMapping("/rest/public/user")
 public class UsersControllerPublicREST

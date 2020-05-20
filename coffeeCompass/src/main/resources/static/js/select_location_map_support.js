@@ -124,6 +124,7 @@ function odpoved(geocoder) { /* Odpověď */
     var data = [];
     
     if (vysledky.length > 0) { // Take only first result, as it should be the one found earlier by 'Naseptavac' SMap.Suggest(inputEl);
+    	
 	
 		var item = vysledky.shift()
 		var latOfCity = item.coords.toWGS84()[1]; 

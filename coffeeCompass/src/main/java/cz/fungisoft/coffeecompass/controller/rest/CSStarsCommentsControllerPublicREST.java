@@ -29,7 +29,7 @@ import io.swagger.annotations.Api;
  * @author Michal Vaclavek
  *
  */
-@Api // Anotace Swagger
+@Api // Swagger
 @RestController 
 @RequestMapping("/rest/public/starsAndComments")
 public class CSStarsCommentsControllerPublicREST

@@ -195,12 +195,14 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup
     
     /**
      * To test if all Users are returned when requested. Only ADMIN user can request that.
-     * First, mock ADMIN user is logged in. 
+     * First, mock ADMIN user is logged in.
+     * <p>
+     * @WithMockCustomAdminUser inserts securityContext by WithMockCustomUserSecurityContextFactory
      * 
      * @throws Exception
      */
     @Test
-    @WithMockCustomAdminUser // @WithMockCustomAdminUser inserts securityContext by WithMockCustomUserSecurityContextFactory
+    @WithMockCustomAdminUser 
     public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {    
         
         UserDTO johnDto = new UserDTO();

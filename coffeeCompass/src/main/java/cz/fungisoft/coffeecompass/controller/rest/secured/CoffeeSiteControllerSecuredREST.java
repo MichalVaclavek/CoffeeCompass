@@ -41,9 +41,9 @@ import io.swagger.annotations.Api;
  * @author Michal Václavek
  *
  */
-@Api // Anotace Swagger
-@RestController // Ulehcuje zpracovani HTTP/JSON pozadavku z clienta a automaticky vytvari i HTTP/JSON response odpovedi na HTTP/JSON requesty
-@RequestMapping("/rest/secured/site") // vsechny http dotazy v kontroleru maji zacinat timto retezcem
+@Api // Swagger
+@RestController
+@RequestMapping("/rest/secured/site")
 public class CoffeeSiteControllerSecuredREST
 {
     private static final Logger log = LoggerFactory.getLogger(CoffeeSiteControllerSecuredREST.class);

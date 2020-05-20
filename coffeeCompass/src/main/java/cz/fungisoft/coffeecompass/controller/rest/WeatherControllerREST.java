@@ -11,9 +11,16 @@ import cz.fungisoft.coffeecompass.dto.WeatherDTO;
 import cz.fungisoft.coffeecompass.service.WeatherApiService;
 import io.swagger.annotations.Api;
 
+/**
+ * Helper Controller to provide data about current weather on the CoffeeSite's geo coordinates.
+ * Uses https://api.openweathermap.org API. See {@link WeatherApiService} for more info.
+ * 
+ * @author Michal Vaclavek
+ *
+ */
 @Api // Anotace Swagger
 @RestController
-@RequestMapping("/rest/weather") // vsechny http dotazy v kontroleru maji zacinat timto retezcem
+@RequestMapping("/rest/weather") 
 public class WeatherControllerREST
 {
     
