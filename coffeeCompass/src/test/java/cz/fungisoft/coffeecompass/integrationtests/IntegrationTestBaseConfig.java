@@ -57,7 +57,7 @@ import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
  * which runs Postgres DB in Docker container. Therefore, the tests requier
  * running Docker on test machine.
  * <p>
- * The database structure/schema s created using {@code @Sql(scripts= {"/schema_integration_test_docker.sql"} }
+ * The database structure/schema is created using {@code @Sql(scripts= {"/schema_integration_test_docker.sql"} }
  * annotation. If data are required for running the test, it has to be inserted using Repository
  * methods in  @Before public void setUp() method.
  * 
@@ -144,9 +144,7 @@ public class IntegrationTestBaseConfig
         CREATED = this.csRecordStatusRepo.searchByName("CREATED");
         
         userProfilesUser.add(userProfUser);
-               
         userProfilesADMIN.add(userProfADMIN);
-        
         userProfilesDBA.add(userProfDBA);
     }
     
@@ -167,7 +165,6 @@ public class IntegrationTestBaseConfig
         //StarsQualityDescription stars = starsQualityDescriptionRepo.searchByName(StarsQualityEnum.TWO.toString());
         Set<NextToMachineType> ntmtSet = new HashSet<>(); 
         Set<OtherOffer> nabidka = new HashSet<>();
-        //User origUser = new User();
         
         CoffeeSiteType siteType = csTypeRepo.searchByName(coffeeSiteType);
         

@@ -2,15 +2,11 @@ package cz.fungisoft.coffeecompass.integrationtests.user.rest.publics;
 
 import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
 import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.integrationtests.IntegrationTestBaseConfig;
-import cz.fungisoft.coffeecompass.repository.CoffeeSiteRecordStatusRepository;
-import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
 import cz.fungisoft.coffeecompass.testutils.JsonUtil;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -18,17 +14,10 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -37,8 +26,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import org.springframework.test.context.jdbc.SqlConfig.TransactionMode;
 
 
 
