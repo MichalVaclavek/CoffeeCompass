@@ -88,7 +88,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     }
 
     @Override
-    public void saveStarsForCoffeeSite(CoffeeSite coffeeSite, User user, int stars) {
+    public void saveStarsForCoffeeSiteAndUser(CoffeeSite coffeeSite, User user, int stars) {
         // Ziskat prislusny objekt StarsForCoffeeSiteAndUser z DB
         StarsForCoffeeSiteAndUser sfcsu = avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), user.getId());
         
@@ -101,13 +101,38 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
         
         // Nove/updatovane hodnoceni ulozit do Repositoy
         avgStarsRepo.save(sfcsu);
-        log.info("Average stars for Coffee site name {} and User name {} saved. Stars: {}", coffeeSite.getSiteName(), user.getUserName(), stars );
+        log.info("Stars for Coffee site name {} and User name {} saved. Stars: {}", coffeeSite.getSiteName(), user.getUserName(), stars );
+    }
+    
+    /**
+     * Updates Stars for given CoffeeSite and User. Only Stars of the loggedIn user can be updated.
+     *  
+     * @return 
+     */
+    @Override
+    public StarsForCoffeeSiteAndUser updateStarsForCoffeeSiteAndUser(Long coffeeSiteID, Long userId, int stars) {
+        
+        Optional<User> logedInUser = userService.getCurrentLoggedInUser();
+        
+        if (logedInUser.isPresent() && logedInUser.get().getId() == userId) {
+            // Ziskat prislusny objekt StarsForCoffeeSiteAndUser z DB
+            StarsForCoffeeSiteAndUser sfcsu = avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSiteID, userId);
+            
+            if (sfcsu != null) { // Pokud zaznam pro tohoto uzivatele a CoffeeSite jeste v DB neni, vytvori novy
+                sfcsu.setStars(starsQualService.findStarsQualityById(stars));
+                // Updatovane hodnoceni ulozit do Repositoy
+                sfcsu = avgStarsRepo.save(sfcsu);
+                log.info("Stars for Coffee site id {} and User id {} saved. Stars: {}", coffeeSiteID, userId, stars );
+                return sfcsu;
+            }
+        }
+        return null;
     }
 
     @Override
     public void cancelStarsForCoffeeSite(CoffeeSite coffeeSite, User user) {
         avgStarsRepo.deleteStarsForSiteAndUser(coffeeSite.getId(), user.getId());
-        log.info("Average stars for Coffee site name {} and User name {} canceled.", coffeeSite.getSiteName(), user.getUserName() );
+        log.info("Stars for Coffee site name {} and User name {} canceled.", coffeeSite.getSiteName(), user.getUserName() );
     }
 
     /**
@@ -115,12 +140,12 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
      * Only logged-in user can save the stars.
      */
     @Override
-    public void saveStarsForCoffeeSite(Long coffeeSiteID, Integer stars) {
+    public void saveStarsForCoffeeSiteAndLoggedInUser(Long coffeeSiteID, Integer stars) {
         CoffeeSite cs = coffeeSiteService.findOneById(coffeeSiteID);
         Optional<User> logedInUser = userService.getCurrentLoggedInUser();
         
         if (logedInUser.isPresent()) {
-            saveStarsForCoffeeSite(cs, mapperFacade.map(logedInUser.get(), User.class), stars);
+            saveStarsForCoffeeSiteAndUser(cs, mapperFacade.map(logedInUser.get(), User.class), stars);
         }
     }
 

@@ -98,6 +98,36 @@ public class CommentService implements ICommentService
         
         return saveTextAsComment(commentText, mapperFacade.map(logedInUser.get(), User.class), coffeeSite);
     }
+    
+    /**
+     * Updates Comment object.
+     * <p>
+     * Can return null if the text of updated comment is empty
+     * or the updatedComment* and respective Comment in DB to be updated (based on id) does not match,
+     * i.e. User id* or CoffeeSite id of the updatedComments is not the same as the respective Comment in DB.
+     */
+    @Override
+    public Comment updateComment(CommentDTO updatedComment) {
+        
+        if (updatedComment != null && updatedComment.getCoffeeSiteID() != 0 && updatedComment.getUserId() != 0) {
+            
+            Optional<Comment> comment = commentsRepo.findById(updatedComment.getId());
+            
+            if (comment.isPresent()) {
+                if (updatedComment.getText().isEmpty()) { // empty text of Comment means delete Comment
+                    commentsRepo.deleteById(updatedComment.getId());
+                    return null;
+                }
+                
+                if (comment.get().getUser().getId() == updatedComment.getUserId()
+                        && comment.get().getCoffeeSite().getId() == updatedComment.getCoffeeSiteID()) {
+                    updatedComment.setCreated(new Timestamp(new Date().getTime()));
+                    return commentsRepo.save(mapperFacade.map(updatedComment, Comment.class));
+                }
+            }
+        }
+        return null;
+    }
 
 	/* (non-Javadoc)
 	 * @see cz.zutrasoft.base.services.CommentService#getAllCommentsFromUser(int)
@@ -128,10 +158,10 @@ public class CommentService implements ICommentService
 	}
 	
 	/**
-     * Adds attributes to CoffeeSite to identify what operations can be done with CoffeeSite in UI
+     * Adds attributes to CoffeeSite to identify what operations can be done with Comment in UI
      * 
-     * @param sites
-     * @return
+     * @param comments
+     * @return list of CommentDTO to be sent to client
      */
     private List<CommentDTO> modifyToTransfer(List<Comment> comments) {
         
@@ -139,8 +169,8 @@ public class CommentService implements ICommentService
         
         commentsTransfer.forEach(comment -> comment.setCanBeDeleted(isDeletable(comment)));
         commentsTransfer.forEach(comment -> comment.setStarsFromUser(starsForCoffeeSiteAndUserService.getStarsForCoffeeSiteAndUser(comment.getCoffeeSiteID(), comment.getUserId())));
-        // Removing userId as it was needed only for evaluation of Stars from USer
-        commentsTransfer.forEach(comment -> comment.setUserId(0));
+        // Removing userId as it was needed only for evaluation of Stars from User
+        //commentsTransfer.forEach(comment -> comment.setUserId(0));
         
         return commentsTransfer;
     }
@@ -175,6 +205,11 @@ public class CommentService implements ICommentService
             throw new EntityNotFoundException("Comment with id " + id + " not found.");
         return comment;
     }
+    
+    @Override
+    public CommentDTO getByIdToTransfer(Integer id) {
+        return mapperFacade.map(getById(id), CommentDTO.class);
+    }
 
     @Override
     public void deleteAllCommentsFromUser(Long userID) {
@@ -187,5 +222,6 @@ public class CommentService implements ICommentService
         log.info("All comments of the Coffee site id {} deleted.", coffeeSiteID);
         commentsRepo.deleteAllForSite(coffeeSiteID);
     }
+
 
 }

@@ -15,8 +15,8 @@ import cz.fungisoft.coffeecompass.service.ICommentService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 
 /**
- * Controller for handling addition/deletition of Comment and Stars for CoffeeSite.<br>
- * Obsluhuje operace souvisejici s vkladanim/mazanim hodnoceni a komentare ke CoffeeSitu<br>  
+ * Controller for handling addition/deletition/update of Comment and Stars for CoffeeSite.<br>
+ * Obsluhuje operace souvisejici s vkladanim/mazanim/editaci hodnoceni a komentare ke CoffeeSitu<br>  
  * na strance/templatu coffeesite_info.html<br>
  * <br>
  * Pro ziskani techto informaci ke CoffeeSitu se pouziva Controler CoffeeSiteController,<br>
@@ -57,7 +57,7 @@ public class CSStarsRatingAndCommentsController
     @PostMapping("/saveStarsAndComment/{coffeeSiteId}") 
     public ModelAndView saveCommentAndStarsForSite(@ModelAttribute StarsAndCommentModel starsAndComment, @PathVariable Long coffeeSiteId) {
         // Ulozit hodnoceni if not empty
-        starsForCoffeeSiteService.saveStarsForCoffeeSite(coffeeSiteId, starsAndComment.getStars().getNumOfStars());
+        starsForCoffeeSiteService.saveStarsForCoffeeSiteAndLoggedInUser(coffeeSiteId, starsAndComment.getStars().getNumOfStars());
         
         CoffeeSite cs = coffeeSiteService.findOneById(coffeeSiteId);
         
@@ -71,6 +71,7 @@ public class CSStarsRatingAndCommentsController
         
         return mav;
     }
+    
     
     /**
      * Zpracuje DELETE pozadavek na smazani komentare ze stranky zobrazujici komentare k jednomu CoffeeSitu.<br>

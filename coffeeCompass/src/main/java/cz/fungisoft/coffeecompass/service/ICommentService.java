@@ -16,7 +16,10 @@ import cz.fungisoft.coffeecompass.entity.User;
  */
 public interface ICommentService
 {
-	/**
+    public Comment getById(Integer id);
+    public CommentDTO getByIdToTransfer(Integer id);
+    
+    /**
 	 * Saves the text of comment into DB.
 	 * 
 	 * @param commentText text of {@link Comment} object to be saved.
@@ -28,9 +31,15 @@ public interface ICommentService
 	public Comment saveTextAsComment(String commentText, Long userID, Long coffeeSiteID);
 	public Comment saveTextAsComment(String commentText, User user, CoffeeSite coffeeSite);
 	public Comment saveTextAsComment(String commentText, CoffeeSite coffeeSite);
-    
-	public Comment getById(Integer id);
 	
+	/**
+	 * Updates Comment (in DB) sent from client as CommentDTO
+	 * 
+	 * @param updatedComment CommentDTO to be updated in DB.
+	 * @return Comment if it was updated successfuly, null otherwise
+	 */
+	public Comment updateComment(CommentDTO updatedComment);
+    
 	/**
 	 * Gets list of all saved Comments for given CoffeeSite id.
 	 * 
@@ -70,11 +79,13 @@ public interface ICommentService
 	 */
 	@PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_DBA')")
 	public Long deleteComment(Comment comment);
+	
 	@PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_DBA')")
 	public Long deleteCommentById(Integer commentId);
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_DBA')")
 	public void deleteAllCommentsFromUser(Long userID);
+	
 	@PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_DBA')")
 	public void deleteAllCommentsForSite(Long coffeeSiteID);
     

@@ -40,7 +40,7 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
             errorMessageKey = "{error.user.password.notmatching}";
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(errorMessageKey) // retrieve message from Validation Messages source defined in CoffeeCompassConfiguration
-               .addConstraintViolation();
+                   .addConstraintViolation();
         }
         
         return result ;

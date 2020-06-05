@@ -102,7 +102,7 @@ public class CoffeeSiteControllerSecuredREST
     
 
     @PutMapping("/update/{id}") // Mapovani http PUT na DB operaci UPDATE tj. zmena zaznamu c. id polozkou coffeeSite, napr. http://localhost:8080/rest/secured/site/update/2
-    public ResponseEntity<CoffeeSiteDTO> updateRest(@PathVariable Long id, @Valid @RequestBody CoffeeSiteDTO coffeeSite, UriComponentsBuilder ucBuilder, Locale locale) {
+    public ResponseEntity<CoffeeSiteDTO> updateRest(@PathVariable Long id, @Valid @RequestBody CoffeeSiteDTO coffeeSite,  Locale locale) {
         
         coffeeSite.setId(id);
         

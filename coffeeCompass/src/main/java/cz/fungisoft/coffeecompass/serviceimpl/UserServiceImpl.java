@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -204,8 +203,9 @@ public class UserServiceImpl implements UserService
     }
     
     /**
-     * Updates logged-in User data. If the userName is changed, Spring security context
-     * must be changed too.<br>
+     * Updates logged-in User data.
+     * <p>
+     * If the user's username and/or it's password has changed, Spring security context must be updated too.<br>
      * <p>
      * Updates also User data of another user, if logged-in has ADMIN rights. In such case,
      * only password, Roles (except ADMIN) and emailConfirmation flag can be changed.<br>
@@ -294,13 +294,66 @@ public class UserServiceImpl implements UserService
             entity.setUpdatedOn(new Timestamp(new Date().getTime()));
         }
         
-        log.info("User name {} updated.", entity.getUserName());
+        log.info("User name '{}' updated.", entity.getUserName());
         return entity;
     }
     
     @Override
     public User updateUser(UserDTO userDTO) {
         return updateUser(mapperFacade.map(userDTO,  User.class));
+    }
+    
+    /**
+     * Updates User object from RESST api.
+     * This object does not contain all User attributes as regular 'web' based User.
+     * <p>
+     * If the User's username and/or it's password has changed, Spring security context must be updated too.<br>
+     */
+    @Override
+    public UserDTO updateRESTUser(SignUpAndLoginRESTDto restUpdateUserDTO) {
+        
+        Optional<User> optionalUser = usersRepository.searchByUsername(restUpdateUserDTO.getUserName());
+        
+        if (optionalUser.isPresent()) {
+            
+            User entity = optionalUser.get();
+            
+            String newUserName = entity.getUserName(); // current user name, can be changed and bocomes newUserName
+            String newPasswd = entity.getPassword();
+            
+            if (restUpdateUserDTO.getPassword() != null && !restUpdateUserDTO.getPassword().isEmpty() ) {
+                newPasswd = restUpdateUserDTO.getPassword();
+                entity.setPassword(passwordEncoder.encode(newPasswd));
+            }
+            
+            // Can be empty, e-mail is not mandatory
+            if (restUpdateUserDTO.getEmail() != null) {
+                if (entity.getEmail().isEmpty()
+                    || !entity.getEmail().equalsIgnoreCase(restUpdateUserDTO.getEmail())) { // novy, neprazdny email => zatim nepotvrzeny
+                    entity.setRegisterEmailConfirmed(false);
+                } 
+                entity.setEmail(restUpdateUserDTO.getEmail());
+            }
+            
+            // User name can be empty, if ADMIN is editing another user
+            if (restUpdateUserDTO.getUserName() != null && !restUpdateUserDTO.getUserName().isEmpty()) {
+                newUserName = restUpdateUserDTO.getUserName();
+            }
+            
+            // logged-in User has updated it's own data - 'Spring authentication object' has to be updated too.
+            if (isLoggedInUserToManageItself(entity)) { 
+                userSecurityService.updateCurrentAuthentication(entity, newUserName, newPasswd);
+            }
+            // User name must be updated (saved) after Spring authentication object update, otherwise isLoggedInUserToManageItself(entity) resolves that 
+            // another user (ADMIN) is updating this 'user' as user name was already updated in DB.
+            entity.setUserName(newUserName);
+            entity.setUpdatedOn(new Timestamp(new Date().getTime()));
+            
+            log.info("'REST' User name '{}' updated.", entity.getUserName());
+            return mapperFacade.map(entity, UserDTO.class);
+        }
+        
+        return null;
     }
     
     /**
@@ -413,7 +466,7 @@ public class UserServiceImpl implements UserService
             usersRepository.deleteByUserName(ssoId);
             log.info("User name {} deleted.", ssoId);
         } else {
-            log.error("User name {} does not exist.", ssoId);
+            log.error("User name {} does not exist. Cannot be deleted.", ssoId);
         }
     }
     
@@ -427,7 +480,7 @@ public class UserServiceImpl implements UserService
             usersRepository.deleteById(id);
             log.info("User id {} deleted.", id);
         } else {
-            log.error("User with id {} does not exist.", id);
+            log.error("User with id {} does not exist. Cannot be deleted.", id);
         }
     }
     

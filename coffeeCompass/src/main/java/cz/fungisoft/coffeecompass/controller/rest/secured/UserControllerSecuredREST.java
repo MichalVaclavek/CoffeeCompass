@@ -79,10 +79,10 @@ public class UserControllerSecuredREST
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long id) {
-        logger.info("Fetching User with id " + id);
+        logger.info("Fetching User with id {}", id);
         Optional<UserDTO> user = userService.findByIdToTransfer(id);
         if (!user.isPresent()) {
-            logger.info("User with id " + id + " not found");
+            logger.info("User with id {} not found.", id);
             return new ResponseEntity<UserDTO>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<UserDTO>(user.get(), HttpStatus.OK);
@@ -105,17 +105,25 @@ public class UserControllerSecuredREST
     @PutMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody SignUpAndLoginRESTDto updateUserRequest) {
-        logger.info("Updating User name: '{}'", updateUserRequest.getUserName());
+        logger.info("Updating User name: '{}' via REST api.", updateUserRequest.getUserName());
           
         Optional<UserDTO> currentUser = userService.findByUserNameToTransfer(updateUserRequest.getUserName());        
           
         if (!currentUser.isPresent()) {
-            logger.info("User with username '{}' not found.", updateUserRequest);
+            logger.info("User with username '{}' not found.", updateUserRequest.getUserName());
             return new ResponseEntity<UserDTO>(HttpStatus.NOT_FOUND);
         }        
           
-        userService.updateUser(currentUser.get());
-        return new ResponseEntity<UserDTO>(currentUser.get(), HttpStatus.OK);
+        UserDTO updatedUser = userService.updateRESTUser(updateUserRequest);
+        
+        if (updatedUser != null) {
+            Optional<UserDTO> userDTO = userService.findByIdToTransfer(updatedUser.getId());
+            
+            return (userDTO.get() == null) ? new ResponseEntity<UserDTO>(HttpStatus.NOT_FOUND)
+                                           : new ResponseEntity<UserDTO>(userDTO.get(), HttpStatus.OK);
+        }
+        
+        return new ResponseEntity<UserDTO>(HttpStatus.BAD_REQUEST);
     }
   
     // ------------------- Delete a User -------------------------------------------------------- //
@@ -123,7 +131,7 @@ public class UserControllerSecuredREST
     @DeleteMapping(("/delete/{userName}"))
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> deleteUserByName(@PathVariable("userName") String userName) {
-        logger.info("Fetching & Deleting User with username {} ", userName);
+        logger.info("Fetching & Deleting User with username {} via REST api.", userName);
   
         Optional<User> currentUser = userService.findByUserName(userName);
         if (!currentUser.isPresent()) {
@@ -138,7 +146,7 @@ public class UserControllerSecuredREST
     @DeleteMapping(("/delete/id/{userId}"))
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Long> deleteUserById(@PathVariable("userId") long userId) {
-        logger.info("Fetching & Deleting User with userID {} ", userId);
+        logger.info("Fetching & Deleting User with userID {} via REST api.", userId);
   
         Optional<User> user = userService.findById(userId);
         if (!user.isPresent()) {

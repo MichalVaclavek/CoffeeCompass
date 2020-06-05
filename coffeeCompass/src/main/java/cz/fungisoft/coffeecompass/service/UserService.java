@@ -37,6 +37,15 @@ public interface UserService
     User registerNewRESTUser(SignUpAndLoginRESTDto restRegisterDTO);
     
     /**
+     *  Pro ulozeni updatovaneho Usera poslaneho clientem pomoci PUT requestu pres REST
+     *  rozhrani tj. prevazne z mob. app.
+     *  
+     * @param restUpdateUserDTO - user object to be updated
+     * @return updated UserDTO data
+     */
+    UserDTO updateRESTUser(SignUpAndLoginRESTDto restUpdateUserDTO);
+    
+    /**
      * Saves new OAuth2Info user data obtained from OAuth2 provider
      * @return
      */

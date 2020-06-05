@@ -7,9 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.dto.CommentDTO;
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
 import cz.fungisoft.coffeecompass.exceptions.rest.ResourceNotFoundException;
@@ -45,6 +48,28 @@ public class CSStarsCommentsControllerPublicREST
         this.commentsService = commentsService;
         this.starsQualityService = starsQualityService;
     }
+    
+    
+    /**
+     * Zpracuje GET pozadavek na Comment urciteho ID
+     * 
+     * @param comment Comment to be returned
+     * @return
+     */
+    @GetMapping("/getComment/{commentId}") 
+    public ResponseEntity<CommentDTO> getCommentByID(@PathVariable Integer commentId) {
+        
+        CommentDTO comment = null;
+        
+        // Ulozit Comment if not empty
+        if (commentId != null) {
+            comment = commentsService.getByIdToTransfer(commentId);
+        }
+        
+        return (comment != null) ? new ResponseEntity<CommentDTO>(comment, HttpStatus.OK)
+                                 : new ResponseEntity<CommentDTO>(HttpStatus.NOT_FOUND);
+    }
+    
 
     /**
      * Returns all comments of the CoffeeSite of id=siteId.

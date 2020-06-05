@@ -386,6 +386,7 @@
 				                         th:field="*{starsAndComment.comment}"
 				                         class="w3-input w3-border" style="resize:none"
 				                         maxlength=512
+				                         rows="3"
 				                         th:placeholder="#{site.comment.message.placeholder}">
 				               </textarea>
 							</div>
@@ -402,34 +403,39 @@
 		    
 		    <!-- Comments list  -->
 		    <!--  Every comment has button Delete in case of ADMIN user is logged-in or USER who created the comment -->
+		    <!--  Every comment has button Update in case of ADMIN user is logged-in or USER who created the comment -->
 		    <div class="w3-container w3-margin-top"> 
 				<b><h3 th:text="#{site.listOfComments}" class="w3-border-bottom w3-bottombar">Comments: </h3></b>
 				<div class="w3-margin-top w3-small" style="font-style: italic" th:if="${#lists.isEmpty(comments)}" th:text="#{site.noComments}"></div>
 				<div class="w3-container w3-margin-top" th:if="${NOT #lists.isEmpty(comments)}">
+				
 					<div th:each="comment : ${comments}" class="w3-border-bottom w3-margin-top">
+					
 						<div class="w3-right"> <!--  to move user and date to the right side -->
 							<span th:text="${comment.userName}" style="font-weight: bold; font-style: italic" class="w3-small">User name</span> - 
 							<span th:text="${#dates.format(comment.created, 'dd.MM. yyyy, HH:mm')}" class="w3-small" style="font-style: italic">Date of comment</span> <!-- style="font-weight: bold" -->
 						</div>
+						
 						<div class="w3-cell-row">
 						  <div th:text="${comment.text}" class="w3-margin-left w3-cell"></div>
-							  <div class="w3-right w3-cell" th:if="${comment.canBeDeleted}">
-							      <form action="#" 
-					                    th:action="@{'/deleteComment/' + ${comment.id}}" 
-					                    th:method="DELETE">
-					               		<input type="hidden" name="_method" value="delete" />
-					               		<button type="submit" id="submitButton" th:title="#{comment.delete}" class="w3-button w3-small fa fa-trash w3-red w3-border w3-round"></button>
-					              </form>
-				            </div>
+						  		
+					  	  <div class="w3-right w3-cell" th:if="${comment.canBeDeleted}">
+					      <form action="#" 
+			                    th:action="@{'/deleteComment/' + ${comment.id}}" 
+			                    th:method="DELETE">
+			               		<input type="hidden" name="_method" value="delete" />
+			               		<button type="submit" id="submitButton" th:title="#{comment.delete}" class="w3-button w3-small fa fa-trash w3-red w3-border w3-round"></button>
+			              </form>
+		                  </div>
+				               
 					    </div>
-					</div>
+					</div> <!-- <div th:each="comment : ${comments}" class="w3-border-bottom w3-margin-top"> -->
+					
 				</div>
 			</div>
 			
 		</div>
-		
 	</div>
-		 
 </div>
 	  
 	 <!-- <div th:replace="fragments/footer :: footer"/>  -->
@@ -444,12 +450,9 @@
             
             function enableDisableButton(event) {
             	
-	        	var saveImageButton = document.getElementById("saveImage");		
+	        	var saveImageButton = document.getElementById("saveImage");	
 	        	
-	        	if (chooseFile.files.length == 0) {
-	        		saveImageButton.disabled = true;
-	        	} else
-	        		saveImageButton.disabled = false;
+	        	saveImageButton.disabled = (chooseFile.files.length == 0) ? true : false;
             }
      </script>
   
