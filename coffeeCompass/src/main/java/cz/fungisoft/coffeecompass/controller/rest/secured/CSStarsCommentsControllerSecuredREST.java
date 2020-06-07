@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +44,9 @@ import io.swagger.annotations.Api;
 @RequestMapping("/rest/secured/starsAndComments")
 public class CSStarsCommentsControllerSecuredREST
 {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(CSStarsCommentsControllerSecuredREST.class);
+    
     private ICommentService commentsService;
     
     private IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService;
@@ -131,21 +136,38 @@ public class CSStarsCommentsControllerSecuredREST
         // Ulozit updated Comment if not null
         if (comment != null) {
             // Ulozit updated Stars if not 0
-            if (comment.getStarsFromUser() >= StarsQualityDescription.StarsQualityEnum.ONE.ordinal() + 1
-                 && comment.getStarsFromUser() <= StarsQualityDescription.StarsQualityEnum.FIVE.ordinal() + 1) {
-                starsForCoffeeSiteService.updateStarsForCoffeeSiteAndUser(comment.getCoffeeSiteID(), comment.getUserId(), comment.getStarsFromUser());
+            if (comment.getStarsFromUser() >= (StarsQualityDescription.StarsQualityEnum.ONE.ordinal() + 1)
+                 && comment.getStarsFromUser() <= (StarsQualityDescription.StarsQualityEnum.FIVE.ordinal() + 1)
+                 && comment.getUserId() > 0) {
+                StarsForCoffeeSiteAndUser sfcsu = starsForCoffeeSiteService.updateStarsForCoffeeSiteAndUser(comment.getCoffeeSiteID(), comment.getUserId(), comment.getStarsFromUser());
+                if (sfcsu != null) {
+                    LOG.info("Stars updated for CoffeeSite id {}, from User id {}.", comment.getCoffeeSiteID(), comment.getUserId());
+                } else {
+                    LOG.error("Failed Stars update for CoffeeSite id {}, from User id {}", comment.getCoffeeSiteID(), comment.getUserId());
+                }
             }
             
-            Comment updatedComment = commentsService.updateComment(comment);
+            Comment updatedComment = null;
             CommentDTO commentDTO = null;
-            if (updatedComment != null) {
-                commentDTO = commentsService.getByIdToTransfer(updatedComment.getId());
-            } 
+            try {
+                updatedComment = commentsService.updateComment(comment);
+                
+                if (updatedComment != null) {
+                    commentDTO = commentsService.getByIdToTransfer(updatedComment.getId());
+                    LOG.info("Comment updated for CoffeeSite id {}, from User id {}.", comment.getCoffeeSiteID(), comment.getUserId());
+                } else {
+                    LOG.error("Comment update failed for CoffeeSite id {}, from User id {}. Comment id {}", comment.getCoffeeSiteID(), comment.getUserId(), comment.getId());
+                }
+            } catch (Exception ex) {
+                LOG.error("Error calling update Comment service.", ex);
+                return new ResponseEntity<CommentDTO>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
             
             return (commentDTO != null) ? new ResponseEntity<CommentDTO>(commentDTO, HttpStatus.OK)
                                         : new ResponseEntity<CommentDTO>(HttpStatus.NOT_FOUND); // means not found or deleted
         }
         
+        LOG.error("Error update Comment, input validation failed.");
         return new ResponseEntity<CommentDTO>(HttpStatus.BAD_REQUEST);
     }
     

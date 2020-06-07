@@ -40,7 +40,6 @@ public class CommentDTO
     
     // to allow better mapping from Comment to CommentDTO, which included starsFromUser
     // its easier to serach fro user by its id
-    // can be removed (set to 0) before sending to client
     private long userId; 
     
     private boolean canBeDeleted = false; // default value

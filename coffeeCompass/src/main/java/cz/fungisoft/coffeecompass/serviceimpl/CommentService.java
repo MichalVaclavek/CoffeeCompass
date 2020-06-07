@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -116,16 +117,20 @@ public class CommentService implements ICommentService
             if (comment.isPresent()) {
                 if (updatedComment.getText().isEmpty()) { // empty text of Comment means delete Comment
                     commentsRepo.deleteById(updatedComment.getId());
+                    log.info("Comment update. Comment id {} deleted, because of empty comment text. User id {}, CoffeeSite id {}", updatedComment.getId(),  updatedComment.getUserId(), updatedComment.getCoffeeSiteID());
                     return null;
                 }
                 
                 if (comment.get().getUser().getId() == updatedComment.getUserId()
                         && comment.get().getCoffeeSite().getId() == updatedComment.getCoffeeSiteID()) {
-                    updatedComment.setCreated(new Timestamp(new Date().getTime()));
-                    return commentsRepo.save(mapperFacade.map(updatedComment, Comment.class));
+                    comment.get().setText(updatedComment.getText());
+                    comment.get().setCreated(new Timestamp(new Date().getTime()));
+                    log.info("Comment id {} updated from User id {} for CoffeeSite id {}", updatedComment.getId(),  updatedComment.getUserId(), updatedComment.getCoffeeSiteID());
+                    return commentsRepo.save(comment.get());
                 }
             }
         }
+        log.warn("Comment id {} update failed. User id {} for CoffeeSite id {}", updatedComment.getId(),  updatedComment.getUserId(), updatedComment.getCoffeeSiteID());
         return null;
     }
 
@@ -165,14 +170,32 @@ public class CommentService implements ICommentService
      */
     private List<CommentDTO> modifyToTransfer(List<Comment> comments) {
         
-        List<CommentDTO> commentsTransfer = mapperFacade.mapAsList(comments, CommentDTO.class);
         
-        commentsTransfer.forEach(comment -> comment.setCanBeDeleted(isDeletable(comment)));
-        commentsTransfer.forEach(comment -> comment.setStarsFromUser(starsForCoffeeSiteAndUserService.getStarsForCoffeeSiteAndUser(comment.getCoffeeSiteID(), comment.getUserId())));
-        // Removing userId as it was needed only for evaluation of Stars from User
-        //commentsTransfer.forEach(comment -> comment.setUserId(0));
+        return comments.stream().map(comment -> modifyToTransfer(comment)).collect(Collectors.toList());
         
-        return commentsTransfer;
+//        List<CommentDTO> commentsTransfer = mapperFacade.mapAsList(comments, CommentDTO.class);
+//        
+//        commentsTransfer.forEach(comment -> comment.setCanBeDeleted(isDeletable(comment)));
+//        commentsTransfer.forEach(comment -> comment.setStarsFromUser(starsForCoffeeSiteAndUserService.getStarsForCoffeeSiteAndUser(comment.getCoffeeSiteID(), comment.getUserId())));
+//        
+//        return commentsTransfer;
+    }
+    
+    /**
+     * Adds attributes to CoffeeSite to identify what operations can be done with Comment in UI.
+     * Also adds Stars from user for this CoffeeSite.
+     * 
+     * @param comments
+     * @return list of CommentDTO to be sent to client
+     */
+    private CommentDTO modifyToTransfer(Comment comment) {
+        
+        CommentDTO commentToTransfer = mapperFacade.map(comment, CommentDTO.class);
+        
+        commentToTransfer.setCanBeDeleted(isDeletable(commentToTransfer));
+        commentToTransfer.setStarsFromUser(starsForCoffeeSiteAndUserService.getStarsForCoffeeSiteAndUser(commentToTransfer.getCoffeeSiteID(), commentToTransfer.getUserId()));
+        
+        return commentToTransfer;
     }
     
     private boolean isDeletable(CommentDTO comment) {
@@ -208,7 +231,8 @@ public class CommentService implements ICommentService
     
     @Override
     public CommentDTO getByIdToTransfer(Integer id) {
-        return mapperFacade.map(getById(id), CommentDTO.class);
+        return modifyToTransfer(getById(id));
+        //return mapperFacade.map(getById(id), CommentDTO.class);
     }
 
     @Override

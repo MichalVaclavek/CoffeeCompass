@@ -122,10 +122,11 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
                 sfcsu.setStars(starsQualService.findStarsQualityById(stars));
                 // Updatovane hodnoceni ulozit do Repositoy
                 sfcsu = avgStarsRepo.save(sfcsu);
-                log.info("Stars for Coffee site id {} and User id {} saved. Stars: {}", coffeeSiteID, userId, stars );
+                log.info("Stars for Coffee site id {} and User id {} updated. Stars: {}", coffeeSiteID, userId, stars);
                 return sfcsu;
             }
         }
+        log.error("Updating Stars for Coffee site id {} and User id {} failed. Stars: {}", coffeeSiteID, userId, stars);
         return null;
     }
 
