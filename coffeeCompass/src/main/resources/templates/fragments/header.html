@@ -75,12 +75,10 @@
 	        		<a th:href="@{'/user/edit/?userName=' + ${#authentication.name}}" th:text="${#authentication.name}" class="w3-bar-item w3-button w3-blue w3-right">Edit user's account</a>
 	        	</div>
                 <!-- Swap between 2 languages  -->
-                <div sec:authorize="isAuthenticated()">
-					<div sec:authorize="hasAnyRole('USER', 'ADMIN', 'DBA') OR isAnonymous()"
-					     th:with="url=${#httpServletRequest.requestURI}">
-					   <a th:if="${#locale.language} == 'cs'" th:href="@{${'~' + #httpServletRequest.requestURI}(lang=en)}" class="w3-bar-item w3-right"><span>en</span></a>
-					   <a th:if="${#locale.language} == 'en'" th:href="@{${'~' + #httpServletRequest.requestURI}(lang=cs)}" class="w3-bar-item w3-right"><span>cs</span></a>
-					</div>
+				<div sec:authorize="hasAnyRole('USER', 'ADMIN', 'DBA') OR isAnonymous()"
+				     th:with="url=${#httpServletRequest.requestURI}">
+				   <a th:if="${#locale.language} == 'cs'" th:href="@{${'~' + #httpServletRequest.requestURI}(lang=en)}" class="w3-bar-item w3-right"><span>en</span></a>
+				   <a th:if="${#locale.language} == 'en'" th:href="@{${'~' + #httpServletRequest.requestURI}(lang=cs)}" class="w3-bar-item w3-right"><span>cs</span></a>
 				</div>
            </div>
        </div>

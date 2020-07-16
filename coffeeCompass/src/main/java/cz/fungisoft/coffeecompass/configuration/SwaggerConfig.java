@@ -42,7 +42,7 @@ public class SwaggerConfig
 
         return new ApiInfo(
                 "Coffee compass",
-                "Databáze lokalit Kávou s sebou",
+                "Databáze lokalit Kávy s sebou",
                 "1.0",
                 "Terms of Service: nothing is guaranteed.",
                 contact,
