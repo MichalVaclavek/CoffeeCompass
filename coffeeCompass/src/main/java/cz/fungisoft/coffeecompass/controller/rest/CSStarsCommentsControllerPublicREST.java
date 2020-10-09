@@ -1,18 +1,28 @@
 package cz.fungisoft.coffeecompass.controller.rest;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.dto.CommentDTO;
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
+import cz.fungisoft.coffeecompass.entity.CoffeeSite;
+import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
 import cz.fungisoft.coffeecompass.exceptions.rest.ResourceNotFoundException;
+import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.ICommentService;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
 import io.swagger.annotations.Api;
@@ -38,12 +48,16 @@ public class CSStarsCommentsControllerPublicREST
     
     private StarsQualityService starsQualityService;
     
+    private CoffeeSiteService coffeeSiteService;
+    
     @Autowired
     public CSStarsCommentsControllerPublicREST(ICommentService commentsService,
-                                               StarsQualityService starsQualityService) {
+                                               StarsQualityService starsQualityService,
+                                               CoffeeSiteService coffeeSiteService) {
         super();
         this.commentsService = commentsService;
         this.starsQualityService = starsQualityService;
+        this.coffeeSiteService = coffeeSiteService;
     }
     
     
@@ -63,10 +77,50 @@ public class CSStarsCommentsControllerPublicREST
             comment = commentsService.getByIdToTransfer(commentId);
         }
         
-        return (comment != null) ? new ResponseEntity<CommentDTO>(comment, HttpStatus.OK)
-                                 : new ResponseEntity<CommentDTO>(HttpStatus.NOT_FOUND);
+        return (comment != null) ? new ResponseEntity<>(comment, HttpStatus.OK)
+                                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     
+    
+    /**
+     * Zpracuje GET pozadavek vsechny comments (muze byt pouzito pro offline mode na clientu)
+     * 
+     * @param comment Comment to be returned
+     * @return
+     */
+    @GetMapping("/comments/all")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CommentDTO> getAllComments() {
+        
+        // Gets all comments 
+        return  commentsService.getAllComments();
+        
+    }
+    
+    /**
+     * Zpracuje GET pozadavek vsechny comments (muze byt pouzito pro offline mode na clientu)
+     * 
+     * @param comment Comment to be returned
+     * @return
+     */
+    @GetMapping("/comments/allPaginated") // https://localhost:8443/rest/public/starsAndComments/comments/allPaginated/?size=5&page=1
+    @ResponseStatus(HttpStatus.OK)
+    public Page<CommentDTO> getAllCommentsPaginated(@RequestParam(defaultValue = "created") String orderBy,
+                                                    @RequestParam(defaultValue = "desc") String direction,
+                                                    @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+        
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(10);
+        Page<CommentDTO> allCommentsPage;
+        
+        // Get 1 page of all ACTIVE CoffeeSites
+        allCommentsPage = commentsService.findAllCommentsPaginated(PageRequest.of(currentPage - 1, pageSize, new Sort(Sort.Direction.fromString(direction.toUpperCase()), orderBy)));
+        
+        
+        // Gets all comments page with the given number of comments
+        return  allCommentsPage;
+        
+    }
 
     /**
      * Returns all comments of the CoffeeSite of id=siteId.
@@ -80,7 +134,7 @@ public class CSStarsCommentsControllerPublicREST
      * @param siteId id of coffeeSite who's comments are requested
      * @return
      */
-    @GetMapping("/comments/{siteId}") // napr. http://localhost:8080/rest/public/starsAndComments/comments/2
+    @GetMapping("/comments/{siteId}") // napr. https://localhost:8443/rest/public/starsAndComments/comments/2
     public ResponseEntity<List<CommentDTO>> commentsBySiteId(@PathVariable("siteId") Long siteId) {
         
         // Gets all comments for this coffeeSite
@@ -91,6 +145,34 @@ public class CSStarsCommentsControllerPublicREST
         }
         
         return new ResponseEntity<List<CommentDTO>>(comments, HttpStatus.OK);
+    }
+    
+    /**
+     * Returns all comments of the CoffeeSite of id=siteId Paginated.
+     * 
+     * @param siteId id of coffeeSite who's comments are requested
+     * @return
+     */
+    @GetMapping("/commentsPaginated/{siteId}/") // napr. https://localhost:8443/rest/public/starsAndComments/commentsPaginated/2/?size=5&page=1
+    public ResponseEntity<Page<CommentDTO>> commentsBySiteIdPaginated(@PathVariable("siteId") Long siteId,
+                                                                      @RequestParam(defaultValue = "created") String orderBy,
+                                                                      @RequestParam(defaultValue = "desc") String direction,
+                                                                      @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+        
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(10);
+        Page<CommentDTO> commentsPage;
+        
+        CoffeeSite coffeeSite = coffeeSiteService.findOneById(siteId);
+        
+        if (coffeeSite == null) {
+            throw new ResourceNotFoundException("Comments", "coffeeSiteId", siteId);
+        }
+        
+        // Get 1 page of Comments beloning to the given CoffeeSite id
+        commentsPage = commentsService.findAllCommentsForSitePaginated(coffeeSite, PageRequest.of(currentPage - 1, pageSize, new Sort(Sort.Direction.fromString(direction.toUpperCase()), orderBy)));
+        
+        return new ResponseEntity<>(commentsPage, HttpStatus.OK);
     }
     
     /**

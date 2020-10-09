@@ -102,7 +102,7 @@ public class CSStarsCommentsControllerSecuredREST
         if (comments == null) {
             throw new ResourceNotFoundException("Comments", "coffeeSiteId", coffeeSiteId);
         }
-        return new ResponseEntity<List<CommentDTO>>(comments, HttpStatus.OK);
+        return new ResponseEntity<>(comments, HttpStatus.OK);
     }
     
     

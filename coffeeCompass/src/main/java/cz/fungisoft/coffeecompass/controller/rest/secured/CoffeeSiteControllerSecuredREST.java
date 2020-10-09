@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.controller.rest.secured;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -10,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -145,7 +150,6 @@ public class CoffeeSiteControllerSecuredREST
     public ResponseEntity<CoffeeSiteDTO> activateCoffeeSite(@PathVariable(name = "id") Long id, UriComponentsBuilder ucBuilder, Locale locale) {
         CoffeeSite cs = coffeeSiteService.findOneById(id);
         if (coffeeSiteService.isLocationAlreadyOccupiedByActiveSite(cs.getZemSirka(), cs.getZemDelka(), 5, cs.getId())) {
-            //new ResponseEntity<Long>(0L, HttpStatus.BAD_REQUEST);
             throw new InvalidParameterValueException("CoffeeSite", "latitude/longitude", cs.getZemSirka(), messages.getMessage("coffeesite.create.wrong.location.rest.error", null, locale));
         }
         return modifyStatus(id, CoffeeSiteRecordStatusEnum.ACTIVE, ucBuilder, locale);
@@ -188,21 +192,43 @@ public class CoffeeSiteControllerSecuredREST
     }
     
     /**
-     * Method to handle request to show CoffeeSites created by logged in user.
+     * Method to handle request to send list of CoffeeSites created by logged in user.
      * 
      * @return
      */
     @GetMapping("/mySites") // napr. https://coffeecompass.cz/rest/secured/site/mySites
-    public ResponseEntity<List<CoffeeSiteDTO>> showMySites() {
+    public ResponseEntity<List<CoffeeSiteDTO>> sendMySites() {
         List<CoffeeSiteDTO> coffeeSites = coffeeSiteService.findAllFromLoggedInUser();
         
-        if (coffeeSites == null || coffeeSites.size() == 0) {
+        if (coffeeSites == null || coffeeSites.isEmpty()) {
             log.error("No Coffee site from user found.");
             return new ResponseEntity<List<CoffeeSiteDTO>>(HttpStatus.NOT_FOUND);
         } 
         
         log.info("All sites from logged-in user retrieved.");
         return new ResponseEntity<List<CoffeeSiteDTO>>(coffeeSites, HttpStatus.OK);   
+    }
+    
+    /**
+     * Method to handle request to send list od CoffeeSites created by logged in user paginated.
+     * 
+     * @return
+     */
+    @GetMapping("/mySitesPaginated/") // napr. https://coffeecompass.cz/rest/secured/site/mySitesPaginated/?size=5&page=1
+    public ResponseEntity<Page<CoffeeSiteDTO>> sendMySitesPaginated(@RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(15);
+        Page<CoffeeSiteDTO> coffeeSitePage;
+        
+        coffeeSitePage = coffeeSiteService.findAllFromLoggedInUserPaginated(PageRequest.of(currentPage - 1, pageSize, new Sort(Sort.Direction.fromString("DESC"), "createdOn")));
+        
+        if (coffeeSitePage == null || coffeeSitePage.isEmpty()) {
+            log.error("No Coffee site from logged-in user found.");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } 
+        
+        log.info("Page n. {0} of coffee sites from logged-in user retrieved.", currentPage);
+        return new ResponseEntity<>(coffeeSitePage, HttpStatus.OK);   
     }
     
     /**

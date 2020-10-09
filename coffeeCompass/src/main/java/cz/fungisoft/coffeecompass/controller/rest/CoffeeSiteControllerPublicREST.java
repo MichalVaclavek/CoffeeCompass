@@ -1,10 +1,14 @@
 package cz.fungisoft.coffeecompass.controller.rest;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +28,7 @@ import cz.fungisoft.coffeecompass.entity.OtherOffer;
 import cz.fungisoft.coffeecompass.entity.PriceRange;
 import cz.fungisoft.coffeecompass.entity.SiteLocationType;
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
+import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
 import cz.fungisoft.coffeecompass.service.CSRecordStatusService;
 import cz.fungisoft.coffeecompass.service.CSStatusService;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
@@ -43,7 +48,6 @@ import io.swagger.annotations.Api;
  * 
  * Základní Controller pro obsluhu požadavků, které se týkají práce s hlavním objektem CoffeeSite.<br>
  * Tj. pro základní CRUD operace a pro vyhledávání CoffeeSites.<br>
- * Tato verze je urcena pro REST, pro testovaci/prototypovaci ucely je urcena verze CoffeeSiteController, ktera vyuziva system/framework Thymeleaf
  * <br>
  * @author Michal Václavek
  *
@@ -112,6 +116,7 @@ public class CoffeeSiteControllerPublicREST
      * <br>
      * http://coffeecompass.cz/rest/site/allSites/?orderBy=siteName&direction=asc<br>
      * http://coffeecompass.cz/rest/site/allSites/?orderBy=cena&direction=asc<br>
+     * http://coffeecompass.cz/rest/site/allSites/
      * 
      * @param orderBy
      * @param direction
@@ -122,7 +127,7 @@ public class CoffeeSiteControllerPublicREST
                                                      @RequestParam(defaultValue = "asc") String direction) {
         
         List<CoffeeSiteDTO> coffeeSites = coffeeSiteService.findAll(orderBy, direction);
-        log.info("All sites retrieved.");
+        
         if (coffeeSites == null || coffeeSites.size() == 0) {
             log.error("No Coffee site found.");
             return new ResponseEntity<List<CoffeeSiteDTO>>(HttpStatus.NOT_FOUND);
@@ -130,6 +135,35 @@ public class CoffeeSiteControllerPublicREST
         
         log.info("All sites retrieved.");
         return new ResponseEntity<List<CoffeeSiteDTO>>(coffeeSites, HttpStatus.OK);
+    }
+    
+    /**
+     * Vrati 1 stranku ze vsech AKTIVNICH CoffeeSites.
+     * 
+     * Priklady http dotazu, ktere vrati serazeny seznam/stranku CoffeeSitu jsou:
+     * <br>
+     * https://coffeecompass.cz/rest/site/allSitesPaginated/<br>
+     * https://coffeecompass.cz/rest/site/allSitesPaginated/?size=5&page=1<br>
+     * https://coffeecompass.cz/rest/site/allSitesPaginated/?size=5&page=2&orderBy=createdOn&direction=asc<br>
+     * 
+     * @param orderBy
+     * @param direction
+     * @return
+     */
+    @GetMapping("/allSitesPaginated/") 
+    public ResponseEntity<Page<CoffeeSiteDTO>> allSitesPaginated(@RequestParam(defaultValue = "createdOn") String orderBy,
+                                                                 @RequestParam(defaultValue = "desc") String direction,
+                                                                 @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+        
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(10);
+        Page<CoffeeSiteDTO> coffeeSitePage;
+        
+        // Get 1 page of all ACTIVE CoffeeSites
+        coffeeSitePage = coffeeSiteService.findAllWithRecordStatusPaginated(PageRequest.of(currentPage - 1, pageSize, new Sort(Sort.Direction.fromString(direction.toUpperCase()), orderBy)), CoffeeSiteRecordStatusEnum.ACTIVE);
+        
+        log.info("Page n. {0} of coffee sites from logged-in user retrieved.", currentPage);
+        return new ResponseEntity<>(coffeeSitePage, HttpStatus.OK);
     }
     
     /**
@@ -176,7 +210,7 @@ public class CoffeeSiteControllerPublicREST
     @GetMapping("/dist/") // napr. http://localhost:8080/rest/site/dist/?lat1=50.235&lon1=14.235&lat2=50.335&lon2=14.335
     public ResponseEntity<Double> distance(@RequestParam(value="lat1") double lat1, @RequestParam(value="lon1") double lon1,
                            @RequestParam(value="lat2") double lat2, @RequestParam(value="lon2") double lon2) {
-        return new ResponseEntity<Double>(coffeeSiteService.getDistance(lat1, lon1, lat2, lon2), HttpStatus.OK);
+        return new ResponseEntity<>(coffeeSiteService.getDistance(lat1, lon1, lat2, lon2), HttpStatus.OK);
     }
     
     /**

@@ -620,8 +620,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         // Sama DB tyto vzdalenosti pro dane CoffeeSites nevraci
         sites.sort((cs1, cs2) -> { 
             return (cs1.getDistFromSearchPoint() == cs2.getDistFromSearchPoint()) ? 0
-                   : (cs1.getDistFromSearchPoint() < cs2.getDistFromSearchPoint()) ? -1
-                      : 1;}
+                                                                                  : (cs1.getDistFromSearchPoint() < cs2.getDistFromSearchPoint()) ? -1
+                                                                                                                                                  : 1;}
         );
         
         return sites;

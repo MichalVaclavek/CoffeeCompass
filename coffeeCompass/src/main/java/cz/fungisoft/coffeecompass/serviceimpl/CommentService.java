@@ -10,6 +10,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +20,10 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.Comment;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.exceptions.EntityNotFoundException;
+import cz.fungisoft.coffeecompass.repository.CoffeeSitePageableRepository;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
 import cz.fungisoft.coffeecompass.repository.CommentRepository;
+import cz.fungisoft.coffeecompass.repository.CommentsPageableRepository;
 import cz.fungisoft.coffeecompass.service.ICommentService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.service.UserService;
@@ -44,6 +48,9 @@ public class CommentService implements ICommentService
     private UserService userService;
     
     private CommentRepository commentsRepo;
+    
+    @Autowired
+    private CommentsPageableRepository commentsPageableRepo;
     
     private MapperFacade mapperFacade;
     
@@ -153,6 +160,12 @@ public class CommentService implements ICommentService
     }
 	
 	@Override
+    public Page<CommentDTO> findAllCommentsForSitePaginated(CoffeeSite coffeeSite, Pageable pageable) {
+	    Page<Comment> commentsPage = commentsPageableRepo.findByCoffeeSite(coffeeSite, pageable);
+        return commentsPage.map(this::modifyToTransfer);
+    }
+	
+	@Override
     public Integer getNumberOfCommentsForSiteId(Long siteId) {
         return commentsRepo.getNumberOfCommentsForSite(siteId);
     }
@@ -162,6 +175,15 @@ public class CommentService implements ICommentService
 	    return modifyToTransfer(commentsRepo.findAll());
 	}
 	
+	 
+	@Override
+    public Page<CommentDTO> findAllCommentsPaginated(Pageable pageable) {
+	    Page<Comment> commentsPage = commentsPageableRepo.findAll(pageable);
+        return commentsPage.map(this::modifyToTransfer);
+    }
+	    
+
+	
 	/**
      * Adds attributes to CoffeeSite to identify what operations can be done with Comment in UI
      * 
@@ -170,15 +192,7 @@ public class CommentService implements ICommentService
      */
     private List<CommentDTO> modifyToTransfer(List<Comment> comments) {
         
-        
         return comments.stream().map(comment -> modifyToTransfer(comment)).collect(Collectors.toList());
-        
-//        List<CommentDTO> commentsTransfer = mapperFacade.mapAsList(comments, CommentDTO.class);
-//        
-//        commentsTransfer.forEach(comment -> comment.setCanBeDeleted(isDeletable(comment)));
-//        commentsTransfer.forEach(comment -> comment.setStarsFromUser(starsForCoffeeSiteAndUserService.getStarsForCoffeeSiteAndUser(comment.getCoffeeSiteID(), comment.getUserId())));
-//        
-//        return commentsTransfer;
     }
     
     /**
@@ -246,6 +260,5 @@ public class CommentService implements ICommentService
         log.info("All comments of the Coffee site id {} deleted.", coffeeSiteID);
         commentsRepo.deleteAllForSite(coffeeSiteID);
     }
-
 
 }

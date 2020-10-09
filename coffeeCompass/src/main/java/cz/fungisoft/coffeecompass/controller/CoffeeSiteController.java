@@ -1,7 +1,6 @@
 package cz.fungisoft.coffeecompass.controller;
 
 import cz.fungisoft.coffeecompass.controller.models.StarsAndCommentModel;
-import cz.fungisoft.coffeecompass.domain.weather.WeatherData;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.dto.CommentDTO;
 import cz.fungisoft.coffeecompass.dto.WeatherDTO;
@@ -142,7 +141,8 @@ public class CoffeeSiteController
      * @return
      */
     @GetMapping("/allSitesPaginated/")
-    public ModelAndView sitesPaginated(@RequestParam(defaultValue = "createdOn") String orderBy, @RequestParam(defaultValue = "desc") String direction,
+    public ModelAndView sitesPaginated(@RequestParam(defaultValue = "createdOn") String orderBy,
+                                       @RequestParam(defaultValue = "desc") String direction,
                                        @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
         
         ModelAndView mav = new ModelAndView();
