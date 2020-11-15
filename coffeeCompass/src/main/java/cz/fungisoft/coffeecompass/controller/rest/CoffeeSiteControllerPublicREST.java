@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
@@ -128,13 +129,13 @@ public class CoffeeSiteControllerPublicREST
         
         List<CoffeeSiteDTO> coffeeSites = coffeeSiteService.findAll(orderBy, direction);
         
-        if (coffeeSites == null || coffeeSites.size() == 0) {
+        if (coffeeSites == null || coffeeSites.isEmpty()) {
             log.error("No Coffee site found.");
-            return new ResponseEntity<List<CoffeeSiteDTO>>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } 
         
         log.info("All sites retrieved.");
-        return new ResponseEntity<List<CoffeeSiteDTO>>(coffeeSites, HttpStatus.OK);
+        return new ResponseEntity<>(coffeeSites, HttpStatus.OK);
     }
     
     /**
@@ -150,8 +151,9 @@ public class CoffeeSiteControllerPublicREST
      * @param direction
      * @return
      */
-    @GetMapping("/allSitesPaginated/") 
-    public ResponseEntity<Page<CoffeeSiteDTO>> allSitesPaginated(@RequestParam(defaultValue = "createdOn") String orderBy,
+    @GetMapping("/allSitesPaginated/")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<CoffeeSiteDTO> allSitesPaginated(@RequestParam(defaultValue = "createdOn") String orderBy,
                                                                  @RequestParam(defaultValue = "desc") String direction,
                                                                  @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
         
@@ -162,8 +164,8 @@ public class CoffeeSiteControllerPublicREST
         // Get 1 page of all ACTIVE CoffeeSites
         coffeeSitePage = coffeeSiteService.findAllWithRecordStatusPaginated(PageRequest.of(currentPage - 1, pageSize, new Sort(Sort.Direction.fromString(direction.toUpperCase()), orderBy)), CoffeeSiteRecordStatusEnum.ACTIVE);
         
-        log.info("Page n. {0} of coffee sites from logged-in user retrieved.", currentPage);
-        return new ResponseEntity<>(coffeeSitePage, HttpStatus.OK);
+        log.info("Page n. {} of coffee sites from logged-in user retrieved.", currentPage);
+        return coffeeSitePage;
     }
     
     /**
@@ -177,8 +179,8 @@ public class CoffeeSiteControllerPublicREST
         
         CoffeeSiteDTO cs = coffeeSiteService.findOneToTransfer(id);
         
-        return (cs == null) ? new ResponseEntity<CoffeeSiteDTO>(HttpStatus.NOT_FOUND)
-                            : new ResponseEntity<CoffeeSiteDTO>(cs, HttpStatus.OK);
+        return (cs == null) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                            : new ResponseEntity<>(cs, HttpStatus.OK);
     }
     
 
@@ -193,8 +195,8 @@ public class CoffeeSiteControllerPublicREST
         
         CoffeeSiteDTO cs = coffeeSiteService.findByName(name);
         
-        return (cs == null) ? new ResponseEntity<CoffeeSiteDTO>(HttpStatus.NOT_FOUND)
-                            : new ResponseEntity<CoffeeSiteDTO>(cs, HttpStatus.OK);
+        return (cs == null) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                            : new ResponseEntity<>(cs, HttpStatus.OK);
     }
     
     
@@ -208,9 +210,10 @@ public class CoffeeSiteControllerPublicREST
      * @return
      */
     @GetMapping("/dist/") // napr. http://localhost:8080/rest/site/dist/?lat1=50.235&lon1=14.235&lat2=50.335&lon2=14.335
-    public ResponseEntity<Double> distance(@RequestParam(value="lat1") double lat1, @RequestParam(value="lon1") double lon1,
+    @ResponseStatus(HttpStatus.OK)
+    public Double distance(@RequestParam(value="lat1") double lat1, @RequestParam(value="lon1") double lon1,
                            @RequestParam(value="lat2") double lat2, @RequestParam(value="lon2") double lon2) {
-        return new ResponseEntity<>(coffeeSiteService.getDistance(lat1, lon1, lat2, lon2), HttpStatus.OK);
+        return coffeeSiteService.getDistance(lat1, lon1, lat2, lon2);
     }
     
     /**
@@ -228,10 +231,10 @@ public class CoffeeSiteControllerPublicREST
         
         List<CoffeeSiteDTO> result = coffeeSiteService.findAllWithinCircle(lat1, lon1, rangeMeters);
         
-        if (result == null || result.size() == 0) {
-            return new ResponseEntity<List<CoffeeSiteDTO>>(HttpStatus.NOT_FOUND);
+        if (result == null || result.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else
-            return new ResponseEntity<List<CoffeeSiteDTO>>(result, HttpStatus.OK);
+            return new ResponseEntity<>(result, HttpStatus.OK);
     }
     
     
@@ -264,10 +267,10 @@ public class CoffeeSiteControllerPublicREST
         
         List<CoffeeSiteDTO> result = coffeeSiteService.findAllWithinCircleWithCSStatusAndCoffeeSort(lat1, lon1, rangeMeters, sort, status);
         
-        if (result == null || result.size() == 0) {
-            return new ResponseEntity<List<CoffeeSiteDTO>>(HttpStatus.NOT_FOUND); 
+        if (result == null || result.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
         } else
-            return new ResponseEntity<List<CoffeeSiteDTO>>(result, HttpStatus.OK); 
+            return new ResponseEntity<>(result, HttpStatus.OK); 
     }
     
     /**
@@ -280,14 +283,15 @@ public class CoffeeSiteControllerPublicREST
      * @return
      */
     @GetMapping("/stars/number/")
-    public ResponseEntity<Integer> getNumberOfStarsForSiteFromUser(@RequestParam(value="siteID") Long siteID, @RequestParam(value="userID") Long userID) {
+    @ResponseStatus(HttpStatus.OK)
+    public Integer getNumberOfStarsForSiteFromUser(@RequestParam(value="siteID") Long siteID, @RequestParam(value="userID") Long userID) {
         Integer numOfStars = starsForCoffeeSiteService.getStarsForCoffeeSiteAndUser(siteID, userID);
         
         if (numOfStars == null) {
-            numOfStars = new Integer(0);
+            numOfStars = 0;
         }
         
-        return new ResponseEntity<Integer>(numOfStars, HttpStatus.OK);
+        return numOfStars;
     }
     
     /* *** Atributes needed for client creating/editing Coffee site **** */

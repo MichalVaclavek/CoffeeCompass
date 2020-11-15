@@ -168,7 +168,7 @@ public class CSStarsCommentsControllerSecuredREST
         }
         
         LOG.error("Error update Comment, input validation failed.");
-        return new ResponseEntity<CommentDTO>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     
     
@@ -196,7 +196,7 @@ public class CSStarsCommentsControllerSecuredREST
                                                        : new ResponseEntity<Integer>(0, HttpStatus.BAD_REQUEST);
         }
         
-        return new ResponseEntity<Integer>(0, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(0, HttpStatus.BAD_REQUEST);
     }
     
     /**
@@ -223,7 +223,7 @@ public class CSStarsCommentsControllerSecuredREST
             commentsNumber = 0;
         }
             
-        return new ResponseEntity<Integer>(commentsNumber, HttpStatus.OK);
+        return new ResponseEntity<>(commentsNumber, HttpStatus.OK);
     }
 
 }

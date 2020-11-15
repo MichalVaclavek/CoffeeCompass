@@ -68,10 +68,9 @@ public class UsersControllerPublicREST
         if (existing.isPresent()) {
             throw new InvalidParameterValueException("User", "userName", registerRequest.getUserName(), messages.getMessage("error.user.name.used", null, locale));
         }
-        if (registerRequest.getEmail() != null && !registerRequest.getEmail().isEmpty()) {
-            if (!usersService.isEmailUnique(null, registerRequest.getEmail())) {
+        if (registerRequest.getEmail() != null && !registerRequest.getEmail().isEmpty()
+            && !usersService.isEmailUnique(null, registerRequest.getEmail())) {
                 throw new InvalidParameterValueException("User", "email", registerRequest.getEmail(), messages.getMessage("error.user.emailused", null, locale));
-            }
         }
         if (registerRequest.getPassword().isEmpty()) {
             throw new InvalidParameterValueException("User", "password", "", messages.getMessage("error.user.password.empty", null, locale));

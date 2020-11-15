@@ -10,6 +10,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
+import cz.fungisoft.coffeecompass.serviceimpl.CoffeeSiteServiceImpl;
+import lombok.extern.log4j.Log4j2;
+
 /**
  * Java EE filter používaný pro vyvolání speciálních akcí před dalším zpracováním požadavků z clientů
  * nebo pro filtrování požadavků z clientů podle jejich typu apod. Jde o specialni filtr pro
@@ -21,11 +24,12 @@ import javax.servlet.http.HttpServletResponse;
  * @author Michal Vaclavek
  *
  */
+@Log4j2
 public class CORSFilter implements Filter
 {
-	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException
-	{
-		System.out.println("Filtering on ...........................................................");
+	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
+		log.info("Filtering on ...........................................................");
+		
 		HttpServletResponse response = (HttpServletResponse) res;
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Credentials", "true");
@@ -35,8 +39,10 @@ public class CORSFilter implements Filter
 		chain.doFilter(req, res);
 	}
 
+	@Override
 	public void init(FilterConfig filterConfig) {}
 
+	@Override
 	public void destroy() {}
 
 }

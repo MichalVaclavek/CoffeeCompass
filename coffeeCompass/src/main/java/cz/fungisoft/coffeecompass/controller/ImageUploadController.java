@@ -27,6 +27,8 @@ import cz.fungisoft.coffeecompass.service.ImageStorageService;
 @Controller
 public class ImageUploadController
 {
+    private static final String REDIRECT_SHOW_SITE_VIEW = "redirect:/showSite/";
+    
     private final ImageStorageService imageStorageService;
 
     @Autowired
@@ -51,14 +53,14 @@ public class ImageUploadController
        if (result.hasErrors()) {
            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.newImage", result);
            redirectAttributes.addFlashAttribute("newImage", newImage); // to pass validation errors to other View
-           return "redirect:/showSite/" + siteId;
+           return REDIRECT_SHOW_SITE_VIEW + siteId;
        }
         
        imageStorageService.storeImageFile(newImage, newImage.getFile(), siteId, true);
        redirectAttributes.addFlashAttribute("savedFileName", newImage.getFile().getOriginalFilename());
        redirectAttributes.addFlashAttribute("uploadSuccessMessage", "You have successfully uploaded " + newImage.getFileName() + "!");
 
-       return "redirect:/showSite/" + siteId;
+       return REDIRECT_SHOW_SITE_VIEW + siteId;
     }
     
     /**
@@ -74,9 +76,7 @@ public class ImageUploadController
         Long siteId = imageStorageService.deleteSiteImageById(id);
         
         // Show same coffee site with deleted Image
-        ModelAndView mav = new ModelAndView("redirect:/showSite/" + siteId);
-        
-        return mav;
+        return new ModelAndView(REDIRECT_SHOW_SITE_VIEW + siteId);
     }
     
 }

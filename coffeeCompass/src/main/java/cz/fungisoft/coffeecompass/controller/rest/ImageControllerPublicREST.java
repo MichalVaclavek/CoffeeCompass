@@ -49,9 +49,9 @@ public class ImageControllerPublicREST
         String picString = imageStorageService.getImageAsBase64ForSiteId(siteId);
         
         if (picString == null || picString.isEmpty()) {
-            return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(picString, HttpStatus.OK);
+        return ResponseEntity.ok(picString);
     }
     
     /**
@@ -75,7 +75,7 @@ public class ImageControllerPublicREST
         if (pic == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<byte[]>(pic, headers, HttpStatus.OK);
+        return new ResponseEntity<>(pic, headers, HttpStatus.OK);
     }
 
 }

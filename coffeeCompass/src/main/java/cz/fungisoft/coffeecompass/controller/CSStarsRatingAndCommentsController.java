@@ -67,9 +67,7 @@ public class CSStarsRatingAndCommentsController
         }
         
         // Show same coffee site with new Stars and comments
-        ModelAndView mav = new ModelAndView("redirect:/showSite/" + coffeeSiteId);
-        
-        return mav;
+        return new ModelAndView("redirect:/showSite/" + coffeeSiteId);
     }
     
     
@@ -88,9 +86,7 @@ public class CSStarsRatingAndCommentsController
         Long siteId = commentsService.deleteCommentById(commentId);
         
         // Show same coffee site with updated Stars and comments
-        ModelAndView mav = new ModelAndView("redirect:/showSite/" + siteId);
-        
-        return mav;
+        return new ModelAndView("redirect:/showSite/" + siteId);
     }
 
 }

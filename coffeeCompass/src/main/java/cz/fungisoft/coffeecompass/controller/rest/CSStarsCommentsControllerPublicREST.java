@@ -16,11 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.dto.CommentDTO;
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
-import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
 import cz.fungisoft.coffeecompass.exceptions.rest.ResourceNotFoundException;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.ICommentService;
@@ -91,7 +89,6 @@ public class CSStarsCommentsControllerPublicREST
     @GetMapping("/comments/all")
     @ResponseStatus(HttpStatus.OK)
     public List<CommentDTO> getAllComments() {
-        
         // Gets all comments 
         return  commentsService.getAllComments();
         
@@ -135,7 +132,8 @@ public class CSStarsCommentsControllerPublicREST
      * @return
      */
     @GetMapping("/comments/{siteId}") // napr. https://localhost:8443/rest/public/starsAndComments/comments/2
-    public ResponseEntity<List<CommentDTO>> commentsBySiteId(@PathVariable("siteId") Long siteId) {
+    @ResponseStatus(HttpStatus.OK)
+    public List<CommentDTO> commentsBySiteId(@PathVariable("siteId") Long siteId) {
         
         // Gets all comments for this coffeeSite
         List<CommentDTO> comments = commentsService.getAllCommentsForSiteId(siteId);
@@ -144,7 +142,7 @@ public class CSStarsCommentsControllerPublicREST
             throw new ResourceNotFoundException("Comments", "coffeeSiteId", siteId);
         }
         
-        return new ResponseEntity<List<CommentDTO>>(comments, HttpStatus.OK);
+        return comments;
     }
     
     /**
@@ -154,7 +152,8 @@ public class CSStarsCommentsControllerPublicREST
      * @return
      */
     @GetMapping("/commentsPaginated/{siteId}/") // napr. https://localhost:8443/rest/public/starsAndComments/commentsPaginated/2/?size=5&page=1
-    public ResponseEntity<Page<CommentDTO>> commentsBySiteIdPaginated(@PathVariable("siteId") Long siteId,
+    @ResponseStatus(HttpStatus.OK)
+    public Page<CommentDTO> commentsBySiteIdPaginated(@PathVariable("siteId") Long siteId,
                                                                       @RequestParam(defaultValue = "created") String orderBy,
                                                                       @RequestParam(defaultValue = "desc") String direction,
                                                                       @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
@@ -172,7 +171,7 @@ public class CSStarsCommentsControllerPublicREST
         // Get 1 page of Comments beloning to the given CoffeeSite id
         commentsPage = commentsService.findAllCommentsForSitePaginated(coffeeSite, PageRequest.of(currentPage - 1, pageSize, new Sort(Sort.Direction.fromString(direction.toUpperCase()), orderBy)));
         
-        return new ResponseEntity<>(commentsPage, HttpStatus.OK);
+        return commentsPage;
     }
     
     /**
@@ -182,7 +181,8 @@ public class CSStarsCommentsControllerPublicREST
      * @return
      */
     @GetMapping("/comments/number/{siteId}") // napr. http://localhost:8080/rest/public/starsAndComments/comments/number/2
-    public ResponseEntity<Integer> numberOfCommentsForSiteId(@PathVariable("siteId") Long siteId) {
+    @ResponseStatus(HttpStatus.OK)
+    public Integer numberOfCommentsForSiteId(@PathVariable("siteId") Long siteId) {
         
         // Gets number of all comments for this coffeeSite
         Integer commentsNumber = commentsService.getNumberOfCommentsForSiteId(siteId);
@@ -191,7 +191,7 @@ public class CSStarsCommentsControllerPublicREST
             commentsNumber = new Integer(0);
         }
         
-        return new ResponseEntity<Integer>(commentsNumber, HttpStatus.OK);
+        return commentsNumber;
     }
     
     /**
@@ -202,10 +202,11 @@ public class CSStarsCommentsControllerPublicREST
      * @return
      */
     @GetMapping("/starsQualityDescription/all")
-    public ResponseEntity<List<StarsQualityDescription>> populateAllQualityStars() {
+    @ResponseStatus(HttpStatus.OK)
+    public List<StarsQualityDescription> populateAllQualityStars() {
         
         List<StarsQualityDescription> starsQuality = starsQualityService.getAllStarsQualityDescriptions();
-        return new ResponseEntity<List<StarsQualityDescription>>(starsQuality,  HttpStatus.OK);
+        return starsQuality;
     }
 
 }

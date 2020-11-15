@@ -55,7 +55,14 @@ import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
 @Controller
 public class UserController
 {  
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class); 
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    
+    
+    private static final String USER_REGISTRATION_VIEW = "user_registration";
+    
+    private static final String USER_NAME_ATTRIB_KEY = "userName";
+    private static final String USER_DELETE_FAIL_ATTRIB_KEY = "userDeleteFailure";
+    
     
     private UserService userService;
     
@@ -137,7 +144,7 @@ public class UserController
         // we need to know, that this is a user managing its own profile
         user.setToManageItself(true);
         mav.addObject("user", user);
-        mav.setViewName("user_registration");
+        mav.setViewName(USER_REGISTRATION_VIEW);
         return mav;
     }
 
@@ -169,13 +176,13 @@ public class UserController
                                                      RedirectAttributes attr) {
 
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("user_registration");
+        mav.setViewName(USER_REGISTRATION_VIEW);
         
         if (userDto.getId() == 0) { // Jde o noveho usera k registraci
             Optional<User> existing = userService.findByUserName(userDto.getUserName());
             
             if (existing.isPresent()) {
-                result.rejectValue("userName","error.user.name.used", "There is already an account registered with that user name.");
+                result.rejectValue(USER_NAME_ATTRIB_KEY,"error.user.name.used", "There is already an account registered with that user name.");
             }
     
             // Kontrola i na e-mail adresu, pokud je zadana
@@ -217,7 +224,7 @@ public class UserController
             
             mav.setViewName("redirect:/home/?lang=" + request.getLocale().getLanguage());
             
-            attr.addFlashAttribute("userName", userDto.getUserName());
+            attr.addFlashAttribute(USER_NAME_ATTRIB_KEY, userDto.getUserName());
             attr.addFlashAttribute("userCreateSuccess", userCreateSuccess);
             
             if (!newUser.getEmail().isEmpty()) { // non empty, valid e-mail available for user (UserDataDTO validated e-mail using annotation)
@@ -252,16 +259,15 @@ public class UserController
      * @return
      */
     @GetMapping("/edit/") // napr. http://coffeecompass.cz/user/edit/?userName=Michal Vaclavek&firstOAuth2Login=true
-    public ModelAndView getEditUserForm(@RequestParam(value="userName", defaultValue="") String userName,
+    public ModelAndView getEditUserForm(@RequestParam(value=USER_NAME_ATTRIB_KEY, defaultValue="") String userName,
                                         @RequestParam(value="firstOAuth2Login", defaultValue="") String firstOAuth2Login,
                                         ModelMap model,
                                         Locale locale) {    
     
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("user_registration");
+        mav.setViewName(USER_REGISTRATION_VIEW);
 
-        Optional<UserDTO> user = Optional.empty();
-        user = userService.findByUserNameToTransfer(userName);
+        Optional<UserDTO> user = userService.findByUserNameToTransfer(userName);
         if (user.isPresent()) {
             mav.addObject("user", user.get());
         } else {
@@ -269,13 +275,13 @@ public class UserController
             throw new UserNotFoundException("User name " + userName + " not found.");
         }
         
-        if (user.isPresent() && "true".equals(firstOAuth2Login)) {
+        if ("true".equals(firstOAuth2Login)) {
             // OAuth2 provider name with first letter in upper case
             String oAuth2ProviderName = user.get().getAuthProvider().substring(0, 1).toUpperCase() + user.get().getAuthProvider().substring(1);
             mav.addObject("socialLoginStillAvailableMessage", messages.getMessage("user.register.social.firstlogin.message.socialloginavailable", new Object[] {oAuth2ProviderName}, locale));
         }
         mav.addObject("firstOAuth2Login", "true".equals(firstOAuth2Login));
-        mav.addObject("userName", userName);
+        mav.addObject(USER_NAME_ATTRIB_KEY, userName);
         
         return mav;
     }
@@ -311,7 +317,7 @@ public class UserController
                                           RedirectAttributes attr) {
         
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("user_registration");
+        mav.setViewName(USER_REGISTRATION_VIEW);
         
         // Neprihlaseny uzivatel muze byt editovany ADMINem - ten muze menit pouze Password a ROLES, pokud nejde taky o ADMIN usera.
         // ADMIN nemuze byt editovan jinym ADMINem.
@@ -325,7 +331,7 @@ public class UserController
                 if (!loggedInUser.get().getUserName().equalsIgnoreCase(userDto.getUserName())) { // Prihlaseny uzivatel chce zmenit userName
                     // Je uzivatelske jmeno jiz pouzito
                     if (!userService.isUserNameUnique(userDto.getId(), userDto.getUserName())) {
-                        result.rejectValue("userName", "error.user.name.used", "There is already an account registered with that user name.");
+                        result.rejectValue(USER_NAME_ATTRIB_KEY, "error.user.name.used", "There is already an account registered with that user name.");
                     }
                 }
                 
@@ -362,7 +368,7 @@ public class UserController
             userModifySuccess = true;
             
             if (loggedInUser.isPresent() 
-                && updatedUser.getId() == loggedInUser.get().getId()) { // If the user modifies it's own profile
+                && updatedUser.getId().equals(loggedInUser.get().getId())) { // If the user modifies it's own profile
                 // Check if the email address is confirmed
                 if (!updatedUser.isRegisterEmailConfirmed()
                      && !updatedUser.getEmail().isEmpty()) { // novy email nepotvrzen a neprazdny. Poslat confirm e-mail token
@@ -388,7 +394,7 @@ public class UserController
         }
         
         attr.addFlashAttribute("userModifySuccess", userModifySuccess);
-        attr.addFlashAttribute("userName", updatedUser.getUserName());
+        attr.addFlashAttribute(USER_NAME_ATTRIB_KEY, updatedUser.getUserName());
         mav.setViewName("redirect:/home/?userName=" + encodedUserName);
         return mav;
     }
@@ -417,12 +423,12 @@ public class UserController
             userToDeleteModel.setUserToDeleteItself(userService.isLoggedInUserToManageItself(user.get()));
     
             // if user created comments, ...
-            if (commentsService.getAllCommentsFromUser(id).size() > 0) {
+            if (!commentsService.getAllCommentsFromUser(id).isEmpty()) {
                 userToDeleteModel.setDeleteUsersComments(true);
             }
             
             // if user created CoffeeSites ....
-            if (coffeeSiteService.findAllFromUser(user.get()).size() > 0) {
+            if (!coffeeSiteService.findAllFromUser(user.get()).isEmpty()) {
                 userToDeleteModel.setDeleteUsersCoffeeSites(true);
             }
             
@@ -457,7 +463,7 @@ public class UserController
                 userService.deleteUserById(id);
                 deleteOK = true;
             } catch (Exception ex) {
-                logger.error("Unable to delete user with id " + id + ". Probably already deleted. Exception: " + ex.getMessage());
+                logger.error("Unable to delete user with id {}. Probably already deleted. Exception: {}", id, ex.getMessage());
             }
         }
         
@@ -495,7 +501,7 @@ public class UserController
            
            // Prihlaseny uzivatel maze svoje data?
            // Pokud jineho usera maze ADMIN, neodhlasovat z app
-           if (user.get().getId() == loggedInUser.get().getId()
+           if (user.get().getId().equals(loggedInUser.get().getId())
                    && !userService.isADMINloggedIn()) { 
                userSecurityService.logout();
            }
@@ -510,26 +516,26 @@ public class UserController
                commentsService.deleteAllCommentsFromUser(userDataToDelete.getUserId());
            }
            
-           if (commentsService.getAllCommentsFromUser(user.get().getId()).size() == 0
-                   && coffeeSiteService.findAllFromUserName(userName).size() == 0) { // user's comments and CoffeeSites deleted, now User can be deleted too
+           if (commentsService.getAllCommentsFromUser(user.get().getId()).isEmpty()
+                   && coffeeSiteService.findAllFromUserName(userName).isEmpty()) { // user's comments and CoffeeSites deleted, now User can be deleted too
                try {
                    userService.deleteUserById(userDataToDelete.getUserId());
                } catch (Exception ex) {
-                   logger.error("Unable to delete user with id " + userDataToDelete.getUserId() + ". Probably already deleted.");
-                   attr.addFlashAttribute("userDeleteFailure", true);
+                   logger.error("Unable to delete user with id {}. Probably already deleted.", userDataToDelete.getUserId());
+                   attr.addFlashAttribute(USER_DELETE_FAIL_ATTRIB_KEY, true);
                    return redirectToHomeAfterFailedUserDelete(userDataToDelete.getUserId(), attr);
                }
            } else { // clear user's data as either user's CoffeeSites or comments are not deleted
                userService.clearUserDataById(userDataToDelete.getUserId());   
            }
         } else {
-           logger.info("Unable to delete. User with id " + userDataToDelete.getUserId() + " not found or not registered currently.");
-           attr.addFlashAttribute("userDeleteFailure", true);
+           logger.info("Unable to delete. User with id {} not found or not registered currently.", userDataToDelete.getUserId());
+           attr.addFlashAttribute(USER_DELETE_FAIL_ATTRIB_KEY, true);
            return redirectToHomeAfterFailedUserDelete(userDataToDelete.getUserId(), attr);
         }
        
         attr.addFlashAttribute("userDeleteSuccess", true);
-        attr.addFlashAttribute("userName", userName);
+        attr.addFlashAttribute(USER_NAME_ATTRIB_KEY, userName);
         mav.setViewName("redirect:/home/");
         return mav;
     }
@@ -555,14 +561,14 @@ public class UserController
         
         // Prihlaseny uzivatel maze svoje data?
         // Pokud jineho usera maze ADMIN, neodhlasovat z app
-        if (loggedInUser.isPresent() && id == loggedInUser.get().getId()
+        if (loggedInUser.isPresent() && id.equals(loggedInUser.get().getId())
                 && !userService.isADMINloggedIn()) { 
             userSecurityService.logout();
         }
         
-        logger.info("Unable to delete. User with id " + id + " not found");
-        attr.addFlashAttribute("userName", id);
-        attr.addFlashAttribute("userDeleteFailure", true);
+        logger.info("Unable to delete. User with id {} not found", id);
+        attr.addFlashAttribute(USER_NAME_ATTRIB_KEY, id);
+        attr.addFlashAttribute(USER_DELETE_FAIL_ATTRIB_KEY, true);
         
         mav.setViewName("redirect:/home/");
         

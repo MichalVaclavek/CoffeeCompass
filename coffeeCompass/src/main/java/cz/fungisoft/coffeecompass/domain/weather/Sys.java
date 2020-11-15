@@ -20,7 +20,8 @@ public class Sys {
     private String country;
     private Long sunrise;
     private Long sunset;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     public Integer getType() {
         return type;

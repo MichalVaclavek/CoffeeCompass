@@ -94,13 +94,11 @@ public class CoffeeSiteControllerSecuredREST
            headers.setLocation(ucBuilder.path("/rest/site/{id}").buildAndExpand(cs.getId()).toUri());
            CoffeeSiteDTO csDTO = coffeeSiteService.findOneToTransfer(cs.getId());
            
-           return (csDTO == null) ? new ResponseEntity<CoffeeSiteDTO>(HttpStatus.BAD_REQUEST)
-                                  : new ResponseEntity<CoffeeSiteDTO>(csDTO, HttpStatus.CREATED);
+           return (csDTO == null) ? new ResponseEntity<>(HttpStatus.BAD_REQUEST)
+                                  : new ResponseEntity<>(csDTO, HttpStatus.CREATED);
        }
        else {
            log.error("Coffee site creation failed");
-           //headers.setLocation(ucBuilder.path("/rest/site/create").buildAndExpand(coffeeSite.getId()).toUri());
-           //return new ResponseEntity<Long>(0L, headers, HttpStatus.BAD_REQUEST); "Chyba při vytváření lokace"
            throw new BadRESTRequestException(messages.getMessage("coffeesite.create.rest.error.general", null, locale));
        }
     }
@@ -116,12 +114,11 @@ public class CoffeeSiteControllerSecuredREST
             log.info("Coffee site update successful.");
             CoffeeSiteDTO csDTO = coffeeSiteService.findOneToTransfer(cs.getId());
             
-            return (csDTO == null) ? new ResponseEntity<CoffeeSiteDTO>(HttpStatus.NOT_FOUND)
-                                   : new ResponseEntity<CoffeeSiteDTO>(csDTO, HttpStatus.CREATED);
+            return (csDTO == null) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                                   : new ResponseEntity<>(csDTO, HttpStatus.CREATED);
             
         } else {
-            log.error("Coffee site update failed." + coffeeSite.getId());
-            //throw new ResourceNotFoundException("CoffeeSite", "siteId", id);
+            log.error("Coffee site update failed. Coffee site id {}", coffeeSite.getId());
             throw new BadRESTRequestException(messages.getMessage("coffeesite.update.rest.error", null, locale));
         }
     }
@@ -135,9 +132,8 @@ public class CoffeeSiteControllerSecuredREST
     public ResponseEntity<Long> delete(@PathVariable Long id, Locale locale) {
         try {
             coffeeSiteService.delete(id);
-            return new ResponseEntity<Long>(id, HttpStatus.OK);
+            return new ResponseEntity<>(id, HttpStatus.OK);
         } catch (Exception ex) {
-            //return new ResponseEntity<Long>(id, HttpStatus.BAD_REQUEST);
             throw new BadRESTRequestException(messages.getMessage("coffeesite.delete.rest.error", null, locale));
         }
     }
@@ -182,12 +178,12 @@ public class CoffeeSiteControllerSecuredREST
             throw new BadRESTRequestException(messages.getMessage("coffeesite.status.change.rest.error", null, locale));    
         } else {
             HttpHeaders headers = new HttpHeaders();
-            log.info("CoffeeSite's status modified. New status: " + newStatus.getSiteRecordStatus());
+            log.info("CoffeeSite's status modified. New status: {}", newStatus.getSiteRecordStatus());
             headers.setLocation(ucBuilder.path("/rest/site/{id}").buildAndExpand(cs.getId()).toUri());
             CoffeeSiteDTO csDTO = coffeeSiteService.findOneToTransfer(csID);
             
-            return (csDTO == null) ? new ResponseEntity<CoffeeSiteDTO>(HttpStatus.NOT_FOUND)
-                                   : new ResponseEntity<CoffeeSiteDTO>(csDTO, HttpStatus.OK);
+            return (csDTO == null) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                                   : new ResponseEntity<>(csDTO, HttpStatus.OK);
         }
     }
     
@@ -202,11 +198,11 @@ public class CoffeeSiteControllerSecuredREST
         
         if (coffeeSites == null || coffeeSites.isEmpty()) {
             log.error("No Coffee site from user found.");
-            return new ResponseEntity<List<CoffeeSiteDTO>>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } 
         
         log.info("All sites from logged-in user retrieved.");
-        return new ResponseEntity<List<CoffeeSiteDTO>>(coffeeSites, HttpStatus.OK);   
+        return new ResponseEntity<>(coffeeSites, HttpStatus.OK);   
     }
     
     /**
@@ -227,7 +223,7 @@ public class CoffeeSiteControllerSecuredREST
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } 
         
-        log.info("Page n. {0} of coffee sites from logged-in user retrieved.", currentPage);
+        log.info("Page n. {} of coffee sites from logged-in user retrieved.", currentPage);
         return new ResponseEntity<>(coffeeSitePage, HttpStatus.OK);   
     }
     
@@ -241,8 +237,8 @@ public class CoffeeSiteControllerSecuredREST
         Integer numberOfSitesFromUser = coffeeSiteService.getNumberOfSitesFromLoggedInUser();
         log.info("Number of sites from logged-in user retrieved.");
         return (numberOfSitesFromUser != null)
-                ? new ResponseEntity<Integer>(numberOfSitesFromUser, HttpStatus.OK)
-                : new ResponseEntity<Integer>(0, HttpStatus.NOT_FOUND);
+                ? new ResponseEntity<>(numberOfSitesFromUser, HttpStatus.OK)
+                : new ResponseEntity<>(0, HttpStatus.NOT_FOUND);
         
     }
     
@@ -257,8 +253,8 @@ public class CoffeeSiteControllerSecuredREST
         Integer numberOfSitesFromUser = coffeeSiteService.getNumberOfSitesNotCanceledFromLoggedInUser();
         log.info("Number of not canceled sites from logged-in user retrieved.");
         return (numberOfSitesFromUser != null)
-                ? new ResponseEntity<Integer>(numberOfSitesFromUser, HttpStatus.OK)
-                : new ResponseEntity<Integer>(0, HttpStatus.NOT_FOUND);
+                ? new ResponseEntity<>(numberOfSitesFromUser, HttpStatus.OK)
+                : new ResponseEntity<>(0, HttpStatus.NOT_FOUND);
         
     }
     

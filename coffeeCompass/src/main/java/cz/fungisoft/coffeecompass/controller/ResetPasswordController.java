@@ -44,6 +44,13 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class ResetPasswordController
 {
+    private static final String FORGOT_PASSWD_VIEW = "forgotPassword";
+    private static final String UPDATE_PASSWD_VIEW = "updatePassword";
+    
+    private static final String EMAIL_ADDR_MODEL_KEY = "emailAddr";
+    private static final String TOKEN_ATTRIB_KEY = "token";
+    
+    
     private UserService userService;
     
     private TokenCreateAndSendEmailService passwordTokenService;
@@ -85,10 +92,10 @@ public class ResetPasswordController
     @GetMapping("/forgotPassword")
     public String showForgotPasswordEmailForm(ModelMap model) {
 
-        EmailAddressModel emailAddr = (EmailAddressModel) model.getOrDefault("emailAddr", new EmailAddressModel());
-        model.addAttribute("emailAddr", emailAddr);
+        EmailAddressModel emailAddr = (EmailAddressModel) model.getOrDefault(EMAIL_ADDR_MODEL_KEY, new EmailAddressModel());
+        model.addAttribute(EMAIL_ADDR_MODEL_KEY, emailAddr);
         
-        return "forgotPassword";
+        return FORGOT_PASSWD_VIEW;
     }
 
     // ------------------- Forgot password ---------------------------------- //
@@ -104,12 +111,12 @@ public class ResetPasswordController
      */
     @PostMapping(value = "/user/resetPassword")
     public ModelAndView resetPassword(HttpServletRequest request,
-                                      @Valid @ModelAttribute("emailAddr") EmailAddressModel userEmail,
+                                      @Valid @ModelAttribute(EMAIL_ADDR_MODEL_KEY) EmailAddressModel userEmail,
                                       BindingResult bindingResult,
                                       RedirectAttributes attr) {
         
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("forgotPassword");
+        mav.setViewName(FORGOT_PASSWD_VIEW);
        
         if (bindingResult.hasErrors()) { // wrong format of e-mail address or empty
             return mav;
@@ -118,7 +125,7 @@ public class ResetPasswordController
         // try to find user based on valid e-mail address
         Optional<User> user = userService.findByEmail(userEmail.getEmailAddr());
         if (!user.isPresent()) {
-            bindingResult.rejectValue("emailAddr", "resetPassword.email.unknown.message");
+            bindingResult.rejectValue(EMAIL_ADDR_MODEL_KEY, "resetPassword.email.unknown.message");
             return mav;
         } 
         
@@ -141,7 +148,7 @@ public class ResetPasswordController
      */
     @GetMapping(value = "/user/changePassword")
     public ModelAndView processChangePasswordLink(@RequestParam(value = "userId", required = true) long userId,
-                                                  @RequestParam(value = "token", required = true) String token,
+                                                  @RequestParam(value = TOKEN_ATTRIB_KEY, required = true) String token,
                                                   Locale locale,
                                                   RedirectAttributes attr) {
 
@@ -155,7 +162,7 @@ public class ResetPasswordController
             User user = passToken.getUser();
             userSecurityService.authWithUserNameAndRole(user.getUserName(), "CHANGE_PASSWORD_PRIVILEGE");
             
-            attr.addFlashAttribute("token", token); // needed to pass further, to be deleted after the new password is saved.
+            attr.addFlashAttribute(TOKEN_ATTRIB_KEY, token); // needed to pass further, to be deleted after the new password is saved.
             mav.setViewName("redirect:/user/updatePassword?lang=" + locale.getLanguage());
         } else { // invalid token
             attr.addFlashAttribute("passwordResetTokenInvalid", validationResult);
@@ -179,7 +186,7 @@ public class ResetPasswordController
         mav.addAllObjects(modelMap);
         NewPasswordInputModel resetedPassword = new NewPasswordInputModel(); 
         mav.addObject("resetedPassword", resetedPassword);
-        mav.setViewName("updatePassword");
+        mav.setViewName(UPDATE_PASSWD_VIEW);
         
         // log-out temporary principal with "CHANGE_PASSWORD_PRIVILEGE" role.
         userSecurityService.logout();
@@ -197,7 +204,7 @@ public class ResetPasswordController
      */
     @PostMapping(value = "/user/saveNewPassword/")
     public ModelAndView saveNewPassword(Locale locale,
-                                        @RequestParam(value = "token", required = true) String token,
+                                        @RequestParam(value = TOKEN_ATTRIB_KEY, required = true) String token,
                                         @Valid @ModelAttribute("resetedPassword") NewPasswordInputModel resetedPassword,
                                         BindingResult bindingResult,
                                         RedirectAttributes attr) {
@@ -205,8 +212,8 @@ public class ResetPasswordController
         ModelAndView mav = new ModelAndView();
         
         if (bindingResult.hasErrors()) { // wrong new password length or passwd. and confirmPasswd do not match
-            mav.setViewName("updatePassword");
-            mav.addObject("token", token);
+            mav.setViewName(UPDATE_PASSWD_VIEW);
+            mav.addObject(TOKEN_ATTRIB_KEY, token);
             return mav;
         }
         
@@ -242,7 +249,7 @@ public class ResetPasswordController
         String errorMessage = messages.getMessage("resetPassword.sendemail.error.message", null, request.getLocale());
         ModelAndView model = new ModelAndView();
         model.addObject("errorMessage", errorMessage);
-        model.setViewName("forgotPassword");
+        model.setViewName(FORGOT_PASSWD_VIEW);
         return model;
     }
     

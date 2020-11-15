@@ -256,15 +256,16 @@ public class CoffeeSiteController
  
         if (coffeeSitePage != null) {
             mav.addObject("coffeeSitePage", coffeeSitePage);
+        
+            int totalPages = coffeeSitePage.getTotalPages();
+            if (totalPages > 1) {
+                List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                                                     .boxed()
+                                                     .collect(Collectors.toList());
+                mav.addObject("pageNumbers", pageNumbers);
+            }
         }
- 
-        int totalPages = coffeeSitePage.getTotalPages();
-        if (totalPages > 1) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                                                 .boxed()
-                                                 .collect(Collectors.toList());
-            mav.addObject("pageNumbers", pageNumbers);
-        }
+        
         // to distinguish, if the page links on coffeesites_info.html should lead to allSitesPaginated controller method
         // or to this controller method i.e. to show links to other pages of coffeeSites of the logged-in user 
         mav.addObject("usersSitesList", true); 
@@ -300,7 +301,7 @@ public class CoffeeSiteController
     * pro vytvoreni/modifikaci.
     * @return {@code ModelAndView} pro zobrazeni formulare s hodnotami noveho/stavajiciho CoffeeSite.
     */
-    @RequestMapping(value = {"/createSite"}, method = RequestMethod.GET)
+    @GetMapping(value = {"/createSite"})
     public ModelAndView siteToCreateAndModify(final CoffeeSiteDTO coffeeSite) {
         
         CoffeeSiteDTO cs;

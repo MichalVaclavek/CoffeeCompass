@@ -25,13 +25,17 @@ import lombok.Data;
 @Data
 public class CoffeeSiteSearchCriteriaModel
 {
-    @DecimalMax(value="180.0")
-    @DecimalMin(value="-180.0")
-    private Double lat1 = 49.8250401; // defaultni hodnoty, stred CR
+    
+    private final Double STRED_CR_LAT = 49.8250401; // defaultni hodnoty, stred CR
+    private final Double STRED_CR_LON = 15.4190817; // defaultni hodnoty, stred CR
     
     @DecimalMax(value="180.0")
     @DecimalMin(value="-180.0")
-    private Double lon1 = 15.4190817; // defaultni hodnoty, stred CR
+    private Double lat1 = STRED_CR_LAT; // defaultni hodnoty, stred CR
+    
+    @DecimalMax(value="180.0")
+    @DecimalMin(value="-180.0")
+    private Double lon1 = STRED_CR_LON; // defaultni hodnoty, stred CR
     
     @NotNull
     @DecimalMax(value="50000") // Max. 50 km. (50 000 m)
@@ -59,8 +63,8 @@ public class CoffeeSiteSearchCriteriaModel
      * Reset search criteria model in case another Form was used for searching
      */
     public void resetSearchFromLocation() {
-       this.lat1 = 49.8250401;
-       this.lon1 = 15.4190817;
+       this.lat1 = STRED_CR_LAT;
+       this.lon1 = STRED_CR_LON;
     }
     
 }

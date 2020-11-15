@@ -47,9 +47,20 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class CoffeeSiteSearchController
 {
+    
+    private static final String SEARCH_HTML_PAGE = "coffeesite_search";
+    
+    private static final String EMPTY_RESULT_MODEL_KEY = "emptyResult";
+    
+    private static final String FOUND_SITES_MODEL_KEY = "foundSites";
+    
+    private static final String SEARCH_CRITERIA_MODEL_KEY = "searchCriteria";
+    
+    
     private CoffeeSiteService coffeeSiteService;
     
     private CoffeeSortService coffeeSortService;
+    
     
     /**
      * Patern pro povolene jmeno mesta. Alespon 2 znaky a oddelovace pro viceslovna jmena jako mezera, -, .
@@ -83,8 +94,8 @@ public class CoffeeSiteSearchController
     public String getSitesWithStatusAndCoffeeSort(Model model) {
         CoffeeSiteSearchCriteriaModel searchCriteria = new CoffeeSiteSearchCriteriaModel();
             
-        model.addAttribute("searchCriteria", searchCriteria);
-        return "coffeesite_search";
+        model.addAttribute(SEARCH_CRITERIA_MODEL_KEY, searchCriteria);
+        return SEARCH_HTML_PAGE;
     }
     
    
@@ -101,13 +112,13 @@ public class CoffeeSiteSearchController
      * @return vrati opet ModelAndView objekt pro vyhledavaci stranku, doplneny o vyhledane CoffeeSites nebo o "flag", ktery oznacuje, ze nebylo nalezeno nic
      */
     @GetMapping("/searchSites") 
-    public ModelAndView searchSitesWithStatusAndCoffeeSort(@ModelAttribute("searchCriteria")
+    public ModelAndView searchSitesWithStatusAndCoffeeSort(@ModelAttribute(SEARCH_CRITERIA_MODEL_KEY)
                                                            @Valid
                                                            CoffeeSiteSearchCriteriaModel searchCriteria,
                                                            final BindingResult bindingResultSearchCriteria) {
        
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("coffeesite_search");
+        mav.setViewName(SEARCH_HTML_PAGE);
        
         if (bindingResultSearchCriteria.hasErrors()) {
             searchCriteria.resetSearchFromLocation();
@@ -135,7 +146,7 @@ public class CoffeeSiteSearchController
             currentSearchCity = currentSearchCity.substring(0, indexOfCarka);
         }
         
-        List<CoffeeSiteDTO> foundSites = new ArrayList<>();
+        List<CoffeeSiteDTO> foundSites;
        
         if (searchCriteria.getLat1() != null
             && searchCriteria.getLon1() != null
@@ -157,21 +168,21 @@ public class CoffeeSiteSearchController
             }
             ModelAndView mavRedirect = new ModelAndView(new RedirectView("/searchSitesInCityForm/?cityName=" + encodedCityName + "&searchCityNameExactly=" + searchCriteria.isSearchCityNameExactly(), true));
            
-            mavRedirect.addObject("searchCriteria", searchCriteria);
+            mavRedirect.addObject(SEARCH_CRITERIA_MODEL_KEY, searchCriteria);
             return mavRedirect;
         }
         
         if (foundSites != null && foundSites.size() == 0) {
-            mav.addObject("emptyResult", true); // nothing found, let to know to model
+            mav.addObject(EMPTY_RESULT_MODEL_KEY, true); // nothing found, let to know to model
         }
-        mav.addObject("foundSites", foundSites);
+        mav.addObject(FOUND_SITES_MODEL_KEY, foundSites);
         
         searchCriteria.setSortSelected(false); // set deault value before next searching
         searchCriteria.setCityName(currentSearchCity); // set city name used for searching
         
-        mav.addObject("searchCriteria", searchCriteria);
+        mav.addObject(SEARCH_CRITERIA_MODEL_KEY, searchCriteria);
         
-        mav.setViewName("coffeesite_search");
+        mav.setViewName(SEARCH_HTML_PAGE);
         return mav;
    }
     
@@ -186,7 +197,7 @@ public class CoffeeSiteSearchController
    @GetMapping("/showSiteInMap/{siteId}") // napr. http://coffeecompass.cz/showSiteInMap/2
    public ModelAndView  showSiteInMap(@PathVariable Long siteId) {
        
-       ModelAndView mav = new ModelAndView("coffeesite_search");
+       ModelAndView mav = new ModelAndView(SEARCH_HTML_PAGE);
        
        CoffeeSiteDTO coffeeSite = coffeeSiteService.findOneToTransfer(siteId);
        
@@ -194,7 +205,7 @@ public class CoffeeSiteSearchController
        List<CoffeeSiteDTO> foundSites = new ArrayList<>();
        
        if (coffeeSite == null) {
-           mav.addObject("emptyResult", true); // nothing found, let to know to model
+           mav.addObject(EMPTY_RESULT_MODEL_KEY, true); // nothing found, let to know to model
        } else {
            foundSites.add(coffeeSite);
            LatLong searchFromLoc = coffeeSiteService.getSearchFromLocation(coffeeSite, 200);
@@ -211,8 +222,8 @@ public class CoffeeSiteSearchController
           }
        }
        
-       mav.addObject("foundSites", foundSites);
-       mav.addObject("searchCriteria", searchCriteria);
+       mav.addObject(FOUND_SITES_MODEL_KEY, foundSites);
+       mav.addObject(SEARCH_CRITERIA_MODEL_KEY, searchCriteria);
        
        return mav;
    }
@@ -240,7 +251,7 @@ public class CoffeeSiteSearchController
        
        CoffeeSiteSearchCriteriaModel searchCriteria = new CoffeeSiteSearchCriteriaModel();
        searchCriteria.setSearchCityNameExactly(true);
-       mav.addObject("searchCriteria", searchCriteria);
+       mav.addObject(SEARCH_CRITERIA_MODEL_KEY, searchCriteria);
        
        return mav;
    }
@@ -265,10 +276,10 @@ public class CoffeeSiteSearchController
    @GetMapping("/searchSitesInCityForm/") // napr.  http://coffeecompass.cz/searchSitesInCityForm/?cityName=Tišnov&searchCityNameExactly=true
    public ModelAndView  showCitySitesFromForm(@RequestParam(value="cityName", defaultValue="") String cityName,
                                               @RequestParam(value="searchCityNameExactly", defaultValue="false") boolean searchExactly,
-                                              @ModelAttribute("searchCriteria") CoffeeSiteSearchCriteriaModel searchCriteria,
+                                              @ModelAttribute(SEARCH_CRITERIA_MODEL_KEY) CoffeeSiteSearchCriteriaModel searchCriteria,
                                               final BindingResult bindingResultSearchCriteria) {
        
-       ModelAndView mav = new ModelAndView("coffeesite_search");
+       ModelAndView mav = new ModelAndView(SEARCH_HTML_PAGE);
        
        String currentSearchCity = cityName;
        
@@ -290,19 +301,19 @@ public class CoffeeSiteSearchController
            foundSites = (searchExactly) ? coffeeSiteService.findAllByCityNameExactly(currentSearchCity)
                                         : coffeeSiteService.findAllByCityNameAtStart(currentSearchCity);
            
-           if (foundSites != null && foundSites.size() == 0) { // nothing found, let to know to model
-               mav.addObject("emptyResult", true); 
+           if (foundSites == null || foundSites.isEmpty()) { // nothing found, let to know to model
+               mav.addObject(EMPTY_RESULT_MODEL_KEY, true); 
            } 
            else {
                searchCriteria = addAverageLocationToSearchCriteriaForFoundCoffeeSites(searchCriteria, foundSites);
            }
        }
        
-       mav.addObject("foundSites", foundSites);
+       mav.addObject(FOUND_SITES_MODEL_KEY, foundSites);
        searchCriteria.setCityName(currentSearchCity);
        searchCriteria.setSearchCityNameExactly(searchExactly);
       
-       mav.addObject("searchCriteria", searchCriteria);
+       mav.addObject(SEARCH_CRITERIA_MODEL_KEY, searchCriteria);
        
        return mav;
    }
@@ -310,24 +321,28 @@ public class CoffeeSiteSearchController
    /**
     * Helper method.
     * Used for setting up searchcriteria model object (longitude and latitude) in case a list of CoffeeSites is found based on city name.
-    * @return
+    * If {@code foundSites} are null, searchCriteria returns unchanged.
+    * 
+    * @return changed {@code searchCriteria} based on {@code foundSites}
     */
    private CoffeeSiteSearchCriteriaModel addAverageLocationToSearchCriteriaForFoundCoffeeSites(CoffeeSiteSearchCriteriaModel searchCriteria, List<CoffeeSiteDTO> foundSites) {
        
-       if (foundSites.size() == 1) { // only one CoffeeSite found in city, define searchFrom point for this CoffeeSite
-            LatLong searchFromLoc = coffeeSiteService.getSearchFromLocation(foundSites.get(0), 200);
-            searchCriteria.setLon1(searchFromLoc.getLongitude());
-            searchCriteria.setLat1(searchFromLoc.getLatitude());
-       }
-       else {
-            /**
-             * Initial request to find CoffeeSites was not based on location (but the city name was the search parameter),
-             * therefore the CoffeeSiteSearchCriteriaModel must be filled-up using found CoffeeSites.
-             * Average longitude and latitude of found CoffeeSites is used.
-             */
-            LatLong avgSitesLocation = coffeeSiteService.getAverageLocation(foundSites);
-            searchCriteria.setLon1(avgSitesLocation.getLongitude());
-            searchCriteria.setLat1(avgSitesLocation.getLatitude());
+       if (foundSites != null) {
+           if (foundSites.size() == 1) { // only one CoffeeSite found in city, define searchFrom point for this CoffeeSite
+                LatLong searchFromLoc = coffeeSiteService.getSearchFromLocation(foundSites.get(0), 200);
+                searchCriteria.setLon1(searchFromLoc.getLongitude());
+                searchCriteria.setLat1(searchFromLoc.getLatitude());
+           }
+           else {
+                /**
+                 * Initial request to find CoffeeSites was not based on location (but the city name was the search parameter),
+                 * therefore the CoffeeSiteSearchCriteriaModel must be filled-up using found CoffeeSites.
+                 * Average longitude and latitude of found CoffeeSites is used.
+                 */
+                LatLong avgSitesLocation = coffeeSiteService.getAverageLocation(foundSites);
+                searchCriteria.setLon1(avgSitesLocation.getLongitude());
+                searchCriteria.setLat1(avgSitesLocation.getLatitude());
+         }
      }
        
      return searchCriteria; 

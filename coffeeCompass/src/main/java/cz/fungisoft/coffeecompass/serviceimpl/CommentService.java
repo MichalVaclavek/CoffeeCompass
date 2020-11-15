@@ -20,7 +20,6 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.Comment;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.exceptions.EntityNotFoundException;
-import cz.fungisoft.coffeecompass.repository.CoffeeSitePageableRepository;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
 import cz.fungisoft.coffeecompass.repository.CommentRepository;
 import cz.fungisoft.coffeecompass.repository.CommentsPageableRepository;
@@ -84,8 +83,9 @@ public class CommentService implements ICommentService
 
     @Override
     public Comment saveTextAsComment(String commentText, User user, CoffeeSite coffeeSite) {
-        if ( (commentText == null) || commentText.isEmpty())
+        if ( (commentText == null) || commentText.isEmpty()) {
             throw new IllegalArgumentException("Empty comment text is not allowed!");
+        }
         
         Comment comment = new Comment();
         comment.setCreated(new Timestamp(new Date().getTime()));
@@ -246,7 +246,6 @@ public class CommentService implements ICommentService
     @Override
     public CommentDTO getByIdToTransfer(Integer id) {
         return modifyToTransfer(getById(id));
-        //return mapperFacade.map(getById(id), CommentDTO.class);
     }
 
     @Override

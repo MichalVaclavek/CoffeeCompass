@@ -28,6 +28,11 @@ import cz.fungisoft.coffeecompass.service.UserSecurityService;
 @Controller
 public class RegistrationController
 {
+    
+    private static final String REDIRECT_HOME_VIEW = "redirect:/home";
+    private static final String TOKEN_FAILURE_VIEW = "redirect:/registrationTokenFailure";
+    
+    
     private UserService userService;
     
     private TokenCreateAndSendEmailService userVerificationTokenService;
@@ -72,15 +77,15 @@ public class RegistrationController
         // Invalid token
         if ("invalidToken".equals(tokenValidationResult)) {
             attr.addFlashAttribute("tokenInvalid", true);
-            return (userService.getCurrentLoggedInUser().isPresent()) ? "redirect:/home"
-                                                                      : "redirect:/registrationTokenFailure";
+            return (userService.getCurrentLoggedInUser().isPresent()) ? REDIRECT_HOME_VIEW
+                                                                      : TOKEN_FAILURE_VIEW;
         }
 
-        // Token expired ?
+        // Token expired
         if ("expiredToken".equals(tokenValidationResult)) {
             attr.addFlashAttribute("tokenExpired", true);
             attr.addFlashAttribute("token", token);
-            return "redirect:/registrationTokenFailure";
+            return TOKEN_FAILURE_VIEW;
         }
         
         // Valid token
@@ -101,8 +106,8 @@ public class RegistrationController
             // If email confirmed by already logged-in user, then go to home page
             // Default go to login page, after e-mail confirm success, but first log-out user if it is different from new user, whio confirmed email
             if (loggedInUser.isPresent()) {
-                if (loggedInUser.get().getId() == newUser.getId()) {
-                   return "redirect:/home";
+                if (loggedInUser.get().getId().equals(newUser.getId())) {
+                   return REDIRECT_HOME_VIEW;
                 } else { // new user is different from current logged-in user - logout current user
                     userSecurityService.logout();
                 }
@@ -111,6 +116,7 @@ public class RegistrationController
         
         return "redirect:/login/?lang=" + locale.getLanguage(); 
     }
+    
     
     @GetMapping(value = "/registrationTokenFailure")
     public String showRegistrationTokenFailurePage() {
@@ -172,13 +178,13 @@ public class RegistrationController
             Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
             
             if (loggedInUser.isPresent() && loggedInUser.get().getId() != null
-                && loggedInUser.get().getId() == user.getId()) {
-                mav.setViewName("redirect:/home");
+                && loggedInUser.get().getId().equals(user.getId())) {
+                mav.setViewName(REDIRECT_HOME_VIEW);
             } 
         } catch (Exception me) {
             attr.addFlashAttribute("emailError", true);
             attr.addFlashAttribute("token", newToken); // passed to be used for generation of a new token
-            mav.setViewName("redirect:/registrationTokenFailure"); // problems to resend confirmation e-mail
+            mav.setViewName(TOKEN_FAILURE_VIEW); // problems to resend confirmation e-mail
         }
         
         return mav;

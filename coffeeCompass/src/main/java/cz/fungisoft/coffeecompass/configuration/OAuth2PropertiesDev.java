@@ -8,7 +8,7 @@ import org.springframework.context.annotation.PropertySource;
  * Obsahuje konfiguracni parametry pro OAuth2 autentikaci, ktere se nacitaji z application-dev.properties souboru<br>
  * a tedy se aktivuji pro aktivnim Profile=dev
  * <p>
- * Tato (a trida OAuth2PropertiesProd) jsou vytvoreny pouze za ucelem automatickeho naceteni konfiguracnich hodnot<br>
+ * Tato (a trida OAuth2PropertiesProd) jsou vytvoreny pouze za ucelem automatickeho nacteni konfiguracnich hodnot<br>
  * aplikace z prislusneho souboru, tedy z application-prod.properties resp. application-dev.properties.<br>
  * Nactou se tedy hodnoty atributu, ktere deklaruje trida {@code OAuth2Properties}, ale ze spravneho souboru, podle aktualniho Profile.<br>
  *   

@@ -21,7 +21,8 @@ public class Main {
     private Double temp_max;
     private Integer pressure;
     private Integer humidity;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     public Double getTemp() {
         return temp;

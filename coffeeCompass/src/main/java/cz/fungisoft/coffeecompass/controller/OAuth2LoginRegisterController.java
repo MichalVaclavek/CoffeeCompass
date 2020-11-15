@@ -119,7 +119,7 @@ public class OAuth2LoginRegisterController
         String encodedErorrMessage = "";
         try {
             encodedErorrMessage = messages.getMessage(oAuth2ErrorMessageCode, new Object[] {oAuth2ErrorMessageParameter}, local);
-        } catch(NoSuchMessageException ex) {
+        } catch (NoSuchMessageException ex) {
             if (encodedErorrMessage.isEmpty()) {
                 encodedErorrMessage = oAuth2ErrorMessage;
             }

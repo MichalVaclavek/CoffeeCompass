@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
@@ -71,7 +72,7 @@ public class UserControllerSecuredREST
         List<UserDTO> users = userService.findAllUsers();
        
         logger.info("All users retrieved: {}", users.size());
-        return new ResponseEntity<List<UserDTO>>(users,  HttpStatus.OK);
+        return ResponseEntity.ok(users);
     }
   
     // ------------------- Retrieve Single User -------------------------------------------------------- //
@@ -83,9 +84,9 @@ public class UserControllerSecuredREST
         Optional<UserDTO> user = userService.findByIdToTransfer(id);
         if (!user.isPresent()) {
             logger.info("User with id {} not found.", id);
-            return new ResponseEntity<UserDTO>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<UserDTO>(user.get(), HttpStatus.OK);
+        return new ResponseEntity<>(user.get(), HttpStatus.OK);
     }
     
     @GetMapping("/{userName}")
@@ -95,9 +96,9 @@ public class UserControllerSecuredREST
         Optional<UserDTO> currentUser = userService.findByUserNameToTransfer(userName); 
         if (!currentUser.isPresent()) {
             logger.info("User with username '{}' not found.", userName);
-            return new ResponseEntity<UserDTO>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<UserDTO>(currentUser.get(), HttpStatus.OK);
+        return new ResponseEntity<>(currentUser.get(), HttpStatus.OK);
     }
   
     // ------------------- Update a User -------------------------------------------------------- //
@@ -111,7 +112,7 @@ public class UserControllerSecuredREST
           
         if (!currentUser.isPresent()) {
             logger.info("User with username '{}' not found.", updateUserRequest.getUserName());
-            return new ResponseEntity<UserDTO>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }        
           
         UserDTO updatedUser = userService.updateRESTUser(updateUserRequest);
@@ -119,18 +120,19 @@ public class UserControllerSecuredREST
         if (updatedUser != null) {
             Optional<UserDTO> userDTO = userService.findByIdToTransfer(updatedUser.getId());
             
-            return (userDTO.get() == null) ? new ResponseEntity<UserDTO>(HttpStatus.NOT_FOUND)
-                                           : new ResponseEntity<UserDTO>(userDTO.get(), HttpStatus.OK);
+            return (userDTO.get() == null) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                                           : new ResponseEntity<>(userDTO.get(), HttpStatus.OK);
         }
         
-        return new ResponseEntity<UserDTO>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
   
     // ------------------- Delete a User -------------------------------------------------------- //
       
     @DeleteMapping(("/delete/{userName}"))
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<String> deleteUserByName(@PathVariable("userName") String userName) {
+    @ResponseStatus(HttpStatus.OK)
+    public String deleteUserByName(@PathVariable("userName") String userName) {
         logger.info("Fetching & Deleting User with username {} via REST api.", userName);
   
         Optional<User> currentUser = userService.findByUserName(userName);
@@ -140,12 +142,13 @@ public class UserControllerSecuredREST
         } 
   
         userService.deleteUserById(currentUser.get().getId());
-        return new ResponseEntity<String>(userName, HttpStatus.OK);
+        return userName;
     }
     
     @DeleteMapping(("/delete/id/{userId}"))
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Long> deleteUserById(@PathVariable("userId") long userId) {
+    @ResponseStatus(HttpStatus.OK)
+    public Long deleteUserById(@PathVariable("userId") long userId) {
         logger.info("Fetching & Deleting User with userID {} via REST api.", userId);
   
         Optional<User> user = userService.findById(userId);
@@ -155,7 +158,7 @@ public class UserControllerSecuredREST
         } 
   
         userService.deleteUserById(user.get().getId());
-        return new ResponseEntity<Long>(userId, HttpStatus.OK);
+        return userId;
     }
     
     
@@ -163,9 +166,10 @@ public class UserControllerSecuredREST
     
     @GetMapping("/current")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<UserDTO> getCurrent(@AuthenticationPrincipal final String userName) {
+    @ResponseStatus(HttpStatus.OK)
+    public UserDTO getCurrent(@AuthenticationPrincipal final String userName) {
         Optional<UserDTO> currentUser = userService.findByUserNameToTransfer(userName);
-        return new ResponseEntity<UserDTO>(currentUser.orElseThrow(() -> new ResourceNotFoundException("User", "username", userName)), HttpStatus.OK);
+        return currentUser.orElseThrow(() -> new ResourceNotFoundException("User", "username", userName));
         
     }
     

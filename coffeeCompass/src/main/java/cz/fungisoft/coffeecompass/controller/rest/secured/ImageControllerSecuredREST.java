@@ -71,11 +71,11 @@ public class ImageControllerSecuredREST
        
        Integer imageId = imageStorageService.storeImageFile(file, coffeeSiteId, false);
        if (imageId == null || imageId == 0) {
-           return new ResponseEntity<String>( HttpStatus.NOT_FOUND);
+           return new ResponseEntity<>( HttpStatus.NOT_FOUND);
        }
        log.info("Image uploaded. CoffeeSite id: {}. Image id: {}", coffeeSiteId, imageId);
        CoffeeSiteDTO cs = coffeeSiteService.findOneToTransfer(coffeeSiteId);
-       return new ResponseEntity<String>(cs.getMainImageURL(), HttpStatus.OK);
+       return new ResponseEntity<>(cs.getMainImageURL(), HttpStatus.OK);
     }
     
     /**
@@ -90,10 +90,10 @@ public class ImageControllerSecuredREST
         Long siteId = imageStorageService.deleteSiteImageById(imageId);
         
         if (siteId == null || siteId == 0) {
-            return new ResponseEntity<Long>(0L, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(0L, HttpStatus.NOT_FOUND);
         }
         log.info("Image deleted. Image id: {}", imageId);
-        return new ResponseEntity<Long>(siteId, HttpStatus.OK);
+        return new ResponseEntity<>(siteId, HttpStatus.OK);
     }
     
     /**
@@ -109,10 +109,10 @@ public class ImageControllerSecuredREST
         Long siteId = imageStorageService.deleteSiteImageBySiteId(coffeeSiteId);
         
         if (siteId == null || siteId == 0) {
-            return new ResponseEntity<Long>(0L, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(0L, HttpStatus.NOT_FOUND);
         }
         log.info("Image deleted. CoffeeSite id: {}.", coffeeSiteId);
-        return new ResponseEntity<Long>(siteId, HttpStatus.OK);
+        return new ResponseEntity<>(siteId, HttpStatus.OK);
     }
     
 }

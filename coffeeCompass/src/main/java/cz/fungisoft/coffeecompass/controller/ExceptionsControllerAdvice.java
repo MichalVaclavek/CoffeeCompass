@@ -31,7 +31,15 @@ import cz.fungisoft.coffeecompass.exceptions.UserNotFoundException;
 @Order(2)
 public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
 {
-    private static final Logger logger = LogManager.getLogger(ExceptionsControllerAdvice.class);
+    private static final Logger myLogger = LogManager.getLogger(ExceptionsControllerAdvice.class);
+    
+    private static final String ERROR_MODEL_KEY = "error";
+    private static final String STATUS_MODEL_KEY = "status";
+    private static final String ERROR_MESSAGE_MODEL_KEY = "errorMessage";
+    
+    private static final String ERROR_VIEW_NAME = "error";
+    private static final String ERROR_404_VIEW_NAME = "error/404";
+    private static final String LOGIN_VIEW_NAME = "login";
     
     @Autowired
     private MessageSource messages;
@@ -39,26 +47,26 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
     
     @ExceptionHandler({EntityNotFoundException.class})
     public ModelAndView handleEntNotFound(HttpServletResponse res, EntityNotFoundException e) {
-        logger.error("Chyba: Entity Not Found {}", e.getMessage());
+        myLogger.error("Chyba: Entity Not Found {}", e.getMessage());
         
         ModelAndView model = new ModelAndView();
-        model.addObject("error", "Requested Entity not found!");
-        model.addObject("status", "Try another page/item.");
-        model.addObject("errorMessage", e.getMessage());
-        model.setViewName("error/404");
+        model.addObject(ERROR_MODEL_KEY, "Requested Entity not found!");
+        model.addObject(STATUS_MODEL_KEY, "Try another page/item.");
+        model.addObject(ERROR_MESSAGE_MODEL_KEY, e.getMessage());
+        model.setViewName(ERROR_404_VIEW_NAME);
         return model;
     }
     
     @ExceptionHandler({ UserNotFoundException.class })
     public ModelAndView handleRESTUserNotFound(UserNotFoundException ex) {
         
-        logger.error("404 - Chyba: user Not Found {}", ex.getMessage());
+        myLogger.error("404 - Chyba: user Not Found {}", ex.getMessage());
         
         ModelAndView model = new ModelAndView();
-        model.addObject("error", "Requested User not found!");
-        model.addObject("status", "Try another page/item.");
-        model.addObject("errorMessage", ex.getMessage());
-        model.setViewName("error/404");
+        model.addObject(ERROR_MODEL_KEY, "Requested User not found!");
+        model.addObject(STATUS_MODEL_KEY, "Try another page/item.");
+        model.addObject(ERROR_MESSAGE_MODEL_KEY, ex.getMessage());
+        model.setViewName(ERROR_404_VIEW_NAME);
         return model;
     }
 
@@ -70,20 +78,14 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
      */
     @ExceptionHandler({ConstraintViolationException.class})  
     public ModelAndView handleConstraintViolation(ConstraintViolationException e) {
-        logger.error("Chyba: Constraint Violation {}", e.getMessage());
+        myLogger.error("Chyba: Constraint Violation {}", e.getMessage());
         
         ModelAndView model = new ModelAndView();
-        model.addObject("errorMessage", e.getMessage());
-        model.setViewName("error");
+        model.addObject(ERROR_MESSAGE_MODEL_KEY, e.getMessage());
+        model.setViewName(ERROR_VIEW_NAME);
         return model;
     }
     
-    /*
-    @ExceptionHandler(StorageFileException.class)
-    public ResponseEntity<?> handleStorageFileNotFound(StorageFileException exc) {
-        return ResponseEntity.notFound().build();
-    }
-    */
     
     /**
      * Probably not needed currently as the validation of the uploaded file size is performed<br>
@@ -96,12 +98,12 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
     @ExceptionHandler(value = {MultipartException.class, MaxUploadSizeExceededException.class})
     public ModelAndView maxUploadSizeExceeded(MultipartException exc) {
         
-        logger.error("MaxUploadSizeExceeded {}", exc.getMessage());
+        myLogger.error("MaxUploadSizeExceeded {}", exc.getMessage());
         
         ModelAndView model = new ModelAndView();
-        model.addObject("errorMessage", exc.getMessage());
+        model.addObject(ERROR_MESSAGE_MODEL_KEY, exc.getMessage());
         model.getModel().put("fileTooLargeError", "File too large!");
-        model.setViewName("error");
+        model.setViewName(ERROR_VIEW_NAME);
         return model;
     }
     
@@ -115,12 +117,12 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
     @ExceptionHandler({ OAuth2AuthenticationProcessingException.class })
     public ModelAndView handleOAuth2AuthenticationProcessingException(OAuth2AuthenticationProcessingException ex) {
         
-        logger.error("Chyba: {}", ex.getMessage());
+        myLogger.error("Chyba: {}", ex.getMessage());
         
         ModelAndView model = new ModelAndView();
-        model.addObject("error", "Sorry user, error! Chyba pri 'social network' autentikaci.");
+        model.addObject(ERROR_MODEL_KEY, "Sorry user, error! Chyba pri 'social network' autentikaci.");
         model.addObject("oAuth2ErrorMessage", ex.getMessage());
-        model.setViewName("login");
+        model.setViewName(LOGIN_VIEW_NAME);
         
         return model;
     }
@@ -128,12 +130,12 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
     @ExceptionHandler({ BadAuthorizationRequestException.class })
     public ModelAndView handleBadAuthorizationRequestException(BadAuthorizationRequestException ex, Locale locale) {
         
-        logger.error("Chyba: {}", ex.getMessage());
+        myLogger.error("Chyba: {}", ex.getMessage());
         
         ModelAndView model = new ModelAndView();
-        model.addObject("error", "Sorry user, error! Problem pri autorizaci uzivatele.");
-        model.addObject("errorMessage", messages.getMessage(ex.getLocalizedMessageCode(), null, locale));
-        model.setViewName("error");
+        model.addObject(ERROR_MODEL_KEY, "Sorry user, error! Problem pri autorizaci uzivatele.");
+        model.addObject(ERROR_MESSAGE_MODEL_KEY, messages.getMessage(ex.getLocalizedMessageCode(), null, locale));
+        model.setViewName(ERROR_VIEW_NAME);
         return model;
     }
     
@@ -144,12 +146,12 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
     @ExceptionHandler
     public ModelAndView handleOtherExceptions(Exception e) {
         
-        logger.error("Chyba: {}", e.getMessage());
+        myLogger.error("Chyba: {}", e.getMessage());
         
         ModelAndView model = new ModelAndView();
-        model.addObject("error", "Sorry user, error!");
-        model.addObject("errorMessage", e.getMessage());
-        model.setViewName("error");
+        model.addObject(ERROR_MODEL_KEY, "Sorry user, error!");
+        model.addObject(ERROR_MESSAGE_MODEL_KEY, e.getMessage());
+        model.setViewName(ERROR_VIEW_NAME);
         return model;
     }
     
