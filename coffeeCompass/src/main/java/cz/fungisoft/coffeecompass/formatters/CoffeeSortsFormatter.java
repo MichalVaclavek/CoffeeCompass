@@ -30,5 +30,4 @@ public class CoffeeSortsFormatter implements Formatter<CoffeeSort>
     public CoffeeSort parse(String text, Locale locale) throws ParseException {
         return coffeeSortService.findCoffeeSortByName(text);
     }
-    
 }

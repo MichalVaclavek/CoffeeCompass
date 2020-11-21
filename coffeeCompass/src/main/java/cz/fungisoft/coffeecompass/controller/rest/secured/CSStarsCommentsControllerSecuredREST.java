@@ -225,5 +225,4 @@ public class CSStarsCommentsControllerSecuredREST
             
         return new ResponseEntity<>(commentsNumber, HttpStatus.OK);
     }
-
 }

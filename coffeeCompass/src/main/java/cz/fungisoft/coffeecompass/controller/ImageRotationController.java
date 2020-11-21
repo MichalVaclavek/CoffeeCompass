@@ -68,5 +68,4 @@ public class ImageRotationController
 
         return "redirect:/showSite/" + siteID;
     }
-
 }

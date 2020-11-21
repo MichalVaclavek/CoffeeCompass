@@ -84,5 +84,4 @@ public class ContactMeMessageController
         contactMeService.saveContactMeMessage(cmMessage);
         return "redirect:/home/?contactmesuccess";
     }
-    
 }

@@ -345,5 +345,4 @@ public class CoffeeSiteControllerPublicREST
     public List<CoffeeSiteType> populateCoffeeSiteTypes() {
         return coffeeSiteTypeService.getAllCoffeeSiteTypes();
     }
-    
 }

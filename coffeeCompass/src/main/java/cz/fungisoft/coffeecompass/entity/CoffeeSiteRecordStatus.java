@@ -42,6 +42,7 @@ public class CoffeeSiteRecordStatus
     }
 
     /* ======= INSTANCE VARIABLES ======== */
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -54,5 +55,4 @@ public class CoffeeSiteRecordStatus
     public CoffeeSiteRecordStatusEnum getRecordStatus() {
         return CoffeeSiteRecordStatusEnum.valueOf(status);
     }
-    
 }

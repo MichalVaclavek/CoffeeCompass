@@ -100,5 +100,4 @@ public class UsersControllerPublicREST
         
         return ResponseEntity.ok(authResponse);
     }
-
 }

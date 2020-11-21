@@ -8,11 +8,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthenticationFacade implements IAuthenticationFacade
 {
-//    private AuthenticationManager authenticationManager;
     
     public AuthenticationFacade(/* @Lazy AuthenticationManager authenticationManager */) {
         super();
-//        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -24,5 +22,4 @@ public class AuthenticationFacade implements IAuthenticationFacade
     public SecurityContext getContext() {
         return SecurityContextHolder.getContext();
     }
-
 }

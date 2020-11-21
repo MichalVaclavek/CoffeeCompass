@@ -114,5 +114,4 @@ public class ImageControllerSecuredREST
         log.info("Image deleted. CoffeeSite id: {}.", coffeeSiteId);
         return new ResponseEntity<>(siteId, HttpStatus.OK);
     }
-    
 }

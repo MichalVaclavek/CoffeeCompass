@@ -43,5 +43,4 @@ public class ContactMeMessage implements Serializable
 	 
     @Column(name="message", length = 512, nullable = false)
     private String textOfMessage;
-
 }

@@ -188,7 +188,7 @@ public class CSStarsCommentsControllerPublicREST
         Integer commentsNumber = commentsService.getNumberOfCommentsForSiteId(siteId);
         
         if (commentsNumber == null) {
-            commentsNumber = new Integer(0);
+            commentsNumber = 0;
         }
         
         return commentsNumber;
@@ -204,9 +204,6 @@ public class CSStarsCommentsControllerPublicREST
     @GetMapping("/starsQualityDescription/all")
     @ResponseStatus(HttpStatus.OK)
     public List<StarsQualityDescription> populateAllQualityStars() {
-        
-        List<StarsQualityDescription> starsQuality = starsQualityService.getAllStarsQualityDescriptions();
-        return starsQuality;
+        return starsQualityService.getAllStarsQualityDescriptions();
     }
-
 }

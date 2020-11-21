@@ -217,24 +217,24 @@ public class User implements Serializable
         return createdSites;
     }
 
-    public void setCreatedSites(Integer created_sites) {
-        this.createdSites = created_sites;
+    public void setCreatedSites(Integer createdSites) {
+        this.createdSites = createdSites;
     }
 
     public Integer getUpdatedSites() {
         return updatedSites;
     }
 
-    public void setUpdatedSites(Integer updated_sites) {
-        this.updatedSites = updated_sites;
+    public void setUpdatedSites(Integer updatedSites) {
+        this.updatedSites = updatedSites;
     }
 
     public Integer getDeletedSites() {
         return deletedSites;
     }
 
-    public void setDeletedSites(Integer deleted_sites) {
-        this.deletedSites = deleted_sites;
+    public void setDeletedSites(Integer deletedSites) {
+        this.deletedSites = deletedSites;
     }
     
     public boolean isRegisterEmailConfirmed() {
@@ -272,5 +272,4 @@ public class User implements Serializable
     public void setAuthProvider(AuthProviders authProvider) {
         this.authProvider = authProvider;
     }
-
 }

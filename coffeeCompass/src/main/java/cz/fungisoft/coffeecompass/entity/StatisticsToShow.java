@@ -75,5 +75,4 @@ public class StatisticsToShow
      * List of 5 Users who created the most of Coffee sites and the number of sites created
      */
     private List<DBReturnPair> top5UserNamesMostCreatedSites; 
-    
 }

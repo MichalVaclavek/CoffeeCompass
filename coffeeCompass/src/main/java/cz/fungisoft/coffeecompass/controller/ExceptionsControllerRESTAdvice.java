@@ -122,5 +122,4 @@ public class ExceptionsControllerRESTAdvice extends ResponseEntityExceptionHandl
          
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
-    
 }

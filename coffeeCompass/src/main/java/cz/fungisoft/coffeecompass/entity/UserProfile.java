@@ -80,5 +80,4 @@ public class UserProfile implements Serializable
     public String toString() {
         return type;
     }
-    
 }

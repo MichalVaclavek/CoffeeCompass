@@ -35,11 +35,6 @@ import cz.fungisoft.coffeecompass.service.UserService;
 @Transactional
 public class CustomOAuth2UserService extends DefaultOAuth2UserService
 {
-    /**
-     * UserService is used here, but UserRepository  could be used too.
-     */
-//    private UsersRepository userRepository;
-    
     private UserService userService;
     
     public CustomOAuth2UserService(@Lazy UserService userService) {
@@ -104,5 +99,4 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService
     public User updateExistingUser(User existingUser, OAuth2UserInfo oAuth2UserInfo) {
         return userService.updateOAuth2User(existingUser, oAuth2UserInfo);
     }
-
 }

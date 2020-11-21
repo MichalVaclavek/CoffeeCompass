@@ -23,5 +23,4 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint
         httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                 e.getLocalizedMessage());
     }
-
 }

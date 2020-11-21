@@ -42,5 +42,4 @@ public class InvalidParameterValueException extends RESTException {
     public Object getFieldValue() {
         return fieldValue;
     }
-    
 }

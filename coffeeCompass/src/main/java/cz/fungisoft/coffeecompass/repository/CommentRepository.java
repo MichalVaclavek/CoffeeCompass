@@ -37,5 +37,4 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>
 
     @Query("delete FROM Comment cl where coffeeSite.id=?1")
     public void deleteAllForSite(Long siteID);
- 
 }

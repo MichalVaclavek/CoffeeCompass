@@ -157,5 +157,4 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
     @Modifying // required by Hibernate, otherwise there is an exception ' ... Illegal state ...'
     @Query("delete FROM CoffeeSite cs WHERE originalUser.id=?1")
     public void deleteAllFromUser(Long userId);
-    
 }

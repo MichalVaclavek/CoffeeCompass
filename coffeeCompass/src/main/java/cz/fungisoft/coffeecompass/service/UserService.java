@@ -113,5 +113,4 @@ public interface UserService
      * @param userId
      */
     void clearUserDataById(Long userId);
-
 }

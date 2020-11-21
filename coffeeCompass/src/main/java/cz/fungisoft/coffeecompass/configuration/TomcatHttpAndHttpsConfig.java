@@ -32,5 +32,4 @@ public class TomcatHttpAndHttpsConfig {
         connector.setSecure(false);
         return connector;
     }
-    
 }

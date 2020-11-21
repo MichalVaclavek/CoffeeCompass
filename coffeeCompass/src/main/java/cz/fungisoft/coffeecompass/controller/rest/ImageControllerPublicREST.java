@@ -77,5 +77,4 @@ public class ImageControllerPublicREST
         }
         return new ResponseEntity<>(pic, headers, HttpStatus.OK);
     }
-
 }

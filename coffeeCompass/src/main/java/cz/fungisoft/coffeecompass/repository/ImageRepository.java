@@ -29,5 +29,4 @@ public interface ImageRepository extends JpaRepository<Image, Integer>
 
     @Query("select COUNT(im) from Image im WHERE coffeeSite.id=?1")
     public int getNumOfImagesForSiteId(Long siteId);
-    
 }

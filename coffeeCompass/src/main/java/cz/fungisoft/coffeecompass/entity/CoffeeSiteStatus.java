@@ -50,6 +50,7 @@ public class CoffeeSiteStatus
     }
 
     /* ======= INSTANCES VARIABLES ======== */
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -63,5 +64,4 @@ public class CoffeeSiteStatus
     public String toString() {
         return status;
     }
-    
 }

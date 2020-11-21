@@ -257,5 +257,4 @@ public class CoffeeSiteControllerSecuredREST
                 : new ResponseEntity<>(0, HttpStatus.NOT_FOUND);
         
     }
-    
 }

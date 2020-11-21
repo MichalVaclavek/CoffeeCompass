@@ -66,10 +66,7 @@ public class CupType
         } else if (!cupType.equals(other.cupType))
             return false;
         
-        if (id != other.id)
-            return false;
-        
-        return true;
+        return id != other.id;
     }
 
     
@@ -86,5 +83,4 @@ public class CupType
     public String toString() {
         return cupType;
     }
-    
 }

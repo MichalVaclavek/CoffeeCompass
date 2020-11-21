@@ -37,5 +37,4 @@ public class ResourceNotFoundException extends RESTException {
     public Object getFieldValue() {
         return fieldValue;
     }
-
 }

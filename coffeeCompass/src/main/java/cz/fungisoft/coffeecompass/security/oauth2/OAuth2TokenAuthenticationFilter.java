@@ -1,7 +1,5 @@
 package cz.fungisoft.coffeecompass.security.oauth2;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,6 +10,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
 import cz.fungisoft.coffeecompass.security.JwtTokenProviderService;
+import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -28,10 +27,9 @@ import java.io.IOException;
  * @author https://www.callicoder.com/spring-boot-security-oauth2-social-login-part-2/
  *
  */
+@Log4j2
 public class OAuth2TokenAuthenticationFilter extends OncePerRequestFilter
 {
-    private static final Logger logger = LoggerFactory.getLogger(OAuth2TokenAuthenticationFilter.class);
-    
     private JwtTokenProviderService jwtTokenProviderService;
 
     private CustomUserDetailsService customUserDetailsService;
@@ -60,7 +58,7 @@ public class OAuth2TokenAuthenticationFilter extends OncePerRequestFilter
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception ex) {
-            logger.error("Could not set user authentication in security context", ex);
+            log.error("Could not set user authentication in security context", ex);
         }
 
         filterChain.doFilter(request, response);

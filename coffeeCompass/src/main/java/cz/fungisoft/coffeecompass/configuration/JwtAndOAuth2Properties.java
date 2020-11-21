@@ -22,6 +22,14 @@ public class JwtAndOAuth2Properties
 {
     private final JwtAuth jwtAuth = new JwtAuth();
     private final OAuth2 oauth2 = new OAuth2();
+    
+    public JwtAuth getJwtAuth() {
+        return jwtAuth;
+    }
+
+    public OAuth2 getOauth2() {
+        return oauth2;
+    }
 
     public static class JwtAuth {
         
@@ -110,12 +118,4 @@ public class JwtAndOAuth2Properties
         }
     }
 
-    public JwtAuth getJwtAuth() {
-        return jwtAuth;
-    }
-
-    public OAuth2 getOauth2() {
-        return oauth2;
-    }
-    
 }

@@ -26,5 +26,4 @@ public class CoffeeCompassInitializer extends AbstractAnnotationConfigDispatcher
     	Filter [] singleton = { new CORSFilter()};
     	return singleton;
     }
- 
 }

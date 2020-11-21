@@ -104,5 +104,4 @@ public class Image implements Serializable
 		}		
 	}
 	*/
-	
 }

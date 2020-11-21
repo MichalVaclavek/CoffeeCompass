@@ -90,7 +90,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
     }
 
     @Autowired
-    public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
+    public void configureGlobalSecurity(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(authenticationProvider());
     }
     
@@ -132,7 +132,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
             .logoutSuccessUrl("/home");
         
         // REST security login params
-        //http.exceptionHandling().accessDeniedHandler(accessDeniedHandler) //TODO How to create two Access denied handlers for Thymeleaf and REST?
         http.exceptionHandling().defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_REST_URLS)
             .and() 
             .addFilterBefore(restAuthenticationFilter(), AnonymousAuthenticationFilter.class)
@@ -218,5 +217,4 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
     AuthenticationEntryPoint forbiddenEntryPoint() {
         return new RestAuthenticationEntryPoint();
     }
-    
 }

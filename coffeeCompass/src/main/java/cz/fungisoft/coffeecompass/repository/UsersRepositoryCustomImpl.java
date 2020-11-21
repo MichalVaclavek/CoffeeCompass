@@ -44,5 +44,4 @@ public class UsersRepositoryCustomImpl implements UsersRepositoryCustom
                      .collect(Collectors.toList());
 
     }
-
 }

@@ -170,6 +170,6 @@ public class CoffeeCompassConfiguration implements WebMvcConfigurer
                                             TimeZone.getDefault().toZoneId());  
             b.setSunSetTime(sunsetTime.toLocalTime());
         }
-    };
+    }
     
 }

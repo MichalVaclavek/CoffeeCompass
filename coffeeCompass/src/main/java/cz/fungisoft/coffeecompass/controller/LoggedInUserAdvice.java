@@ -34,5 +34,4 @@ public class LoggedInUserAdvice
         Optional<UserDTO> loggedInUser = userService.getCurrentLoggedInUserDTO();
         return loggedInUser.orElse(null);
     }
-    
 }

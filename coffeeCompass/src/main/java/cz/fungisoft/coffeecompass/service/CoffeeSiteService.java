@@ -217,5 +217,4 @@ public interface CoffeeSiteService
     
     @Transactional
     public CoffeeSite updateSite(CoffeeSiteDTO cs);
-    
 }

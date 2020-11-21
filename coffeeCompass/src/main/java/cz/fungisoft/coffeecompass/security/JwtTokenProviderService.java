@@ -204,5 +204,4 @@ public class JwtTokenProviderService implements Clock, TokenService
         }
         return str.substring(0, sepPos);
     }
-    
 }

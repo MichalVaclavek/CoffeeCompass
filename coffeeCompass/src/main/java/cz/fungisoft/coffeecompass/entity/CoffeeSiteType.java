@@ -25,6 +25,7 @@ public class CoffeeSiteType
 {
 
     /* ======= INSTANCES VARIABLES ======== */
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

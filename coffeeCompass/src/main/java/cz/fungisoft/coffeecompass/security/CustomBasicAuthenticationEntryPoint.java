@@ -30,5 +30,4 @@ public class CustomBasicAuthenticationEntryPoint extends BasicAuthenticationEntr
         setRealmName("COFFEE_COMPASS");
         super.afterPropertiesSet();
     }
-    
 }

@@ -108,5 +108,4 @@ public class UserEmailVerificationToken
         cal.add(Calendar.MINUTE, expiryTimeInMinutes);
         return new Date(cal.getTime().getTime());
     }
-    
 }

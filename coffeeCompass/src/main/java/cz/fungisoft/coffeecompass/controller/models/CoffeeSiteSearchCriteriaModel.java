@@ -66,5 +66,4 @@ public class CoffeeSiteSearchCriteriaModel
        this.lat1 = STRED_CR_LAT;
        this.lon1 = STRED_CR_LON;
     }
-    
 }

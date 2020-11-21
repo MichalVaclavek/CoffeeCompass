@@ -60,7 +60,7 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
            logger.error("Could not set user authentication in security context", ex);
            throw ex;
        }
-      return auth;
+       return auth;
     }
 
     @Override
@@ -72,5 +72,4 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
        super.successfulAuthentication(request, response, chain, authResult);
        chain.doFilter(request, response);
     }
-
 }

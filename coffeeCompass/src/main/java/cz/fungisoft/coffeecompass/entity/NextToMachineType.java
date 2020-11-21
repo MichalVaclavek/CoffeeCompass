@@ -92,5 +92,4 @@ public class NextToMachineType
     public String toString() {
         return type;
     }
-    
 }

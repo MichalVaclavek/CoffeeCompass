@@ -252,5 +252,4 @@ public class ResetPasswordController
         model.setViewName(FORGOT_PASSWD_VIEW);
         return model;
     }
-    
 }

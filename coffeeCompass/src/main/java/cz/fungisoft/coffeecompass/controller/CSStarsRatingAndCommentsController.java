@@ -88,5 +88,4 @@ public class CSStarsRatingAndCommentsController
         // Show same coffee site with updated Stars and comments
         return new ModelAndView("redirect:/showSite/" + siteId);
     }
-
 }

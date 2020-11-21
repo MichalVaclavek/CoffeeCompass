@@ -24,6 +24,7 @@ import lombok.Data;
 public class PriceRange
 {
     /* ======= INSTANCES VARIABLES ======== */
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -37,5 +38,4 @@ public class PriceRange
     public String toString() {
         return priceRange;
     }
-    
 }

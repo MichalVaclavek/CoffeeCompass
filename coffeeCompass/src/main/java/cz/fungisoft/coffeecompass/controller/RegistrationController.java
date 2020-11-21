@@ -189,5 +189,4 @@ public class RegistrationController
         
         return mav;
     }
-    
 }

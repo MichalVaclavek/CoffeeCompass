@@ -27,5 +27,4 @@ public class WeatherDTO
     
     @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime sunSetTime;
-    
 }

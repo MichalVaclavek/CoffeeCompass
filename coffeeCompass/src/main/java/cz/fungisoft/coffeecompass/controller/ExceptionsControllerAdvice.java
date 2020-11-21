@@ -154,5 +154,4 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
         model.setViewName(ERROR_VIEW_NAME);
         return model;
     }
-    
 }

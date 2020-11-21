@@ -40,5 +40,4 @@ public interface IStarsForCoffeeSiteAndUserService
     public double avgStarsForUser(Long userID);
     
     public AverageStarsForSiteDTO getStarsAndNumOfHodnoceniForSite(Long coffeeSiteID);
-    
 }

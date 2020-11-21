@@ -241,5 +241,4 @@ public class CoffeeSite
     
     @OneToMany(mappedBy="coffeeSite", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<StarsForCoffeeSiteAndUser> ratings = new ArrayList<>();
-    
 }

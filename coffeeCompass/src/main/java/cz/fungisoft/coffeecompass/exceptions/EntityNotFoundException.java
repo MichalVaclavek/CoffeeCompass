@@ -27,5 +27,4 @@ public class EntityNotFoundException extends RuntimeException {
     public void setLocalizedMessageCode(String localizedMessageCode) {
         this.localizedMessageCode = localizedMessageCode;
     }
-    
 }

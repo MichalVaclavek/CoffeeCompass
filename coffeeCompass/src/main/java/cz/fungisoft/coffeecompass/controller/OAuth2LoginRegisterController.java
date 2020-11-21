@@ -128,5 +128,4 @@ public class OAuth2LoginRegisterController
         attr.addFlashAttribute("oAuth2ErrorMessage", encodedErorrMessage);
         return ("redirect:/login");
     }
-    
 }

@@ -83,15 +83,11 @@ public class CoffeeSort
         } else if (!coffeeSort.equals(other.coffeeSort))
             return false;
         
-        if (id != other.id)
-            return false;
-        
-        return true;
+        return(id != other.id);
     }
 
     @Override
     public String toString() {
         return coffeeSort;
     }
-    
 }

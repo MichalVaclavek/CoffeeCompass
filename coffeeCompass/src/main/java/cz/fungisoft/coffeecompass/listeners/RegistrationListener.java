@@ -21,5 +21,4 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         verificationTokenSendEmailService.setUserVerificationData(event.getUser(), event.getLocale());
         verificationTokenSendEmailService.createAndSendVerificationTokenEmail();
     }
-    
 }

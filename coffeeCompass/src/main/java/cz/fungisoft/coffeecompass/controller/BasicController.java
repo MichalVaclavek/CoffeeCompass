@@ -117,5 +117,4 @@ public class BasicController
     public String error500() {
         return "error/500";
     }
-
 }

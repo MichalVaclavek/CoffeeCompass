@@ -26,5 +26,4 @@ public class OnRegistrationCompleteEvent extends ApplicationEvent
         this.user = user;
         this.locale = locale;
     }
-
 }

@@ -487,5 +487,4 @@ public class CoffeeSiteController
     public List<CoffeeSort> populateCoffeeSorts() {
         return coffeeSortService.getAllCoffeeSorts();
     }
-        
 }

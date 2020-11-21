@@ -20,7 +20,7 @@ import javax.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.METHOD, ElementType.FIELD })
 public @interface ImageFileValidatorConstraint {
-    String message() default "Only jpg, jpeg or png files allowed";
+    String message() default "Only jpg, jpeg or png files allowed.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

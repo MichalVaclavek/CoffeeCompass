@@ -51,5 +51,4 @@ public class ConfigurationRedirectToHttps
         connector.setRedirectPort(8443);
         return connector;
     }
-    
 }

@@ -4,7 +4,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -86,7 +85,7 @@ public class UserPrincipal implements OAuth2User, UserDetails
     
     private static List<? extends GrantedAuthority> getGrantedAuthorities(User user) {
         
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+        List<GrantedAuthority> authorities = new ArrayList<>();
          
         for (UserProfile userProfile : user.getUserProfiles()) {
             authorities.add(new SimpleGrantedAuthority("ROLE_" + userProfile.getType()));
@@ -152,5 +151,4 @@ public class UserPrincipal implements OAuth2User, UserDetails
     public String getName() {
         return String.valueOf(id);
     }
-
 }

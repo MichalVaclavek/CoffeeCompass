@@ -61,7 +61,7 @@ public class OtherOffer
         final int prime = 31;
         int result = 1;
         result = prime * result + id; // Pokud se do vypoctu hashCode() pouzije id, pak metody assertThat().equals()
-        // pro 2 stejne objekty Offer vrati false :-(
+                                      // pro 2 stejne objekty Offer vrati false :-(
         result = prime * result + ((offer == null) ? 0 : offer.hashCode());
         return result;
     }
@@ -70,5 +70,4 @@ public class OtherOffer
     public String toString() {
         return offer;
     }
-    
 }

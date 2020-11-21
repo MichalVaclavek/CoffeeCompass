@@ -38,5 +38,4 @@ public class WeatherControllerREST
         
         return weatherService.getWeatherDTO(siteID);
     }
-
 }

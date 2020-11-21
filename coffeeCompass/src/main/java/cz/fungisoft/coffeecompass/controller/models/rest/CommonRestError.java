@@ -110,5 +110,4 @@ public class CommonRestError
         return attributesMap;
         
     }
-    
 }

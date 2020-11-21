@@ -14,5 +14,4 @@ public class NoRedirectStrategy implements RedirectStrategy
     public void sendRedirect(HttpServletRequest request, HttpServletResponse response, String url) throws IOException {
      // No redirect is required with pure REST
     }
-
 }

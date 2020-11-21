@@ -270,8 +270,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         if (site != null) {
             siteDto = mapperFacade.map(site, CoffeeSiteDTO.class);
         
-            siteDto = evaluateOperationalAttributes(siteDto);
-            siteDto = evaluateAverageStars(siteDto);
+            siteDto = evaluateAverageStars(evaluateOperationalAttributes(siteDto));
         }
         return siteDto;
     }
@@ -327,7 +326,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     
     @Override
     public CoffeeSite save(CoffeeSiteDTO cs) {
-        
         CoffeeSite csToSave = mapperFacade.map(cs, CoffeeSite.class);
         return save(csToSave);
     }
@@ -501,7 +499,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     @Override
     public List<CoffeeSiteDTO> findAllWithinCircleWithCSStatusAndCoffeeSort(double zemSirka, double zemDelka, long meters,
                                                                             String cSort, String siteStatus) {       
-        List<CoffeeSite> coffeeSites = new ArrayList<CoffeeSite>();
+        List<CoffeeSite> coffeeSites = new ArrayList<>();
         /*
          * Jsou 4 mozne kombinace parametru cSort a siteStatus podle toho jestli jsou nebo nejsou prazdne
          * Podle techto kombinaci se volaji 4 ruzne metody v Repository
@@ -615,10 +613,10 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         
         // Usporadani vysledku db dotazu (seznam CoffeeSites v danem okruhu) podle vzdalenosti od bodu hledani
         // Sama DB tyto vzdalenosti pro dane CoffeeSites nevraci
-        sites.sort((cs1, cs2) -> { 
-            return (cs1.getDistFromSearchPoint() == cs2.getDistFromSearchPoint()) ? 0
-                                                                                  : (cs1.getDistFromSearchPoint() < cs2.getDistFromSearchPoint()) ? -1
-                                                                                                                                                  : 1;}
+        sites.sort((cs1, cs2) -> (cs1.getDistFromSearchPoint() == cs2.getDistFromSearchPoint()) ? 0
+                                  : (cs1.getDistFromSearchPoint() < cs2.getDistFromSearchPoint()) ? -1
+                                                                                                  : 1
+            
         );
         
         return sites;
@@ -703,7 +701,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
                &&
                (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.ACTIVE)
                 || (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CANCELED) // Admin or DBA users can modify from CANCELED to INACTIVE or Inactive to Active
-                    && userService.hasADMINorDBARole(loggedInUser.get())
+                    && loggedInUser.isPresent() && userService.hasADMINorDBARole(loggedInUser.get())
                    )    
                );
     }
@@ -731,14 +729,16 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     }
 
     /**
-     * Evaluates if a Comment can be added to the CoffeeSite. 
+     * Evaluates if a Comment can be added to the CoffeeSite.
+     * Currently, any logged-in user can comment the site.
      */
     private boolean canBeCommented(CoffeeSiteDTO cs) {
         return (loggedInUser.isPresent());
     }
     
     /**
-     * Evaluates if Stars can be added to the CoffeeSite. 
+     * Evaluates if Stars can be added to the CoffeeSite.
+     * Currently, any logged-in user can rate the site.
      */
     private boolean canBeRateByStars(CoffeeSiteDTO cs) {
         return (loggedInUser.isPresent());
@@ -762,7 +762,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
                 return loggedInUser.isPresent() && siteUserMatch(cs);
                 
             } else { // is CANCELED, only DBA and ADMIN can see the site 
-                 return (loggedInUser.isPresent()) ? userService.hasADMINorDBARole(loggedInUser.get()) : false;
+                 return (loggedInUser.isPresent()) && userService.hasADMINorDBARole(loggedInUser.get());
               }
         }     
     }
@@ -850,11 +850,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             list = coffeeSitesList.subList(startItem, toIndex);
         }
  
-        Page<CoffeeSiteDTO> coffeeSitesPage = new PageImpl<CoffeeSiteDTO>(list, PageRequest.of(currentPage, pageSize), coffeeSitesList.size());
- 
-        return coffeeSitesPage;
+        return new PageImpl<>(list, PageRequest.of(currentPage, pageSize), coffeeSitesList.size());
     }
-
     
     //TODO dalsi vyhledavaci metody podle ruznych kriterii?
     // CriteriaQuery a CriteriaQueryBuilder

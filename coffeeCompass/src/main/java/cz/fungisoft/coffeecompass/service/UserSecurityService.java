@@ -41,5 +41,4 @@ public interface UserSecurityService
     public void logout(String userName);
 
     public void updateCurrentAuthentication(User entity, String newUserName, String newPasswd);
-
 }

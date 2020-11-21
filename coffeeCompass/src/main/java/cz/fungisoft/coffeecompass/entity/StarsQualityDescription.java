@@ -24,7 +24,7 @@ import lombok.Data;
 @Table(name="stars_hodnoceni_kvality", schema="coffeecompass")
 public class StarsQualityDescription
 {
-    public static enum StarsQualityEnum implements Serializable
+    public enum StarsQualityEnum implements Serializable
     {
         ONE("Břečka"),
         TWO("Slabota"),
@@ -149,5 +149,4 @@ public class StarsQualityDescription
     public String toString() {
         return quality;
     }
-
 }

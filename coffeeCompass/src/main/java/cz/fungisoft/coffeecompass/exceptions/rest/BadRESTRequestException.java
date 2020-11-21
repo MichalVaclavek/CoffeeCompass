@@ -24,5 +24,4 @@ public class BadRESTRequestException extends RESTException {
     public BadRESTRequestException(String message, Throwable cause) {
         super(message, cause);
     }
-
 }

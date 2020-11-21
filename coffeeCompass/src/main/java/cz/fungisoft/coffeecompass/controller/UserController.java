@@ -363,10 +363,10 @@ public class UserController
         boolean userModifySuccess = false;
         
         User updatedUser = userService.updateUser(userDto);
+        String encodedUserName = "";
         
         if (updatedUser != null) {
             userModifySuccess = true;
-            
             if (loggedInUser.isPresent() 
                 && updatedUser.getId().equals(loggedInUser.get().getId())) { // If the user modifies it's own profile
                 // Check if the email address is confirmed
@@ -384,17 +384,15 @@ public class UserController
                     }
                 }
             }
+            try {
+                encodedUserName = URLEncoder.encode(updatedUser.getUserName(), "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                logger.warn("User name URL encoding error. User name {}.", updatedUser.getUserName());
+            }
+            
+            attr.addFlashAttribute(USER_NAME_ATTRIB_KEY, updatedUser.getUserName());
         }
-        
-        String encodedUserName = updatedUser.getUserName();
-        try {
-            encodedUserName = URLEncoder.encode(updatedUser.getUserName(), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            logger.warn("User name URL encoding error. User name {}.", encodedUserName);
-        }
-        
         attr.addFlashAttribute("userModifySuccess", userModifySuccess);
-        attr.addFlashAttribute(USER_NAME_ATTRIB_KEY, updatedUser.getUserName());
         mav.setViewName("redirect:/home/?userName=" + encodedUserName);
         return mav;
     }
@@ -584,5 +582,4 @@ public class UserController
     public List<UserProfile> populateUserProfiles() {
         return userProfileService.findAll();
     }
-    
 }

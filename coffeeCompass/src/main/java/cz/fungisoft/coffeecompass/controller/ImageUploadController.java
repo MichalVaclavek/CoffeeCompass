@@ -78,5 +78,4 @@ public class ImageUploadController
         // Show same coffee site with deleted Image
         return new ModelAndView(REDIRECT_SHOW_SITE_VIEW + siteId);
     }
-    
 }

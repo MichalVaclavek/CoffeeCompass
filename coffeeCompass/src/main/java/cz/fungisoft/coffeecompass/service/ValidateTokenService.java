@@ -32,5 +32,4 @@ public interface ValidateTokenService
      * @return empty string if token is valid, otherwise invalid token reason i.e. "expiredToken" or "invalidToken"
      */
     public String validateUserRegistrationToken(String token);
-    
 }

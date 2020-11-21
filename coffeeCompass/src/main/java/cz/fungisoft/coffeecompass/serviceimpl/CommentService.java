@@ -103,7 +103,6 @@ public class CommentService implements ICommentService
     @Override
     public Comment saveTextAsComment(String commentText, CoffeeSite coffeeSite) {
         Optional<User> logedInUser =  userService.getCurrentLoggedInUser();
-        
         return saveTextAsComment(commentText, mapperFacade.map(logedInUser.get(), User.class), coffeeSite);
     }
     
@@ -137,7 +136,9 @@ public class CommentService implements ICommentService
                 }
             }
         }
-        log.warn("Comment id {} update failed. User id {} for CoffeeSite id {}", updatedComment.getId(),  updatedComment.getUserId(), updatedComment.getCoffeeSiteID());
+        if (updatedComment != null) {
+            log.warn("Comment id update failed. User id {} for CoffeeSite id {}", updatedComment.getId(),  updatedComment.getUserId(), updatedComment.getCoffeeSiteID());
+        }
         return null;
     }
 
@@ -192,7 +193,7 @@ public class CommentService implements ICommentService
      */
     private List<CommentDTO> modifyToTransfer(List<Comment> comments) {
         
-        return comments.stream().map(comment -> modifyToTransfer(comment)).collect(Collectors.toList());
+        return comments.stream().map(this::modifyToTransfer).collect(Collectors.toList());
     }
     
     /**
@@ -213,9 +214,8 @@ public class CommentService implements ICommentService
     }
     
     private boolean isDeletable(CommentDTO comment) {
-        return (comment != null &&  userService.getCurrentLoggedInUser().isPresent())
-                  ? userService.isADMINloggedIn() || comment.getUserName().equals( userService.getCurrentLoggedInUser().get().getUserName())
-                  : false;
+          return comment != null &&  userService.getCurrentLoggedInUser().isPresent()
+                  &&  (userService.isADMINloggedIn() || comment.getUserName().equals(userService.getCurrentLoggedInUser().get().getUserName()));
     }
 
 	@Override
@@ -238,8 +238,9 @@ public class CommentService implements ICommentService
     @Override
     public Comment getById(Integer id) {
         Comment comment = commentsRepo.findById(id).orElse(null);
-        if (comment == null)
+        if (comment == null) {
             throw new EntityNotFoundException("Comment with id " + id + " not found.");
+        }
         return comment;
     }
     

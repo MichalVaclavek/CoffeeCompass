@@ -28,5 +28,4 @@ public class StarsAndCommentModel
         stars = new StarsQualityDescription();
         comment = "";
     }
-    
 }

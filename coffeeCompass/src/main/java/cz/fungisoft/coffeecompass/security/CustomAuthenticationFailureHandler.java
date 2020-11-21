@@ -44,5 +44,4 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
  
         request.getSession().setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION, errorMessage);
     }
-    
 }

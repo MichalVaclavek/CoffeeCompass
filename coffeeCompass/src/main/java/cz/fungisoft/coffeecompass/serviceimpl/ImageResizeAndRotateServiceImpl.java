@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import cz.fungisoft.coffeecompass.entity.Image;
 import cz.fungisoft.coffeecompass.service.ImageResizeAndRotateService;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Service to change the size of the Image to "standard" width and lenghth.<br>
@@ -31,6 +32,7 @@ import cz.fungisoft.coffeecompass.service.ImageResizeAndRotateService;
  *
  */
 @Service("imageResizeAndRotate")
+@Log4j2
 public class ImageResizeAndRotateServiceImpl implements ImageResizeAndRotateService
 {
     /**
@@ -55,7 +57,8 @@ public class ImageResizeAndRotateServiceImpl implements ImageResizeAndRotateServ
         try {
             inputImage = ImageIO.read(bais);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error("Cannot read image file. Name '{}'", image.getFileName());
+            throw e;
         }
  
         BufferedImage resizedImage = new BufferedImage(defWidth, defHeight, inputImage.getType());
@@ -85,7 +88,8 @@ public class ImageResizeAndRotateServiceImpl implements ImageResizeAndRotateServ
             imgWriter.dispose();
             
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error("Cannot resize image file. Name '{}'", image.getFileName());
+            throw e;
         }
         
         image.setImageBytes(baos.toByteArray());
@@ -101,7 +105,8 @@ public class ImageResizeAndRotateServiceImpl implements ImageResizeAndRotateServ
         try {
             inputImage = ImageIO.read(bais);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error("Cannot resize image file. Name '{}'", image.getFileName());
+            throw e;
         }
         if (sizeRatio >= 0.001 && sizeRatio <= 1000) {
             this.defWidth = (int) (inputImage.getWidth() * sizeRatio);
@@ -128,6 +133,7 @@ public class ImageResizeAndRotateServiceImpl implements ImageResizeAndRotateServ
         try {
             inputImage = ImageIO.read(bais);
         } catch (IOException e) {
+            log.error("Cannot read image file to rotate. File name '{}'", image.getFileName());
             throw new RuntimeException(e);
         }
         
@@ -168,6 +174,7 @@ public class ImageResizeAndRotateServiceImpl implements ImageResizeAndRotateServ
             imgWriter.dispose();
             
         } catch (IOException e) {
+            log.error("Failed to write image file after its rotation. File name '{}'", image.getFileName());
             throw new RuntimeException(e);
         }
         
@@ -184,5 +191,4 @@ public class ImageResizeAndRotateServiceImpl implements ImageResizeAndRotateServ
     public Image rotate90DegreeRight(Image image) {
         return rotate(image, 90);
     }
-    
 }

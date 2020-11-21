@@ -87,5 +87,4 @@ public class UserDTO
     
     @JsonIgnore
     private boolean registerEmailConfirmed;
-
 }

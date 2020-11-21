@@ -45,5 +45,4 @@ public class RestErrorController extends AbstractErrorController
     public String getErrorPath() {
         return REST_ERROR_PATH;
     }
-
 }

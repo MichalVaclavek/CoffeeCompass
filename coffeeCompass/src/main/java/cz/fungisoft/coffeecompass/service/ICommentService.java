@@ -96,5 +96,4 @@ public interface ICommentService
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_DBA')")
 	public void deleteAllCommentsForSite(Long coffeeSiteID);
-    
 }

@@ -41,5 +41,4 @@ public class Company
     public String toString() {
         return nameOfCompany;
     }
-    
 }

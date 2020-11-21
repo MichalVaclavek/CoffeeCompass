@@ -356,5 +356,4 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
                       .map(record -> new DBReturnPair((String)record[0], (BigInteger)record[1]))
                       .collect(Collectors.toList());
     }
-
 }
