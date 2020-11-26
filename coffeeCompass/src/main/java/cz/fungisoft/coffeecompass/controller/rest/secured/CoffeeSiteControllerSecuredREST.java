@@ -216,7 +216,7 @@ public class CoffeeSiteControllerSecuredREST
         int pageSize = size.orElse(15);
         Page<CoffeeSiteDTO> coffeeSitePage;
         
-        coffeeSitePage = coffeeSiteService.findAllFromLoggedInUserPaginated(PageRequest.of(currentPage - 1, pageSize, new Sort(Sort.Direction.fromString("DESC"), "createdOn")));
+        coffeeSitePage = coffeeSiteService.findAllFromLoggedInUserPaginated(PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.fromString("DESC"), "createdOn")));
         
         if (coffeeSitePage == null || coffeeSitePage.isEmpty()) {
             log.error("No Coffee site from logged-in user found.");

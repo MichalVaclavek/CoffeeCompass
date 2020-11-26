@@ -13,7 +13,8 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.1.RELEASE</version>
+		<!-- <version>2.1.1.RELEASE</version> -->
+		<version>2.3.4.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 		
@@ -62,6 +63,12 @@
       					<artifactId>spring-boot-starter-logging</artifactId>
     				</exclusion>
   				</exclusions>
+		</dependency>
+		
+		<!-- javax.validation -->
+		<dependency>
+ 			<groupId>org.springframework.boot</groupId>
+ 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
 		<dependency>
@@ -120,6 +127,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+			<exclusions>
+			  <exclusion>
+			  	 <!-- Exclusion of some already integrated junit5 package - junit-vintage-engine is in SpringBoot 2.3.4 -->
+			     <groupId>org.junit.vintage</groupId> 
+			     <artifactId>junit-vintage-engine</artifactId>
+			  </exclusion>
+			</exclusions>
 		</dependency>
 		
 		<!-- Pro testovani prace s DB, vyuziva Spring-boot-starter-test pomoci @DataJpaTest pro vytvoreni TestEntityManager. -->
@@ -209,9 +223,6 @@
 		    <version>4.1</version>
 		</dependency>
 
-
-
-		
 	</dependencies>
 	
 

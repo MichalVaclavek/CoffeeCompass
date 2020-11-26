@@ -32,6 +32,7 @@ import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
 import cz.fungisoft.coffeecompass.service.UserProfileService;
 import cz.fungisoft.coffeecompass.service.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.ValidateTokenService;
+import cz.fungisoft.coffeecompass.service.WeatherApiService;
 import cz.fungisoft.coffeecompass.serviceimpl.CustomOAuth2UserService;
 
 /**
@@ -134,5 +135,8 @@ public abstract class MvcControllerUnitTestBaseSetup
     
     @MockBean
     protected PasswordEncoder passwordEncoder; // = Mockito.mock(PasswordEncoder.class);
+    
+    @MockBean
+    protected WeatherApiService weatherService;
     
 }

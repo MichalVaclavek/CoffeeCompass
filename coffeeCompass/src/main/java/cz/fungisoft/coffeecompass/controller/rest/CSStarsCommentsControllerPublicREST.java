@@ -111,7 +111,7 @@ public class CSStarsCommentsControllerPublicREST
         Page<CommentDTO> allCommentsPage;
         
         // Get 1 page of all ACTIVE CoffeeSites
-        allCommentsPage = commentsService.findAllCommentsPaginated(PageRequest.of(currentPage - 1, pageSize, new Sort(Sort.Direction.fromString(direction.toUpperCase()), orderBy)));
+        allCommentsPage = commentsService.findAllCommentsPaginated(PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.fromString(direction.toUpperCase()), orderBy)));
         
         
         // Gets all comments page with the given number of comments
@@ -169,7 +169,7 @@ public class CSStarsCommentsControllerPublicREST
         }
         
         // Get 1 page of Comments beloning to the given CoffeeSite id
-        commentsPage = commentsService.findAllCommentsForSitePaginated(coffeeSite, PageRequest.of(currentPage - 1, pageSize, new Sort(Sort.Direction.fromString(direction.toUpperCase()), orderBy)));
+        commentsPage = commentsService.findAllCommentsForSitePaginated(coffeeSite, PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.fromString(direction.toUpperCase()), orderBy)));
         
         return commentsPage;
     }

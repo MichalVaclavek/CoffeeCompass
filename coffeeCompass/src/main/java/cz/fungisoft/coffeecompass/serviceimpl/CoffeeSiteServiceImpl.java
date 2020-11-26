@@ -154,7 +154,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     
     @Override
     public List<CoffeeSiteDTO> findAll(String orderBy, String direction) {
-        List<CoffeeSite> items = coffeeSiteRepo.findAll(new Sort(Sort.Direction.fromString(direction.toUpperCase()), orderBy));
+        List<CoffeeSite> items = coffeeSiteRepo.findAll(Sort.by(Sort.Direction.fromString(direction.toUpperCase()), orderBy));
         log.info("All Coffee sites retrieved: " + items.size());
         return modifyToTransfer(items);
     }

@@ -1,15 +1,8 @@
 package cz.fungisoft.coffeecompass.unittest.coffeesite;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-//import static org.assertj.core.api.Assertions.assertThat;
-//import static org.hamcrest.MatcherAssert.assertThat;
-//import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertTrue;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.CoreMatchers.equalTo;
-//import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.Matchers.contains;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -19,15 +12,15 @@ import java.util.Set;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
@@ -68,16 +61,15 @@ import cz.fungisoft.coffeecompass.testutils.CoffeeSiteAttributesDBSaver;
  *  
  * @author Michal Vaclavek
  */
-@RunWith(SpringRunner.class)
+
 // Automaticky vytvori propojeni na H2 in-memory DB, ktera je uvedena v pom.xml dependency a nakonfigurovana v /src/test/resources/application.properties
 // to vse asi pomoci TestEntityManager
 @DataJpaTest
 @ActiveProfiles("test") // pro HSQL db pouzit @ActiveProfiles("testhsql")
 //@SqlConfig(separator=org.springframework.jdbc.datasource.init.ScriptUtils.EOF_STATEMENT_SEPARATOR)
-//@SqlConfig(separator="/;")
-public class CoffeeSiteRepositoryTests
+@ExtendWith(SpringExtension.class)
+class CoffeeSiteRepositoryTests
 {
-    
     @Autowired
     private TestEntityManager entityManager;
     
@@ -105,7 +97,7 @@ public class CoffeeSiteRepositoryTests
     private SiteLocationType nadr = new SiteLocationType();
     private User origUser = new User();
     private CoffeeSiteStatus siteStatus = new CoffeeSiteStatus();
-    private CoffeeSiteType siteType = new CoffeeSiteType();
+    private CoffeeSiteType siteType;
     private CoffeeSiteRecordStatus recordStatus = new CoffeeSiteRecordStatus();
     
     /**
@@ -114,13 +106,14 @@ public class CoffeeSiteRepositoryTests
      * objektu v @Before setUp() pomoci EntityManageru.persist() a flush()
      * Vsechno se vytvari v testovaci in-memory DB, takze se neovlivni "ziva" DB.
      */
-    @Before
+    @BeforeEach
     public void setUp() {
         attribSaver = new CoffeeSiteAttributesDBSaver(entityManager);
         
         // Inicializace objektů, na které se odkazuje CoffeeSite
         pr.setPriceRange("15 - 25 Kč"); 
         
+        siteType = new CoffeeSiteType();
         siteType.setCoffeeSiteType("automat");
                
         CoffeeSort cs = new CoffeeSort();
@@ -217,7 +210,6 @@ public class CoffeeSiteRepositoryTests
         CoffeeSite found = coffeeRepos.searchByName("tišnov1");
      
         // then
-        
         assertThat(found.getSiteName(), is(newCS.getSiteName()));
         
         assertThat(found.getTypPodniku(), is(newCS.getTypPodniku()));
@@ -251,7 +243,7 @@ public class CoffeeSiteRepositoryTests
        
         assertThat(found.getInitialComment(), is(newCS.getInitialComment()));
         
-        // Only Apache Commons CollectionUtils is able to compare my sets correctly 
+        // Only Apache Commons CollectionUtils is able to compare my sets properly 
         assertThat(CollectionUtils.isEqualCollection(found.getCoffeeSorts(), newCS.getCoffeeSorts()), is(true));
         
         assertThat(CollectionUtils.isEqualCollection(found.getOtherOffers(), newCS.getOtherOffers()), is(true));
@@ -262,13 +254,13 @@ public class CoffeeSiteRepositoryTests
 	}
     
     
-    @Ignore
+    @Disabled
     @Test
     public void whenUpdated_thenReturnUpdatedCoffeeSite() {
         
     }
     
-    @Ignore
+    @Disabled
     @Test
     public void whenDeleted_thenCoffeeSiteNotReturned() {
         
@@ -276,7 +268,7 @@ public class CoffeeSiteRepositoryTests
     
     
     	
-    @Ignore
+    @Disabled
     @Test
     public void test_Stored_Procedure_Call() {
 	    double distance = 0;

@@ -135,7 +135,7 @@ public class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig
         // Then request all users will be returned
         mockMvc.perform(get("/rest/secured/user/all")
                .header("Authorization", "Bearer " + accessToken)
-               .accept("application/json;charset=UTF-8"))
+               .accept("application/json"))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$", hasSize(4)));
         
@@ -147,7 +147,7 @@ public class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig
         ResultActions result = mockMvc.perform(post("/rest/public/user/login").contentType(MediaType.APPLICATION_JSON)
                    .contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(userDto)))
                    .andExpect(status().isOk())
-                   .andExpect(content().contentType("application/json;charset=UTF-8"));
+                   .andExpect(content().contentType("application/json"));
      
         String resultString = result.andReturn().getResponse().getContentAsString();
      

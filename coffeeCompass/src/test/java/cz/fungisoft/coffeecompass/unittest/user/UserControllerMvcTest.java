@@ -12,10 +12,10 @@ import cz.fungisoft.coffeecompass.testutils.WithMockCustomUserSecurityContextFac
 import cz.fungisoft.coffeecompass.unittest.MvcControllerUnitTestBaseSetup;
 
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
@@ -27,7 +27,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -43,7 +43,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
@@ -64,7 +63,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Michal Vaclavek
  *
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @WebMvcTest
 public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup
 {
@@ -103,7 +102,7 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup
     private SignUpAndLoginRESTDto signUpAndLoginRESTDtoAdmin;
     
     
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() {
         
         // Vytvori testovaci UserProfile typu USER
@@ -129,7 +128,7 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup
         admin.setUserProfiles(userProfilesADMIN);
     }
     
-    @Before
+    @BeforeEach
     public void setUp() {
         
         mockMvc = MockMvcBuilders.webAppContextSetup(context)
@@ -160,7 +159,7 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup
         User john = new User();
         john.setUserName("john");
         john.setPassword("johnpassword");
-        john.setEmail("john@vonneuman4.com");
+        john.setEmail("john@vonneuman.com");
         john.setId(1L);
         
         john.setCreatedOn(new Timestamp(new Date().getTime()));

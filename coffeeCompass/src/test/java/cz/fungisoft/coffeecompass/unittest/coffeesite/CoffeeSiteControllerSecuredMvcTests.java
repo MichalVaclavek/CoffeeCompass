@@ -7,9 +7,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -40,7 +40,7 @@ import ma.glasnost.orika.impl.DefaultMapperFactory;
  * @author Michal Vaclavek
  *
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class CoffeeSiteControllerSecuredMvcTests
 { 
     //@Autowired
@@ -88,7 +88,7 @@ public class CoffeeSiteControllerSecuredMvcTests
     }
        
     
-    @Before
+    @BeforeEach
     public void setUp() {
         coffeeSiteControllerSecured = new CoffeeSiteControllerSecuredREST(csService, messageSource);
         mvc = MockMvcBuilders.standaloneSetup(coffeeSiteControllerSecured).build();

@@ -14,16 +14,17 @@ import cz.fungisoft.coffeecompass.service.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.UserService;
 import cz.fungisoft.coffeecompass.serviceimpl.UserServiceImpl;
 import ma.glasnost.orika.MapperFacade;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -37,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Michal Vaclavek
  *
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class UserServiceImplTest
 {
     @MockBean
@@ -88,7 +89,10 @@ public class UserServiceImplTest
 
     private static String userName = "bert";
     
-    @Before
+    private Set<UserProfile> userProfiles;
+    
+    
+    @BeforeEach
     public void setUp() {
         userProfUser = new UserProfile();
         userProfUser.setType("USER");
@@ -103,7 +107,7 @@ public class UserServiceImplTest
         genius.setEmail(emailAddr);
         genius.setPassword("gravity");
 
-        Set<UserProfile> userProfiles = new HashSet<>();
+        userProfiles = new HashSet<>();
         userProfiles.add(userProfUser);
         genius.setUserProfiles(userProfiles);      
                
@@ -117,9 +121,10 @@ public class UserServiceImplTest
         String passwd = "gravity";
         Optional<User> found = userService.findByUserName(userName);
       
-        assertThat(found.isPresent()).isEqualTo(true);
+        assertThat(found.isPresent()).isTrue();
         assertThat(found.get().getUserName()).isEqualTo(userName);
         assertThat(found.get().getPassword()).isEqualTo(passwd);
+        assertThat(found.get().getUserProfiles()).isEqualTo(userProfiles);
     } 
 
 }

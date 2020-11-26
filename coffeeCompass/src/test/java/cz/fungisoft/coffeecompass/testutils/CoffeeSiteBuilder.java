@@ -93,7 +93,8 @@ public class CoffeeSiteBuilder
         
         for (String cs : coffeeSorts) {
             CoffeeSort cfSort = new CoffeeSort();
-            cfSort.setCoffeeSort(cs); 
+            cfSort.setCoffeeSort(cs);
+            cfSorts.add(cfSort);
         }
         coffeeSite.setCoffeeSorts(cfSorts);
         return this;
@@ -144,7 +145,6 @@ public class CoffeeSiteBuilder
         for (NextToMachineTypeEnum mtE : ntmts) {
             NextToMachineType mt = new NextToMachineType();
             mt.setType(mtE.getNexToMachineType());
-              
             ntmtSet.add(mt);           
         }
         coffeeSite.setNextToMachineTypes(ntmtSet);

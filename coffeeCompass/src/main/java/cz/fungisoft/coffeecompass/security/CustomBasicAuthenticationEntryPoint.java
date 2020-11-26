@@ -4,7 +4,6 @@ package cz.fungisoft.coffeecompass.security;
 import java.io.IOException;
 import java.io.PrintWriter;
  
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
  
@@ -16,7 +15,7 @@ public class CustomBasicAuthenticationEntryPoint extends BasicAuthenticationEntr
     @Override
     public void commence(final HttpServletRequest request,
                          final HttpServletResponse response, 
-                         final AuthenticationException authException) throws IOException, ServletException {
+                         final AuthenticationException authException) throws IOException {
         //Authentication failed, send error response.
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.addHeader("WWW-Authenticate", "Basic realm=" + getRealmName() + "");
@@ -26,7 +25,7 @@ public class CustomBasicAuthenticationEntryPoint extends BasicAuthenticationEntr
     }
      
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         setRealmName("COFFEE_COMPASS");
         super.afterPropertiesSet();
     }

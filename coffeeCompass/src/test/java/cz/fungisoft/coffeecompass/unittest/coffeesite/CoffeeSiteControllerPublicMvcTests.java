@@ -5,16 +5,15 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -44,7 +43,7 @@ import ma.glasnost.orika.impl.DefaultMapperFactory;
  * @author Michal Vaclavek
  *
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class CoffeeSiteControllerPublicMvcTests
 { 
     private MockMvc mvc;
@@ -91,7 +90,7 @@ public class CoffeeSiteControllerPublicMvcTests
     }
        
     
-    @Before
+    @BeforeEach
     public void setUp() {
         coffeeSiteControllerPublic = new CoffeeSiteControllerPublicREST(csService, starsForCoffeeSiteService);
         mvc = MockMvcBuilders.standaloneSetup(coffeeSiteControllerPublic).build();

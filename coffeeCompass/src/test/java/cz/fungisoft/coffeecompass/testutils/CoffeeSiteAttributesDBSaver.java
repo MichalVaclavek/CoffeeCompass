@@ -36,7 +36,6 @@ import cz.fungisoft.coffeecompass.entity.UserProfile;
  * @author Michal Vaclavek
  *
  */
-//@Component("coffeeSiteAttributesDBSaver")
 public class CoffeeSiteAttributesDBSaver
 {
     private TestEntityManager entityManager;

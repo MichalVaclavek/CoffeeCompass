@@ -162,7 +162,7 @@ public class CoffeeSiteControllerPublicREST
         Page<CoffeeSiteDTO> coffeeSitePage;
         
         // Get 1 page of all ACTIVE CoffeeSites
-        coffeeSitePage = coffeeSiteService.findAllWithRecordStatusPaginated(PageRequest.of(currentPage - 1, pageSize, new Sort(Sort.Direction.fromString(direction.toUpperCase()), orderBy)), CoffeeSiteRecordStatusEnum.ACTIVE);
+        coffeeSitePage = coffeeSiteService.findAllWithRecordStatusPaginated(PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.fromString(direction.toUpperCase()), orderBy)), CoffeeSiteRecordStatusEnum.ACTIVE);
         
         log.info("Page n. {} of coffee sites from logged-in user retrieved.", currentPage);
         return coffeeSitePage;

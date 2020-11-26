@@ -4,13 +4,13 @@ import cz.fungisoft.coffeecompass.controller.rest.secured.UserControllerSecuredR
 import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.service.*;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.*;
 
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
  * @author Michal Vaclavek
  *
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class UserRESTSecuredControllerTests
 {
     @MockBean //provided by Spring Context
@@ -40,7 +40,7 @@ public class UserRESTSecuredControllerTests
     private UserControllerSecuredREST usersControllerSecuredREST;
     
     
-    @Before
+    @BeforeEach
     public void setUp() {
         usersControllerSecuredREST = new UserControllerSecuredREST(userService, userSecurityService);
     }

@@ -154,9 +154,9 @@ public class CoffeeSiteController
         Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
  
         if (loggedInUser.isPresent() &&  userService.hasADMINorDBARole(loggedInUser.get())) {
-            coffeeSitePage = coffeeSiteService.findAllPaginated(PageRequest.of(currentPage - 1, pageSize, new Sort(Sort.Direction.fromString(direction.toUpperCase()), orderBy)));
+            coffeeSitePage = coffeeSiteService.findAllPaginated(PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.fromString(direction.toUpperCase()), orderBy)));
         } else {
-            coffeeSitePage = coffeeSiteService.findAllWithRecordStatusPaginated(PageRequest.of(currentPage - 1, pageSize, new Sort(Sort.Direction.fromString(direction.toUpperCase()), orderBy)), CoffeeSiteRecordStatusEnum.ACTIVE);
+            coffeeSitePage = coffeeSiteService.findAllWithRecordStatusPaginated(PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.fromString(direction.toUpperCase()), orderBy)), CoffeeSiteRecordStatusEnum.ACTIVE);
         }
  
         mav.addObject("coffeeSitePage", coffeeSitePage);
@@ -252,7 +252,7 @@ public class CoffeeSiteController
         int pageSize = size.orElse(15);
         Page<CoffeeSiteDTO> coffeeSitePage;
         
-        coffeeSitePage = coffeeSiteService.findAllFromLoggedInUserPaginated(PageRequest.of(currentPage - 1, pageSize, new Sort(Sort.Direction.fromString("DESC"), "createdOn")));
+        coffeeSitePage = coffeeSiteService.findAllFromLoggedInUserPaginated(PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.fromString("DESC"), "createdOn")));
  
         if (coffeeSitePage != null) {
             mav.addObject("coffeeSitePage", coffeeSitePage);

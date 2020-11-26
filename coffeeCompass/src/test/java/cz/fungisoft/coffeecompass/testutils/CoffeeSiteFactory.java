@@ -60,7 +60,7 @@ public class CoffeeSiteFactory
         PriceRange pr = new PriceRange();
         pr.setPriceRange("15 - 25 Kč");
         
-        siteType.setCoffeeSiteType(coffeeSiteType);
+        //siteType.setCoffeeSiteType(coffeeSiteType);
           
         CoffeeSort cs = new CoffeeSort();
         cs.setCoffeeSort("Instantní");       

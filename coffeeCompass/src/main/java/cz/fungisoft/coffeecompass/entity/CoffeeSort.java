@@ -83,7 +83,7 @@ public class CoffeeSort
         } else if (!coffeeSort.equals(other.coffeeSort))
             return false;
         
-        return(id != other.id);
+        return (id == other.id);
     }
 
     @Override

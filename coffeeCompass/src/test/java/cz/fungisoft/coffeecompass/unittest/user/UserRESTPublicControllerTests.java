@@ -8,9 +8,9 @@ import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.service.*;
 import cz.fungisoft.coffeecompass.serviceimpl.CustomOAuth2UserService;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
@@ -20,8 +20,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -40,7 +39,7 @@ import static org.mockito.Mockito.*;
  * @author Michal Vaclavek
  *
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class UserRESTPublicControllerTests
 {
     @MockBean
@@ -87,7 +86,7 @@ public class UserRESTPublicControllerTests
     private SignUpAndLoginRESTDto signUpAndLoginRESTDtoAdmin;
     
     
-    @Before
+    @BeforeEach
     public void setUp() {
         
         // Vytvori testovaci UserProfile typu USER

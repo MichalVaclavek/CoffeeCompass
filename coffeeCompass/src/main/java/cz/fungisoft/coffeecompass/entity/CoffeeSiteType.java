@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 
+
 /**
  * Typ "podniku" - automat, bistro, kavarna atp.
  * 

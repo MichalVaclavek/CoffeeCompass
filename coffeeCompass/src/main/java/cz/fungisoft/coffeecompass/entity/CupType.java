@@ -66,7 +66,7 @@ public class CupType
         } else if (!cupType.equals(other.cupType))
             return false;
         
-        return id != other.id;
+        return id == other.id;
     }
 
     
