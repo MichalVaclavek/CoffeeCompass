@@ -59,7 +59,7 @@ import ma.glasnost.orika.impl.DefaultMapperFactory;
  *
  */
 @ExtendWith(SpringExtension.class)
-public class CoffeeSiteServiceImplTest
+class CoffeeSiteServiceImplTest
 {
     
     @MockBean
@@ -249,7 +249,6 @@ public class CoffeeSiteServiceImplTest
         
         Mockito.when(coffeeSiteRepository.searchByName(coffeeS.getSiteName()))
             .thenReturn(coffeeS);
-        
     }
     
     /**
@@ -320,5 +319,4 @@ public class CoffeeSiteServiceImplTest
     } 
     
     //TODO - dalsi testy CoffeeSiteService metody
-
 }

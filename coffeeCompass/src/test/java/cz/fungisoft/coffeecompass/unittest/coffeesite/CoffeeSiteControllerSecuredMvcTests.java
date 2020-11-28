@@ -41,7 +41,7 @@ import ma.glasnost.orika.impl.DefaultMapperFactory;
  *
  */
 @ExtendWith(SpringExtension.class)
-public class CoffeeSiteControllerSecuredMvcTests
+class CoffeeSiteControllerSecuredMvcTests
 { 
     //@Autowired
     private MockMvc mvc;
@@ -99,7 +99,7 @@ public class CoffeeSiteControllerSecuredMvcTests
      * @throws Exception
      */
     @Test
-    public void whenPostSite_thenCreateCoffeeSite() throws Exception {
+    void whenPostSite_thenCreateCoffeeSite() throws Exception {
         
         CoffeeSite cs = CoffeeSiteFactory.getCoffeeSite("ControllerTestSite", "automat");
                 

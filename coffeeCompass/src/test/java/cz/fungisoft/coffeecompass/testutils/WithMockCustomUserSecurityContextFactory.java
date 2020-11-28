@@ -70,5 +70,4 @@ public class WithMockCustomUserSecurityContextFactory implements WithSecurityCon
         testAuthentication = auth;
         return context;
     }
-    
 }

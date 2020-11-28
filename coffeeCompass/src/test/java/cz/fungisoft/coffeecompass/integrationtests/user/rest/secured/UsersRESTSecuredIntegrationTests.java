@@ -9,16 +9,16 @@ import cz.fungisoft.coffeecompass.testutils.JsonUtil;
 
 import ma.glasnost.orika.MapperFacade;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -47,11 +47,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Michal Vaclavek
  *
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles({"dev"})
-public class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig
+class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig
 {
     @Autowired
     private MockMvc mockMvc;
@@ -73,7 +73,7 @@ public class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig
      * and User registering DTO object to be used later in test as input 
      * REST JSON request body.
      */
-    @Before
+    @BeforeEach
     @Override
     public void setUp() {
         super.setUp();
@@ -104,7 +104,7 @@ public class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig
      * @throws Exception
      */
     @Test
-    public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {    
+    void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {    
         
         // Create and save some normal Users - START -
         User john = new User();
@@ -154,5 +154,4 @@ public class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig
         JacksonJsonParser jsonParser = new JacksonJsonParser();
         return jsonParser.parseMap(resultString).get("accessToken").toString();
     }
-    
 }

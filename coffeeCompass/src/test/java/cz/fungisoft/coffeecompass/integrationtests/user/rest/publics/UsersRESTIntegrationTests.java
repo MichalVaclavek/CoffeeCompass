@@ -6,17 +6,16 @@ import cz.fungisoft.coffeecompass.integrationtests.IntegrationTestBaseConfig;
 import cz.fungisoft.coffeecompass.testutils.JsonUtil;
 
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.Timestamp;
@@ -39,11 +38,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Michal Vaclavek
  *
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles({"dev"})
-public class UsersRESTIntegrationTests extends IntegrationTestBaseConfig
+class UsersRESTIntegrationTests extends IntegrationTestBaseConfig
 {
 
     @Autowired
@@ -56,7 +55,7 @@ public class UsersRESTIntegrationTests extends IntegrationTestBaseConfig
     
    
     
-    @Before
+    @BeforeEach
     @Override
     public void setUp() {
         
@@ -85,7 +84,7 @@ public class UsersRESTIntegrationTests extends IntegrationTestBaseConfig
      * @throws Exception
      */
     @Test
-    public void whenPostUser_thenCreateUser() throws Exception {
+    void whenPostUser_thenCreateUser() throws Exception {
         
         // given
         User john = new User();
@@ -112,7 +111,4 @@ public class UsersRESTIntegrationTests extends IntegrationTestBaseConfig
                .andExpect(jsonPath("$.accessToken", Matchers.isA(String.class)))
                .andExpect(jsonPath("$.accessToken").isNotEmpty());
     }
-    
-    
-    
 }

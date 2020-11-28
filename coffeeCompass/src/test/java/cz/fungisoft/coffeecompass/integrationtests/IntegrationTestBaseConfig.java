@@ -5,8 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Before;
-import org.junit.ClassRule;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
@@ -16,6 +15,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.jdbc.SqlConfig.TransactionMode;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
@@ -68,6 +69,7 @@ import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
 @Sql(scripts= {"/schema_integration_test_docker.sql", "/data_integration_tests.sql"},
      config = @SqlConfig(encoding = "utf-8",
      transactionMode = TransactionMode.ISOLATED))
+@Testcontainers // Junit5 support for DB in Docker container 
 public class IntegrationTestBaseConfig
 {
 
@@ -131,7 +133,7 @@ public class IntegrationTestBaseConfig
     /**
      * Init of DB. Creates basic User PROFILEs
      */
-    @Before
+    @BeforeEach
     public void setUp() {
         
         userProfUser = this.userProfileRepo.searchByType("USER");
@@ -234,7 +236,8 @@ public class IntegrationTestBaseConfig
     /**
      * Vlozeni zakladnich parametru Postgres DB bezici v Dockeru.
      */
-    @ClassRule
+    //@ClassRule
+    @Container
     public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres")
                                     .withDatabaseName("coffeecompass")
                                     .withUsername("postgres")

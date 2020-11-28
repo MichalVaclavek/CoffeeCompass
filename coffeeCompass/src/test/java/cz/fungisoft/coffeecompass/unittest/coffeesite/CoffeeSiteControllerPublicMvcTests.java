@@ -44,7 +44,7 @@ import ma.glasnost.orika.impl.DefaultMapperFactory;
  *
  */
 @ExtendWith(SpringExtension.class)
-public class CoffeeSiteControllerPublicMvcTests
+class CoffeeSiteControllerPublicMvcTests
 { 
     private MockMvc mvc;
     
@@ -102,7 +102,7 @@ public class CoffeeSiteControllerPublicMvcTests
      * @throws Exception
      */
     @Test
-    public void givenCoffeeSites_whenGetSites_thenReturnJsonArray() throws Exception {
+    void givenCoffeeSites_whenGetSites_thenReturnJsonArray() throws Exception {
         
         CoffeeSite cs1 = CoffeeSiteFactory.getCoffeeSite("ControllerTestSite1", "automat");
         CoffeeSiteDTO cs1Dto = mapperFacade.map(cs1, CoffeeSiteDTO.class);
@@ -122,5 +122,4 @@ public class CoffeeSiteControllerPublicMvcTests
         
         verify(csService, VerificationModeFactory.times(1)).findAll("id", "asc");
     }
-    
 }

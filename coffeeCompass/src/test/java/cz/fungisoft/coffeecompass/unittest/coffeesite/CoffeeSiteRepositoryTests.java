@@ -169,7 +169,7 @@ class CoffeeSiteRepositoryTests
  
     @Transactional
 	@Test
-	public void whenFindByName_thenReturnCoffeeSite() {
+	void whenFindByName_thenReturnCoffeeSite() {
 	    
 	    CoffeeSite newCS = new CoffeeSite();
 	    
@@ -256,13 +256,13 @@ class CoffeeSiteRepositoryTests
     
     @Disabled
     @Test
-    public void whenUpdated_thenReturnUpdatedCoffeeSite() {
+    void whenUpdated_thenReturnUpdatedCoffeeSite() {
         
     }
     
     @Disabled
     @Test
-    public void whenDeleted_thenCoffeeSiteNotReturned() {
+    void whenDeleted_thenCoffeeSiteNotReturned() {
         
     }
     
@@ -270,7 +270,7 @@ class CoffeeSiteRepositoryTests
     	
     @Disabled
     @Test
-    public void test_Stored_Procedure_Call() {
+    void test_Stored_Procedure_Call() {
 	    double distance = 0;
 	    distance = coffeeRepos.callStoredProcedureCalculateDistance(50.1256, 14.123, 50.2356, 14.236);
 	    
@@ -280,5 +280,4 @@ class CoffeeSiteRepositoryTests
     //TODO update of the CoffeeSite in DB
     
     //TODO delete CoffeeSite in DB
-
 }

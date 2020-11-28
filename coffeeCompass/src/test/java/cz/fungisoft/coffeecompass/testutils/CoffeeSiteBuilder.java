@@ -187,5 +187,4 @@ public class CoffeeSiteBuilder
     public CoffeeSite build() {
         return coffeeSite;
     }
-    
 }

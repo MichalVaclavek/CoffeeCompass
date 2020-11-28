@@ -6,8 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import org.springframework.security.test.context.support.WithSecurityContext;
 
 /**
- * Default test ADMIN user to be used in Controller tests for User object. This
- * user will be loged-in if using @WithMockCustomAdminUser annotation on test method.
+ * Default test ADMIN user to be used in Controller tests for User object.
+ * This user will be loged-in if using @WithMockCustomAdminUser annotation on test method.
  * (for example in UserControllerMvcTest class)
  * 
  * @author Michal Vaclavek

@@ -6,16 +6,16 @@ import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
 import cz.fungisoft.coffeecompass.repository.UsersRepository;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.Timestamp;
@@ -30,12 +30,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 
  * Create, modify, delete and retrieve operations for Coffee sites. 
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 //@SpringBootTest(SpringBootTest.WebEnvironment.MOCK, classes = Application.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles({"dev"})
-public class CoffeeSiteIT extends IntegrationTestBaseConfig 
+class CoffeeSiteIT extends IntegrationTestBaseConfig 
 {
     @Autowired
     private MockMvc mvc;
@@ -51,7 +51,7 @@ public class CoffeeSiteIT extends IntegrationTestBaseConfig
     /**
      * Prepares User object to be assigned as author of the newly created CoffeeSite used in tests.
      */
-    @Before
+    @BeforeEach
     @Override
     public void setUp() {
         
@@ -69,7 +69,7 @@ public class CoffeeSiteIT extends IntegrationTestBaseConfig
        userRepo.save(genius);
     }
     
-    @After
+    @AfterEach
     public void tearDown() {
         //userRepo.delete(genius);
     }
@@ -79,7 +79,7 @@ public class CoffeeSiteIT extends IntegrationTestBaseConfig
      * @throws Exception
      */
     @Test
-    public void givenCoffeeSites_whenGetCoffeeSites_thenStatus200() throws Exception {
+    void givenCoffeeSites_whenGetCoffeeSites_thenStatus200() throws Exception {
      
         CoffeeSite cs = getCoffeeSiteBasedOnDB("Integration test site", "automat");
         
