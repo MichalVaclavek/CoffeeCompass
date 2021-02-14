@@ -239,9 +239,9 @@ public class IntegrationTestBaseConfig
     //@ClassRule
     @Container
     public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres")
-                                    .withDatabaseName("coffeecompass")
-                                    .withUsername("postgres")
-                                    .withPassword("postgres_test");
+                                                        .withDatabaseName("coffeecompass")
+                                                        .withUsername("postgres")
+                                                        .withPassword("postgres_test");
 
     
     /**
@@ -266,5 +266,4 @@ public class IntegrationTestBaseConfig
             ).applyTo(configurableApplicationContext.getEnvironment());
         }
     }
-    
 }

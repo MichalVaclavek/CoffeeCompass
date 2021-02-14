@@ -59,12 +59,13 @@ public class ImageControllerSecuredREST
      * @param image uploaded Image from View. Contains file to be uploaded and ID of the coffeeSite the image belongs to.
      * @param result for checking errors during form validation
      * @param redirectAttributes attributes to be passed to other Controller after redirection from this View/Controller.
+     * 
      * @return load URL of the new image - used to assign to the edited CoffeeSite as a new CoffeeSite's image URL 
      */
     @PostMapping("/upload") // POST https://coffeecompass.cz/rest/secured/image/upload?coffeeSiteId=2 a správné Body
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file,
-                                                    @RequestParam("coffeeSiteId") Long coffeeSiteId,
-                                                    Locale locale) {
+                                                   @RequestParam("coffeeSiteId") Long coffeeSiteId,
+                                                   Locale locale) {
        if (file == null) {
            throw new BadRESTRequestException(messages.getMessage("coffeesite.image.upload.rest.error", null, locale));
        }

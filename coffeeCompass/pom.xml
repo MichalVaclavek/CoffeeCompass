@@ -230,6 +230,13 @@
 		    <artifactId>commons-collections4</artifactId>
 		    <version>4.1</version>
 		</dependency>
+		
+		<!-- Google Firebase for push notifications to 'Kava s sebou' app.  -->
+		<dependency>
+			<groupId>com.google.firebase</groupId>
+			<artifactId>firebase-admin</artifactId>
+			<version>6.8.1</version>
+		</dependency>
 
 	</dependencies>
 	

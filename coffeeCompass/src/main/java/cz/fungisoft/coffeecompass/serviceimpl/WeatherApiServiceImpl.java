@@ -34,7 +34,6 @@ public class WeatherApiServiceImpl implements WeatherApiService
 
     public WeatherApiServiceImpl( @Value("${weather.api.url}") String api_url, @Value("${weather.api.id}") String api_id,
                                   MapperFacade mapperFacade, CoffeeSiteService coffeeSiteService) {
-        //this.restTemplate = restTemplate;
         this.WEATHER_API_URL = api_url;
         this.APP_ID = api_id;
         this.mapperFacade = mapperFacade;

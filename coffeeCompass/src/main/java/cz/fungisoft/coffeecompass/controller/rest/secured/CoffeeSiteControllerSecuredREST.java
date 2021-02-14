@@ -37,8 +37,8 @@ import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import io.swagger.annotations.Api;
 
 /**
- * Třída/kontroler, který lze použit v případě využití REST rozhraní<br>
- * 
+ * Třída/kontroler, který lze použit v případě využití REST rozhraní
+ * <p>
  * Základní Controller pro obsluhu požadavků, které se týkají práce s hlavním objektem CoffeeSite.<br>
  * Tj. pro základní CRUD operace a pro vyhledávání CoffeeSites.<br>
  * Tato verze je urcena pro REST, pro testovaci/prototypovaci ucely je urcena verze CoffeeSiteController, ktera vyuziva system/framework Thymeleaf
@@ -76,7 +76,7 @@ public class CoffeeSiteControllerSecuredREST
 
    
     /**
-     * Obsluha POST pozadavku ze stranky obsahujici formular pro vytvoreni CoffeeSite.
+     * Obsluha POST pozadavku pro vytvoreni/vlozeni CoffeeSite do DB.
      * 
      * @Valid zajisti, ze se pred zavolanim metody zvaliduje Coffee Site podle limitu, ktere jsou u atributu coffeeSite
      *
@@ -99,6 +99,29 @@ public class CoffeeSiteControllerSecuredREST
        }
        else {
            log.error("Coffee site creation failed");
+           throw new BadRESTRequestException(messages.getMessage("coffeesite.create.rest.error.general", null, locale));
+       }
+    }
+    
+    /**
+     * Obsluha POST pozadavku pro vytvoreni vice CoffeeSites. Pouzitoi napr. pri odeslani skupiny CoffeeSites, ktery
+     * vytvoril mobilni uzivatel v OFFLINE mode.<br>
+     * Obrazky k temto CoffeeSitum lze ukladat postupnym volani {@link ImageControllerSecuredREST#handleFileUpload()}
+     * 
+     * @Valid zajisti, ze se pred zavolanim metody zvaliduje Coffee Site podle limitu, ktere jsou u atributu coffeeSite
+     *
+     * @param coffeeSite sity k ulozeni
+     * @return true if saved successfully
+     */
+    @PostMapping("/insertCoffeeSites") // Mapovani http POST na DB save/INSERT
+    public ResponseEntity<Boolean> insertCoffeeSites(@Valid @RequestBody List<CoffeeSiteDTO> coffeeSites, Locale locale) {
+    
+       if (coffeeSiteService.saveOrUpdate(coffeeSites)) {
+           log.info("CoffeeSites inserted.");
+           return new ResponseEntity<>(true, HttpStatus.CREATED);
+       }
+       else {
+           log.error("Coffee sites insertion failed");
            throw new BadRESTRequestException(messages.getMessage("coffeesite.create.rest.error.general", null, locale));
        }
     }
@@ -188,7 +211,7 @@ public class CoffeeSiteControllerSecuredREST
     }
     
     /**
-     * Method to handle request to send list of CoffeeSites created by logged in user.
+     * Method to handle request to get list of CoffeeSites created by logged in user.
      * 
      * @return
      */

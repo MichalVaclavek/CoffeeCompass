@@ -2,6 +2,8 @@ package cz.fungisoft.coffeecompass.service;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -197,6 +199,17 @@ public interface CoffeeSiteService
     public CoffeeSite save(CoffeeSiteDTO cs);
     
     @PreAuthorize("isAuthenticated()")
+    @Transactional
+    public boolean save(@Valid List<CoffeeSiteDTO> coffeeSites);
+    
+    /**
+     * Ulozeni seznamu novych nebo updatovanych CoffeeSites
+     */
+    @PreAuthorize("isAuthenticated()")
+    @Transactional
+    boolean saveOrUpdate(List<CoffeeSiteDTO> coffeeSites);
+    
+    @PreAuthorize("isAuthenticated()")
     public CoffeeSite updateCSRecordStatusAndSave(CoffeeSite cs, CoffeeSiteRecordStatusEnum newStatus);
     
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -217,4 +230,5 @@ public interface CoffeeSiteService
     
     @Transactional
     public CoffeeSite updateSite(CoffeeSiteDTO cs);
+    
 }

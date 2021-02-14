@@ -20,6 +20,7 @@ import lombok.Data;
 public class WeatherDTO
 {
     private List<Weather> weather = null;
+    
     private Main main;
     
     @JsonFormat(pattern = "HH:mm:ss")

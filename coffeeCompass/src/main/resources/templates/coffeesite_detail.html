@@ -305,13 +305,13 @@
 		     		<div class="w3-margin-top" th:if="${!coffeeSite.canBeModified}">	
 				    	<p>
 				    		<span th:text="#{site.detail.weather.label}" class="w3-text-green"></span>
-					    	<b><span th:text="${weatherData.weather[0].description} +' ,'"></span></b>
-				    		<b><span th:text="${weatherData.main.temp}"></span><span> &#176;C</span></b>
+					        <strong><span th:text="${weatherData.weather[0].description} +' ,'"></span></strong>
+				    		<strong><span th:text="${weatherData.main.temp}"></span><span> &#176;C</span><strong>
 					    </p>
 				    		
-		    			<span th:text="#{site.detail.sunrise.label}"></span><b><span th:text="${weatherData.sunRiseTime}"></span></b>
+		    			<span th:text="#{site.detail.sunrise.label}"></span><strong><span th:text="${weatherData.sunRiseTime}"></span></strong>
 		    			<div>
-		    				<span th:text="#{site.detail.sunset.label}"></span><b><span th:text="${weatherData.sunSetTime}"></span></b>
+		    				<span th:text="#{site.detail.sunset.label}"></span><strong><span th:text="${weatherData.sunSetTime}"></span></strong>
 			    		</div>
 				    		
 	     			</div>

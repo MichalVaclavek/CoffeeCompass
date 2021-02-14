@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -297,8 +299,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     public CoffeeSite save(CoffeeSite coffeeSite) {
         loggedInUser = userService.getCurrentLoggedInUser();
         
-        if (loggedInUser.isPresent()) {
-            User user = loggedInUser.get();
+        loggedInUser.ifPresent(user -> {
             if (coffeeSite.getId() == 0) { // Zcela novy CoffeeSite
                 CoffeeSiteRecordStatus coffeeSiteRecordStatus = csRecordStatusService.findCSRecordStatus(CoffeeSiteRecordStatusEnum.CREATED);
                 coffeeSite.setRecordStatus(coffeeSiteRecordStatus);
@@ -309,7 +310,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
                 }
                 userService.saveUser(user);
             }
-        }
+        });
             
         // Zjisteni, jestli Company je nove nebo ne
         if (coffeeSite.getDodavatelPodnik() != null) {
@@ -328,6 +329,40 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     public CoffeeSite save(CoffeeSiteDTO cs) {
         CoffeeSite csToSave = mapperFacade.map(cs, CoffeeSite.class);
         return save(csToSave);
+    }
+    
+    /**
+     * Ulozeni seznamu novych CoffeeSites
+     */
+    @Override
+    public boolean save(List<CoffeeSiteDTO> coffeeSites) {
+        try {
+            coffeeSites.stream().forEach(this::save);
+            return true;
+        } catch (Exception ex) {
+            log.error("Error saving list of CoffeeSites.");
+            return false;
+        }
+    }
+    
+    /**
+     * Ulozeni seznamu novych nebo updatovanych CoffeeSites
+     */
+    @Override
+    public boolean saveOrUpdate(List<CoffeeSiteDTO> coffeeSites) {
+        try {
+            coffeeSites.stream().forEach(cs -> {
+                if (cs.getId() == 0) {
+                    this.save(cs);
+                } else {
+                    this.updateSite(cs);
+                }
+            });
+            return true;
+        } catch (Exception ex) {
+            log.error("Error saving list of CoffeeSites.");
+            return false;
+        }
     }
     
     
@@ -852,6 +887,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
  
         return new PageImpl<>(list, PageRequest.of(currentPage, pageSize), coffeeSitesList.size());
     }
+
+   
     
     //TODO dalsi vyhledavaci metody podle ruznych kriterii?
     // CriteriaQuery a CriteriaQueryBuilder
