@@ -8,7 +8,7 @@ import org.springframework.format.Formatter;
 import org.springframework.stereotype.Component;
 
 import cz.fungisoft.coffeecompass.entity.UserProfile;
-import cz.fungisoft.coffeecompass.service.UserProfileService;
+import cz.fungisoft.coffeecompass.service.user.UserProfileService;
 
 @Component
 public class UserProfileFormatter implements Formatter<UserProfile>

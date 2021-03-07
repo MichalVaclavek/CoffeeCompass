@@ -35,8 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles({"dev"})
-class CoffeeSiteIT extends IntegrationTestBaseConfig 
-{
+class CoffeeSiteIT extends IntegrationTestBaseConfig {
+    
     @Autowired
     private MockMvc mvc;
  
@@ -73,6 +73,8 @@ class CoffeeSiteIT extends IntegrationTestBaseConfig
     public void tearDown() {
         //userRepo.delete(genius);
     }
+    
+    private static final String SITE_NAME = "Integration test site";
  
     /**
      * Tests REST endpoint /rest/site/allSites/  which should return all saved CoffeeSites list.
@@ -81,7 +83,7 @@ class CoffeeSiteIT extends IntegrationTestBaseConfig
     @Test
     void givenCoffeeSites_whenGetCoffeeSites_thenStatus200() throws Exception {
      
-        CoffeeSite cs = getCoffeeSiteBasedOnDB("Integration test site", "automat");
+        CoffeeSite cs = getCoffeeSiteBasedOnDB(SITE_NAME, "automat");
         
         cs.setZemDelka(14.51122233d);
         cs.setZemSirka(50.456566d);
@@ -94,7 +96,7 @@ class CoffeeSiteIT extends IntegrationTestBaseConfig
            .contentType(MediaType.APPLICATION_JSON))
            .andExpect(status().isOk())
            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-           .andExpect(jsonPath("$[0].siteName", is("Integration test site")));
+           .andExpect(jsonPath("$[0].siteName", is(SITE_NAME)));
     }
 
 }

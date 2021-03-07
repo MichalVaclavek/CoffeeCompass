@@ -41,8 +41,7 @@ import ma.glasnost.orika.impl.DefaultMapperFactory;
  *
  */
 @ExtendWith(SpringExtension.class)
-class CoffeeSiteControllerSecuredMvcTests
-{ 
+class CoffeeSiteControllerSecuredMvcTests { 
     //@Autowired
     private MockMvc mvc;
     
@@ -93,6 +92,8 @@ class CoffeeSiteControllerSecuredMvcTests
         coffeeSiteControllerSecured = new CoffeeSiteControllerSecuredREST(csService, messageSource);
         mvc = MockMvcBuilders.standaloneSetup(coffeeSiteControllerSecured).build();
     }
+    
+    private static final String COFFEE_SITE_NAME = "ControllerTestSite";
  
     /**
      * Tests if user is saved in service layer after calling post /rest/secured/site/create  REST request.
@@ -101,14 +102,14 @@ class CoffeeSiteControllerSecuredMvcTests
     @Test
     void whenPostSite_thenCreateCoffeeSite() throws Exception {
         
-        CoffeeSite cs = CoffeeSiteFactory.getCoffeeSite("ControllerTestSite", "automat");
+        CoffeeSite cs = CoffeeSiteFactory.getCoffeeSite(COFFEE_SITE_NAME, "automat");
                 
         given(csService.save(Mockito.any(CoffeeSiteDTO.class))).willReturn(cs);
         given(csService.findOneToTransfer(Mockito.eq(cs.getId()))).willReturn(mapperFacade.map(cs, CoffeeSiteDTO.class));
 
         mvc.perform(post("/rest/secured/site/create").contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(cs)))
                                        .andExpect(status().isCreated())
-                                       .andExpect(jsonPath("$.siteName", is("ControllerTestSite")));
+                                       .andExpect(jsonPath("$.siteName", is(COFFEE_SITE_NAME)));
         
         verify(csService, VerificationModeFactory.times(1)).save(Mockito.any(CoffeeSiteDTO.class));
     }

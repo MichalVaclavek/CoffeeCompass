@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import cz.fungisoft.coffeecompass.dto.UserDTO;
-import cz.fungisoft.coffeecompass.service.UserService;
+import cz.fungisoft.coffeecompass.service.user.UserService;
 
 /**
  * Trida, ktera vsem Controlerum prida do  Modelu objekt prihlaseneho uzivatele.

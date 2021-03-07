@@ -4,8 +4,7 @@ import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
 import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.integrationtests.IntegrationTestBaseConfig;
-import cz.fungisoft.coffeecompass.service.*;
-import cz.fungisoft.coffeecompass.testutils.JsonUtil;
+import cz.fungisoft.coffeecompass.service.user.UserService;
 
 import ma.glasnost.orika.MapperFacade;
 
@@ -13,35 +12,32 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
 import java.sql.Timestamp;
 import java.util.*;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Integration test for all actions related to User object.
  * <p>
- * Whole context of Spring is loaded, using @SpringBootTest and
- * @ActiveProfiles({"dev,dev_https,test_postgres_docker"}) annotations.
- * Database creation and connection is done via {@code PostgreSQLContainer}
- * which runs Postgres DB in Docker container. Therefore, the tests requier
- * running Docker on test machine.
+ * Whole context of Spring is loaded, using @SpringBootTest and @ActiveProfiles({"dev,dev_https,test_postgres_docker"}) annotations.
+ * Database creation and connection is done via {@code PostgreSQLContainer} which runs Postgres DB in Docker container.<br>
+ * Therefore, the tests requier running Docker on test machine.
+ * <p>
  * The database structure/schema is created using {@code @Sql(scripts= {"/schema_integration_test_docker.sql"} }
- * annotation. If data are required for running the test, it has to be inserted using Repository
+ * annotation, if not used with Docker.
+ * The database structure/schema is created using /schema_integration_test_docker.sql script by TestContainer objects
+ * <p>
+ * If data are required for running the test, it has to be inserted using Repository
  * methods in  @Before public void setUp() method.
  * 
  * @author Michal Vaclavek
@@ -51,8 +47,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles({"dev"})
-class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig
-{
+class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
+    
     @Autowired
     private MockMvc mockMvc;
     
@@ -130,7 +126,7 @@ class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig
         // Create and save some normal Users - END -
         
         // When login ADMIN user
-        String accessToken = obtainAccessToken(signUpAndLoginRESTDtoAdmin);
+        String accessToken = loginUserAndGetAccessToken(mockMvc, signUpAndLoginRESTDtoAdmin);
         
         // Then request all users will be returned
         mockMvc.perform(get("/rest/secured/user/all")
@@ -141,17 +137,4 @@ class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig
         
     }
     
-    
-    private String obtainAccessToken(SignUpAndLoginRESTDto userDto) throws Exception {
-        
-        ResultActions result = mockMvc.perform(post("/rest/public/user/login").contentType(MediaType.APPLICATION_JSON)
-                   .contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(userDto)))
-                   .andExpect(status().isOk())
-                   .andExpect(content().contentType("application/json"));
-     
-        String resultString = result.andReturn().getResponse().getContentAsString();
-     
-        JacksonJsonParser jsonParser = new JacksonJsonParser();
-        return jsonParser.parseMap(resultString).get("accessToken").toString();
-    }
 }

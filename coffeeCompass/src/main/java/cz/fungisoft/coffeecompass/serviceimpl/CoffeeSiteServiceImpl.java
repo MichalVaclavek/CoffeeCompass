@@ -9,9 +9,8 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +27,7 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
 import cz.fungisoft.coffeecompass.exceptions.EntityNotFoundException;
+import cz.fungisoft.coffeecompass.listeners.OnNewCoffeeSiteEvent;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSort;
 import cz.fungisoft.coffeecompass.entity.Company;
@@ -45,8 +45,8 @@ import cz.fungisoft.coffeecompass.service.CSRecordStatusService;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.CompanyService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
-import cz.fungisoft.coffeecompass.service.ImageStorageService;
-import cz.fungisoft.coffeecompass.service.UserService;
+import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
+import cz.fungisoft.coffeecompass.service.user.UserService;
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
 
@@ -90,6 +90,9 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     
     @Autowired
     private ImageStorageService imageService;
+    
+    @Autowired 
+    private ApplicationEventPublisher eventPublisher; // to inform about new/deleted CoffeeSites
     
     private ConfigProperties config;
     
@@ -150,7 +153,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      * @return
      */
     private List<CoffeeSiteDTO> modifyToTransfer(List<CoffeeSite> sites) {
-        
         return sites.stream().map(this::mapOneToTransfer).collect(Collectors.toList());
     }
     
@@ -164,9 +166,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     
     @Override
     public Page<CoffeeSiteDTO> findAllPaginated(Pageable pageable) {
-        
         Page<CoffeeSite> coffeeSitesPage = coffeeSitePaginatedRepo.findAll(pageable);
-        
         // Transforms content to CoffeeSiteDTO
         return coffeeSitesPage.map(this::mapOneToTransfer);
     }
@@ -183,7 +183,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
      */
     @Override
     public Page<CoffeeSiteDTO> findAllWithRecordStatusPaginated(Pageable pageable, CoffeeSiteRecordStatusEnum csRecordStatus) {
-        
         Page<CoffeeSite> coffeeSitesPage = coffeeSitePaginatedRepo.findByRecordStatus(csRecordStatusService.findCSRecordStatus(csRecordStatus), pageable);
         return coffeeSitesPage.map(this::mapOneToTransfer); // Transforms content to CoffeeSiteDTO
     }
@@ -267,11 +266,9 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     
     
     private CoffeeSiteDTO mapOneToTransfer(CoffeeSite site) {
-        
         CoffeeSiteDTO siteDto = null;
         if (site != null) {
             siteDto = mapperFacade.map(site, CoffeeSiteDTO.class);
-        
             siteDto = evaluateAverageStars(evaluateOperationalAttributes(siteDto));
         }
         return siteDto;
@@ -321,8 +318,11 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             }
             coffeeSite.setDodavatelPodnik(comp);
         }
-        log.info("CoffeeSite name {} saved into DB.", coffeeSite.getSiteName());
-        return coffeeSiteRepo.save(coffeeSite);
+        
+        CoffeeSite savedCoffeeSite = coffeeSiteRepo.save(coffeeSite);
+        log.info("CoffeeSite name {} saved into DB.", savedCoffeeSite.getSiteName());
+        
+        return savedCoffeeSite;
     }
     
     @Override
@@ -454,6 +454,11 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     @Override
     public CoffeeSite updateCSRecordStatusAndSave(CoffeeSite cs, CoffeeSiteRecordStatusEnum newStatus) {
         cs.setRecordStatus(csRecordStatusService.findCSRecordStatus(newStatus));
+        // to Listeners want to know that new CoffeeSite is activated
+        // in our case used to send push notifications to those subscribed for new CoffeeSites
+        if (cs.getRecordStatus().getRecordStatus() == CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum.ACTIVE) {
+            eventPublisher.publishEvent(new OnNewCoffeeSiteEvent(cs));
+        }
         return coffeeSiteRepo.save(cs);
     }
     

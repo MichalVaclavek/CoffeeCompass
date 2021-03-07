@@ -27,8 +27,8 @@ import cz.fungisoft.coffeecompass.controller.rest.UsersControllerPublicREST;
 import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.exceptions.rest.ResourceNotFoundException;
-import cz.fungisoft.coffeecompass.service.UserSecurityService;
-import cz.fungisoft.coffeecompass.service.UserService;
+import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
+import cz.fungisoft.coffeecompass.service.user.UserService;
 import io.swagger.annotations.Api;
 
 /**

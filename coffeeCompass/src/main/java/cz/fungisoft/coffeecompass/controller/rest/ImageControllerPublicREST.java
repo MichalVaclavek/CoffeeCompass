@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import cz.fungisoft.coffeecompass.service.ImageStorageService;
+import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
 import io.swagger.annotations.Api;
 
 /**

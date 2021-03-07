@@ -56,8 +56,8 @@ import io.swagger.annotations.Api;
 @Api // Swagger
 @RestController 
 @RequestMapping("/rest/site") 
-public class CoffeeSiteControllerPublicREST
-{
+public class CoffeeSiteControllerPublicREST {
+    
     private static final Logger log = LoggerFactory.getLogger(CoffeeSiteControllerPublicREST.class);
     
     @Autowired
@@ -267,10 +267,8 @@ public class CoffeeSiteControllerPublicREST
         
         List<CoffeeSiteDTO> result = coffeeSiteService.findAllWithinCircleWithCSStatusAndCoffeeSort(lat1, lon1, rangeMeters, sort, status);
         
-        if (result == null || result.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
-        } else
-            return new ResponseEntity<>(result, HttpStatus.OK); 
+        return (result == null || result.isEmpty()) ? new ResponseEntity<>(HttpStatus.NOT_FOUND) 
+                                                    : new ResponseEntity<>(result, HttpStatus.OK); 
     }
     
     /**

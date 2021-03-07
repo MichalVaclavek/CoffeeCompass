@@ -6,7 +6,12 @@ import cz.fungisoft.coffeecompass.controller.rest.UsersControllerPublicREST;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.service.*;
-import cz.fungisoft.coffeecompass.serviceimpl.CustomOAuth2UserService;
+import cz.fungisoft.coffeecompass.service.tokens.TokenCreateAndSendEmailService;
+import cz.fungisoft.coffeecompass.service.tokens.TokenService;
+import cz.fungisoft.coffeecompass.service.user.CustomRESTUserAuthenticationService;
+import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
+import cz.fungisoft.coffeecompass.service.user.UserService;
+import cz.fungisoft.coffeecompass.serviceimpl.user.CustomOAuth2UserService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

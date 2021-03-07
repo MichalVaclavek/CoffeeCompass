@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import cz.fungisoft.coffeecompass.dto.WeatherDTO;
-import cz.fungisoft.coffeecompass.service.WeatherApiService;
+import cz.fungisoft.coffeecompass.service.weather.WeatherApiService;
 import io.swagger.annotations.Api;
 
 /**

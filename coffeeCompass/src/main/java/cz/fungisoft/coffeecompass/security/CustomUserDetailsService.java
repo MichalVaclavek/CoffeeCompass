@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
-import cz.fungisoft.coffeecompass.service.UserService;
+import cz.fungisoft.coffeecompass.service.user.UserService;
 
 /**
  * Custom implementation of Spring's UserDetailsService. Provides {@code UserDetails}

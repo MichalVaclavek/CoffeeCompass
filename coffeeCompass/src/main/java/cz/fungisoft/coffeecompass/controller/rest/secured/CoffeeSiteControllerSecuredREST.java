@@ -104,7 +104,7 @@ public class CoffeeSiteControllerSecuredREST
     }
     
     /**
-     * Obsluha POST pozadavku pro vytvoreni vice CoffeeSites. Pouzitoi napr. pri odeslani skupiny CoffeeSites, ktery
+     * Obsluha POST pozadavku pro vytvoreni vice CoffeeSites. Pouzito napr. pri odeslani skupiny CoffeeSites, ktery
      * vytvoril mobilni uzivatel v OFFLINE mode.<br>
      * Obrazky k temto CoffeeSitum lze ukladat postupnym volani {@link ImageControllerSecuredREST#handleFileUpload()}
      * 
@@ -121,7 +121,7 @@ public class CoffeeSiteControllerSecuredREST
            return new ResponseEntity<>(true, HttpStatus.CREATED);
        }
        else {
-           log.error("Coffee sites insertion failed");
+           log.error("Coffee sites insertion failed.");
            throw new BadRESTRequestException(messages.getMessage("coffeesite.create.rest.error.general", null, locale));
        }
     }

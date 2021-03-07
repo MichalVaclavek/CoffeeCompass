@@ -384,6 +384,8 @@ ALTER TABLE coffeecompass.typ_podniku
 
 --CREATE SEQUENCE coffeecompass.maincoffeelisttable_seq;
 
+-- DROP TABLE IF EXISTS coffeecompass.coffee_site;
+
 CREATE TABLE IF NOT EXISTS coffeecompass.coffee_site (
   id serial NOT NULL,
   created_on timestamp(0) without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -408,6 +410,7 @@ CREATE TABLE IF NOT EXISTS coffeecompass.coffee_site (
     pocet_kavovych_automatu_vedle_sebe integer,
     typ_lokality_id bigint,
     site_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    create_activate_notification_sent boolean DEFAULT true,
     CONSTRAINT maincoffeelisttable_pkey PRIMARY KEY (id),
     CONSTRAINT fk_cena FOREIGN KEY (cena_id)
         REFERENCES coffeecompass.price_range (id) MATCH SIMPLE
@@ -885,6 +888,105 @@ ALTER TABLE coffeecompass.password_reset_token
 COMMENT ON TABLE coffeecompass.password_reset_token
     IS 'Unikatni "token", retezec pro reset hesla pomoci odkazu poslaneho do e-mailu uzivatele.';
 
+    
+-- -----------------------------------------------------	
+-- Table: FIREBASE Topics and Tokens
+-- -----------------------------------------------------	
+-- Table: coffeecompass.firebase_topics
+
+-- DROP TABLE coffeecompass.firebase_topics;
+
+CREATE TABLE coffeecompass.firebase_topics
+(
+    id serial NOT NULL,
+    main_topic character varying(64) COLLATE pg_catalog."default" NOT NULL,
+    sub_topic character varying(64) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT firebase_topics_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE coffeecompass.firebase_topics
+    OWNER to postgres;
+
+GRANT INSERT, DELETE, UPDATE, SELECT ON TABLE coffeecompass.firebase_topics TO coffeecompass_dev_user;
+
+GRANT DELETE, INSERT, SELECT, UPDATE ON TABLE coffeecompass.firebase_topics TO coffeecompass_prod_user;
+
+GRANT ALL ON TABLE coffeecompass.firebase_topics TO postgres;
+
+COMMENT ON TABLE coffeecompass.firebase_topics
+    IS 'Topics which can be ordered to follow by user and will by updated by Firebase requests from coffeecompass.cz server.';
+
+
+-- Table: coffeecompass.user_firebase_token
+
+-- DROP TABLE coffeecompass.user_firebase_token;
+
+CREATE TABLE coffeecompass.user_firebase_token
+(
+    id serial NOT NULL,
+    user_id integer,
+    firebase_token character varying(256) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT user_firebase_token_pkey PRIMARY KEY (id),
+    CONSTRAINT user_firebase_token_firebase_token_key UNIQUE (firebase_token),
+    CONSTRAINT user_id_fk FOREIGN KEY (user_id)
+        REFERENCES coffeecompass."user" (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE coffeecompass.user_firebase_token
+    OWNER to postgres;
+
+GRANT INSERT, DELETE, UPDATE, SELECT ON TABLE coffeecompass.user_firebase_token TO coffeecompass_dev_user;
+
+GRANT DELETE, INSERT, SELECT, UPDATE ON TABLE coffeecompass.user_firebase_token TO coffeecompass_prod_user;
+
+GRANT ALL ON TABLE coffeecompass.user_firebase_token TO postgres;
+
+COMMENT ON TABLE coffeecompass.user_firebase_token
+    IS 'Firebase token assigned to user''s application ''Kava s sebou'' when the app. is started. User id can be null!!! Every application/device can have Firebase token and order topic.';
+
+
+-- Table: coffeecompass.subscription_token_to_topic
+
+-- DROP TABLE coffeecompass.subscription_token_to_topic;
+
+CREATE TABLE coffeecompass.subscription_token_to_topic
+(
+    firebase_token_id integer NOT NULL,
+    firebase_topic_id integer NOT NULL,
+    CONSTRAINT odbery_firebase_token_to_topic_pkey PRIMARY KEY (firebase_token_id, firebase_topic_id),
+    CONSTRAINT fk_firebase_token FOREIGN KEY (firebase_token_id)
+        REFERENCES coffeecompass.user_firebase_token (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+        NOT VALID,
+    CONSTRAINT fk_firebase_topic FOREIGN KEY (firebase_topic_id)
+        REFERENCES coffeecompass.firebase_topics (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE coffeecompass.subscription_token_to_topic
+    OWNER to postgres;
+
+GRANT INSERT, DELETE, UPDATE, SELECT ON TABLE coffeecompass.subscription_token_to_topic TO coffeecompass_dev_user;
+
+GRANT DELETE, INSERT, SELECT, UPDATE ON TABLE coffeecompass.subscription_token_to_topic TO coffeecompass_prod_user;
+
+GRANT ALL ON TABLE coffeecompass.subscription_token_to_topic TO postgres;
+
+COMMENT ON TABLE coffeecompass.subscription_token_to_topic
+    IS 'Connection table to pair user''s firebase tokens with firebase topics. This ensures to send messages from Firebase to only user''s Kava s sebou applications which ordered the specific topic.';
+
+
 
 
 -- -----------------------------------------------------
@@ -896,6 +998,7 @@ COMMENT ON TABLE coffeecompass.password_reset_token
 -- -----------------------------------------------------
 
 --USE coffeecompass$$
+
 CREATE OR REPLACE FUNCTION public.distance(lat1 double precision, lon1 double precision, lat2 double precision, lon2 double precision) RETURNS double precision AS '
 
   DECLARE 
@@ -921,6 +1024,9 @@ CREATE OR REPLACE FUNCTION public.distance(lat1 double precision, lon1 double pr
 END;
 ' LANGUAGE 'plpgsql';
 
+ALTER FUNCTION public.distance(double precision, double precision, double precision, double precision)
+    OWNER TO postgres;
+
 	
 -- -----------------------------------------------------
 -- function sitesWithinRange -- vytvoří se v public schema
@@ -928,6 +1034,7 @@ END;
 -- FUNCTION: sitesWithinRange(double precision, double precision, bigint)
 
 -- DROP FUNCTION public."sitesWithinRange"(double precision, double precision, bigint);
+
 
 CREATE OR REPLACE FUNCTION sitesWithinRange(lat1 double precision,	lon1 double precision,	meters bigint) RETURNS refcursor AS '
 
@@ -941,3 +1048,323 @@ CREATE OR REPLACE FUNCTION sitesWithinRange(lat1 double precision,	lon1 double p
     END;
 
 ' LANGUAGE 'plpgsql';
+
+ALTER FUNCTION public.siteswithinrange(double precision, double precision, bigint)
+    OWNER TO postgres;
+
+    
+-- --------------------------------------------------
+-- INIT some basic data - only for Docker test Container
+-- --------------------------------------------------
+
+-- OAuth2 providers
+INSERT INTO coffeecompass.auth_providers(
+	id, provider_name)
+	VALUES (0, 'local');
+	
+INSERT INTO coffeecompass.auth_providers(
+	id, provider_name)
+	VALUES (1, 'google');
+	
+INSERT INTO coffeecompass.auth_providers(
+	id, provider_name)
+	VALUES (2, 'facebook');
+	
+INSERT INTO coffeecompass.auth_providers(
+	id, provider_name)
+	VALUES (3, 'linkedin');
+	
+INSERT INTO coffeecompass.auth_providers(
+	id, provider_name)
+	VALUES (4, 'instagram');
+	
+	
+-- CoffeeSite status --	
+INSERT INTO coffeecompass.coffee_site_status(
+	id, status_podniku)
+	VALUES (1, 'V provozu');
+	
+INSERT INTO coffeecompass.coffee_site_status(
+	id, status_podniku)
+	VALUES (4, 'Zrušeno');
+	
+INSERT INTO coffeecompass.coffee_site_status(
+	id, status_podniku)
+	VALUES (5, 'Dočasně zrušeno');
+	
+INSERT INTO coffeecompass.coffee_site_status(
+	id, status_podniku)
+	VALUES (6, 'Dočasně otevřeno');
+
+-- NextToMachineType --		
+INSERT INTO coffeecompass.dalsi_automat_vedle_type(
+	id, druh_automatu)
+	VALUES (1, 'Nápoje');
+	
+INSERT INTO coffeecompass.dalsi_automat_vedle_type(
+	id, druh_automatu)
+	VALUES (2, 'Sladkosti');
+	
+INSERT INTO coffeecompass.dalsi_automat_vedle_type(
+	id, druh_automatu)
+	VALUES (3, 'Bagety');
+	
+INSERT INTO coffeecompass.dalsi_automat_vedle_type(
+	id, druh_automatu)
+	VALUES (4, 'Ostatní');
+
+-- Druhy kavy - coffee sort  --		
+INSERT INTO coffeecompass.druhy_kavy(
+	id, druh_kavy)
+	VALUES (1, 'espresso');
+	
+INSERT INTO coffeecompass.druhy_kavy(
+	id, druh_kavy)
+	VALUES (2, 'instantní');
+	
+INSERT INTO coffeecompass.druhy_kavy(
+	id, druh_kavy)
+	VALUES (3, 'turek');
+	
+INSERT INTO coffeecompass.druhy_kavy(
+	id, druh_kavy)
+	VALUES (4, 'překapávaná');
+	
+INSERT INTO coffeecompass.druhy_kavy(
+	id, druh_kavy)
+	VALUES (5, 'zrnková');
+	
+-- Další nabidka - Offer
+INSERT INTO coffeecompass.nabidka(
+	id, nabidka)
+	VALUES (2, 'čokoláda');
+	
+INSERT INTO coffeecompass.nabidka(
+	id, nabidka)
+	VALUES (3, 'čaj');
+	
+INSERT INTO coffeecompass.nabidka(
+	id, nabidka)
+	VALUES (4, 'polévka');
+	
+INSERT INTO coffeecompass.nabidka(
+	id, nabidka)
+	VALUES (5, 'limo');
+	
+INSERT INTO coffeecompass.nabidka(
+	id, nabidka)
+	VALUES (6, 'pivo');
+	
+-- Cenový rozsah - Price range
+INSERT INTO coffeecompass.price_range(
+	id, price_range)
+	VALUES (2, '< 15 Kč');
+
+INSERT INTO coffeecompass.price_range(
+	id, price_range)
+	VALUES (3, '15 - 25 Kč');	
+	
+INSERT INTO coffeecompass.price_range(
+	id, price_range)
+	VALUES (4, '25 - 35 Kč');	
+	
+INSERT INTO coffeecompass.price_range(
+	id, price_range)
+	VALUES (5, '35 - 50 Kč');	
+	
+INSERT INTO coffeecompass.price_range(
+	id, price_range)
+	VALUES (6, '> 50 Kč');
+	
+-- Hodnoceni - Stars quality
+INSERT INTO coffeecompass.stars_hodnoceni_kvality(
+	pocet_hvezdicek, slovni_vyjadreni_hvezdicek)
+	VALUES (1, 'Břečka (1)');
+	
+INSERT INTO coffeecompass.stars_hodnoceni_kvality(
+	pocet_hvezdicek, slovni_vyjadreni_hvezdicek)
+	VALUES (2, 'Slabota (2)');
+	
+INSERT INTO coffeecompass.stars_hodnoceni_kvality(
+	pocet_hvezdicek, slovni_vyjadreni_hvezdicek)
+	VALUES (3, 'Průměr (3)');
+	
+INSERT INTO coffeecompass.stars_hodnoceni_kvality(
+	pocet_hvezdicek, slovni_vyjadreni_hvezdicek)
+	VALUES (4, 'Dobrá (4)');
+	
+INSERT INTO coffeecompass.stars_hodnoceni_kvality(
+	pocet_hvezdicek, slovni_vyjadreni_hvezdicek)
+	VALUES (5, 'Vynikajicí (5)');
+	
+-- Status záznamu o lokaci
+INSERT INTO coffeecompass.status_coffee_site_zaznamu(
+	id, status_zaznamu)
+	VALUES (1, 'ACTIVE');
+	
+INSERT INTO coffeecompass.status_coffee_site_zaznamu(
+	id, status_zaznamu)
+	VALUES (2, 'INACTIVE');
+	
+INSERT INTO coffeecompass.status_coffee_site_zaznamu(
+	id, status_zaznamu)
+	VALUES (3, 'CANCELED');
+	
+INSERT INTO coffeecompass.status_coffee_site_zaznamu(
+	id, status_zaznamu)
+	VALUES (4, 'CREATED');
+	
+-- Typ kelímku - cup type
+INSERT INTO coffeecompass.typ_kelimku(
+	id, typ_kelimku)
+	VALUES (1, 'papírový');
+	
+INSERT INTO coffeecompass.typ_kelimku(
+	id, typ_kelimku)
+	VALUES (2, 'plastový');
+	
+INSERT INTO coffeecompass.typ_kelimku(
+	id, typ_kelimku)
+	VALUES (3, 'porcelán');
+
+	
+-- CoffeeSite Location type
+INSERT INTO coffeecompass.typ_lokality(
+	id, lokalita)
+	VALUES (1,	'nádraží');
+
+INSERT INTO coffeecompass.typ_lokality(
+	id, lokalita)
+	VALUES (2,	'obchodní centrum');
+	
+INSERT INTO coffeecompass.typ_lokality(
+	id, lokalita)
+	VALUES (3,	'škola');
+	
+INSERT INTO coffeecompass.typ_lokality(
+	id, lokalita)
+	VALUES (4,	'státní úřad');
+	
+INSERT INTO coffeecompass.typ_lokality(
+	id, lokalita)
+	VALUES (5,	'tržnice');
+	
+INSERT INTO coffeecompass.typ_lokality(
+	id, lokalita)
+	VALUES (6,	'zastávka MHD');
+	
+INSERT INTO coffeecompass.typ_lokality(
+	id, lokalita)
+	VALUES (7,	'zastávka vlaku');
+	
+INSERT INTO coffeecompass.typ_lokality(
+	id, lokalita)
+	VALUES (8,	'zastávka autobusu');
+	
+INSERT INTO coffeecompass.typ_lokality(
+	id, lokalita)
+	VALUES (9,	'autobusové nádraží');
+	
+INSERT INTO coffeecompass.typ_lokality(
+	id, lokalita)
+	VALUES (10,	'benzinka');
+	
+INSERT INTO coffeecompass.typ_lokality(
+	id, lokalita)
+	VALUES (11,	'trh');
+	
+INSERT INTO coffeecompass.typ_lokality(
+	id, lokalita)
+	VALUES (13,	'občerstvení/restaurace');
+	
+INSERT INTO coffeecompass.typ_lokality(
+	id, lokalita)
+	VALUES (14,	'podchod');
+	
+INSERT INTO coffeecompass.typ_lokality(
+	id, lokalita)
+	VALUES (15,	'podchod MHD');
+	
+INSERT INTO coffeecompass.typ_lokality(
+	id, lokalita)
+	VALUES (16,	'letiště');
+	
+INSERT INTO coffeecompass.typ_lokality(
+	id, lokalita)
+	VALUES (17,	'turisticky zajímavé místo');
+	
+INSERT INTO coffeecompass.typ_lokality(
+	id, lokalita)
+	VALUES (12,	'prodejna');
+	
+INSERT INTO coffeecompass.typ_lokality(
+	id, lokalita)
+	VALUES (18,	'ulice');
+	
+INSERT INTO coffeecompass.typ_lokality(
+	id, lokalita)
+	VALUES (19,	'přístaviště');
+	
+INSERT INTO coffeecompass.typ_lokality(
+	id, lokalita)
+	VALUES (20,	'sportoviště');
+	
+INSERT INTO coffeecompass.typ_lokality(
+	id, lokalita)
+	VALUES (21,	'nemocnice');
+	
+-- Typ podniku/provozovny	
+
+INSERT INTO coffeecompass.typ_podniku(
+	id, typ_zarizeni)
+	VALUES (1,	'automat');
+	
+INSERT INTO coffeecompass.typ_podniku(
+	id, typ_zarizeni)
+	VALUES (2,	'bistro');
+	
+INSERT INTO coffeecompass.typ_podniku(
+	id, typ_zarizeni)
+	VALUES (3,	'kavárna');
+	
+INSERT INTO coffeecompass.typ_podniku(
+	id, typ_zarizeni)
+	VALUES (4,	'pekárna');
+	
+INSERT INTO coffeecompass.typ_podniku(
+	id, typ_zarizeni)
+	VALUES (5,	'stánek');
+	
+INSERT INTO coffeecompass.typ_podniku(
+	id, typ_zarizeni)
+	VALUES (6,	'pojízdný stánek');
+	
+INSERT INTO coffeecompass.typ_podniku(
+	id, typ_zarizeni)
+	VALUES (7,	'cukrárna');
+	
+INSERT INTO coffeecompass.typ_podniku(
+	id, typ_zarizeni)
+	VALUES (8,	'novinový stánek');
+	
+INSERT INTO coffeecompass.typ_podniku(
+	id, typ_zarizeni)
+	VALUES (9,	'občerstvení');
+		
+-- User profile/role
+INSERT INTO coffeecompass.user_profile(
+	id, type)
+	VALUES (1, 'USER');
+
+INSERT INTO coffeecompass.user_profile(
+	id, type)
+	VALUES (2, 'ADMIN');
+	
+INSERT INTO coffeecompass.user_profile(
+	id, type)
+	VALUES (3, 'DBA');
+
+INSERT INTO coffeecompass.user_profile(
+	id, type)
+	VALUES (4, 'TEST');
+

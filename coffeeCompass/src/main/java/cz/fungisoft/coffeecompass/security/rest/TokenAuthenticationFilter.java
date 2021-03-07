@@ -8,7 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import cz.fungisoft.coffeecompass.service.UserSecurityService;
+import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

@@ -44,8 +44,8 @@ import ma.glasnost.orika.impl.DefaultMapperFactory;
  *
  */
 @ExtendWith(SpringExtension.class)
-class CoffeeSiteControllerPublicMvcTests
-{ 
+class CoffeeSiteControllerPublicMvcTests { 
+    
     private MockMvc mvc;
     
     /**

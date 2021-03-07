@@ -2,6 +2,7 @@ package cz.fungisoft.coffeecompass.controller.models.rest;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import lombok.Data;
 
@@ -35,8 +36,8 @@ import lombok.Data;
  *
  */
 @Data
-public class CommonRestError
-{
+public class CommonRestError {
+    
     private String type;
     private String title;
     private int status;
@@ -45,6 +46,11 @@ public class CommonRestError
     
     private String errorParameter = "";
     private String errorParameterValue = "";
+    
+    /**
+     * Used for list of input fields validation errors
+     */
+    private Map<String, Set<String>> errorParametersMap;
     
     /**
      * Default constructor with default field values
@@ -108,6 +114,5 @@ public class CommonRestError
         attributesMap.put("type", type);
         
         return attributesMap;
-        
     }
 }

@@ -6,8 +6,7 @@ package cz.fungisoft.coffeecompass.exceptions.rest;
  * @author Michal Vaclavek
  *
  */
-public class RESTException extends RuntimeException
-{
+public class RESTException extends RuntimeException {
     
     private static final long serialVersionUID = 9071059486273080298L;
     

@@ -16,24 +16,26 @@ import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteTypeService;
 import cz.fungisoft.coffeecompass.service.CoffeeSortService;
 import cz.fungisoft.coffeecompass.service.CupTypeService;
-import cz.fungisoft.coffeecompass.service.CustomRESTUserAuthenticationService;
-import cz.fungisoft.coffeecompass.service.ICommentService;
 import cz.fungisoft.coffeecompass.service.IContactMeMessageService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
-import cz.fungisoft.coffeecompass.service.ImageResizeAndRotateService;
-import cz.fungisoft.coffeecompass.service.ImageStorageService;
 import cz.fungisoft.coffeecompass.service.NextToMachineTypeService;
 import cz.fungisoft.coffeecompass.service.OtherOfferService;
 import cz.fungisoft.coffeecompass.service.PriceRangeService;
 import cz.fungisoft.coffeecompass.service.SiteLocationTypeService;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
 import cz.fungisoft.coffeecompass.service.StatisticsInfoService;
-import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
-import cz.fungisoft.coffeecompass.service.UserProfileService;
-import cz.fungisoft.coffeecompass.service.UserSecurityService;
-import cz.fungisoft.coffeecompass.service.ValidateTokenService;
-import cz.fungisoft.coffeecompass.service.WeatherApiService;
-import cz.fungisoft.coffeecompass.serviceimpl.CustomOAuth2UserService;
+import cz.fungisoft.coffeecompass.service.comment.ICommentService;
+import cz.fungisoft.coffeecompass.service.image.ImageResizeAndRotateService;
+import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
+import cz.fungisoft.coffeecompass.service.notifications.NotificationSubscriptionService;
+import cz.fungisoft.coffeecompass.service.notifications.PushNotificationService;
+import cz.fungisoft.coffeecompass.service.tokens.TokenCreateAndSendEmailService;
+import cz.fungisoft.coffeecompass.service.tokens.ValidateTokenService;
+import cz.fungisoft.coffeecompass.service.user.CustomRESTUserAuthenticationService;
+import cz.fungisoft.coffeecompass.service.user.UserProfileService;
+import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
+import cz.fungisoft.coffeecompass.service.weather.WeatherApiService;
+import cz.fungisoft.coffeecompass.serviceimpl.user.CustomOAuth2UserService;
 
 /**
  * Basic setup for all Unit tests for testing Mvc Controllers, i.e. using mvcMock
@@ -46,8 +48,8 @@ import cz.fungisoft.coffeecompass.serviceimpl.CustomOAuth2UserService;
  * @author Michal Vaclavek
  *
  */
-public abstract class MvcControllerUnitTestBaseSetup
-{
+public abstract class MvcControllerUnitTestBaseSetup {
+    
     @Autowired
     protected WebApplicationContext context;
     
@@ -138,5 +140,11 @@ public abstract class MvcControllerUnitTestBaseSetup
     
     @MockBean
     protected WeatherApiService weatherService;
+    
+    @MockBean
+    protected NotificationSubscriptionService notificationSubscriptionService;
+    
+    @MockBean
+    protected PushNotificationService pushNotificationService;
     
 }

@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import cz.fungisoft.coffeecompass.entity.Image;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
-import cz.fungisoft.coffeecompass.service.ImageResizeAndRotateService;
-import cz.fungisoft.coffeecompass.service.ImageStorageService;
+import cz.fungisoft.coffeecompass.service.image.ImageResizeAndRotateService;
+import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
 
 @Controller
 public class ImageRotationController

@@ -16,8 +16,8 @@ import lombok.Data;
  * @author Michal Vaclavek
  */
 @Data
-public class StarsAndCommentModel
-{
+public class StarsAndCommentModel {
+    
     private StarsQualityDescription stars;
 
     @Size(max=320)

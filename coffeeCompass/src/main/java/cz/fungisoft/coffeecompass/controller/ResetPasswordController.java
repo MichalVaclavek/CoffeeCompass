@@ -24,10 +24,10 @@ import cz.fungisoft.coffeecompass.controller.models.EmailAddressModel;
 import cz.fungisoft.coffeecompass.controller.models.NewPasswordInputModel;
 import cz.fungisoft.coffeecompass.entity.PasswordResetToken;
 import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
-import cz.fungisoft.coffeecompass.service.UserSecurityService;
-import cz.fungisoft.coffeecompass.service.UserService;
-import cz.fungisoft.coffeecompass.service.ValidateTokenService;
+import cz.fungisoft.coffeecompass.service.tokens.TokenCreateAndSendEmailService;
+import cz.fungisoft.coffeecompass.service.tokens.ValidateTokenService;
+import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
+import cz.fungisoft.coffeecompass.service.user.UserService;
 import lombok.extern.log4j.Log4j2;
 
 /**

@@ -5,7 +5,7 @@ import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
-import cz.fungisoft.coffeecompass.service.UserService;
+import cz.fungisoft.coffeecompass.service.user.UserService;
 import cz.fungisoft.coffeecompass.testutils.JsonUtil;
 import cz.fungisoft.coffeecompass.testutils.WithMockCustomAdminUser;
 import cz.fungisoft.coffeecompass.testutils.WithMockCustomUserSecurityContextFactory;
@@ -65,8 +65,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @ExtendWith(SpringExtension.class)
 @WebMvcTest
-public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup
-{
+public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
+    
     private MockMvc mockMvc;
     
     @MockBean

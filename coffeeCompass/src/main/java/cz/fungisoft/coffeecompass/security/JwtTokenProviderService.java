@@ -12,7 +12,7 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
 
 import cz.fungisoft.coffeecompass.configuration.JwtAndOAuth2Properties;
-import cz.fungisoft.coffeecompass.service.TokenService;
+import cz.fungisoft.coffeecompass.service.tokens.TokenService;
 
 import java.util.Date;
 import java.util.Map;

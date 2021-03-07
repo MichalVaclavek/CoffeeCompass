@@ -1,10 +1,10 @@
 package cz.fungisoft.coffeecompass.controller.models.rest;
 
 /**
- * This class should represent response to PushNotificationRequest
- * previously sent to Firebase.
+ * This class should represent response to PushNotificationRequest<br>
+ * or PushNotificationSubscriptionRequest sent to Firebase previously.
  * 
- * @author Michal
+ * @author Michal V.
  *
  */
 public class PushNotificationResponse {

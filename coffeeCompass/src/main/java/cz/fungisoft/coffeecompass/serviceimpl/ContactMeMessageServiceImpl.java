@@ -13,7 +13,7 @@ import cz.fungisoft.coffeecompass.dto.ContactMeMessageDTO;
 import cz.fungisoft.coffeecompass.entity.ContactMeMessage;
 import cz.fungisoft.coffeecompass.repository.ContactMeMessageRepository;
 import cz.fungisoft.coffeecompass.service.IContactMeMessageService;
-import cz.fungisoft.coffeecompass.service.ISendEmailService;
+import cz.fungisoft.coffeecompass.service.email.ISendEmailService;
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
 

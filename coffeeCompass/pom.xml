@@ -26,7 +26,7 @@
    		<thymeleaf-layout-dialect.version>2.2.2</thymeleaf-layout-dialect.version>
    		<jwt.version>0.9.1</jwt.version>
 		<java.version>1.8</java.version>
-		<testcontainers.version>1.11.2</testcontainers.version> <!-- For integration testing with PostgreSQL DB -->
+		<testcontainers.version>1.15.2</testcontainers.version> <!-- For integration testing with PostgreSQL DB in Docker -->
 	</properties>
 
 
@@ -236,6 +236,13 @@
 			<groupId>com.google.firebase</groupId>
 			<artifactId>firebase-admin</artifactId>
 			<version>6.8.1</version>
+		</dependency>
+		
+		<!-- Google Maps Services client - used for Geocoding resolvin town from coordinates  -->
+		<dependency>
+  			<groupId>com.google.maps</groupId>
+  			<artifactId>google-maps-services</artifactId>
+  			<version>0.17.0</version>
 		</dependency>
 
 	</dependencies>

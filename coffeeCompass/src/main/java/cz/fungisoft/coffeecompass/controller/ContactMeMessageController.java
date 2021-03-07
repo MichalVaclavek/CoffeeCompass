@@ -15,7 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import cz.fungisoft.coffeecompass.dto.ContactMeMessageDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.service.IContactMeMessageService;
-import cz.fungisoft.coffeecompass.service.UserService;
+import cz.fungisoft.coffeecompass.service.user.UserService;
 
 /**
  * Controller pro obsluhu formulare pro zadani Contact me zpravy.

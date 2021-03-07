@@ -11,8 +11,8 @@ import org.springframework.web.servlet.ModelAndView;
 import cz.fungisoft.coffeecompass.controller.models.StarsAndCommentModel;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
-import cz.fungisoft.coffeecompass.service.ICommentService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
+import cz.fungisoft.coffeecompass.service.comment.ICommentService;
 
 /**
  * Controller for handling addition/deletition/update of Comment and Stars for CoffeeSite.<br>

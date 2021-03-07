@@ -20,8 +20,8 @@ import lombok.Data;
  * @author Michal Vaclavek
  */
 @Data
-public class CommentDTO
-{
+public class CommentDTO {
+    
     private Integer id;
     
     @Size(max=512)

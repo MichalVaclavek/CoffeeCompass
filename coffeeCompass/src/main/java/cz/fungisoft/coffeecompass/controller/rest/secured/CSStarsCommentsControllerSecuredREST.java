@@ -2,6 +2,7 @@ package cz.fungisoft.coffeecompass.controller.rest.secured;
 
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.validation.Valid;
 
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,16 +21,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cz.fungisoft.coffeecompass.controller.models.StarAndCommentForSiteModel;
 import cz.fungisoft.coffeecompass.controller.models.StarsAndCommentModel;
 import cz.fungisoft.coffeecompass.dto.CommentDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.Comment;
 import cz.fungisoft.coffeecompass.entity.StarsForCoffeeSiteAndUser;
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
+import cz.fungisoft.coffeecompass.exceptions.rest.InvalidParameterValueException;
 import cz.fungisoft.coffeecompass.exceptions.rest.ResourceNotFoundException;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
-import cz.fungisoft.coffeecompass.service.ICommentService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
+import cz.fungisoft.coffeecompass.service.comment.ICommentService;
 import io.swagger.annotations.Api;
 
 /**
@@ -42,8 +46,7 @@ import io.swagger.annotations.Api;
 @Api // Swagger
 @RestController 
 @RequestMapping("/rest/secured/starsAndComments")
-public class CSStarsCommentsControllerSecuredREST
-{
+public class CSStarsCommentsControllerSecuredREST {
     
     private static final Logger LOG = LoggerFactory.getLogger(CSStarsCommentsControllerSecuredREST.class);
     
@@ -86,8 +89,12 @@ public class CSStarsCommentsControllerSecuredREST
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<CommentDTO>> saveCommentAndStarsForSite(@RequestBody @Valid StarsAndCommentModel starsAndComment,
                                                                        @PathVariable("coffeeSiteId") Long coffeeSiteId) {
-        // Ulozit hodnoceni if not empty
-        starsForCoffeeSiteService.saveStarsForCoffeeSiteAndLoggedInUser(coffeeSiteId, starsAndComment.getStars().getNumOfStars());
+        try {
+            // Ulozit hodnoceni if not empty
+            starsForCoffeeSiteService.saveStarsForCoffeeSiteAndLoggedInUser(coffeeSiteId, starsAndComment.getStars().getNumOfStars());
+        } catch (Exception ex) { // can be resource not found exception in case of wron coffeeSiteId
+            throw new ResourceNotFoundException("Comments", "coffeeSiteId", coffeeSiteId);
+        }
         
         CoffeeSite cs = coffeeSiteService.findOneById(coffeeSiteId);
         
@@ -103,6 +110,60 @@ public class CSStarsCommentsControllerSecuredREST
             throw new ResourceNotFoundException("Comments", "coffeeSiteId", coffeeSiteId);
         }
         return new ResponseEntity<>(comments, HttpStatus.OK);
+    }
+    
+    /**
+     * Zpracuje POST pozadavek z REST clienta, ktery pozaduje ulozit vice novych Comments a Stars pro vice CoffeeSites<br>
+     * <p>
+     * Example of Correct JSON request body:
+     *
+     * [
+     * { "stars":  2,
+     *   "comment": "Docela dobra kava",
+     *   "coffeeSiteId": 15
+     * },
+     * {"stars":  3,
+     *   "comment": "Kavicka nam",
+     *   "coffeeSiteId": 49
+     *   }
+     * ]
+     * 
+     * Returns true if there was no error during saving
+     * 
+     * @param list of StarAndCommentForSiteModel containig Comments and Stars rating to be saved
+     * 
+     * @return true if no error during saving
+     */
+    //@PostMapping(value="/saveStarsAndComment/{coffeeSiteId}", headers = {"content-type=application/json"}, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value="/saveStarsAndComments")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Boolean> insertCommentsAndStarsForSites(@RequestBody @Valid List<StarAndCommentForSiteModel> starsAndComments, final BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new InvalidParameterValueException("Comments_stars_rating", bindingResult.getFieldErrors());
+        }
+        LOG.debug("Saving comments and/or stars rating. Number of items to be saved: {}", starsAndComments.size());
+        int savedComments = 0;
+        // Ulozit vsechna hodnoceni if not empty
+        for (StarAndCommentForSiteModel starsAndComment : starsAndComments) {
+            long coffeeSiteId = starsAndComment.getCoffeeSiteId();
+            try {
+                starsForCoffeeSiteService.saveStarsForCoffeeSiteAndLoggedInUser(coffeeSiteId, starsAndComment.getStars());
+            
+                CoffeeSite cs = coffeeSiteService.findOneById(coffeeSiteId);
+                // Ulozit Comment for the CoffeeSite, if not empty
+                if ((starsAndComment.getComment() != null) && !starsAndComment.getComment().isEmpty()) {
+                    if (commentsService.saveTextAsComment(starsAndComment.getComment(), cs) != null) {
+                        savedComments++;
+                    }
+            }
+            } catch (Exception ex) { // can be resource not found exception in case of wron coffeeSiteId
+                LOG.error("Wrong CoffeeSite for saving stars rating and/or comment. CoffeeSite id: {}", coffeeSiteId);
+                // do not re-throw, other comments to be saved are coming
+            }
+        }
+        
+        LOG.debug("Number of comments saved: {}", savedComments);
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
     
     
@@ -131,45 +192,96 @@ public class CSStarsCommentsControllerSecuredREST
      */
     @PutMapping("/updateCommentAndStars")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<CommentDTO> updateCommentAndStarsForSite(@RequestBody CommentDTO comment) {
-        
-        // Ulozit updated Comment if not null
-        if (comment != null) {
-            // Ulozit updated Stars if not 0
-            if (comment.getStarsFromUser() >= (StarsQualityDescription.StarsQualityEnum.ONE.ordinal() + 1)
-                 && comment.getStarsFromUser() <= (StarsQualityDescription.StarsQualityEnum.FIVE.ordinal() + 1)
-                 && comment.getUserId() > 0) {
-                StarsForCoffeeSiteAndUser sfcsu = starsForCoffeeSiteService.updateStarsForCoffeeSiteAndUser(comment.getCoffeeSiteID(), comment.getUserId(), comment.getStarsFromUser());
-                if (sfcsu != null) {
-                    LOG.info("Stars updated for CoffeeSite id {}, from User id {}.", comment.getCoffeeSiteID(), comment.getUserId());
-                } else {
-                    LOG.error("Failed Stars update for CoffeeSite id {}, from User id {}", comment.getCoffeeSiteID(), comment.getUserId());
-                }
-            }
+    public ResponseEntity<CommentDTO> updateCommentAndStarsForSite(@RequestBody CommentDTO commentDTO) {
+        if (commentDTO != null) {
+            // Ulozit updated Stars first, if not null
+            starsForCoffeeSiteService.updateStarsForCoffeeSiteAndUser(commentDTO);
             
             Comment updatedComment = null;
-            CommentDTO commentDTO = null;
+            CommentDTO commentToReturn = null;
             try {
-                updatedComment = commentsService.updateComment(comment);
+                updatedComment = commentsService.updateComment(commentDTO);
                 
                 if (updatedComment != null) {
-                    commentDTO = commentsService.getByIdToTransfer(updatedComment.getId());
-                    LOG.info("Comment updated for CoffeeSite id {}, from User id {}.", comment.getCoffeeSiteID(), comment.getUserId());
-                } else {
-                    LOG.error("Comment update failed for CoffeeSite id {}, from User id {}. Comment id {}", comment.getCoffeeSiteID(), comment.getUserId(), comment.getId());
+                    commentToReturn = commentsService.getByIdToTransfer(updatedComment.getId());
+                    LOG.info("Comment updated for CoffeeSite id {}, from User id {}.", commentDTO.getCoffeeSiteID(), commentDTO.getUserId());
                 }
             } catch (Exception ex) {
                 LOG.error("Error calling update Comment service.", ex);
-                return new ResponseEntity<CommentDTO>(HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
             
-            return (commentDTO != null) ? new ResponseEntity<CommentDTO>(commentDTO, HttpStatus.OK)
-                                        : new ResponseEntity<CommentDTO>(HttpStatus.NOT_FOUND); // means not found or deleted
+            return (commentToReturn != null) ? new ResponseEntity<>(commentToReturn, HttpStatus.OK)
+                                             : new ResponseEntity<>(HttpStatus.NOT_FOUND); // means not found or deleted
+                    
         }
         
         LOG.error("Error update Comment, input validation failed.");
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+    
+    
+    /**
+     * Zpracuje PUT pozadavek na update vice Commentu a Stars od danych useru pro vice CoffeeSites
+     * <p>
+     * 
+     *   JSON  List<CommentDTO> to update example:
+     *   
+     *   [
+            {
+                "id": 189,
+                "text": "FDFDFDF fdfdfg",
+                "created": "05.03. 2021 19:47:10",
+                "coffeeSiteID": 15,
+                "userName": "google1",
+                "userId": 63,
+                "canBeDeleted": false,
+                "starsFromUser": 4
+            },
+            {
+                "id": 190,
+                "text": "Nazdar, update 222",
+                "created": "01.02. 2021 13:18",
+                "coffeeSiteID": 49,
+                "userName": "google1",
+                "userId": 63,
+                "canBeDeleted": false,
+                "starsFromUser": 3
+            }
+        ]
+     * 
+     * @param comments - list of Comments and Stars rating to be updated. Muze obsahovat prazdny text, pak je komentar smazan.
+     * 
+     * @return true, if updated with no problem
+     */
+    @PutMapping("/updateCommentsAndStars")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<Boolean> updateCommentsAndStarsForSites(@RequestBody List<CommentDTO> comments) {
+        final int[] updatedComments = {0}; // to be final in lambda of the forEach
+        if (comments != null) {
+            LOG.info("Updating comments and/or stars rating. Number of items to be updated: {}", comments.size());
+            comments.stream().filter(Objects::nonNull)
+                             .forEach(comment -> {
+                                      starsForCoffeeSiteService.updateStarsForCoffeeSiteAndUser(comment);
+                                      
+                                      Comment updatedComment = null;
+                                      try {
+                                          updatedComment = commentsService.updateComment(comment);
+                                          if (updatedComment != null) {
+                                              updatedComments[0]++;
+                                              LOG.debug("Comment updated for CoffeeSite id {}, from User id {}.", comment.getCoffeeSiteID(), comment.getUserId());
+                                          }
+                                      } catch (Exception ex) {
+                                          LOG.error("Error calling update Comment service.", ex);
+                                          //throw new RESTException("Error updating comment."); // do not throw exception here, next comment save can be be fine
+                                      }
+                                   });
+                    
+        }
+        LOG.info("Comments with stars rating update finished. Number of comments updated: {}", updatedComments[0]);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+    
     
     
     /**
@@ -186,14 +298,13 @@ public class CSStarsCommentsControllerSecuredREST
     public ResponseEntity<Integer> updateStarsForCoffeeSiteAndUser(@PathVariable(value="numOfStars", required=true) int numOfStars,
                                                                    @PathVariable(value="coffeeSiteId", required=true) Long coffeeSiteId,
                                                                    @PathVariable(value="userId", required=true) Long userId) {
-        
         // Save updated Stars if not null
         if (numOfStars >= StarsQualityDescription.StarsQualityEnum.ONE.ordinal() + 1
                && numOfStars <= StarsQualityDescription.StarsQualityEnum.FIVE.ordinal() + 1) {
             StarsForCoffeeSiteAndUser starsForCoffeeSiteAndUser = starsForCoffeeSiteService.updateStarsForCoffeeSiteAndUser(coffeeSiteId, userId, numOfStars);
             
-            return (starsForCoffeeSiteAndUser != null) ? new ResponseEntity<Integer>(starsForCoffeeSiteAndUser.getStars().getNumOfStars(), HttpStatus.OK)
-                                                       : new ResponseEntity<Integer>(0, HttpStatus.BAD_REQUEST);
+            return (starsForCoffeeSiteAndUser != null) ? new ResponseEntity<>(starsForCoffeeSiteAndUser.getStars().getNumOfStars(), HttpStatus.OK)
+                                                       : new ResponseEntity<>(0, HttpStatus.BAD_REQUEST);
         }
         
         return new ResponseEntity<>(0, HttpStatus.BAD_REQUEST);

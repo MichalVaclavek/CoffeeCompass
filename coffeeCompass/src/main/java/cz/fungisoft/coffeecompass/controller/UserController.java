@@ -37,12 +37,12 @@ import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.exceptions.UserNotFoundException;
 import cz.fungisoft.coffeecompass.listeners.OnRegistrationCompleteEvent;
-import cz.fungisoft.coffeecompass.service.UserProfileService;
-import cz.fungisoft.coffeecompass.service.UserSecurityService;
-import cz.fungisoft.coffeecompass.service.UserService;
+import cz.fungisoft.coffeecompass.service.comment.ICommentService;
+import cz.fungisoft.coffeecompass.service.tokens.TokenCreateAndSendEmailService;
+import cz.fungisoft.coffeecompass.service.user.UserProfileService;
+import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
+import cz.fungisoft.coffeecompass.service.user.UserService;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
-import cz.fungisoft.coffeecompass.service.ICommentService;
-import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
 
 /**
  * Controller to serve all the requests for login, creating, modifying of a Users, mainly on the<br>

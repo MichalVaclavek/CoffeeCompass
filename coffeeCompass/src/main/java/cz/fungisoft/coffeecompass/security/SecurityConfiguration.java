@@ -33,8 +33,8 @@ import cz.fungisoft.coffeecompass.security.oauth2.HttpCookieOAuth2AuthorizationR
 import cz.fungisoft.coffeecompass.security.oauth2.OAuth2AuthenticationFailureHandler;
 import cz.fungisoft.coffeecompass.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import cz.fungisoft.coffeecompass.security.rest.TokenAuthenticationFilter;
-import cz.fungisoft.coffeecompass.service.UserSecurityService;
-import cz.fungisoft.coffeecompass.serviceimpl.CustomOAuth2UserService;
+import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
+import cz.fungisoft.coffeecompass.serviceimpl.user.CustomOAuth2UserService;
 
 
 /**

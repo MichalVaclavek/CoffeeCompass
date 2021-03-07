@@ -10,9 +10,9 @@ import cz.fungisoft.coffeecompass.repository.UsersRepository;
 import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
 import cz.fungisoft.coffeecompass.security.IAuthenticationFacade;
 import cz.fungisoft.coffeecompass.security.SecurityConfiguration;
-import cz.fungisoft.coffeecompass.service.UserSecurityService;
-import cz.fungisoft.coffeecompass.service.UserService;
-import cz.fungisoft.coffeecompass.serviceimpl.UserServiceImpl;
+import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
+import cz.fungisoft.coffeecompass.service.user.UserService;
+import cz.fungisoft.coffeecompass.serviceimpl.user.UserServiceImpl;
 import ma.glasnost.orika.MapperFacade;
 
 import org.junit.jupiter.api.BeforeEach;

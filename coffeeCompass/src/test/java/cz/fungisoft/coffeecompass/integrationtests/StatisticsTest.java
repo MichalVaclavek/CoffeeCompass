@@ -22,8 +22,8 @@ import cz.fungisoft.coffeecompass.repository.UsersRepository;
 //@AutoConfigureMockMvc
 //@Log4j2
 //TODO Create some CoffeeSites and Users into DB first
-class StatisticsTest
-{
+class StatisticsTest {
+    
     @Autowired
     private CoffeeSiteRepository csRepo;
     

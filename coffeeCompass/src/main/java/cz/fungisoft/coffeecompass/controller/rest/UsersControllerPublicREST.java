@@ -20,10 +20,10 @@ import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.exceptions.rest.BadAuthorizationRESTRequestException;
 import cz.fungisoft.coffeecompass.exceptions.rest.InvalidParameterValueException;
-import cz.fungisoft.coffeecompass.service.CustomRESTUserAuthenticationService;
-import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
-import cz.fungisoft.coffeecompass.service.TokenService;
-import cz.fungisoft.coffeecompass.service.UserService;
+import cz.fungisoft.coffeecompass.service.tokens.TokenCreateAndSendEmailService;
+import cz.fungisoft.coffeecompass.service.tokens.TokenService;
+import cz.fungisoft.coffeecompass.service.user.CustomRESTUserAuthenticationService;
+import cz.fungisoft.coffeecompass.service.user.UserService;
 import io.swagger.annotations.Api;
 
 @Api // Swagger

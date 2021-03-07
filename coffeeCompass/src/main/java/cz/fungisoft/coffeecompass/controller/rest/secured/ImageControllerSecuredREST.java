@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.exceptions.rest.BadRESTRequestException;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
-import cz.fungisoft.coffeecompass.service.ImageStorageService;
+import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
 import io.swagger.annotations.Api;
 
 /**

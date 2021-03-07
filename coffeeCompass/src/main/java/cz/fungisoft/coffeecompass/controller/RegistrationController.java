@@ -15,10 +15,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserEmailVerificationToken;
-import cz.fungisoft.coffeecompass.service.UserService;
-import cz.fungisoft.coffeecompass.service.ValidateTokenService;
-import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
-import cz.fungisoft.coffeecompass.service.UserSecurityService;
+import cz.fungisoft.coffeecompass.service.tokens.TokenCreateAndSendEmailService;
+import cz.fungisoft.coffeecompass.service.tokens.ValidateTokenService;
+import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
+import cz.fungisoft.coffeecompass.service.user.UserService;
 
 /**
  * Controller to process click on User registration e-mail verification link.

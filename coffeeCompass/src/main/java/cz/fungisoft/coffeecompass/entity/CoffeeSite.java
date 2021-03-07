@@ -157,6 +157,13 @@ public class CoffeeSite
     @Column(name = "pocet_kavovych_automatu_vedle_sebe")
     private int numOfCoffeeAutomatyVedleSebe;
     
+    /**
+     * To indicate, that push notification about this CoffeeSite first activation was already sent.
+     * To avoid repeating notifications, when the CoffeeSite is deactivated and activated again. 
+     */
+    @Column(name = "create_activate_notification_sent")
+    private boolean newSitePushNotificationSent = false;
+    
     /* **** MANY TO ONE relations **** */
     
     @ManyToOne(fetch = FetchType.LAZY)

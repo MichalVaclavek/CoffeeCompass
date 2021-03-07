@@ -21,8 +21,8 @@ import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.exceptions.rest.ResourceNotFoundException;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
-import cz.fungisoft.coffeecompass.service.ICommentService;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
+import cz.fungisoft.coffeecompass.service.comment.ICommentService;
 import io.swagger.annotations.Api;
 
 /**
@@ -154,9 +154,9 @@ public class CSStarsCommentsControllerPublicREST
     @GetMapping("/commentsPaginated/{siteId}/") // napr. https://localhost:8443/rest/public/starsAndComments/commentsPaginated/2/?size=5&page=1
     @ResponseStatus(HttpStatus.OK)
     public Page<CommentDTO> commentsBySiteIdPaginated(@PathVariable("siteId") Long siteId,
-                                                                      @RequestParam(defaultValue = "created") String orderBy,
-                                                                      @RequestParam(defaultValue = "desc") String direction,
-                                                                      @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+                                                      @RequestParam(defaultValue = "created") String orderBy,
+                                                      @RequestParam(defaultValue = "desc") String direction,
+                                                      @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
         
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(10);

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
-import cz.fungisoft.coffeecompass.service.TokenCreateAndSendEmailService;
+import cz.fungisoft.coffeecompass.service.tokens.TokenCreateAndSendEmailService;
 
 @Component
 public class RegistrationListener implements ApplicationListener<OnRegistrationCompleteEvent>

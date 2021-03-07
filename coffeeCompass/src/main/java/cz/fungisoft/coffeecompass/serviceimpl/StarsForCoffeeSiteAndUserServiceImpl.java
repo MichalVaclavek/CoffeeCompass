@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cz.fungisoft.coffeecompass.dto.AverageStarsForSiteDTO;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
+import cz.fungisoft.coffeecompass.dto.CommentDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.StarsForCoffeeSiteAndUser;
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
@@ -19,7 +20,7 @@ import cz.fungisoft.coffeecompass.repository.StarsForCoffeeSiteAndUserRepository
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
-import cz.fungisoft.coffeecompass.service.UserService;
+import cz.fungisoft.coffeecompass.service.user.UserService;
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
 
@@ -129,6 +130,47 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
         log.error("Updating Stars for Coffee site id {} and User id {} failed. Stars: {}", coffeeSiteID, userId, stars);
         return null;
     }
+    
+    /**
+     * Updates Stars for given CoffeeSite and User. Only Stars of the loggedIn user can be updated.
+     *  
+     * @return 
+     */
+    @Override
+    public StarsForCoffeeSiteAndUser updateStarsForCoffeeSiteAndUser(CommentDTO comment) {
+        // Ulozit updated Stars if not 0
+        if (comment != null && comment.getStarsFromUser() >= (StarsQualityDescription.StarsQualityEnum.ONE.ordinal() + 1)
+             && comment.getStarsFromUser() <= (StarsQualityDescription.StarsQualityEnum.FIVE.ordinal() + 1)
+             && comment.getUserId() > 0) {
+            
+            int stars = comment.getStarsFromUser();
+            Optional<User> logedInUser = userService.getCurrentLoggedInUser();
+            
+            if (logedInUser.isPresent() && logedInUser.get().getId() == comment.getUserId()) {
+                // Ziskat prislusny objekt StarsForCoffeeSiteAndUser z DB
+                StarsForCoffeeSiteAndUser sfcsu = avgStarsRepo.getOneStarEvalForSiteAndUser(comment.getCoffeeSiteID(), comment.getUserId());
+                
+                if (sfcsu != null) { // Pokud zaznam pro tohoto uzivatele a CoffeeSite jeste v DB neni, vytvori novy
+                    sfcsu.setStars(starsQualService.findStarsQualityById(stars));
+                    // Updatovane hodnoceni ulozit do Repositoy
+                    sfcsu = avgStarsRepo.save(sfcsu);
+                    log.info("Stars for Coffee site id {} and User id {} updated. Stars: {}", comment.getCoffeeSiteID(), comment.getUserId(), stars);
+                    if (sfcsu != null) {
+                        log.info("Stars updated for CoffeeSite id {}, from User id {}.", comment.getCoffeeSiteID(), comment.getUserId());
+                    } else {
+                        log.error("Failed Stars update for CoffeeSite id {}, from User id {}", comment.getCoffeeSiteID(), comment.getUserId());
+                    }
+                    return sfcsu;
+                }
+            }
+            
+        }
+        
+        if (comment != null) {
+            log.error("Updating Stars for Coffee site id {} and User id {} failed.", comment.getCoffeeSiteID(), comment.getUserId());
+        }
+        return null;
+    }
 
     @Override
     public void cancelStarsForCoffeeSite(CoffeeSite coffeeSite, User user) {
@@ -137,7 +179,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     }
 
     /**
-     * Ulozit hodnoceni pro dany CoffeeSite pro aktualne prihlaseneho uzivatele.
+     * Ulozit/updatovat hodnoceni pro dany CoffeeSite pro aktualne prihlaseneho uzivatele.
      * Only logged-in user can save the stars.
      */
     @Override
@@ -149,6 +191,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
             saveStarsForCoffeeSiteAndUser(cs, mapperFacade.map(logedInUser.get(), User.class), stars);
         }
     }
+    
 
     @Override
     public String getStarsForCoffeeSiteAndUser(CoffeeSiteDTO coffeeSite, User user) {

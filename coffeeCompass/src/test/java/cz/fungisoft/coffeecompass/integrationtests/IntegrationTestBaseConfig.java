@@ -1,23 +1,33 @@
 package cz.fungisoft.coffeecompass.integrationtests;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.jdbc.SqlConfig.TransactionMode;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
@@ -47,6 +57,7 @@ import cz.fungisoft.coffeecompass.repository.SiteLocationTypeRepository;
 import cz.fungisoft.coffeecompass.repository.StarsForCoffeeSiteAndUserRepository;
 import cz.fungisoft.coffeecompass.repository.StarsQualityDescriptionRepository;
 import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
+import cz.fungisoft.coffeecompass.testutils.JsonUtil;
 
 
 /**
@@ -66,12 +77,11 @@ import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
  *
  */
 @ContextConfiguration(initializers = {IntegrationTestBaseConfig.Initializer.class})
-@Sql(scripts= {"/schema_integration_test_docker.sql", "/data_integration_tests.sql"},
-     config = @SqlConfig(encoding = "utf-8",
-     transactionMode = TransactionMode.ISOLATED))
+//if runnig without testContainer
+//@Sql(scripts= {"/schema_integration_test.sql", "/data_integration_tests.sql"},
+//     config = @SqlConfig(encoding = "utf-8", transactionMode = TransactionMode.ISOLATED)) 
 @Testcontainers // Junit5 support for DB in Docker container 
-public class IntegrationTestBaseConfig
-{
+public class IntegrationTestBaseConfig {
 
     @Autowired
     private UserProfileRepository userProfileRepo;
@@ -130,6 +140,13 @@ public class IntegrationTestBaseConfig
     protected CoffeeSiteRecordStatus CANCELED;
     protected CoffeeSiteRecordStatus CREATED;
     
+    Company comp = new Company();
+    
+    @Before
+    public void startDB() {
+        postgres.start();
+    }
+    
     /**
      * Init of DB. Creates basic User PROFILEs
      */
@@ -148,6 +165,9 @@ public class IntegrationTestBaseConfig
         userProfilesUser.add(userProfUser);
         userProfilesADMIN.add(userProfADMIN);
         userProfilesDBA.add(userProfDBA);
+        
+        comp.setNameOfCompany("Kávička s.r.o");
+        companyRepo.save(comp);
     }
     
     /**
@@ -163,7 +183,7 @@ public class IntegrationTestBaseConfig
         
         Set<CoffeeSort> csorts = new HashSet<>();
         Set<CupType> cups = new HashSet<>();
-        Company comp = new Company();
+        
         //StarsQualityDescription stars = starsQualityDescriptionRepo.searchByName(StarsQualityEnum.TWO.toString());
         Set<NextToMachineType> ntmtSet = new HashSet<>(); 
         Set<OtherOffer> nabidka = new HashSet<>();
@@ -182,9 +202,6 @@ public class IntegrationTestBaseConfig
         
         cups.add(paper);
         cups.add(plastic);
-          
-        comp.setNameOfCompany("Kávička s.r.o");
-        companyRepo.save(comp);
           
         NextToMachineType mt = ntmTypeRepo.searchByName(NextToMachineTypeEnum.NAPOJE.getNexToMachineType());
         NextToMachineType mt2 = ntmTypeRepo.searchByName(NextToMachineTypeEnum.BAGETY.getNexToMachineType());
@@ -236,11 +253,11 @@ public class IntegrationTestBaseConfig
     /**
      * Vlozeni zakladnich parametru Postgres DB bezici v Dockeru.
      */
-    //@ClassRule
     @Container
-    public static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres")
+    public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer("postgres")
                                                         .withDatabaseName("coffeecompass")
                                                         .withUsername("postgres")
+                                                        .withInitScript("schema_integration_test_docker.sql")
                                                         .withPassword("postgres_test");
 
     
@@ -261,9 +278,30 @@ public class IntegrationTestBaseConfig
                 "spring.jpa.hibernate.ddl-auto=none",
                 "spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect",
                 "spring.jpa.show-sql=true",
-                "spring.jpa.properties.hibernate.format_sql=true"
-                //"spring.datasource.initialization-mode=always",
+                "spring.jpa.properties.hibernate.format_sql=true",
+                "spring.datasource.initialization-mode=always"
             ).applyTo(configurableApplicationContext.getEnvironment());
         }
+    }
+    
+    /**
+     * Performs REST user login and returns access token for that user/login.
+     * 
+     * @param mockMvc
+     * @param userDto
+     * @return
+     * @throws Exception
+     */
+    protected String loginUserAndGetAccessToken(MockMvc mockMvc, SignUpAndLoginRESTDto userDto) throws Exception {
+        
+        ResultActions result = mockMvc.perform(post("/rest/public/user/login").contentType(MediaType.APPLICATION_JSON)
+                   .contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(userDto)))
+                   .andExpect(status().isOk())
+                   .andExpect(content().contentType("application/json"));
+     
+        String resultString = result.andReturn().getResponse().getContentAsString();
+     
+        JacksonJsonParser jsonParser = new JacksonJsonParser();
+        return jsonParser.parseMap(resultString).get("accessToken").toString();
     }
 }

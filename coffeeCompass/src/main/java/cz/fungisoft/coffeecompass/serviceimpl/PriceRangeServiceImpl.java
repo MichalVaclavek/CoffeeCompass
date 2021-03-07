@@ -26,8 +26,9 @@ public class PriceRangeServiceImpl implements PriceRangeService
     @Override
     public PriceRange findPriceRangeByString(String priceRangeString) {
         PriceRange priceRange = priceRangeRepo.searchByName(priceRangeString);
-        if (priceRange == null)
+        if (priceRange == null) {
             throw new EntityNotFoundException("Price range " + priceRangeString + " not found in DB.");
+        }
         return priceRange;
     }
 

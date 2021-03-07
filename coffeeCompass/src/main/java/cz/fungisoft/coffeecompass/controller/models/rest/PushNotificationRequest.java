@@ -5,10 +5,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Class to hold request from client/mobile app. to receive notifications
- * about given topic
+ * Class to hold request for sending notifications to given Topic and/or Token.
+ * Title and message of the notification can be requested.
  * 
- * @author Michal
+ * @author Michal V.
  *
  */
 @Setter

@@ -27,8 +27,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  */
 @RestControllerAdvice
 @Order(1)
-public class ExceptionsControllerRESTAdvice extends ResponseEntityExceptionHandler
-{
+public class ExceptionsControllerRESTAdvice extends ResponseEntityExceptionHandler {
+    
     private static final Logger myLogger = LogManager.getLogger(ExceptionsControllerRESTAdvice.class);
     
     @Autowired
@@ -79,13 +79,14 @@ public class ExceptionsControllerRESTAdvice extends ResponseEntityExceptionHandl
     
     @ExceptionHandler({ InvalidParameterValueException.class })
     public ResponseEntity<CommonRestError> handleInvalidParameterRESTRequest(InvalidParameterValueException ex, WebRequest request) {
-        myLogger.error("409 Status Code", ex);
+        myLogger.error("400 Status Code", ex);
         CommonRestError bodyOfErrorResponse = new CommonRestError("/errors/input_parameters", "Wrong parameter",
-                                                                  409, ex.getLocalizedErrorMessage(),
+                                                                  400, ex.getLocalizedErrorMessage(),
                                                                   request.getDescription(false));
         bodyOfErrorResponse.setErrorParameter(ex.getFieldName());
         bodyOfErrorResponse.setErrorParameterValue(ex.getFieldValue().toString());
-        return new ResponseEntity<>(bodyOfErrorResponse, HttpStatus.CONFLICT);
+        bodyOfErrorResponse.setErrorParametersMap(ex.getErrorsMap());
+        return new ResponseEntity<>(bodyOfErrorResponse, HttpStatus.BAD_REQUEST);
     }
     
     @ExceptionHandler({ ResourceNotFoundException.class })

@@ -4,8 +4,8 @@ import javax.servlet.Filter;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-public class CoffeeCompassInitializer extends AbstractAnnotationConfigDispatcherServletInitializer
-{    
+public class CoffeeCompassInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+    
     @Override
     protected Class<?>[] getRootConfigClasses() {
         return new Class[] { CoffeeCompassConfiguration.class };

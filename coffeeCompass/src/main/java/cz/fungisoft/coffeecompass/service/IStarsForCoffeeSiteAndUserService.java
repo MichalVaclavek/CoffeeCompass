@@ -2,6 +2,7 @@ package cz.fungisoft.coffeecompass.service;
 
 import cz.fungisoft.coffeecompass.dto.AverageStarsForSiteDTO;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
+import cz.fungisoft.coffeecompass.dto.CommentDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.StarsForCoffeeSiteAndUser;
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
@@ -14,8 +15,7 @@ import cz.fungisoft.coffeecompass.entity.User;
  * @author Michal Vaclavek
  *
  */
-public interface IStarsForCoffeeSiteAndUserService
-{
+public interface IStarsForCoffeeSiteAndUserService {
     /**
      * Hodnoceni jednoho uzivatele pro jeden CoffeeSite.
      * 
@@ -33,6 +33,14 @@ public interface IStarsForCoffeeSiteAndUserService
     public void saveStarsForCoffeeSiteAndLoggedInUser(Long coffeeSiteID, Integer stars);
     public void saveStarsForCoffeeSiteAndUser(CoffeeSite coffeeSite, User user, int stars);
     public StarsForCoffeeSiteAndUser updateStarsForCoffeeSiteAndUser(Long coffeeSiteID, Long userId, int stars);
+    
+    /**
+     * Updates stars rating for CoffeeSite included in CommentsDTO object
+     *  
+     * @param comment
+     * @return
+     */
+    public StarsForCoffeeSiteAndUser updateStarsForCoffeeSiteAndUser(CommentDTO comment);
     
     public void cancelStarsForCoffeeSite(CoffeeSite coffeeSite, User user);
     

@@ -3,6 +3,8 @@ package cz.fungisoft.coffeecompass.unittest.user;
 import cz.fungisoft.coffeecompass.controller.rest.secured.UserControllerSecuredREST;
 import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.service.*;
+import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
+import cz.fungisoft.coffeecompass.service.user.UserService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

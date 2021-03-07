@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  */
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
-public class BadAuthorizationRESTRequestException extends RESTException
-{
+public class BadAuthorizationRESTRequestException extends RESTException {
     
     /**
      * 
