@@ -1,9 +1,12 @@
-package cz.fungisoft.coffeecompass.controller.rest.secured;
+package cz.fungisoft.coffeecompass.controller.rest;
 
-import java.util.concurrent.ExecutionException;
-
-import javax.validation.Valid;
-
+import cz.fungisoft.coffeecompass.controller.models.rest.PushNotificationRequest;
+import cz.fungisoft.coffeecompass.controller.models.rest.PushNotificationResponse;
+import cz.fungisoft.coffeecompass.controller.models.rest.PushNotificationSubscriptionRequest;
+import cz.fungisoft.coffeecompass.exceptions.rest.InvalidParameterValueException;
+import cz.fungisoft.coffeecompass.service.notifications.NotificationSubscriptionService;
+import cz.fungisoft.coffeecompass.service.notifications.PushNotificationService;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -15,23 +18,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import cz.fungisoft.coffeecompass.controller.models.rest.PushNotificationRequest;
-import cz.fungisoft.coffeecompass.controller.models.rest.PushNotificationResponse;
-import cz.fungisoft.coffeecompass.controller.models.rest.PushNotificationSubscriptionRequest;
-import cz.fungisoft.coffeecompass.exceptions.rest.InvalidParameterValueException;
-import cz.fungisoft.coffeecompass.service.notifications.NotificationSubscriptionService;
-import cz.fungisoft.coffeecompass.service.notifications.PushNotificationService;
-import io.swagger.annotations.Api;
+import javax.validation.Valid;
+import java.util.concurrent.ExecutionException;
 
 /**
  * REST Controller to handle requests related to Push notifications of Firebase.
+ * This is non-secured version of the contrller, so can be used without login-in user.
  *  
  * @author Michal Vaclavek
  *
  */
 @Api // Swagger
 @RestController
-@RequestMapping("/rest/secured/firebase")
+@RequestMapping("/rest/firebase")
 public class PushNotificationController {
     
     private static final Logger log = LoggerFactory.getLogger(PushNotificationController.class);
@@ -44,35 +43,6 @@ public class PushNotificationController {
         this.pushNotificationService = pushNotificationService;
         this.notificationSubscriptionService = notificationSubscriptionService;
     }
-    
-    /**
-     * Handles reques to immediate send push message to given Topic without data body.
-     * Used for testing purposes only.
-     * 
-     * @param request
-     * @return
-     */
-    @PostMapping("/notification/topic")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<PushNotificationResponse> sendNotification(@RequestBody PushNotificationRequest request) {
-        pushNotificationService.sendPushNotificationWithoutData(request);
-        return new ResponseEntity<>(new PushNotificationResponse(HttpStatus.OK.value(), "Notification has been sent."), HttpStatus.OK);
-    }
-    
-    /**
-     * Handles request to immediate send push message to given Token.
-     * Used for testing purposes only.
-     * 
-     * @param request
-     * @return
-     */
-    @PostMapping("/notification/token")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<PushNotificationResponse> sendTokenNotification(@RequestBody PushNotificationRequest request) {
-        pushNotificationService.sendPushNotificationToToken(request);
-        return new ResponseEntity<>(new PushNotificationResponse(HttpStatus.OK.value(), "Notification has been sent."), HttpStatus.OK);
-    }
-    
     
     /**
      * Handles user's subscription request for sending push notification about new CoffeeSite in respective towns.<br>

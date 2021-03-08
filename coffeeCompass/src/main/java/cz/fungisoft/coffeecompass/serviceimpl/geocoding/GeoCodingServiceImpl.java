@@ -27,7 +27,6 @@ import lombok.extern.log4j.Log4j2;
  * under given geo coordinates. Also used to validate entered town/place name.
  * 
  * @author Michal Vaclavek
- *
  */
 @Service
 @Log4j2

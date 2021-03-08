@@ -100,7 +100,7 @@ public class NotificationSubscriptionServiceImpl implements NotificationSubscrip
                                                                   return newToken;
                                                               });
         // update token with user if logged-in   
-        loggedInUser.ifPresent(user -> token.setUser(user));
+        loggedInUser.ifPresent(token::setUser);
            
         // 2.a. saves Topic and subTopics
         Set<FirebaseTopic> newTopics = new HashSet<>();
