@@ -158,7 +158,7 @@ public class TopicsServiceImpl implements TopicsForPushNotificationsService {
                                                                             .map(firebaseTopic -> firebaseTopic.getMainTopic() + "_" + firebaseTopic.getSubTopic())
                                                                             .collect(Collectors.toList())
                                                                       )
-                                              );
+                                     );
        return result;
     }
     
@@ -172,7 +172,7 @@ public class TopicsServiceImpl implements TopicsForPushNotificationsService {
                                                                             .map(FirebaseTopic::getId)
                                                                             .collect(Collectors.toList())
                                                                       )
-                                              );
+                                     );
        return result;
     }
     
@@ -184,12 +184,30 @@ public class TopicsServiceImpl implements TopicsForPushNotificationsService {
         userTokens.forEach(token -> token.getTopics().clear());
         log.info("All subscribed Topics for user deleted. User: {}", user.getUserName());
     }
-    
+
+    /**
+     * Deletes ALL Topics/subTopics related to the token.
+     *
+     * @param tokenString
+     */
     @Override
-    public void deleteTopicsOfToken(String tokenString) {
+    public void deleteAllTopicsOfToken(String tokenString) {
         firebaseDeviceTokenRepository.getOneToken(tokenString)
                                      .ifPresent(token -> token.getTopics().clear());
         log.info("All subscribed Topics for the Token deleted. Token: {}", tokenString);
+    }
+
+    /**
+     * Deletes selected Topics/subTopics related to the token.
+     *
+     * @param tokenString
+     */
+    @Override
+    public void deleteSelectedTopicsOfToken(String tokenString, List<String> topics) {
+        firebaseDeviceTokenRepository.getOneToken(tokenString)
+                .ifPresent(token -> token.getTopics().removeIf(topic -> topics.stream().anyMatch(topic::equals)));
+
+        log.info("Selected Topics for the Token deleted. Token: {}", tokenString);
     }
 
     @Override

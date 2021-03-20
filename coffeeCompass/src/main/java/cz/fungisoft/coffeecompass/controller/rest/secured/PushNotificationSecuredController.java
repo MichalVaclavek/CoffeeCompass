@@ -4,6 +4,7 @@ import java.util.concurrent.ExecutionException;
 
 import javax.validation.Valid;
 
+import cz.fungisoft.coffeecompass.controller.rest.PushNotificationController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -124,7 +125,7 @@ public class PushNotificationSecuredController {
     } 
     
     /**
-     * * Handles user's request to unsubscribe of sending push notification about new CoffeeSite in respective towns.
+     * Handles user's request to unsubscribe of sending push notification about new CoffeeSite in respective towns.
      * 
      * @param request
      * @return
@@ -135,7 +136,33 @@ public class PushNotificationSecuredController {
             throw new InvalidParameterValueException("PushNotificationSubscriptionRequest", bindingResult.getFieldErrors());
         }
         try {
-            notificationSubscriptionService.unsubscribeFromTopic(request);
+            notificationSubscriptionService.unsubscribeFromTopics(request);
+        } catch (InterruptedException ex) {
+            log.error("Notification unsubscription failed. Exception: {}", ex.getMessage());
+            Thread.currentThread().interrupt();
+            return new ResponseEntity<>(new PushNotificationResponse(HttpStatus.SERVICE_UNAVAILABLE.value(), "Notification unsubscription failed."), HttpStatus.SERVICE_UNAVAILABLE);
+        } catch (ExecutionException e) {
+            log.error("Notification unsubscription failed. Exception: {}", e.getMessage());
+            return new ResponseEntity<>(new PushNotificationResponse(HttpStatus.SERVICE_UNAVAILABLE.value(), "Notification unsubscription failed."), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+        return new ResponseEntity<>(new PushNotificationResponse(HttpStatus.OK.value(), "Subscription cancel accepted."), HttpStatus.OK);
+    }
+
+    /**
+     * Handles user's request to unsubscribe of sending push notification about new CoffeeSite in all towns.
+     * There is same method body, same @RequestBody as in the public {@link PushNotificationController#unSubscribeAllNotifications(PushNotificationSubscriptionRequest, BindingResult)}
+     * version, but with Authentication header included in the POST request.
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/notification/unsubscribeAll")
+    public ResponseEntity<PushNotificationResponse> unSubscribeAllNotifications(@RequestBody PushNotificationSubscriptionRequest request, final BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new InvalidParameterValueException("PushNotificationSubscriptionRequest", bindingResult.getFieldErrors());
+        }
+        try {
+            notificationSubscriptionService.unsubscribeFromAllTopics(request.getToken());
         } catch (InterruptedException ex) {
             log.error("Notification unsubscription failed. Exception: {}", ex.getMessage());
             Thread.currentThread().interrupt();

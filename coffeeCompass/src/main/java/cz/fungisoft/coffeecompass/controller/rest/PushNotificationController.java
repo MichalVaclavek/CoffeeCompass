@@ -105,7 +105,41 @@ public class PushNotificationController {
             throw new InvalidParameterValueException("PushNotificationSubscriptionRequest", bindingResult.getFieldErrors());
         }
         try {
-            notificationSubscriptionService.unsubscribeFromTopic(request);
+            notificationSubscriptionService.unsubscribeFromTopics(request);
+        } catch (InterruptedException ex) {
+            log.error("Notification unsubscription failed. Exception: {}", ex.getMessage());
+            Thread.currentThread().interrupt();
+            return new ResponseEntity<>(new PushNotificationResponse(HttpStatus.SERVICE_UNAVAILABLE.value(), "Notification unsubscription failed."), HttpStatus.SERVICE_UNAVAILABLE);
+        } catch (ExecutionException e) {
+            log.error("Notification unsubscription failed. Exception: {}", e.getMessage());
+            return new ResponseEntity<>(new PushNotificationResponse(HttpStatus.SERVICE_UNAVAILABLE.value(), "Notification unsubscription failed."), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+        return new ResponseEntity<>(new PushNotificationResponse(HttpStatus.OK.value(), "Subscription cancel accepted."), HttpStatus.OK);
+    }
+
+    /**
+     * Handles user's request to unsubscribe of sending push notification about new CoffeeSite in ALL towns.
+     * <p>
+     * Example URL: https://localhost:8443/rest/firebase/notification/unsubscribeAll
+     *
+     * Example body:
+     * {
+     * 	"topic":"",
+     * 	"subTopics": [],
+     * 	"token":"c_w6FcZdT0WlDNKcGJ_BiM:APA91bGPPsD05OXPNF4G44_aUX96skkSBV9lK_4eaZtJcCn_4KOkbJsGCNvp_g1QQDWmt7vTMb73L8kZu97-RKRFrIqr-f6aSWdP2Q06WHa1tCOcVPIglu93YxH7RNS_BhXnmU2VCSbk"
+     * }
+     *
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/notification/unsubscribeAll")
+    public ResponseEntity<PushNotificationResponse> unSubscribeAllNotifications(@RequestBody PushNotificationSubscriptionRequest request, final BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new InvalidParameterValueException("PushNotificationSubscriptionRequest", bindingResult.getFieldErrors());
+        }
+        try {
+            notificationSubscriptionService.unsubscribeFromAllTopics(request.getToken());
         } catch (InterruptedException ex) {
             log.error("Notification unsubscription failed. Exception: {}", ex.getMessage());
             Thread.currentThread().interrupt();

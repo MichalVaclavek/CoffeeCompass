@@ -30,6 +30,15 @@ public interface NotificationSubscriptionService {
      * @throws InterruptedException
      * @throws ExecutionException
      */
-    void unsubscribeFromTopic(PushNotificationSubscriptionRequest request) throws InterruptedException, ExecutionException;
+    void unsubscribeFromTopics(PushNotificationSubscriptionRequest request) throws InterruptedException, ExecutionException;
+
+    /**
+     * Undo Subscription for push notifications for list of Topics for one user/token
+     *
+     * @param token - Firebase token which wants to unsubscribe from all Topics/Subtipocs
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
+    void unsubscribeFromAllTopics(String token) throws InterruptedException, ExecutionException;
     
 }

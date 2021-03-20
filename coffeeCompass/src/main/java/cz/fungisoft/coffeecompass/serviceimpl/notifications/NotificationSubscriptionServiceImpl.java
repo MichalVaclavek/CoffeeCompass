@@ -81,7 +81,7 @@ public class NotificationSubscriptionServiceImpl implements NotificationSubscrip
         Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
         final String tokenString = request.getToken();
         
-        // 1. Unsubscribe all topics currently subscribed for the token
+        // 1. Unsubscribe ALL topics currently subscribed for the token
         List<String> unregistrationTokens = new ArrayList<>();
         unregistrationTokens.add(tokenString);
         List<FirebaseTopic> topicsToUnsubscribe = topicsService.getTopicsForToken(tokenString);
@@ -89,7 +89,7 @@ public class NotificationSubscriptionServiceImpl implements NotificationSubscrip
             fcmService.unsubscribeFromTopic(unregistrationTokens, topic.getMainTopic() + "_" + topic.getId());
         }
         // Delete all subscribed topics for the token
-        topicsService.deleteTopicsOfToken(tokenString);
+        topicsService.deleteAllTopicsOfToken(tokenString);
         
         // 2. save new subscritpions to DB
         // get already saved or new DeviceFirebaseToken object
@@ -134,17 +134,33 @@ public class NotificationSubscriptionServiceImpl implements NotificationSubscrip
     }
 
     /**
-     * Probably is not needed in current implementation
+     * To unsusbcribe selected Topics/subtopics of the Token
      */
     @Override
-    public void unsubscribeFromTopic(PushNotificationSubscriptionRequest request) throws InterruptedException, ExecutionException {
+    public void unsubscribeFromTopics(PushNotificationSubscriptionRequest request) throws InterruptedException, ExecutionException {
         List<String> unregistrationTokens = new ArrayList<>();
         unregistrationTokens.add(request.getToken());
-        // unsubscribe Topics requested for this Token
+        // unsubscribe Topics/subTopics requested for this Token
+        List<String> topicSubTopicsToDelete = new ArrayList<>();
         for (String subTopic : request.getSubTopics()) {
-            fcmService.unsubscribeFromTopic(unregistrationTokens, request.getTopic() + "_" + subTopic);
+            String topicSubTopic = request.getTopic() + "_" + subTopic;
+            topicSubTopicsToDelete.add(topicSubTopic);
+            fcmService.unsubscribeFromTopic(unregistrationTokens, topicSubTopic);
+        }
+        // Delete selected subscribed topics for the token
+        topicsService.deleteSelectedTopicsOfToken(request.getToken(), topicSubTopicsToDelete);
+    }
+
+    @Override
+    public void unsubscribeFromAllTopics(String token) throws InterruptedException, ExecutionException {
+        // 1. Unsubscribe ALL topics currently subscribed for the token
+        List<String> unregistrationTokens = new ArrayList<>();
+        unregistrationTokens.add(token);
+        List<FirebaseTopic> topicsToUnsubscribe = topicsService.getTopicsForToken(token);
+        for (FirebaseTopic topic : topicsToUnsubscribe) {
+            fcmService.unsubscribeFromTopic(unregistrationTokens, topic.getMainTopic() + "_" + topic.getId());
         }
         // Delete all subscribed topics for the token
-        topicsService.deleteTopicsOfToken(request.getToken());
+        topicsService.deleteAllTopicsOfToken(token);
     }
 }

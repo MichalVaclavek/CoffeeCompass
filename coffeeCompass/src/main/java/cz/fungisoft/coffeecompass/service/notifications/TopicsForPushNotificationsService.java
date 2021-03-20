@@ -52,7 +52,7 @@ public interface TopicsForPushNotificationsService {
     /**
      * Retrieval of the FirebaseTopics assigned to onr token
      * 
-     * @param user
+     * @param token
      * @return
      */
     List<FirebaseTopic> getTopicsForToken(String token);
@@ -60,7 +60,7 @@ public interface TopicsForPushNotificationsService {
     /**
      * Retrieval of the FirebaseTopics as one String (mainTopic_subTopic) assigned to one token
      * 
-     * @param user
+     * @param token
      * @return
      */
     List<String> getTopicsOneStringForToken(String token);
@@ -68,7 +68,7 @@ public interface TopicsForPushNotificationsService {
     /**
      * Retrieval of the FirebaseTopic's IDs assigned to one token
      * 
-     * @param user
+     * @param token
      * @return
      */
     List<Integer> getTopicIdsForToken(String token);
@@ -76,8 +76,10 @@ public interface TopicsForPushNotificationsService {
     
     void deleteTopicsOfUser(User user);
     
-    void deleteTopicsOfToken(String tokenString);
-    
+    void deleteAllTopicsOfToken(String tokenString);
+
+    void deleteSelectedTopicsOfToken(String tokenString, List<String> topics);
+
     void deleteTopicAndSubtopic(String topic, String subTopic);
     
 }
