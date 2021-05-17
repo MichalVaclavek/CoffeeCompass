@@ -27,8 +27,8 @@ import io.swagger.annotations.Api;
 @Api // Swagger
 @RestController
 @RequestMapping("/rest/image")
-public class ImageControllerPublicREST
-{
+public class ImageControllerPublicREST  {
+
     private final ImageStorageService imageStorageService;
 
     @Autowired

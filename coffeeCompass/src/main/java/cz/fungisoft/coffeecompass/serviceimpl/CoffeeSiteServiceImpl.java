@@ -588,12 +588,11 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     /**
      * TODO - NOT working with CoffeeSite status is null and CoffeeSort is not null. Error in Repository.
      * 
-     * @param sirka
-     * @param delka
+     * @param zemSirka
+     * @param zemDelka
      * @param rangeMeters
      * @param cfSortStr - muze byt prazde nebo null
      * @param siteStatus - muze byt prazde nebo null
-     * @param csRecordStatus - muze byt prazde nebo null
      * @param cityName - muze byt prazde nebo null
      */
     @Override
@@ -616,6 +615,13 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     public List<CoffeeSiteDTO> getLatestCoffeeSites(int numOfLatestSites) {
         List<CoffeeSite> items = coffeeSiteRepo.getLatestSites(numOfLatestSites, config.getDaysBackForNewestSites());
         log.info("Newest Coffee sites retrieved: " + items.size());
+        return modifyToTransfer(items);
+    }
+
+    @Override
+    public List<CoffeeSiteDTO> getCoffeeSitesActivatedInLastDays(int numOfDays) {
+        List<CoffeeSite> items = coffeeSiteRepo.getLatestSites(99, (numOfDays > 62 || numOfDays < 1) ? 21 : numOfDays);
+        log.info("Newest Coffee sites of the last {} days retrieved: {}", numOfDays, items.size());
         return modifyToTransfer(items);
     }
     

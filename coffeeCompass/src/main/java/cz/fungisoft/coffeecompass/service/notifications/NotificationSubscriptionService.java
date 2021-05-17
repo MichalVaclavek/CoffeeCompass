@@ -12,8 +12,7 @@ import cz.fungisoft.coffeecompass.controller.models.rest.PushNotificationSubscri
  *
  */
 public interface NotificationSubscriptionService {
-    
-    
+
     /**
      * Subscription for push notifications for list of Topics for one user/token
      * 

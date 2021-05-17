@@ -44,6 +44,9 @@ import cz.fungisoft.coffeecompass.service.SiteLocationTypeService;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
 import io.swagger.annotations.Api;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 /**
  * Třída/kontroler, který lze použit v případě využití REST rozhraní<br>
  * 
@@ -115,9 +118,9 @@ public class CoffeeSiteControllerPublicREST {
     /**
      * Priklady http dotazu, ktere vrati serazeny seznam CoffeeSitu jsou:
      * <br>
-     * http://coffeecompass.cz/rest/site/allSites/?orderBy=siteName&direction=asc<br>
-     * http://coffeecompass.cz/rest/site/allSites/?orderBy=cena&direction=asc<br>
-     * http://coffeecompass.cz/rest/site/allSites/
+     * https://coffeecompass.cz/rest/site/allSites/?orderBy=siteName&direction=asc<br>
+     * https://coffeecompass.cz/rest/site/allSites/?orderBy=cena&direction=asc<br>
+     * https://coffeecompass.cz/rest/site/allSites/
      * 
      * @param orderBy
      * @param direction
@@ -136,6 +139,29 @@ public class CoffeeSiteControllerPublicREST {
         
         log.info("All sites retrieved.");
         return new ResponseEntity<>(coffeeSites, HttpStatus.OK);
+    }
+
+    /**
+     * Priklady http dotazu, ktere vrati serazeny seznam CoffeeSitu vytvorenych a aktivnich
+     * za poslednich X dni zpet.
+     * <br>
+     * https://coffeecompass.cz/rest/site/activeSitesInLastDays/7<br>
+     *
+     * @param numOfDays
+     * @return
+     */
+    @GetMapping("/activeSitesInLastDays/{numOfDays}")
+    public ResponseEntity<List<CoffeeSiteDTO>> getSitesCreatedAndActiveInLastDays(@PathVariable("numOfDays") @Min(1) @Max(62) Integer numOfDays) {
+
+        List<CoffeeSiteDTO> latestSites = coffeeSiteService.getCoffeeSitesActivatedInLastDays(numOfDays);
+
+        if (latestSites == null || latestSites.isEmpty()) {
+            log.error("No Coffee site found within last {} days.", numOfDays);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        log.info("All sites created and ACTIVE in last {} days retrieved. Number of CoffeeSites: {}", numOfDays, latestSites.size());
+        return new ResponseEntity<>(latestSites, HttpStatus.OK);
     }
     
     /**
@@ -156,7 +182,6 @@ public class CoffeeSiteControllerPublicREST {
     public Page<CoffeeSiteDTO> allSitesPaginated(@RequestParam(defaultValue = "createdOn") String orderBy,
                                                                  @RequestParam(defaultValue = "desc") String direction,
                                                                  @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
-        
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(10);
         Page<CoffeeSiteDTO> coffeeSitePage;
@@ -259,15 +284,12 @@ public class CoffeeSiteControllerPublicREST {
                                                                                   @RequestParam(value="range") long rangeMeters,
                                                                                   @RequestParam(value="status", defaultValue="V provozu") String status,
                                                                                   @RequestParam(value="sort", defaultValue="espresso") String sort) {
-        
         // CoffeeSort is not intended as a filter criteria id sort=?
         if ("?".equals(sort)) {
             sort = "";
         }
-        
         List<CoffeeSiteDTO> result = coffeeSiteService.findAllWithinCircleWithCSStatusAndCoffeeSort(lat1, lon1, rangeMeters, sort, status);
-        
-        return (result == null || result.isEmpty()) ? new ResponseEntity<>(HttpStatus.NOT_FOUND) 
+        return (result == null || result.isEmpty()) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
                                                     : new ResponseEntity<>(result, HttpStatus.OK); 
     }
     
@@ -284,11 +306,9 @@ public class CoffeeSiteControllerPublicREST {
     @ResponseStatus(HttpStatus.OK)
     public Integer getNumberOfStarsForSiteFromUser(@RequestParam(value="siteID") Long siteID, @RequestParam(value="userID") Long userID) {
         Integer numOfStars = starsForCoffeeSiteService.getStarsForCoffeeSiteAndUser(siteID, userID);
-        
         if (numOfStars == null) {
             numOfStars = 0;
         }
-        
         return numOfStars;
     }
     

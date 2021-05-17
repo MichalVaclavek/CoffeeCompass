@@ -11,8 +11,7 @@ import javax.validation.ConstraintValidatorContext;
  * @author Michal Václavek
  *
  */
-public class GeoCoordinatesValidator implements ConstraintValidator<GeoCoordinates, String>
-{
+public class GeoCoordinatesValidator implements ConstraintValidator<GeoCoordinates, String> {
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         // TODO Auto-generated method stub

@@ -94,6 +94,18 @@ public interface CoffeeSiteService
      * @return
      */
     public List<CoffeeSiteDTO> getLatestCoffeeSites(int numOfSites);
+
+    /**
+     * Returns CoffeeSites, which were created (and are still ACTIVE) withing the specified amount of days
+     * before today. Maximum of days back is 62. If requested days are bigger then 62 or less then 1,
+     * 21 will be used instead.<br>
+     * Max. number of returned CoffeeSites may be limited to about 100.
+     *
+     * @param numOfDays number of days from now back for which we are looking for created, ACTIVE CoffeeSites
+     * @return CoffeeSites, which were created and are ACTIVE within the specified amount of days
+     */
+    public List<CoffeeSiteDTO> getCoffeeSitesActivatedInLastDays(int numOfDays);
+
     
     /*
      * Lze zadat mnoho kombinaci vyhledavacich kriterii ... vzdy se take budou vrace jen ty CoffeeSites, ktere jsou casove otevrene
