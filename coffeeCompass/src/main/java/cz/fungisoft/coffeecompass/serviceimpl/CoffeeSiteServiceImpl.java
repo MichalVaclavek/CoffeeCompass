@@ -337,7 +337,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     @Override
     public boolean save(List<CoffeeSiteDTO> coffeeSites) {
         try {
-            coffeeSites.stream().forEach(this::save);
+            coffeeSites.forEach(this::save);
             return true;
         } catch (Exception ex) {
             log.error("Error saving list of CoffeeSites.");
@@ -351,7 +351,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
     @Override
     public boolean saveOrUpdate(List<CoffeeSiteDTO> coffeeSites) {
         try {
-            coffeeSites.stream().forEach(cs -> {
+            coffeeSites.forEach(cs -> {
                 if (cs.getId() == 0) {
                     this.save(cs);
                 } else {
@@ -364,7 +364,29 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             return false;
         }
     }
-    
+
+
+    /**
+     * Saves list of new or updated CoffeeSites and returns them as saved/updated if successful.
+     * If operation fails, returns empty list.
+     *
+     * @param coffeeSites CoffeeSites to be saved/updated
+     * @return list of saved/updated CoffeeSites if successful, otherwise empty list
+     */
+    public List<CoffeeSiteDTO> saveOrUpdateWithResult(List<CoffeeSiteDTO> coffeeSites) {
+        List<CoffeeSiteDTO> retVal = new ArrayList<>();
+        try {
+            coffeeSites.forEach(cs ->
+                retVal.add((cs.getId() == 0) ? mapOneToTransfer(save(cs))
+                                             : mapOneToTransfer(updateSite(cs)))
+            );
+            return retVal;
+        } catch (Exception ex) {
+            log.error("Error saving list of CoffeeSites.");
+            return Collections.emptyList();
+        }
+    }
+
     
     /**
      * Ulozeni modifikovaneho CoffeeSiteDTO.

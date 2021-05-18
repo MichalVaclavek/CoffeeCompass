@@ -14,8 +14,7 @@ import cz.fungisoft.coffeecompass.dto.UserDTO;
  * @author Michal Vaclavek
  *
  */
-public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, Object>
-{
+public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, Object>  {
 
     @Override
     public void initialize(PasswordMatches constraintAnnotation) {       

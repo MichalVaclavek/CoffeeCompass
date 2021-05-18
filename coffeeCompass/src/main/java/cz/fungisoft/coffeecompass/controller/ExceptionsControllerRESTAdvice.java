@@ -1,5 +1,6 @@
 package cz.fungisoft.coffeecompass.controller;
 
+import com.nimbusds.oauth2.sdk.ErrorResponse;
 import cz.fungisoft.coffeecompass.controller.models.rest.CommonRestError;
 import cz.fungisoft.coffeecompass.exceptions.rest.BadAuthorizationRESTRequestException;
 import cz.fungisoft.coffeecompass.exceptions.rest.BadRESTRequestException;
@@ -15,12 +16,20 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.mail.MailAuthenticationException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Centralizovane zachycovani vyjimek a jejich zpracovani/odeslani pro REST rozhrani.
@@ -110,8 +119,28 @@ public class ExceptionsControllerRESTAdvice extends ResponseEntityExceptionHandl
  
         return new ResponseEntity<>(bodyOfErrorResponse, HttpStatus.UNAUTHORIZED);
     }
-    
- 
+
+    /**
+     * Method that check against {@code @Valid} Objects passed to controller endpoints
+     *
+     * @param ex
+     */
+//    @ExceptionHandler({MethodArgumentNotValidException.class})
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public ResponseEntity<CommonRestError> handleValidationException(MethodArgumentNotValidException ex) {
+//
+//        Map<String, Set<String>> errorsMap = ex.getBindingResult().getFieldErrors().stream().collect(
+//                Collectors.groupingBy(FieldError::getField,
+//                        Collectors.mapping(FieldError::getDefaultMessage, Collectors.toSet())
+//                ));
+//
+//        CommonRestError bodyOfErrorResponse = new CommonRestError("/errors/inputValidation", "Wrong input values",
+//                502, ex.getMessage(), "");
+//        bodyOfErrorResponse.setErrorParametersMap(errorsMap);
+//        return new ResponseEntity<>(bodyOfErrorResponse, HttpStatus.BAD_GATEWAY);
+//    }
+
+
     /** Obecny REST exception handler **/
     
     @ExceptionHandler({ RESTException.class })
@@ -123,4 +152,5 @@ public class ExceptionsControllerRESTAdvice extends ResponseEntityExceptionHandl
          
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
+
 }

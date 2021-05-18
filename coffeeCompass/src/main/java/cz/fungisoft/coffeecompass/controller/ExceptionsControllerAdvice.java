@@ -29,8 +29,8 @@ import cz.fungisoft.coffeecompass.exceptions.UserNotFoundException;
  */
 @ControllerAdvice
 @Order(2)
-public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
-{
+public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler {
+
     private static final Logger myLogger = LogManager.getLogger(ExceptionsControllerAdvice.class);
     
     private static final String ERROR_MODEL_KEY = "error";
@@ -76,10 +76,10 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
      * @param e
      * @return
      */
-    @ExceptionHandler({ConstraintViolationException.class})  
+    @ExceptionHandler({ConstraintViolationException.class})
     public ModelAndView handleConstraintViolation(ConstraintViolationException e) {
         myLogger.error("Chyba: Constraint Violation {}", e.getMessage());
-        
+
         ModelAndView model = new ModelAndView();
         model.addObject(ERROR_MESSAGE_MODEL_KEY, e.getMessage());
         model.setViewName(ERROR_VIEW_NAME);
@@ -145,9 +145,9 @@ public class ExceptionsControllerAdvice extends ResponseEntityExceptionHandler
      */
     @ExceptionHandler
     public ModelAndView handleOtherExceptions(Exception e) {
-        
+
         myLogger.error("Chyba: {}", e.getMessage());
-        
+
         ModelAndView model = new ModelAndView();
         model.addObject(ERROR_MODEL_KEY, "Sorry user, error!");
         model.addObject(ERROR_MESSAGE_MODEL_KEY, e.getMessage());

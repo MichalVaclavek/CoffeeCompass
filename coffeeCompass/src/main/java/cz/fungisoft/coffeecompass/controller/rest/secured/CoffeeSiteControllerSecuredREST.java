@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import cz.fungisoft.coffeecompass.validators.ListInputSize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,14 +50,17 @@ import io.swagger.annotations.Api;
  */
 @Api // Swagger
 @RestController
+@Validated
 @RequestMapping("/rest/secured/site")
-public class CoffeeSiteControllerSecuredREST
-{
+public class CoffeeSiteControllerSecuredREST  {
+
     private static final Logger log = LoggerFactory.getLogger(CoffeeSiteControllerSecuredREST.class);
     
     private CoffeeSiteService coffeeSiteService;
     
     private MessageSource messages;
+
+    private static final String INPUT_SIZE_ERROR_MESSAGE_KEY = "{error.input.coffeesites.list.size}";
     
     /**
      * Dependency Injection pomoci konstruktoru, neni potreba uvadet @Autowired u atributu, Spring toto umi automaticky.<br>
@@ -96,34 +101,61 @@ public class CoffeeSiteControllerSecuredREST
            
            return (csDTO == null) ? new ResponseEntity<>(HttpStatus.BAD_REQUEST)
                                   : new ResponseEntity<>(csDTO, HttpStatus.CREATED);
-       }
-       else {
+       } else {
            log.error("Coffee site creation failed");
            throw new BadRESTRequestException(messages.getMessage("coffeesite.create.rest.error.general", null, locale));
        }
     }
     
     /**
-     * Obsluha POST pozadavku pro vytvoreni vice CoffeeSites. Pouzito napr. pri odeslani skupiny CoffeeSites, ktery
-     * vytvoril mobilni uzivatel v OFFLINE mode.<br>
-     * Obrazky k temto CoffeeSitum lze ukladat postupnym volani {@link ImageControllerSecuredREST#handleFileUpload()}
+     * Obsluha POST pozadavku pro vytvoreni vice CoffeeSites v jednom dotazu. Pouzito napr. pri odeslani skupiny CoffeeSites, ktery
+     * vytvoril/modifikoval mobilni uzivatel v OFFLINE mode.<br>
+     * Obrazky k temto CoffeeSitum lze ukladat postupnym volani {@link ImageControllerSecuredREST#handleFileUpload}
      * 
      * @Valid zajisti, ze se pred zavolanim metody zvaliduje Coffee Site podle limitu, ktere jsou u atributu coffeeSite
      *
-     * @param coffeeSite sity k ulozeni
+     * @param coffeeSites sity k ulozeni
      * @return true if saved successfully
      */
     @PostMapping("/insertCoffeeSites") // Mapovani http POST na DB save/INSERT
-    public ResponseEntity<Boolean> insertCoffeeSites(@Valid @RequestBody List<CoffeeSiteDTO> coffeeSites, Locale locale) {
+    public ResponseEntity<Boolean> insertCoffeeSites(@RequestBody
+                                                     @Valid
+                                                     @ListInputSize(max = 20)
+                                                     List<@Valid CoffeeSiteDTO> coffeeSites, Locale locale) {
     
        if (coffeeSiteService.saveOrUpdate(coffeeSites)) {
            log.info("CoffeeSites inserted.");
            return new ResponseEntity<>(true, HttpStatus.CREATED);
-       }
-       else {
+       } else {
            log.error("Coffee sites insertion failed.");
            throw new BadRESTRequestException(messages.getMessage("coffeesite.create.rest.error.general", null, locale));
        }
+    }
+
+    /**
+     * Obsluha POST pozadavku pro vytvoreni vice CoffeeSites v jednom dotazu. Pouzito napr. pri odeslani skupiny CoffeeSites, ktery
+     * vytvoril/modifikoval mobilni uzivatel v OFFLINE mode.<br>
+     * V podstate stejne jako zakladni varianta {@link #insertCoffeeSites}, ale tato vraci zpet seznam vytvorenych/updatovanych
+     * CoffeeSites.
+     *
+     * @param coffeeSites sity k ulozeni
+     * @return list of saved CoffeeSites if saved successfully or BadRESTRequestException response
+     */
+    @PostMapping("/insertCoffeeSitesWithResult") // Mapovani http POST na DB save/INSERT
+    public ResponseEntity<List<CoffeeSiteDTO>> insertCoffeeSitesAndReturnResult(@RequestBody
+                                                                                @Valid
+                                                                                @ListInputSize(max = 20)
+                                                                                List<@Valid CoffeeSiteDTO> coffeeSites, Locale locale) {
+
+        List<CoffeeSiteDTO> retVal = coffeeSiteService.saveOrUpdateWithResult(coffeeSites);
+
+        if (!retVal.isEmpty()) {
+            log.info("CoffeeSites inserted.");
+            return new ResponseEntity<>(retVal, HttpStatus.CREATED);
+        } else {
+            log.error("Coffee sites insertion failed.");
+            throw new BadRESTRequestException(messages.getMessage("coffeesite.create.rest.error.general", null, locale));
+        }
     }
     
 
@@ -278,6 +310,5 @@ public class CoffeeSiteControllerSecuredREST
         return (numberOfSitesFromUser != null)
                 ? new ResponseEntity<>(numberOfSitesFromUser, HttpStatus.OK)
                 : new ResponseEntity<>(0, HttpStatus.NOT_FOUND);
-        
     }
 }

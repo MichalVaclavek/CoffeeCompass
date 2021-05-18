@@ -25,8 +25,7 @@ import cz.fungisoft.coffeecompass.controller.ExceptionsControllerRESTAdvice;
  */
 @RestController
 @RequestMapping({RestErrorController.REST_ERROR_PATH})
-public class RestErrorController extends AbstractErrorController
-{
+public class RestErrorController extends AbstractErrorController {
     
     static final String REST_ERROR_PATH = "/error";
     

@@ -220,6 +220,14 @@ public interface CoffeeSiteService
     @PreAuthorize("isAuthenticated()")
     @Transactional
     boolean saveOrUpdate(List<CoffeeSiteDTO> coffeeSites);
+
+    /**
+     * Ulozeni seznamu novych nebo updatovanych CoffeeSites a vraceni tohoto seznamu zpet (se spravnymi ID
+     * pro nove CoffeeSites). If not successfull, returns empty list.
+     */
+    @PreAuthorize("isAuthenticated()")
+    @Transactional
+    List<CoffeeSiteDTO> saveOrUpdateWithResult(List<CoffeeSiteDTO> coffeeSites);
     
     @PreAuthorize("isAuthenticated()")
     public CoffeeSite updateCSRecordStatusAndSave(CoffeeSite cs, CoffeeSiteRecordStatusEnum newStatus);

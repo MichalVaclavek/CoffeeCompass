@@ -7,7 +7,7 @@ import java.util.Set;
 import lombok.Data;
 
 /**
- * Clas to hold an Error response description in case of REST.<br>
+ * Class to hold an Error response description in case of REST.<br>
  * Based on RFC7807 and https://www.baeldung.com/rest-api-error-handling-best-practices
  * <p>
  * This schema is composed of five parts:<br>
@@ -54,10 +54,9 @@ public class CommonRestError {
     
     /**
      * Default constructor with default field values
-     * 
-     * @param message
      */
     public CommonRestError() {
+
         this.type = "/errors/general";
         this.title = "General error";
         this.status = 400;
