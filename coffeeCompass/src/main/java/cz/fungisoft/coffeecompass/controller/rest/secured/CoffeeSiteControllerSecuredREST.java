@@ -262,16 +262,18 @@ public class CoffeeSiteControllerSecuredREST  {
     
     /**
      * Method to handle request to send list od CoffeeSites created by logged in user paginated.
+     * Only NOT CANCELED sites are returned.
      * 
      * @return
      */
     @GetMapping("/mySitesPaginated/") // napr. https://coffeecompass.cz/rest/secured/site/mySitesPaginated/?size=5&page=1
-    public ResponseEntity<Page<CoffeeSiteDTO>> sendMySitesPaginated(@RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+    public ResponseEntity<Page<CoffeeSiteDTO>> sendMySitesPaginated(@RequestParam("page") Optional<Integer> page,
+                                                                    @RequestParam("size") Optional<Integer> size) {
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(15);
         Page<CoffeeSiteDTO> coffeeSitePage;
         
-        coffeeSitePage = coffeeSiteService.findAllFromLoggedInUserPaginated(PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.fromString("DESC"), "createdOn")));
+        coffeeSitePage = coffeeSiteService.findAllNotCancelledFromLoggedInUserPaginated(PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.fromString("DESC"), "createdOn")));
         
         if (coffeeSitePage == null || coffeeSitePage.isEmpty()) {
             log.error("No Coffee site from logged-in user found.");

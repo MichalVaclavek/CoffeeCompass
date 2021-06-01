@@ -26,40 +26,43 @@ import java.util.List;
  * tj. {@code CoffeeSiteRepository} na {@code CoffeeSiteRepositoryCustom}
  * 
  */
-public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, CoffeeSiteRepositoryCustom
-{
+public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, CoffeeSiteRepositoryCustom {
+
     @Query("select cs from CoffeeSite cs where siteName=?1")
-    public CoffeeSite searchByName(String name);
+    CoffeeSite searchByName(String name);
 
     @Query(nativeQuery = true, value = "SELECT count(*) FROM coffee_site") // SQL
-    public long countItems();
+    long countItems();
     
     @Query("select cs from CoffeeSite cs where originalUser.id=?1 order by cs.createdOn desc")
-    public List<CoffeeSite> findSitesFromUserID(long userId);
+    List<CoffeeSite> findSitesFromUserID(long userId);
+
+    @Query("select cs from CoffeeSite cs where originalUser.id=?1 and NOT cs.recordStatus.status='CANCELED' order by cs.createdOn desc")
+    List<CoffeeSite> findSitesNotCanceledFromUserID(long userId);
     
     @Query("select count(id) from CoffeeSite cs where originalUser.id=?1")
-    public Integer getNumberOfSitesFromUserID(long userId);
+    Integer getNumberOfSitesFromUserID(long userId);
     
     @Query("select count(id) from CoffeeSite cs where originalUser.id=?1 and NOT cs.recordStatus.status='CANCELED'")
-    public Integer getNumberOfSitesNotCanceledFromUserID(long userId);
+    Integer getNumberOfSitesNotCanceledFromUserID(long userId);
     
     @Query("select cs from CoffeeSite cs where cs.recordStatus.status=?1 order by cs.createdOn desc")
-    public List<CoffeeSite> findSitesWithRecordStatus(String csRecordStatus);  
+    List<CoffeeSite> findSitesWithRecordStatus(String csRecordStatus);
      
     @Query("select count(id) from CoffeeSite cs where cs.recordStatus.status='ACTIVE'")
-    public Long getNumOfAllActiveSites();
+    Long getNumOfAllActiveSites();
     
     @Query("select count(id) from CoffeeSite cs where date(cs.createdOn) = current_date")
-    public Long getNumOfSitesCreatedToday();
+    Long getNumOfSitesCreatedToday();
     
     @Query("select count(id) from CoffeeSite cs where date(cs.createdOn) = current_date AND cs.recordStatus.status='ACTIVE'")
-    public Long getNumOfSitesCreatedAndActiveToday();
+    Long getNumOfSitesCreatedAndActiveToday();
     
     @Query("select count(id) from CoffeeSite cs where date(cs.createdOn) > (current_date - 7)")
-    public Long getNumOfSitesCreatedLast7Days();
+    Long getNumOfSitesCreatedLast7Days();
     
     @Query("select count(id) from CoffeeSite cs where (date(cs.createdOn) > (current_date - 7)) AND cs.recordStatus.status='ACTIVE'")
-    public Long getNumOfSitesCreatedAndActiveInLast7Days();
+    Long getNumOfSitesCreatedAndActiveInLast7Days();
     
     /**
      * Retrieves all CoffeeSites with ACTIVE record staus in city which starts with cityName parameter value
@@ -68,7 +71,7 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
      * @return
      */
     @Query("select cs from CoffeeSite cs where lower(cs.mesto) like lower(CONCAT(?1,'%')) AND cs.recordStatus.status='ACTIVE'")
-    public List<CoffeeSite> getAllActiveSitesInCity(String cityName);  
+    List<CoffeeSite> getAllActiveSitesInCity(String cityName);
     
     /**
      * Retrieves all CoffeeSites with ACTIVE record staus in given city name.
@@ -77,7 +80,7 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
      * @return
      */
     @Query("select cs from CoffeeSite cs where cs.mesto=?1 AND cs.recordStatus.status='ACTIVE'")
-    public List<CoffeeSite> getAllSitesInCityExactly(String cityName);  
+    List<CoffeeSite> getAllSitesInCityExactly(String cityName);
     
     /**
      * 
@@ -86,7 +89,7 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
      * @return
      */
     @Query(nativeQuery = true, value = "SELECT * FROM coffeecompass.coffee_site AS cs WHERE cs.status_zaznamu_id=1 AND cs.created_on BETWEEN LOCALTIMESTAMP - ?2 * INTERVAL '1 day' AND LOCALTIMESTAMP ORDER BY cs.created_on DESC LIMIT ?1")
-    public List<CoffeeSite> getLatestSites(int maxNumOfLatestSites, int daysAgo);
+    List<CoffeeSite> getLatestSites(int maxNumOfLatestSites, int daysAgo);
     
     
     /**
@@ -101,7 +104,7 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
      *                                + " FROM coffeecompass.coffee_site WHERE distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3")
      */
     @Query(nativeQuery = true, name = "getSitesWithinRange") // varianta, kdy je Query nadefinovano v jine tride pomoci @NamedNativeQuery anotace, v tomto pripade v CoffeeSite tride
-    public List<CoffeeSite> findSitesWithinRange(double sirka, double delka, long rangeMeters);  
+    List<CoffeeSite> findSitesWithinRange(double sirka, double delka, long rangeMeters);
     
     /**
      * Vrati pocet CoffeeSites v danem okruhu "rangeMeters" od zadanych souradnic "sirka" a "delka".<br>
@@ -114,7 +117,7 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
      * @return pocet CoffeeSites v danem okruhu "rangeMeters" od zadanych souradnic.
      */
     @Query(nativeQuery = true, name = "numberOfSitesWithinRange") // varianta, kdy je Query, se jmenem "numberOfSitesWithinRange", nadefinovano v jine tride pomoci @NamedNativeQuery anotace, v tomto pripade v CoffeeSite tride
-    public Long getNumberOfSitesWithinRange(double sirka, double delka, long rangeMeters);  
+    Long getNumberOfSitesWithinRange(double sirka, double delka, long rangeMeters);
     
     /**
      * Vrati pocet CoffeeSites v danem okruhu "rangeMeters" od zadanych souradnic "sirka" a "delka".<br>
@@ -130,7 +133,7 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
      * @return pocet CoffeeSites v danem okruhu "rangeMeters" od zadanych souradnic.
      */
     @Query(nativeQuery = true, name = "numberOfSitesWithinRangeInGivenStatus") // varianta, kdy je Query, se jmenem "numberOfSitesWithinRange", nadefinovano v jine tride pomoci @NamedNativeQuery anotace, v tomto pripade v CoffeeSite tride
-    public Long getNumberOfSitesWithinRangeInGivenStatus(double sirka, double delka, long rangeMeters, int recordStatusId); 
+    Long getNumberOfSitesWithinRangeInGivenStatus(double sirka, double delka, long rangeMeters, int recordStatusId);
     
     /** 
      * Pomocna metoda pro otestovani, ze funguje volani Stored procedure v DB.
@@ -146,7 +149,7 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
      * @return vzdalenost v metrech mezi 2 zadanymi vstupnimi body {(lat1, lon1), (lat2, lon2)}
      */    
     @Procedure(name = "distance")
-    public long callStoredProcedureCalculateDistance(@Param("lat1") double sirkaFrom, @Param("lon1") double delkaFrom,
+    long callStoredProcedureCalculateDistance(@Param("lat1") double sirkaFrom, @Param("lon1") double delkaFrom,
                                                      @Param("lat2") double sirkaTo, @Param("lon2") double delkaTo);
 
     /**
@@ -156,5 +159,5 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
      */
     @Modifying // required by Hibernate, otherwise there is an exception ' ... Illegal state ...'
     @Query("delete FROM CoffeeSite cs WHERE originalUser.id=?1")
-    public void deleteAllFromUser(Long userId);
+    void deleteAllFromUser(Long userId);
 }

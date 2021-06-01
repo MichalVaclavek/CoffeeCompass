@@ -208,17 +208,7 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
                 }
             }
         }
-//        String selectQuery = "SELECT *, poloha_gps_sirka, poloha_gps_delka"
-//                            + " FROM coffeecompass.coffee_site AS cs, coffeecompass.coffee_site_to_druhy_kavy AS cs_dk"
-//                            + " JOIN coffeecompass.druhy_kavy AS dk ON dk.id=?5"
-//                            + " WHERE cs_dk.druhy_kavy_id=?5"
-//                            + " AND cs.id=cs_dk.coffee_site_id"
-//                            + " AND status_zarizeni_id=?4"
-//                            + " AND status_zaznamu_id=?6"
-//                            + " AND ( (distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3) OR (LOWER(cs.poloha_mesto) like LOWER(CONCAT('%',?7,'%')) ))";
-                      
-//        Query sites = em.createNativeQuery(selectQuery, CoffeeSite.class);
-        
+
         Query sites = em.createNativeQuery(selectQuery.toString(), CoffeeSite.class);
         
         if (sort != null) {

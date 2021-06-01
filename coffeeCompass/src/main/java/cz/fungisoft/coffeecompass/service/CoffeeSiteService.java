@@ -22,8 +22,7 @@ import cz.fungisoft.coffeecompass.pojo.LatLong;
 * 
 * @author Michal Václavek
 */
-public interface CoffeeSiteService
-{
+public interface CoffeeSiteService {
     /**
      * Gets all CoffeeSites ordered by selected CoffeeSite's property in given direction
      * 
@@ -31,22 +30,31 @@ public interface CoffeeSiteService
      * @param direction
      * @return
      */
-    public List<CoffeeSiteDTO> findAll(String orderBy, String direction);
-    public Page<CoffeeSiteDTO> findAllPaginated(Pageable pageable);
+    List<CoffeeSiteDTO> findAll(String orderBy, String direction);
+    Page<CoffeeSiteDTO> findAllPaginated(Pageable pageable);
     
-    public List<CoffeeSiteDTO> findAllFromUser(User user);
-    public List<CoffeeSiteDTO> findAllFromUserName(String userName);
-    public List<CoffeeSiteDTO> findAllFromLoggedInUser();
-    public Page<CoffeeSiteDTO> findAllFromLoggedInUserPaginated(Pageable pageable);
+    List<CoffeeSiteDTO> findAllFromUser(User user);
+    List<CoffeeSiteDTO> findAllFromUserName(String userName);
+    List<CoffeeSiteDTO> findAllFromLoggedInUser();
+    Page<CoffeeSiteDTO> findAllFromLoggedInUserPaginated(Pageable pageable);
+
+    /**
+     * Same as prevoius method, but filters out CoffeeSites in CANCELLED status
+     * Used for REST interface for requests from mobile phone.
+     *
+     * @param pageable
+     * @return
+     */
+    Page<CoffeeSiteDTO> findAllNotCancelledFromLoggedInUserPaginated(Pageable pageable);
     
-    public Integer getNumberOfSitesFromUserId(long userId);
-    public Integer getNumberOfSitesFromLoggedInUser();
-    public Integer getNumberOfSitesNotCanceledFromUserId(long userId);
-    public Integer getNumberOfSitesNotCanceledFromLoggedInUser();
+    Integer getNumberOfSitesFromUserId(long userId);
+    Integer getNumberOfSitesFromLoggedInUser();
+    Integer getNumberOfSitesNotCanceledFromUserId(long userId);
+    Integer getNumberOfSitesNotCanceledFromLoggedInUser();
     
-    public CoffeeSiteDTO findOneToTransfer(Long siteId);
-    public CoffeeSite findOneById(Long id);
-    public CoffeeSiteDTO findByName(String siteName);
+    CoffeeSiteDTO findOneToTransfer(Long siteId);
+    CoffeeSite findOneById(Long id);
+    CoffeeSiteDTO findByName(String siteName);
     
     /**
      * Finds all CoffeeSites, whose "mesto" field is equal to 'cityName' string
@@ -54,7 +62,7 @@ public interface CoffeeSiteService
      * @param cityName
      * @return
      */
-    public List<CoffeeSiteDTO> findAllByCityNameExactly(String cityName);
+    List<CoffeeSiteDTO> findAllByCityNameExactly(String cityName);
     
     /**
      * Finds all CoffeeSites, whose "mesto" filed starts by 'cityName' string
@@ -62,7 +70,7 @@ public interface CoffeeSiteService
      * @param cityName
      * @return
      */
-    public List<CoffeeSiteDTO> findAllByCityNameAtStart(String cityName);
+    List<CoffeeSiteDTO> findAllByCityNameAtStart(String cityName);
     
     /**
      * Counts average longitude and latitude of all List<CoffeeSiteDTO> locations
@@ -70,7 +78,7 @@ public interface CoffeeSiteService
      * @param coffeeSites
      * @return
      */
-    public LatLong getAverageLocation(List<CoffeeSiteDTO> coffeeSites);
+    LatLong getAverageLocation(List<CoffeeSiteDTO> coffeeSites);
     
     /**
      * Gets longitude and latitude of the "search From" point for CoffeeSiteDTO location.
@@ -85,7 +93,7 @@ public interface CoffeeSiteService
      * @param distance
      * @return
      */
-    public LatLong getSearchFromLocation(CoffeeSiteDTO coffeeSiteDTO, int distance);
+    LatLong getSearchFromLocation(CoffeeSiteDTO coffeeSiteDTO, int distance);
     
     /**
      * Returns "numOfSites" number of latest created and ACTIVE CoffeeSites, not older then 60 days (created from now to 60 days before)
@@ -93,7 +101,7 @@ public interface CoffeeSiteService
      * 
      * @return
      */
-    public List<CoffeeSiteDTO> getLatestCoffeeSites(int numOfSites);
+    List<CoffeeSiteDTO> getLatestCoffeeSites(int numOfSites);
 
     /**
      * Returns CoffeeSites, which were created (and are still ACTIVE) withing the specified amount of days
@@ -104,7 +112,7 @@ public interface CoffeeSiteService
      * @param numOfDays number of days from now back for which we are looking for created, ACTIVE CoffeeSites
      * @return CoffeeSites, which were created and are ACTIVE within the specified amount of days
      */
-    public List<CoffeeSiteDTO> getCoffeeSitesActivatedInLastDays(int numOfDays);
+    List<CoffeeSiteDTO> getCoffeeSitesActivatedInLastDays(int numOfDays);
 
     
     /*
@@ -122,16 +130,16 @@ public interface CoffeeSiteService
      * @param siteStatus
      * @return
      */
-    public List<CoffeeSiteDTO> findAllWithinCircleWithCSStatusAndCoffeeSort(double zemSirka, double zemDelka, long rangeMeters,
+    List<CoffeeSiteDTO> findAllWithinCircleWithCSStatusAndCoffeeSort(double zemSirka, double zemDelka, long rangeMeters,
                                                                             String cfSort, String siteStatus);
     
-    public List<CoffeeSiteDTO> findAllWithinCircleAndCityWithCSStatusAndCoffeeSort(double zemSirka, double zemDelka, long rangeMeters,
+    List<CoffeeSiteDTO> findAllWithinCircleAndCityWithCSStatusAndCoffeeSort(double zemSirka, double zemDelka, long rangeMeters,
                                                                                    String cfSort, String siteStatus, String cityName);
     
-    public List<CoffeeSiteDTO> findAllWithinRangeWithRecordStatus(double zemSirka, double zemDelka, long rangeMeters,  CoffeeSiteRecordStatus csRecordStatus);
+    List<CoffeeSiteDTO> findAllWithinRangeWithRecordStatus(double zemSirka, double zemDelka, long rangeMeters,  CoffeeSiteRecordStatus csRecordStatus);
     
-    public List<CoffeeSiteDTO> findAllWithRecordStatus(CoffeeSiteRecordStatusEnum csRecordStatus);
-    public Page<CoffeeSiteDTO> findAllWithRecordStatusPaginated(Pageable pageable, CoffeeSiteRecordStatusEnum csRecordStatus);
+    List<CoffeeSiteDTO> findAllWithRecordStatus(CoffeeSiteRecordStatusEnum csRecordStatus);
+    Page<CoffeeSiteDTO> findAllWithRecordStatusPaginated(Pageable pageable, CoffeeSiteRecordStatusEnum csRecordStatus);
     
     /**
      * A method to create a Page of CoffeeSites from given list of CoffeeSites.
@@ -141,7 +149,7 @@ public interface CoffeeSiteService
      * @param coffeeSitesList
      * @return
      */
-    public Page<CoffeeSiteDTO> getPageOfCoffeeSitesFromList(Pageable pageable, List<CoffeeSiteDTO> coffeeSitesList);
+    Page<CoffeeSiteDTO> getPageOfCoffeeSitesFromList(Pageable pageable, List<CoffeeSiteDTO> coffeeSitesList);
     
     /**
      * Checks if the CoffeeSite name is already used or not
@@ -150,7 +158,7 @@ public interface CoffeeSiteService
      * @param siteName
      * @return
      */
-    public boolean isSiteNameUnique(Long siteId, String siteName);
+    boolean isSiteNameUnique(Long siteId, String siteName);
     
     /**
      * Method, which is called before every request for CoffeeSiteDTO object.
@@ -163,7 +171,7 @@ public interface CoffeeSiteService
      * @param site
      * @return
      */
-    public CoffeeSiteDTO evaluateOperationalAttributes(CoffeeSiteDTO site);
+    CoffeeSiteDTO evaluateOperationalAttributes(CoffeeSiteDTO site);
     
     /**
      * 
@@ -173,7 +181,7 @@ public interface CoffeeSiteService
 
      * @return
      */
-    public List<CoffeeSiteDTO> findAllWithinCircle(double zemSirka, double zemDelka, long rangeMeters);
+    List<CoffeeSiteDTO> findAllWithinCircle(double zemSirka, double zemDelka, long rangeMeters);
     
     
     /**
@@ -187,7 +195,7 @@ public interface CoffeeSiteService
 
      * @return - true, if the location is already occupied by another CoffeeSite, otherwise false.
      */
-    public boolean isLocationAlreadyOccupied(double zemSirka, double zemDelka, long rangeMeters, Long siteId);
+    boolean isLocationAlreadyOccupied(double zemSirka, double zemDelka, long rangeMeters, Long siteId);
     
     /**
      * Checks if there is a CoffeeSites already created and in ACTIVE state within meters circle from 'zemSirka' and 'zemDelka'.<br>
@@ -200,19 +208,19 @@ public interface CoffeeSiteService
 
      * @return - true, if the location is already occupied by another CoffeeSite, otherwise false.
      */
-    public boolean isLocationAlreadyOccupiedByActiveSite(double zemSirka, double zemDelka, long rangeMeters, Long siteId);
+    boolean isLocationAlreadyOccupiedByActiveSite(double zemSirka, double zemDelka, long rangeMeters, Long siteId);
      
     
     @PreAuthorize("isAuthenticated()")
-    public CoffeeSite save(CoffeeSite cs);
+    CoffeeSite save(CoffeeSite cs);
     
     @PreAuthorize("isAuthenticated()")
     @Transactional
-    public CoffeeSite save(CoffeeSiteDTO cs);
+    CoffeeSite save(CoffeeSiteDTO cs);
     
     @PreAuthorize("isAuthenticated()")
     @Transactional
-    public boolean save(@Valid List<CoffeeSiteDTO> coffeeSites);
+    boolean save(@Valid List<CoffeeSiteDTO> coffeeSites);
     
     /**
      * Ulozeni seznamu novych nebo updatovanych CoffeeSites
@@ -230,25 +238,25 @@ public interface CoffeeSiteService
     List<CoffeeSiteDTO> saveOrUpdateWithResult(List<CoffeeSiteDTO> coffeeSites);
     
     @PreAuthorize("isAuthenticated()")
-    public CoffeeSite updateCSRecordStatusAndSave(CoffeeSite cs, CoffeeSiteRecordStatusEnum newStatus);
+    CoffeeSite updateCSRecordStatusAndSave(CoffeeSite cs, CoffeeSiteRecordStatusEnum newStatus);
     
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void delete(Long id);
+    void delete(Long id);
     
     // Pomocna metoda pro otestovani, ze funguje volani Stored procedure v DB
-    public double getDistance(double zemSirka1, double zemDelka1, double zemSirka2, double zemDelka2);
+    double getDistance(double zemSirka1, double zemDelka1, double zemSirka2, double zemDelka2);
     
     /**
      * To obtain complete URL of the image for the requested CoffeeSiteDTO
      * 
      * @return URL of the CoffeeSite's image if available, otherwise empty String
      */
-    public String getMainImageURL(CoffeeSiteDTO cs);
+    String getMainImageURL(CoffeeSiteDTO cs);
     
     @PreAuthorize("isAuthenticated()")
-    public void deleteCoffeeSitesFromUser(Long userId);
+    void deleteCoffeeSitesFromUser(Long userId);
     
     @Transactional
-    public CoffeeSite updateSite(CoffeeSiteDTO cs);
+    CoffeeSite updateSite(CoffeeSiteDTO cs);
     
 }

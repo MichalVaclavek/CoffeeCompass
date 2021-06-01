@@ -257,6 +257,18 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
         }
     }
 
+    @Override
+    public Page<CoffeeSiteDTO> findAllNotCancelledFromLoggedInUserPaginated(Pageable pageable) {
+        loggedInUser = userService.getCurrentLoggedInUser();
+        if (loggedInUser.isPresent()) {
+            Page<CoffeeSite> coffeeSitesPage = coffeeSitePaginatedRepo.findByOriginalUserAndRecordStatusStatusNot(loggedInUser.get(), "CANCELED", pageable);
+            return coffeeSitesPage.map(this::mapOneToTransfer);
+        } else {
+            // TODO throw exception
+            return null;
+        }
+    }
+
 
     @Override
     public CoffeeSiteDTO findOneToTransfer(Long id) {

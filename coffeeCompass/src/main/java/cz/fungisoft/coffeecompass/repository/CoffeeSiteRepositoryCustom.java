@@ -49,8 +49,7 @@ public interface CoffeeSiteRepositoryCustom
      * @param sirka
      * @param delka
      * @param rangeMeters
-     * @param sort
-     * 
+     *
      * @return
      */
     public List<CoffeeSite> findSitesWithStatus(double sirka, double delka, long rangeMeters, CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus);
@@ -76,6 +75,7 @@ public interface CoffeeSiteRepositoryCustom
      * @param siteStatus
      * @param csRecordStatus
      * @param cityName
+     *
      * @return
      */
     public List<CoffeeSite> findSitesWithSortAndSiteStatusAndRangeAndCity(double sirka, double delka, long rangeMeters,
