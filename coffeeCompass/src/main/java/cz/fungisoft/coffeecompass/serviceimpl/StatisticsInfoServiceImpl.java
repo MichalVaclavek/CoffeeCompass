@@ -24,8 +24,8 @@ import lombok.extern.log4j.Log4j2;
 @Service("statisticsInfoService")
 @Transactional
 @Log4j2
-public class StatisticsInfoServiceImpl implements StatisticsInfoService
-{
+public class StatisticsInfoServiceImpl implements StatisticsInfoService {
+
     private CoffeeSiteRepository csRepo;
     
     private UsersRepository usersRepo;

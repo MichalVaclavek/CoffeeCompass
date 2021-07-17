@@ -33,8 +33,8 @@ import ma.glasnost.orika.MapperFacade;
 @Service("avgStarsService")
 @Transactional
 @Log4j2
-public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSiteAndUserService
-{
+public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSiteAndUserService {
+
     private StarsForCoffeeSiteAndUserRepository avgStarsRepo;
     
     @Autowired
@@ -52,7 +52,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
    /**
     * Constructor, basic.
     * 
-    * @param starsQaulityRepo
+    * @param avgStarsRepo
     * @param avgStarsRepo
     */
     @Autowired
@@ -115,7 +115,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
         
         Optional<User> logedInUser = userService.getCurrentLoggedInUser();
         
-        if (logedInUser.isPresent() && logedInUser.get().getId() == userId) {
+        if (logedInUser.isPresent() && logedInUser.get().getId().equals(userId)) {
             // Ziskat prislusny objekt StarsForCoffeeSiteAndUser z DB
             StarsForCoffeeSiteAndUser sfcsu = avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSiteID, userId);
             
@@ -155,11 +155,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
                     // Updatovane hodnoceni ulozit do Repositoy
                     sfcsu = avgStarsRepo.save(sfcsu);
                     log.info("Stars for Coffee site id {} and User id {} updated. Stars: {}", comment.getCoffeeSiteID(), comment.getUserId(), stars);
-                    if (sfcsu != null) {
-                        log.info("Stars updated for CoffeeSite id {}, from User id {}.", comment.getCoffeeSiteID(), comment.getUserId());
-                    } else {
-                        log.error("Failed Stars update for CoffeeSite id {}, from User id {}", comment.getCoffeeSiteID(), comment.getUserId());
-                    }
+                    log.info("Stars updated for CoffeeSite id {}, from User id {}.", comment.getCoffeeSiteID(), comment.getUserId());
                     return sfcsu;
                 }
             }

@@ -18,8 +18,8 @@ import cz.fungisoft.coffeecompass.service.CompanyService;
  */
 @Service("companyService")
 @Transactional
-public class CompanyServiceImpl implements CompanyService
-{
+public class CompanyServiceImpl implements CompanyService {
+
     private CompanyRepository companyRepo;
     
     @Autowired

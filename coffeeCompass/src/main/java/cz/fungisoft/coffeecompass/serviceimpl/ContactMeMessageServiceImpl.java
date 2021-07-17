@@ -20,8 +20,8 @@ import ma.glasnost.orika.MapperFacade;
 @Service("contactMeMessageService")
 @Transactional
 @Log4j2
-public class ContactMeMessageServiceImpl implements IContactMeMessageService
-{
+public class ContactMeMessageServiceImpl implements IContactMeMessageService {
+
     private ContactMeMessageRepository contactMeMessageRepo;
     
     private MapperFacade mapperFacade;

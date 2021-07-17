@@ -13,8 +13,8 @@ import cz.fungisoft.coffeecompass.service.OtherOfferService;
 
 @Service("otherOfferService")
 @Transactional
-public class OtherOfferServiceImpl implements OtherOfferService
-{
+public class OtherOfferServiceImpl implements OtherOfferService {
+
     private OfferRepository offerRepo;
     
     @Autowired

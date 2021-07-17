@@ -40,8 +40,8 @@ import io.swagger.annotations.Api;
 @Api // Swagger
 @RestController 
 @RequestMapping("/rest/public/starsAndComments")
-public class CSStarsCommentsControllerPublicREST
-{
+public class CSStarsCommentsControllerPublicREST {
+
     private ICommentService commentsService;
     
     private StarsQualityService starsQualityService;
@@ -62,7 +62,7 @@ public class CSStarsCommentsControllerPublicREST
     /**
      * Zpracuje GET pozadavek na Comment urciteho ID
      * 
-     * @param comment Comment to be returned
+     * @param commentId Comment to be returned
      * @return
      */
     @GetMapping("/getComment/{commentId}") 
@@ -83,7 +83,6 @@ public class CSStarsCommentsControllerPublicREST
     /**
      * Zpracuje GET pozadavek vsechny comments (muze byt pouzito pro offline mode na clientu)
      * 
-     * @param comment Comment to be returned
      * @return
      */
     @GetMapping("/comments/all")
@@ -97,7 +96,6 @@ public class CSStarsCommentsControllerPublicREST
     /**
      * Zpracuje GET pozadavek vsechny comments (muze byt pouzito pro offline mode na clientu)
      * 
-     * @param comment Comment to be returned
      * @return
      */
     @GetMapping("/comments/allPaginated") // https://localhost:8443/rest/public/starsAndComments/comments/allPaginated/?size=5&page=1

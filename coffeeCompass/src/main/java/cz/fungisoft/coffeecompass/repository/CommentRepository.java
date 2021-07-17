@@ -13,28 +13,36 @@ import cz.fungisoft.coffeecompass.entity.Comment;
  * 
  * @author Michal Vaclavek
  */
-public interface CommentRepository extends JpaRepository<Comment, Integer>
-{
+public interface CommentRepository extends JpaRepository<Comment, Integer> {
+
     @Query("select cl from Comment cl where coffeeSite.id=?1 order by cl.created desc")
-    public List<Comment> getAllCommentsForSite(Long coffeeSiteID);
+    List<Comment> getAllCommentsForSite(Long coffeeSiteID);
     
     @Query("select count(*) from Comment cl where coffeeSite.id=?1")
-    public Integer getNumberOfCommentsForSite(Long coffeeSiteID);
+    Integer getNumberOfCommentsForSite(Long coffeeSiteID);
     
     @Query("select cl from Comment cl where user.id=?1 order by cl.created desc")
-    public List<Comment> getAllCommentsFromUser(Long userID);
+    List<Comment> getAllCommentsFromUser(Long userID);
+
+    /**
+     * Number of all Comments, used to estimate the size of Comments when dowanloading for Offline mode.
+     * @return number of all Comments in DB
+     */
+    @Query("select count(*) from Comment")
+    Long getNumberOfAllComments();
+
     
     /**
      * Gets CoffeeSite id this Comment belongs to
-     * @param commentID
+     * @param commentId
      */
     @Query("select coffeeSite.id FROM Comment cl where id=?1")
-    public Long getSiteIdForComment(Integer commentId);
+    Long getSiteIdForComment(Integer commentId);
     
     @Modifying // required by Hibernate, otherwise there is an exception ' ... Illegal state ...'
     @Query("delete FROM Comment cl where user.id=?1")
-    public void deleteAllFromUser(Long userID);
+    void deleteAllFromUser(Long userID);
 
     @Query("delete FROM Comment cl where coffeeSite.id=?1")
-    public void deleteAllForSite(Long siteID);
+    void deleteAllForSite(Long siteID);
 }

@@ -14,10 +14,9 @@ import javax.validation.ConstraintValidatorContext;
  * where the e-mail is not mandatory for registered user).
  * 
  * @author Michal Vaclavek
- *
  */
-public class EmailValidator implements ConstraintValidator<ValidEmail, String>
-{
+public class EmailValidator implements ConstraintValidator<ValidEmail, String> {
+
    private Pattern pattern;
    private Matcher matcher;
    

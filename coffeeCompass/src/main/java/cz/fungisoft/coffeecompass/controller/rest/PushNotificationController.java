@@ -1,6 +1,5 @@
 package cz.fungisoft.coffeecompass.controller.rest;
 
-import cz.fungisoft.coffeecompass.controller.models.rest.PushNotificationRequest;
 import cz.fungisoft.coffeecompass.controller.models.rest.PushNotificationResponse;
 import cz.fungisoft.coffeecompass.controller.models.rest.PushNotificationSubscriptionRequest;
 import cz.fungisoft.coffeecompass.exceptions.rest.InvalidParameterValueException;
@@ -11,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +24,6 @@ import java.util.concurrent.ExecutionException;
  * This is non-secured version of the contrller, so can be used without login-in user.
  *  
  * @author Michal Vaclavek
- *
  */
 @Api // Swagger
 @RestController

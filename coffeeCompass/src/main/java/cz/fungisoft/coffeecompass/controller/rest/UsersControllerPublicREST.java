@@ -29,8 +29,7 @@ import io.swagger.annotations.Api;
 @Api // Swagger
 @RestController
 @RequestMapping("/rest/public/user")
-public class UsersControllerPublicREST
-{
+public class UsersControllerPublicREST {
     @NonNull
     private CustomRESTUserAuthenticationService authentication;
       

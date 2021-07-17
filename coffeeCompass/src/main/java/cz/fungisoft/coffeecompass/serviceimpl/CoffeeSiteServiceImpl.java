@@ -60,8 +60,10 @@ import ma.glasnost.orika.MapperFacade;
 @Service("coffeeSiteService")
 @Transactional
 @Log4j2
-public class CoffeeSiteServiceImpl implements CoffeeSiteService
-{
+public class CoffeeSiteServiceImpl implements CoffeeSiteService {
+
+    private static final String ERROR_SAVING_SITES = "Error saving list of CoffeeSites.";
+
     private CoffeeSiteRepository coffeeSiteRepo;
     
     @Autowired
@@ -352,7 +354,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             coffeeSites.forEach(this::save);
             return true;
         } catch (Exception ex) {
-            log.error("Error saving list of CoffeeSites.");
+            log.error(ERROR_SAVING_SITES);
             return false;
         }
     }
@@ -372,7 +374,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             });
             return true;
         } catch (Exception ex) {
-            log.error("Error saving list of CoffeeSites.");
+            log.error(ERROR_SAVING_SITES);
             return false;
         }
     }
@@ -394,7 +396,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             );
             return retVal;
         } catch (Exception ex) {
-            log.error("Error saving list of CoffeeSites.");
+            log.error(ERROR_SAVING_SITES);
             return Collections.emptyList();
         }
     }
@@ -414,12 +416,11 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService
             
             entityFromDB.setUpdatedOn(new Timestamp(new Date().getTime()));
             
-            if (loggedInUser.isPresent()) {
-                User user = loggedInUser.get();
-                user.setUpdatedSites(user.getUpdatedSites() + 1);
-                userService.saveUser(user);
-                entityFromDB.setLastEditUser(user);
-            }
+            loggedInUser.ifPresent(loggedInUser -> {
+                loggedInUser.setUpdatedSites(loggedInUser.getUpdatedSites() + 1);
+                userService.saveUser(loggedInUser);
+                entityFromDB.setLastEditUser(loggedInUser);
+            });
             
             entityFromDB.setCena(coffeeSite.getCena());
             

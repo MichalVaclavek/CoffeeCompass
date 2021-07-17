@@ -48,10 +48,22 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
     
     @Query("select cs from CoffeeSite cs where cs.recordStatus.status=?1 order by cs.createdOn desc")
     List<CoffeeSite> findSitesWithRecordStatus(String csRecordStatus);
-     
+
+    /**
+     * Returns number of CoffeeSites which will be returned in case of 'Offline mode' download request
+     * or when requesting statistics data.
+     * @return
+     */
     @Query("select count(id) from CoffeeSite cs where cs.recordStatus.status='ACTIVE'")
     Long getNumOfAllActiveSites();
-    
+
+    /**
+     * Returns number of CoffeeSites which will be returned in case of 'Offline mode' download request
+     * @return
+     */
+//    @Query("select count(id) from CoffeeSite cs where NOT cs.recordStatus.status='CANCELED'")
+//    Long getNumOfSitesToDownload();
+
     @Query("select count(id) from CoffeeSite cs where date(cs.createdOn) = current_date")
     Long getNumOfSitesCreatedToday();
     

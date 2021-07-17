@@ -13,8 +13,7 @@ import cz.fungisoft.coffeecompass.service.CSTypeService;
 
 @Service("csTypeService")
 @Transactional
-public class CSTypeServiceImpl implements CSTypeService
-{
+public class CSTypeServiceImpl implements CSTypeService {
     private CoffeeSiteTypeRepository csTypeRepo;
     
     @Autowired

@@ -106,12 +106,9 @@ import java.util.Set;
 /**
  * Result mapping for "numberOfSitesWithinRange" named query.
  */
-@SqlResultSetMapping(name="LongResult",
-    columns={@ColumnResult(name="cnt", type = Long.class)}
-)
+@SqlResultSetMapping(name="LongResult", columns={@ColumnResult(name="cnt", type = Long.class)})
+public class CoffeeSite {
 
-public class CoffeeSite
-{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

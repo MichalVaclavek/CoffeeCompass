@@ -13,8 +13,8 @@ import cz.fungisoft.coffeecompass.service.NextToMachineTypeService;
 
 @Service("nextToMachineTypeService")
 @Transactional
-public class NextToMachineTypeServiceImpl implements NextToMachineTypeService
-{
+public class NextToMachineTypeServiceImpl implements NextToMachineTypeService {
+
     private NextToMachineTypeRepository ntmTypeRepo;
     
     @Autowired

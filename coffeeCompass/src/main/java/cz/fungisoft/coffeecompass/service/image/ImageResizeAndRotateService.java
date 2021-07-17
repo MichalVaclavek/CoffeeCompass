@@ -12,15 +12,14 @@ import cz.fungisoft.coffeecompass.entity.Image;
  * @author Michal Václavek
  *
  */
-public interface ImageResizeAndRotateService
-{
+public interface ImageResizeAndRotateService {
     /**
      * Sets the default image size. All images are to be resized to this Width and Height.
      * 
      * @param defWidth image width in pixels
      * @param defHeight image width in pixels
      */
-    public void setDefaultSize(int defWidth, int defHeight);
+    void setDefaultSize(int defWidth, int defHeight);
     
     /**
      * Change the size of the Image to default size and return it.
@@ -29,7 +28,7 @@ public interface ImageResizeAndRotateService
      * @return inserted image, resized to default size.
      * @throws IOException 
      */
-    public Image resize(Image image) throws IOException;
+    Image resize(Image image) throws IOException;
     
     /**
      * Change the size of the Image by the ratio.
@@ -39,7 +38,7 @@ public interface ImageResizeAndRotateService
      * @return inserted image, resized by the ratio.
      * @throws IOException 
      */
-    public Image resize(Image image, double sizeRatio) throws IOException;
+    Image resize(Image image, double sizeRatio) throws IOException;
     
     /**
      * Change the size of the Image by the ratio and change the jpeg quality compression
@@ -50,7 +49,7 @@ public interface ImageResizeAndRotateService
      * @return inserted image, resized by the ratio.
      * @throws IOException 
      */
-    public Image resize(Image image, double sizeRatio, float compressJpegQuality) throws IOException;
+    Image resize(Image image, double sizeRatio, float compressJpegQuality) throws IOException;
     
     /**
      * Rotates image 90 degrees left, i.e. counterclockwise
@@ -58,7 +57,7 @@ public interface ImageResizeAndRotateService
      * @param image
      * @return
      */
-    public Image rotate90DegreeLeft(Image image);
+    Image rotate90DegreeLeft(Image image);
     
     /**
      * Rotates image 90 degrees left, i.e. clockwise
@@ -66,5 +65,5 @@ public interface ImageResizeAndRotateService
      * @param image
      * @return
      */
-    public Image rotate90DegreeRight(Image image);
+    Image rotate90DegreeRight(Image image);
 }

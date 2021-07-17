@@ -11,8 +11,7 @@ import cz.fungisoft.coffeecompass.repository.CoffeeSortRepository;
 import cz.fungisoft.coffeecompass.service.CoffeeSortService;
 
 @Service("coffeeSortService")
-public class CoffeeSortServiceImpl implements CoffeeSortService
-{
+public class CoffeeSortServiceImpl implements CoffeeSortService {
 
     private CoffeeSortRepository coffeeSortRepo;
     

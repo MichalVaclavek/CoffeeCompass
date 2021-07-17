@@ -24,7 +24,7 @@ import lombok.extern.log4j.Log4j2;
 /**
  * Service to change the size of the Image to "standard" width and lenghth.<br>
  * It also performs jpeg resampling using entered quality settings.<br>
- * This leads to compress from about 5 MB original image to about 300kB image size.<br>
+ * This leads to compress from about 6 MB original image to about 500 kB image size in average.<br>
  * <br>
  * Used before saving the Image into DB.
  * 
@@ -33,13 +33,13 @@ import lombok.extern.log4j.Log4j2;
  */
 @Service("imageResizeAndRotate")
 @Log4j2
-public class ImageResizeAndRotateServiceImpl implements ImageResizeAndRotateService
-{
+public class ImageResizeAndRotateServiceImpl implements ImageResizeAndRotateService {
+
     /**
      * Default ratio 4/3
      */
-    private int defWidth = 1280; // 640
-    private int defHeight = 960; // 480
+    private int defWidth = 1024; // 640 or 800 or 1024
+    private int defHeight = 768; // 480 or 600 or 768
     
     private float defQuality = 0.85f;
     
@@ -166,13 +166,13 @@ public class ImageResizeAndRotateServiceImpl implements ImageResizeAndRotateServ
             ImageWriter imgWriter = ImageIO.getImageWritersByFormatName("jpg").next();
             ImageOutputStream ioStream = ImageIO.createImageOutputStream(baos);
             imgWriter.setOutput(ioStream);
-    
+
             imgWriter.write(rotated);
     
             ioStream.flush();
             ioStream.close();
             imgWriter.dispose();
-            
+
         } catch (IOException e) {
             log.error("Failed to write image file after its rotation. File name '{}'", image.getFileName());
             throw new RuntimeException(e);

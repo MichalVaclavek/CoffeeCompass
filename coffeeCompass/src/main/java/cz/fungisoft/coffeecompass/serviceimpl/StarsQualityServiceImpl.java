@@ -13,8 +13,8 @@ import cz.fungisoft.coffeecompass.service.StarsQualityService;
 
 @Service("starsQualityDescrService")
 @Transactional
-public class StarsQualityServiceImpl implements StarsQualityService
-{
+public class StarsQualityServiceImpl implements StarsQualityService {
+
     private StarsQualityDescriptionRepository starsQaulityRepo;
         
     @Autowired

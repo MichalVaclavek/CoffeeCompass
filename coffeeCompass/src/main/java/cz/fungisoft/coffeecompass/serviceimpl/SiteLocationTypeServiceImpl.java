@@ -13,8 +13,8 @@ import cz.fungisoft.coffeecompass.service.SiteLocationTypeService;
 
 @Service("siteLocationTypeService")
 @Transactional
-public class SiteLocationTypeServiceImpl implements SiteLocationTypeService
-{
+public class SiteLocationTypeServiceImpl implements SiteLocationTypeService {
+
     private SiteLocationTypeRepository siteLocTypeRepo;
     
     @Autowired

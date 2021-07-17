@@ -1,5 +1,6 @@
 package cz.fungisoft.coffeecompass.repository;
 
+import cz.fungisoft.coffeecompass.serviceimpl.comment.CommentService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -16,8 +17,8 @@ import cz.fungisoft.coffeecompass.entity.Comment;
  * @author Michal Vaclavek
  *
  */
-public interface CommentsPageableRepository extends PagingAndSortingRepository<Comment, Long>
-{
+public interface CommentsPageableRepository extends PagingAndSortingRepository<Comment, Long> {
+
     Page<Comment> findAll(Pageable pageable);
     Page<Comment> findByCoffeeSite(CoffeeSite coffeeSite, Pageable pageable);
 }

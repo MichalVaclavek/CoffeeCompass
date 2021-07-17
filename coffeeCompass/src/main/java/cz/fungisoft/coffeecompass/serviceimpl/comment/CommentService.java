@@ -38,10 +38,10 @@ import ma.glasnost.orika.MapperFacade;
 @Service("commentService")
 @Transactional
 @Log4j2
-public class CommentService implements ICommentService
-{
+public class CommentService implements ICommentService {
+
     @Autowired
-    CoffeeSiteRepository coffeeSiteRepo;
+    private CoffeeSiteRepository coffeeSiteRepo;
     
     @Autowired
     private UserService userService;

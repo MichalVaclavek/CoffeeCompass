@@ -21,8 +21,7 @@ import ma.glasnost.orika.MapperFacade;
  *
  */
 @Service
-public class WeatherApiServiceImpl implements WeatherApiService
-{
+public class WeatherApiServiceImpl implements WeatherApiService {
 
     private final String WEATHER_API_URL;
     
@@ -72,5 +71,4 @@ public class WeatherApiServiceImpl implements WeatherApiService
         WeatherData weather = getWeather(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), "cz", "metric");
         return mapperFacade.map(weather, WeatherDTO.class);
     }
-
 }

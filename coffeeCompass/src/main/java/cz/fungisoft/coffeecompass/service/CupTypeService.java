@@ -4,8 +4,7 @@ import java.util.List;
 
 import cz.fungisoft.coffeecompass.entity.CupType;
 
-public interface CupTypeService
-{
-    public CupType findCupTypeByName(String cupType);
-    public List<CupType> getAllCupTypes();
+public interface CupTypeService {
+    CupType findCupTypeByName(String cupType);
+    List<CupType> getAllCupTypes();
 }

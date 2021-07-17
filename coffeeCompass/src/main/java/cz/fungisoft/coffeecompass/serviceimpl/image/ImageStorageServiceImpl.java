@@ -1,5 +1,7 @@
 package cz.fungisoft.coffeecompass.serviceimpl.image;
 
+import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
+import cz.fungisoft.coffeecompass.serviceimpl.CoffeeSiteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,8 +35,8 @@ import javax.validation.ValidationException;
  */
 @Service("imageFileStorageService")
 @Log4j2
-public class ImageStorageServiceImpl implements ImageStorageService
-{
+public class ImageStorageServiceImpl implements ImageStorageService {
+
     // Currently not used in production (image files are stored in DB). Can be used for testing.
     private final Path fileStorageLocation;
     
@@ -48,7 +50,7 @@ public class ImageStorageServiceImpl implements ImageStorageService
     
     /**
      * Base part of the CoffeeSite's image URL, loaded from ConfigProperties.<br>
-     * Complete URL of the image provided by {@link CoffeeSiteService#getMainImageURL()}.
+     * Complete URL of the image is provided by {@link CoffeeSiteServiceImpl#getMainImageURL(CoffeeSiteDTO)}.
      * as it can be build using current html request URI and current requsted CoffeeSite id.
      */
     private String baseImageURLPath;
@@ -188,12 +190,10 @@ public class ImageStorageServiceImpl implements ImageStorageService
                 image.setCoffeeSite(cs);
                 image.setSavedOn(new Timestamp(new Date().getTime()));
             } catch (IOException e) {
-                if (image != null) {
-                    log.warn("Error during creating Image object. File name: {}. CoffeeSite name: {}. Exception: {}", image.getFileName(), cs.getSiteName(), e.getMessage());
-                }
+                log.warn("Error during creating Image object. File name: {}. CoffeeSite name: {}. Exception: {}", image.getFileName(), cs.getSiteName(), e.getMessage());
             }
             try {
-                if (resize && image != null) {
+                if (resize) {
                     image = imageResizer.resize(image);
                 }
             } catch (IOException e) {
@@ -245,7 +245,6 @@ public class ImageStorageServiceImpl implements ImageStorageService
     @Override
     public byte[] getImageAsBytesForSiteId(Long siteId) {
         Image image = getImageForSiteId(siteId);
-        
         return (image != null) ? image.getImageBytes() : null;
     }
     
@@ -297,7 +296,7 @@ public class ImageStorageServiceImpl implements ImageStorageService
         return coffeeSiteId;
     }
     
-    @Transactional
+    //@Transactional
     @Override
     public Image getImageForSiteId(Long siteId) {
         return imageRepo.getImageForSite(siteId);

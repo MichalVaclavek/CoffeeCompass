@@ -12,21 +12,24 @@ import cz.fungisoft.coffeecompass.entity.Image;
  * @author Michal Vaclavek
  *
  */
-public interface ImageRepository extends JpaRepository<Image, Integer>
-{
+public interface ImageRepository extends JpaRepository<Image, Integer> {
+
     @Query("select coffeeSite.id FROM Image im where id=?1")
-    public Long getSiteIdForImage(Integer imageId);
+    Long getSiteIdForImage(Integer imageId);
     
     @Query("select im from Image im WHERE coffeeSite.id=?1")
-    public Image getImageForSite(Long coffeeSiteID);
+    Image getImageForSite(Long coffeeSiteID);
     
     @Query("select im.id from Image im WHERE coffeeSite.id=?1")
-    public Integer getImageIdForSiteId(Long siteID);
+    Integer getImageIdForSiteId(Long siteID);
     
     @Modifying // required by Hibernate, otherwise there is an Exception ' ... Illegal state ...'
     @Query("delete from Image im WHERE coffeeSite.id=?1")
-    public void deleteBySiteId(Long coffeeSiteId);
+    void deleteBySiteId(Long coffeeSiteId);
 
     @Query("select COUNT(im) from Image im WHERE coffeeSite.id=?1")
-    public int getNumOfImagesForSiteId(Long siteId);
+    int getNumOfImagesForSiteId(Long siteId);
+
+    @Query("select COUNT(*) from Image")
+    int getNumOfAllImagesForAllSites();
 }
