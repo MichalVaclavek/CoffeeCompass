@@ -11,8 +11,7 @@ import cz.fungisoft.coffeecompass.service.image.ImageResizeAndRotateService;
 import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
 
 @Controller
-public class ImageRotationController
-{
+public class ImageRotationController {
     
     private final ImageStorageService imageStorageService;
     
@@ -37,8 +36,8 @@ public class ImageRotationController
      */
     @PutMapping("/rotateImageLeft/") // http://localhost:8080/rotateImageLeft/?siteID=1
     public String rotateLeftAndSave(@RequestParam Long siteID) {
-        Image siteImage = cofeeSiteService.findOneById(siteID).getImage();
-        
+        Image siteImage = imageStorageService.getImageForSiteId(siteID);
+
         if (siteImage != null) {
             // Rotate
             Image rotatedImage = imageRotateService.rotate90DegreeLeft(siteImage);
@@ -56,8 +55,7 @@ public class ImageRotationController
      */
     @PutMapping("/rotateImageRight/") // http://localhost:8080/rotateImageRight/?siteID=2
     public String rotateRightAndSave(@RequestParam Long siteID) {
-
-        Image siteImage = cofeeSiteService.findOneById(siteID).getImage();
+        Image siteImage = imageStorageService.getImageForSiteId(siteID);
         
         if (siteImage != null) {
             // Rotate

@@ -201,11 +201,8 @@ public class CoffeeSiteControllerPublicREST {
      */
     @GetMapping("/{id}") // napr. http://coffeecompass.cz/rest/site/2
     public ResponseEntity<CoffeeSiteDTO> siteById(@PathVariable Long id) {
-        
-        CoffeeSiteDTO cs = coffeeSiteService.findOneToTransfer(id);
-        
-        return (cs == null) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
-                            : new ResponseEntity<>(cs, HttpStatus.OK);
+        return coffeeSiteService.findOneToTransfer(id).map(cs ->  new ResponseEntity<>(cs, HttpStatus.OK))
+                                                      .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
     
 

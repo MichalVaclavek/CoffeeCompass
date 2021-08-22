@@ -38,8 +38,7 @@ import ma.glasnost.orika.impl.DefaultMapperFactory;
  * @author Michal Václavek
  */
 @Configuration
-public class CoffeeCompassConfiguration implements WebMvcConfigurer
-{  
+public class CoffeeCompassConfiguration implements WebMvcConfigurer {
     /**
      * Implementace rozhrani pro nastaveni Locale, zmenu jazyka
      * 

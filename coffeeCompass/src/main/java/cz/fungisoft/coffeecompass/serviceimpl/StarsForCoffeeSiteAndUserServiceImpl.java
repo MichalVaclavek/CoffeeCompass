@@ -180,12 +180,16 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
      */
     @Override
     public void saveStarsForCoffeeSiteAndLoggedInUser(Long coffeeSiteID, Integer stars) {
-        CoffeeSite cs = coffeeSiteService.findOneById(coffeeSiteID);
-        Optional<User> logedInUser = userService.getCurrentLoggedInUser();
-        
-        if (logedInUser.isPresent()) {
-            saveStarsForCoffeeSiteAndUser(cs, mapperFacade.map(logedInUser.get(), User.class), stars);
-        }
+//        CoffeeSite cs = coffeeSiteService.findOneById(coffeeSiteID);
+        coffeeSiteService.findOneById(coffeeSiteID).ifPresent(cs -> {
+            Optional<User> logedInUser = userService.getCurrentLoggedInUser();
+            logedInUser.ifPresent(user -> saveStarsForCoffeeSiteAndUser(cs, mapperFacade.map(user, User.class), stars));
+        });
+//        Optional<User> logedInUser = userService.getCurrentLoggedInUser();
+//
+//        if (logedInUser.isPresent()) {
+//            saveStarsForCoffeeSiteAndUser(cs, mapperFacade.map(logedInUser.get(), User.class), stars);
+//        }
     }
     
 

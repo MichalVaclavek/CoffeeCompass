@@ -13,8 +13,8 @@ import lombok.Data;
  *
  */
 @Data
-public class StatisticsToShow
-{
+public class StatisticsToShow {
+
     /**
      * Inner class to hold some of the statistics data pairs returned from DB request.
      */

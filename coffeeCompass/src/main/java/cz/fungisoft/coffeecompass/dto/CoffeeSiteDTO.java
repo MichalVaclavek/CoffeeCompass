@@ -153,6 +153,4 @@ public class CoffeeSiteDTO
     private boolean canBeDeleted;
     private boolean canBeCommented;
     private boolean canBeRatedByStars;
-    // to detect if the location can be activated as adtion to standard canBeActivated, which evaluates only users ROLEs
-    private boolean isAnyOtherSiteActiveOnSamePosition;
 }

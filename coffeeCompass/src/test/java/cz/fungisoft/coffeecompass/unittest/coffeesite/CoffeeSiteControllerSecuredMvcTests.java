@@ -105,7 +105,7 @@ class CoffeeSiteControllerSecuredMvcTests {
         CoffeeSite cs = CoffeeSiteFactory.getCoffeeSite(COFFEE_SITE_NAME, "automat");
                 
         given(csService.save(Mockito.any(CoffeeSiteDTO.class))).willReturn(cs);
-        given(csService.findOneToTransfer(Mockito.eq(cs.getId()))).willReturn(mapperFacade.map(cs, CoffeeSiteDTO.class));
+        given(csService.findOneToTransfer(Mockito.eq(cs.getId())).get()).willReturn(mapperFacade.map(cs, CoffeeSiteDTO.class));
 
         mvc.perform(post("/rest/secured/site/create").contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(cs)))
                                        .andExpect(status().isCreated())

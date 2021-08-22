@@ -45,8 +45,7 @@ import lombok.extern.log4j.Log4j2;
  */
 @Controller
 @Log4j2
-public class CoffeeSiteSearchController
-{
+public class CoffeeSiteSearchController {
     
     private static final String SEARCH_HTML_PAGE = "coffeesite_search";
     
@@ -196,36 +195,31 @@ public class CoffeeSiteSearchController
     */
    @GetMapping("/showSiteInMap/{siteId}") // napr. http://coffeecompass.cz/showSiteInMap/2
    public ModelAndView  showSiteInMap(@PathVariable Long siteId) {
+       ModelAndView mavRet = new ModelAndView(SEARCH_HTML_PAGE);
        
-       ModelAndView mav = new ModelAndView(SEARCH_HTML_PAGE);
-       
-       CoffeeSiteDTO coffeeSite = coffeeSiteService.findOneToTransfer(siteId);
-       
-       CoffeeSiteSearchCriteriaModel searchCriteria = new CoffeeSiteSearchCriteriaModel();
-       List<CoffeeSiteDTO> foundSites = new ArrayList<>();
-       
-       if (coffeeSite == null) {
-           mav.addObject(EMPTY_RESULT_MODEL_KEY, true); // nothing found, let to know to model
-       } else {
+       return coffeeSiteService.findOneToTransfer(siteId).map(coffeeSite -> {
+           CoffeeSiteSearchCriteriaModel searchCriteria = new CoffeeSiteSearchCriteriaModel();
+           List<CoffeeSiteDTO> foundSites = new ArrayList<>();
+
            foundSites.add(coffeeSite);
            LatLong searchFromLoc = coffeeSiteService.getSearchFromLocation(coffeeSite, 200);
            searchCriteria.setLon1(searchFromLoc.getLongitude());
            searchCriteria.setLat1(searchFromLoc.getLatitude());
            searchCriteria.setCityName(coffeeSite.getMesto());
-       }
-       
-       if (foundSites.size() == 1) {
+
            // To be visible in the table, which expects Page object
            Page<CoffeeSiteDTO> foundSitesPage = coffeeSiteService.getPageOfCoffeeSitesFromList(PageRequest.of(0, 1), foundSites);
            if (foundSitesPage != null) {
-             mav.addObject("foundSitesPage", foundSitesPage);
-          }
-       }
-       
-       mav.addObject(FOUND_SITES_MODEL_KEY, foundSites);
-       mav.addObject(SEARCH_CRITERIA_MODEL_KEY, searchCriteria);
-       
-       return mav;
+               mavRet.addObject("foundSitesPage", foundSitesPage);
+           }
+
+           mavRet.addObject(FOUND_SITES_MODEL_KEY, foundSites);
+           mavRet.addObject(SEARCH_CRITERIA_MODEL_KEY, searchCriteria);
+           return mavRet;
+       }).orElseGet(() -> {
+           mavRet.addObject(EMPTY_RESULT_MODEL_KEY, true);
+           return mavRet;
+       });
    }
    
    /**

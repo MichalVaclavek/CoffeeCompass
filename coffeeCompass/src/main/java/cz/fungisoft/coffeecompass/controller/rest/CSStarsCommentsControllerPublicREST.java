@@ -158,18 +158,9 @@ public class CSStarsCommentsControllerPublicREST {
         
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(10);
-        Page<CommentDTO> commentsPage;
-        
-        CoffeeSite coffeeSite = coffeeSiteService.findOneById(siteId);
-        
-        if (coffeeSite == null) {
-            throw new ResourceNotFoundException("Comments", "coffeeSiteId", siteId);
-        }
-        
-        // Get 1 page of Comments beloning to the given CoffeeSite id
-        commentsPage = commentsService.findAllCommentsForSitePaginated(coffeeSite, PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.fromString(direction.toUpperCase()), orderBy)));
-        
-        return commentsPage;
+
+        return coffeeSiteService.findOneById(siteId).map(coffeeSite -> commentsService.findAllCommentsForSitePaginated(coffeeSite, PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.fromString(direction.toUpperCase()), orderBy))))
+                                                    .orElseThrow(() -> new ResourceNotFoundException("Comments", "coffeeSiteId", siteId));
     }
     
     /**

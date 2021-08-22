@@ -4,6 +4,8 @@ import cz.fungisoft.coffeecompass.domain.weather.WeatherData;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.dto.WeatherDTO;
 
+import java.util.Optional;
+
 /**
  * Service interface to declare Weather service.
  * <p>
@@ -45,5 +47,5 @@ public interface WeatherApiService {
      * @param coffeeSiteId - id of the CoffeeSite who's geo coordinations are used as input data for obtaining current weather info from openweathermap.com
      * @return
      */
-    WeatherDTO getWeatherDTO(Long coffeeSiteId);
+    Optional<WeatherDTO> getWeatherDTO(Long coffeeSiteId);
 }

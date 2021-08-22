@@ -56,9 +56,9 @@ public class ImageControllerSecuredREST
      * in the Image object to be uploaded/saved.<br>
      * 
      * 
-     * @param image uploaded Image from View. Contains file to be uploaded and ID of the coffeeSite the image belongs to.
-     * @param result for checking errors during form validation
-     * @param redirectAttributes attributes to be passed to other Controller after redirection from this View/Controller.
+     * @param file uploaded Image from View. Contains file to be uploaded
+     * @param coffeeSiteId  ID of the coffeeSite the image belongs to
+     * @param locale
      * 
      * @return load URL of the new image - used to assign to the edited CoffeeSite as a new CoffeeSite's image URL 
      */
@@ -75,14 +75,14 @@ public class ImageControllerSecuredREST
            return new ResponseEntity<>( HttpStatus.NOT_FOUND);
        }
        log.info("Image uploaded. CoffeeSite id: {}. Image id: {}", coffeeSiteId, imageId);
-       CoffeeSiteDTO cs = coffeeSiteService.findOneToTransfer(coffeeSiteId);
-       return new ResponseEntity<>(cs.getMainImageURL(), HttpStatus.OK);
+        return coffeeSiteService.findOneToTransfer(coffeeSiteId).map(cs ->  new ResponseEntity<>(cs.getMainImageURL(), HttpStatus.OK))
+                                                                .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
     
     /**
      * Zpracuje DELETE pozadavek na smazani obrazku/Image k jednomu CoffeeSitu.<br>
      * 
-     * @param id of the Image to delete
+     * @param imageId id of the Image to delete
      * @return coffeeSiteId the image belonged to before deleting
      */
     @DeleteMapping("/delete/{imageId}") 
@@ -100,7 +100,7 @@ public class ImageControllerSecuredREST
     /**
      * Zpracuje DELETE pozadavek na smazani obrazku/Image k jednomu CoffeeSitu.<br>
      * 
-     * @param id of the Image to delete
+     * @param coffeeSiteId id of the CoffeeSites who's Image is to be deleted
      * @return coffeeSiteId the image belonged to before deleting. Can be used to compare if requested coffeeSiteId
      * is same as returned one
      */

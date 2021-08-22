@@ -39,8 +39,17 @@
 		    <p><span th:text="#{site.activated.success}"></span><b><span th:text="${coffeeSite.siteName}"></span></b>
 		    </p>
 		</div>
+
+		<!-- Message to indicate failure, when the site cannot be activated due to place is already occupied -->
+		<div th:if="${param.anyOtherSiteActiveOnSamePosition}" class="w3-pale-red w3-display-container w3-round w3-panel">
+		    <span onclick="this.parentElement.style.display='none'"
+				  class="w3-button w3-pale-red w3-large w3-display-topright">&times;</span>
+			<p><span th:text="#{site.activation.failed.label}"></span>
+			</p>
+		</div>
+
 	    
-	    <div class="w3-row-padding" >
+	    <div class="w3-row-padding">
 	    
 	        <!-- DIV containing CoffeeSite detail table and picture section -->
 	    	<div class="w3-padding-16 w3-card-4 w3-round w3-half"  style="min-height: 300px;"> 
@@ -131,7 +140,7 @@
 							   <td class="w3-left-align w3-sand" style="font-weight: bold">
 							   		<div >
 							   			<div class="w3-cell w3-container"
-							   			     th:classappend="${coffeeSite.anyOtherSiteActiveOnSamePosition AND coffeeSite.canBeModified} ? 'has-error' : ''"> <!-- isAnyOtherSiteActiveOnSamePosition -->
+							   			     th:classappend="${param.anyOtherSiteActiveOnSamePosition} AND ${coffeeSite.canBeModified} ? 'has-error' : ''"> <!-- isAnyOtherSiteActiveOnSamePosition -->
 							   				<p th:text="#{site.longitude.short}+' '+${coffeeSite.zemDelka}"></p>
 							   				<p th:text="#{site.latitude.short}+' '+${coffeeSite.zemSirka}"></p>
 							   			</div>
@@ -200,7 +209,7 @@
 						                  th:action="@{'/activateSite/' + ${coffeeSite.id}}" 
 						                  th:method="PUT" >
 						               <input type="hidden" name="_method" value="put" />
-						               <button th:disabled="${coffeeSite.canBeDeactivated OR coffeeSite.anyOtherSiteActiveOnSamePosition}" type="submit" id="submitButton" th:text="#{site.status.activate}" class="w3-btn w3-light-green w3-border w3-round w3-small">X</button>
+						               <button th:disabled="${coffeeSite.canBeDeactivated} OR ${param.anyOtherSiteActiveOnSamePosition}" type="submit" id="submitButton" th:text="#{site.status.activate}" class="w3-btn w3-light-green w3-border w3-round w3-small">X</button>
 						            </form>
 						          </div>
 						         
@@ -240,7 +249,7 @@
 			    			</div> <!-- w3.cell.row -->
 						</div> <!-- w3.row -->
 						
-						<div th:if=${coffeeSite.anyOtherSiteActiveOnSamePosition} 
+						<div th:if=${param.anyOtherSiteActiveOnSamePosition}
 						     class="w3-margin-top"> <!-- ${coffeeSite.anyOtherSiteActiveOnSamePosition} -->
 						     <span class="w3-text-red"
 						           th:text="#{site.position.occupied.by.otheractivesite.error}">Cannot be activate due to occupied position by another ACTIVE site.</span>

@@ -14,6 +14,8 @@ import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.service.comment.ICommentService;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * Controller for handling addition/deletition/update of Comment and Stars for CoffeeSite.<br>
  * Obsluhuje operace souvisejici s vkladanim/mazanim/editaci hodnoceni a komentare ke CoffeeSitu<br>  
@@ -51,23 +53,23 @@ public class CSStarsRatingAndCommentsController
      * hodnoceni a komentar.
      * 
      * @param starsAndComment
-     * @param id CoffeeSite id to which the StarsAndCommentModel belongs to
+     * @param coffeeSiteId id of the CoffeeSite to which the StarsAndCommentModel belongs to
      * @return
      */
     @PostMapping("/saveStarsAndComment/{coffeeSiteId}") 
     public ModelAndView saveCommentAndStarsForSite(@ModelAttribute StarsAndCommentModel starsAndComment, @PathVariable Long coffeeSiteId) {
         // Ulozit hodnoceni if not empty
         starsForCoffeeSiteService.saveStarsForCoffeeSiteAndLoggedInUser(coffeeSiteId, starsAndComment.getStars().getNumOfStars());
-        
-        CoffeeSite cs = coffeeSiteService.findOneById(coffeeSiteId);
-        
-        // Ulozit Comment if not empty
-        if ((starsAndComment.getComment() != null) && !starsAndComment.getComment().isEmpty()) {
-            commentsService.saveTextAsComment(starsAndComment.getComment(), cs);
-        }
-        
-        // Show same coffee site with new Stars and comments
-        return new ModelAndView("redirect:/showSite/" + coffeeSiteId);
+
+        ModelAndView mavRet = new ModelAndView("404");
+        return coffeeSiteService.findOneById(coffeeSiteId).map(cs -> {
+            // Ulozit Comment if not empty
+            if ((starsAndComment.getComment() != null) && !starsAndComment.getComment().isEmpty()) {
+                commentsService.saveTextAsComment(starsAndComment.getComment(), cs);
+            }
+            mavRet.setViewName("redirect:/showSite/" + coffeeSiteId);
+            return mavRet;
+        }).orElse(mavRet);
     }
     
     
@@ -77,14 +79,13 @@ public class CSStarsRatingAndCommentsController
      * ktery zobrazi delete tlacitko jen pokud jsou tyto podminky splneny). Zda muze byt Comment smazan se nastavi<br>
      * v Service vrstve CommentService
      * 
-     * @param id of the Comment to delete
+     * @param commentId id of the Comment to delete
      * @return
      */
     @DeleteMapping("/deleteComment/{commentId}") 
     public ModelAndView deleteCommentAndStarsForSite(@PathVariable Integer commentId) {
         // Smazat komentar - need to have site Id to give it to /showSite Controller
         Long siteId = commentsService.deleteCommentById(commentId);
-        
         // Show same coffee site with updated Stars and comments
         return new ModelAndView("redirect:/showSite/" + siteId);
     }

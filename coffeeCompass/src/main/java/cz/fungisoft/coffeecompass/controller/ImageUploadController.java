@@ -25,8 +25,8 @@ import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
  *
  */
 @Controller
-public class ImageUploadController
-{
+public class ImageUploadController {
+
     private static final String REDIRECT_SHOW_SITE_VIEW = "redirect:/showSite/";
     
     private final ImageStorageService imageStorageService;
@@ -40,7 +40,7 @@ public class ImageUploadController
      * Serves upload image request for CoffeeSite. Coffee site is identified by it's ID included
      * in the Image object to be uploaded/saved.
      * 
-     * @param image uploaded Image from View. Contains file to be uploaded and ID of the coffeeSite the image belongs to.
+     * @param newImage uploaded Image from View. Contains file to be uploaded and ID of the coffeeSite the image belongs to.
      * @param result for checking errors during form validation
      * @param redirectAttributes attributes to be passed to other Controller after redirection from this View/Controller.
      * @return

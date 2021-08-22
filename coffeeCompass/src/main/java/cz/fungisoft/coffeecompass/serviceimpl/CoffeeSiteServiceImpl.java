@@ -136,7 +136,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         site.setVisible(isVisible(site));
         site.setCanBeCommented(canBeCommented(site));
         site.setCanBeRatedByStars(canBeRateByStars(site));
-        site.setAnyOtherSiteActiveOnSamePosition(isLocationAlreadyOccupiedByActiveSite(site.getZemSirka(), site.getZemDelka(), 5, site.getId()));
+        //site.setAnyOtherSiteActiveOnSamePosition(isLocationAlreadyOccupiedByActiveSite(site.getZemSirka(), site.getZemDelka(), 5, site.getId()));
         
         site.setMainImageURL(getMainImageURL(site));
         
@@ -273,9 +273,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
 
 
     @Override
-    public CoffeeSiteDTO findOneToTransfer(Long id) {
-        CoffeeSite site = findOneById(id);
-        return mapOneToTransfer(site);
+    public Optional<CoffeeSiteDTO> findOneToTransfer(Long id) {
+        return findOneById(id).map(this::mapOneToTransfer);
     }
     
     
@@ -287,15 +286,14 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         }
         return siteDto;
     }
-    
-    
+
+    /**
+     *
+     * @param id
+     */
     @Override
-    public CoffeeSite findOneById(Long id) {
-        CoffeeSite site = coffeeSiteRepo.findById(id).orElse(null);
-        if (site == null) {
-            log.error("Coffee site with id {} not found in DB.",  id);
-            throw new EntityNotFoundException("Coffee site with id " + id + " not found.");
-        }
+    public Optional<CoffeeSite> findOneById(Long id) {
+        Optional<CoffeeSite> site = coffeeSiteRepo.findById(id);
         log.info("Coffee site with id {} retrieved.",  id);
         return site;
     }
@@ -530,10 +528,13 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         // if it is current modified site, then the location is considered to be available.
         // Means only move of the CoffeeSite to correct new position with no other neighbors
         if (numOfSites == 1 && siteId > 0) {
-            CoffeeSite neighborSite = findOneById(siteId);
-            if (neighborSite != null) { // its only requested site here, so, the position is not ocupied
-                return false;
-            }
+
+            return !findOneById(siteId).isPresent();
+
+//            CoffeeSite neighborSite = findOneById(siteId);
+//            if (neighborSite != null) { // its only requested site here, so, the position is not ocupied
+//                return false;
+//            }
         }
             
         return numOfSites > 0;
@@ -546,19 +547,14 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      */
     @Override
     public boolean isLocationAlreadyOccupiedByActiveSite(double zemSirka, double zemDelka, long meters, Long siteId) {
-        
         CoffeeSiteRecordStatus activeRecordStatus = csRecordStatusService.findCSRecordStatus(CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum.ACTIVE);
         
         long numOfSites = coffeeSiteRepo.getNumberOfSitesWithinRangeInGivenStatus(zemSirka, zemDelka, meters, activeRecordStatus.getId());
-        // If only one site is found in the neighborhood, check if it is a new site or curently modified site
+        // If only one site is found in the neighborhood, check if it is a new site or currently modified site
         // if it is current modified site, then the location is considered to be available.
         // Means only move of the CoffeeSite to correct new position with no other ACTIVE neighbors
-        if (numOfSites == 1 && siteId > 0) {
-            CoffeeSite neighborSite = findOneById(siteId);
-            if (neighborSite != null 
-                && neighborSite.getRecordStatus().getRecordStatus() == CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum.ACTIVE) { // its only requested site with ACTIVE status here, so, the position is not ocupied by any other ACTIVE site
-                return false;
-            }
+        if (numOfSites == 1 && siteId > 0) { //TODO - check if this situation may ocure?
+            return !findOneById(siteId).filter(neighborSite -> neighborSite.getRecordStatus().getRecordStatus() == CoffeeSiteRecordStatusEnum.ACTIVE).isPresent();
         }
             
         return numOfSites > 0;
@@ -685,8 +681,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * @param zemDelka
      * @return
      */
-    private List<CoffeeSiteDTO> countDistancesAndSortByDist(List<CoffeeSiteDTO> sites, double zemSirka, double zemDelka)
-    {
+    private List<CoffeeSiteDTO> countDistancesAndSortByDist(List<CoffeeSiteDTO> sites, double zemSirka, double zemDelka) {
         // Vypocet vzdalenosti pro kazdy vraceny CoffeeSite
         for (CoffeeSiteDTO site : sites) {
             site.setDistFromSearchPoint(countDistanceMetersFromSearchPoint(zemSirka, zemDelka, site.getZemSirka(), site.getZemDelka()));
@@ -694,11 +689,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         
         // Usporadani vysledku db dotazu (seznam CoffeeSites v danem okruhu) podle vzdalenosti od bodu hledani
         // Sama DB tyto vzdalenosti pro dane CoffeeSites nevraci
-        sites.sort((cs1, cs2) -> (cs1.getDistFromSearchPoint() == cs2.getDistFromSearchPoint()) ? 0
-                                  : (cs1.getDistFromSearchPoint() < cs2.getDistFromSearchPoint()) ? -1
-                                                                                                  : 1
-            
-        );
+        sites.sort((cs1, cs2) -> Long.compare(cs1.getDistFromSearchPoint(), cs2.getDistFromSearchPoint()));
         
         return sites;
     }

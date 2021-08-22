@@ -16,10 +16,10 @@ import cz.fungisoft.coffeecompass.entity.User;
  * 
  * @author Michal Václavek
  */
-public interface ICommentService
-{
-    public Comment getById(Integer id);
-    public CommentDTO getByIdToTransfer(Integer id);
+public interface ICommentService {
+
+    Comment getById(Integer id);
+    CommentDTO getByIdToTransfer(Integer id);
     
     /**
 	 * Saves the text of comment into DB.
@@ -30,9 +30,9 @@ public interface ICommentService
 	 * 
 	 * @return instance of the saved {@link Comment} object.
 	 */
-	public Comment saveTextAsComment(String commentText, Long userID, Long coffeeSiteID);
-	public Comment saveTextAsComment(String commentText, User user, CoffeeSite coffeeSite);
-	public Comment saveTextAsComment(String commentText, CoffeeSite coffeeSite);
+	Comment saveTextAsComment(String commentText, Long userID, Long coffeeSiteID);
+	Comment saveTextAsComment(String commentText, User user, CoffeeSite coffeeSite);
+	Comment saveTextAsComment(String commentText, CoffeeSite coffeeSite);
 	
 	/**
 	 * Updates Comment (in DB) sent from client as CommentDTO
@@ -40,7 +40,7 @@ public interface ICommentService
 	 * @param updatedComment CommentDTO to be updated in DB.
 	 * @return Comment if it was updated successfuly, null otherwise
 	 */
-	public Comment updateComment(CommentDTO updatedComment);
+	Comment updateComment(CommentDTO updatedComment);
     
 	/**
 	 * Gets list of all saved Comments for given CoffeeSite id.
@@ -48,9 +48,9 @@ public interface ICommentService
 	 * @param siteId id of the CoffeeSite for which the comments are required.
 	 * @return all Comments for given CoffeeSite id
 	 */
-	public List<CommentDTO> getAllCommentsForSiteId(Long siteId);
+	List<CommentDTO> getAllCommentsForSiteId(Long siteId);
 	
-	public Page<CommentDTO> findAllCommentsForSitePaginated(CoffeeSite coffeeSite, Pageable pageable);
+	Page<CommentDTO> findAllCommentsForSitePaginated(CoffeeSite coffeeSite, Pageable pageable);
 	
 	
 	/**
@@ -59,7 +59,7 @@ public interface ICommentService
      * @param siteId id of the CoffeeSite for which the comments are required.
      * @return all Comments for given CoffeeSite id
      */
-    public Integer getNumberOfCommentsForSiteId(Long siteId);   
+    Integer getNumberOfCommentsForSiteId(Long siteId);
 	
 	/**
 	 * Gets lis of all saved Comments from given {@code User}
@@ -67,17 +67,17 @@ public interface ICommentService
 	 * @param userID id of the User the comments are required from.
 	 * @return all Comments of given userID i.e. User with this id. 
 	 */
-	public List<CommentDTO> getAllCommentsFromUser(Long userID);
-	public List<CommentDTO> getAllCommentsFromUser(User user);
+	List<CommentDTO> getAllCommentsFromUser(Long userID);
+	List<CommentDTO> getAllCommentsFromUser(User user);
 	
 	/**
 	 * Gets list all saved Comments.
 	 * 
 	 * @return list all saved Comments
 	 */
-	public List<CommentDTO> getAllComments();
+	List<CommentDTO> getAllComments();
 	
-	public Page<CommentDTO> findAllCommentsPaginated(Pageable pageable);
+	Page<CommentDTO> findAllCommentsPaginated(Pageable pageable);
 	
 	/**
 	 * Deletes persistent {@link Comment} object from DB	
@@ -85,14 +85,14 @@ public interface ICommentService
 	 * @retutn id of the CoffeeSite the deleted Comment belongs to.
 	 */
 	@PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_DBA')")
-	public Long deleteComment(Comment comment);
+	Long deleteComment(Comment comment);
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_DBA')")
-	public Long deleteCommentById(Integer commentId);
+	Long deleteCommentById(Integer commentId);
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_DBA')")
-	public void deleteAllCommentsFromUser(Long userID);
+	void deleteAllCommentsFromUser(Long userID);
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_DBA')")
-	public void deleteAllCommentsForSite(Long coffeeSiteID);
+	void deleteAllCommentsForSite(Long coffeeSiteID);
 }

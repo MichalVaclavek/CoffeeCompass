@@ -8,10 +8,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 import cz.fungisoft.coffeecompass.domain.weather.WeatherData;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.dto.WeatherDTO;
-import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.weather.WeatherApiService;
 import ma.glasnost.orika.MapperFacade;
+
+import java.util.Optional;
 
 /**
  * Implementation of the {@link WeatherApiService} using 
@@ -65,10 +66,9 @@ public class WeatherApiServiceImpl implements WeatherApiService {
     }
 
     @Override
-    public WeatherDTO getWeatherDTO(Long coffeeSiteId) {
-        
-        CoffeeSite coffeeSite = coffeeSiteService.findOneById(coffeeSiteId);
-        WeatherData weather = getWeather(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), "cz", "metric");
-        return mapperFacade.map(weather, WeatherDTO.class);
+    public Optional<WeatherDTO> getWeatherDTO(Long coffeeSiteId) {
+        return coffeeSiteService.findOneById(coffeeSiteId)
+                                .map(coffeeSite -> getWeather(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), "cz", "metric"))
+                                .map(weather -> mapperFacade.map(weather, WeatherDTO.class));
     }
 }

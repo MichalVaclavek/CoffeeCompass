@@ -1,5 +1,6 @@
 package cz.fungisoft.coffeecompass.controller.rest;
 
+import cz.fungisoft.coffeecompass.exceptions.rest.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,8 +22,7 @@ import io.swagger.annotations.Api;
 @Api // Anotace Swagger
 @RestController
 @RequestMapping("/rest/weather") 
-public class WeatherControllerREST
-{
+public class WeatherControllerREST {
     
     private WeatherApiService weatherService;
 
@@ -35,7 +35,6 @@ public class WeatherControllerREST
     @GetMapping("/site/{id}")
     @ResponseStatus(HttpStatus.OK)
     public WeatherDTO getWeatherInfoForSiteId(@PathVariable(value="id") Long siteID) {
-        
-        return weatherService.getWeatherDTO(siteID);
+        return weatherService.getWeatherDTO(siteID).orElseThrow(() -> new ResourceNotFoundException("Comments", "coffeeSiteId", siteID));
     }
 }

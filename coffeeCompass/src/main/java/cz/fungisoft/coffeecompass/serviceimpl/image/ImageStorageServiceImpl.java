@@ -23,6 +23,8 @@ import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.transaction.Transactional;
 import javax.validation.ValidationException;
@@ -135,36 +137,66 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     @Transactional
     public Integer storeImageFile(Image image, MultipartFile file, Long siteID, boolean resize) {
         
-        Integer retVal = 0;
-        CoffeeSite cs = coffeeSiteService.findOneById(siteID);
-        if (cs != null) {
+        //Integer retVal = 0;
+        AtomicReference<Image> atomicImage = new AtomicReference<>(image);
+
+        //CoffeeSite cs = coffeeSiteService.findOneById(siteID);
+        coffeeSiteService.findOneById(siteID).ifPresent(cs -> {
             try {
                 // Check if there is already image assigned to the CS. If yes, delete the old image first
-                if (cs.getImage() != null) {
-                    Image oldImage = cs.getImage();
-                    imageRepo.delete(oldImage);
-                }
-                image.setImageBytes(file.getBytes());
-                image.setFile(file);
-                image.setCoffeeSite(cs);
-                image.setSavedOn(new Timestamp(new Date().getTime()));
+                Optional.ofNullable(imageRepo.getImageForSite(siteID))
+                        .ifPresent(oldImage -> imageRepo.delete(oldImage));
+                atomicImage.get().setImageBytes(file.getBytes());
+                atomicImage.get().setFile(file);
+                atomicImage.get().setCoffeeSiteID(cs.getId());
+                atomicImage.get().setSavedOn(new Timestamp(new Date().getTime()));
             } catch (IOException e) {
-                log.warn("Error during creating Image object. File name: {}. CoffeeSite name: {}. Exception: {}", image.getFileName(), cs.getSiteName(), e.getMessage());
+                log.warn("Error during creating Image object. File name: {}. CoffeeSite name: {}. Exception: {}", atomicImage.get().getFileName(), cs.getSiteName(), e.getMessage());
             }
-            try {
+            //try {
                 if (resize) {
-                    image = imageResizer.resize(image);
+                    atomicImage.getAndUpdate(image2 -> {
+                        try {
+                            return imageResizer.resize(image2);
+                        } catch (IOException e) {
+                            log.warn("Error during resizing Image. File name: {}. CoffeeSite name: {}. Exception: {}", atomicImage.get().getFileName(), cs.getSiteName(), e.getMessage());
+                        }
+                        return null;
+                    });
+                    //atomicImage.get() = imageResizer.resize(atomicImage.get());
                 }
-            } catch (IOException e) {
-                log.warn("Error during resizing Image. File name: {}. CoffeeSite name: {}. Exception: {}", image.getFileName(), cs.getSiteName(), e.getMessage());
-            }
-            imageRepo.save(image);
-            cs.setImage(image);
+//            } catch (IOException e) {
+//                log.warn("Error during resizing Image. File name: {}. CoffeeSite name: {}. Exception: {}", atomicImage.get().getFileName(), cs.getSiteName(), e.getMessage());
+//            }
+            imageRepo.save(atomicImage.get());
             log.info("Image saved. File name: {}. CoffeeSite name: {}", image.getFileName(), cs.getSiteName());
-            retVal = image.getId();
-        } 
+            //retVal = atomicImage.get().getId();
+        });
+//        if (cs != null) {
+//            try {
+//                // Check if there is already image assigned to the CS. If yes, delete the old image first
+//                Optional.ofNullable(imageRepo.getImageForSite(siteID))
+//                        .ifPresent(oldImage -> imageRepo.delete(oldImage));
+//                image.setImageBytes(file.getBytes());
+//                image.setFile(file);
+//                image.setCoffeeSiteID(cs.getId());
+//                image.setSavedOn(new Timestamp(new Date().getTime()));
+//            } catch (IOException e) {
+//                log.warn("Error during creating Image object. File name: {}. CoffeeSite name: {}. Exception: {}", image.getFileName(), cs.getSiteName(), e.getMessage());
+//            }
+//            try {
+//                if (resize) {
+//                    image = imageResizer.resize(image);
+//                }
+//            } catch (IOException e) {
+//                log.warn("Error during resizing Image. File name: {}. CoffeeSite name: {}. Exception: {}", image.getFileName(), cs.getSiteName(), e.getMessage());
+//            }
+//            imageRepo.save(image);
+//            log.info("Image saved. File name: {}. CoffeeSite name: {}", image.getFileName(), cs.getSiteName());
+//            retVal = image.getId();
+//        }
         
-        return retVal;
+        return atomicImage.get() == null ? 0 : atomicImage.get().getId();
     }
     
     /**
@@ -174,20 +206,16 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     @Transactional
     public Integer storeImageFile(MultipartFile file, Long siteID, boolean resize) {
         
-        Integer retVal = 0;
-        Image image = null;
-        CoffeeSite cs = coffeeSiteService.findOneById(siteID);
-        if (cs != null) {
+        AtomicReference<Image> atomicImage = new AtomicReference<>(null);
+        coffeeSiteService.findOneById(siteID).ifPresent(cs -> {
+            // Check if there is already image assigned to the CS. If yes, delete the old image first
+            Optional.ofNullable(imageRepo.getImageForSite(siteID))
+                    .ifPresent(oldImage -> imageRepo.delete(oldImage));
+            Image image = new Image();
             try {
-                // Check if there is already image assigned to the CS. If yes, delete the old image first
-                if (cs.getImage() != null) {
-                    Image oldImage = cs.getImage();
-                    imageRepo.delete(oldImage);
-                }
-                image = new Image(); 
                 image.setImageBytes(file.getBytes());
                 image.setFile(file);
-                image.setCoffeeSite(cs);
+                image.setCoffeeSiteID(cs.getId());
                 image.setSavedOn(new Timestamp(new Date().getTime()));
             } catch (IOException e) {
                 log.warn("Error during creating Image object. File name: {}. CoffeeSite name: {}. Exception: {}", image.getFileName(), cs.getSiteName(), e.getMessage());
@@ -201,14 +229,13 @@ public class ImageStorageServiceImpl implements ImageStorageService {
             }
             if (image != null) {
                 imageRepo.save(image);
-                cs.setImage(image);
                 log.info("Image saved. File name: {}. CoffeeSite name: {}", image.getFileName(), cs.getSiteName());
-                retVal = image.getId();
+                atomicImage.set(image);
             }
-        } 
-        
-        return retVal;
-    }
+        });
+
+        return atomicImage.get() == null ? 0 : atomicImage.get().getId();
+}
     
     /**
      * Saves already created Image object.
@@ -239,7 +266,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     
     @Override
     public String getImageAsBase64ForSiteId(Long siteID) {
-        return convertImageToBase64(coffeeSiteService.findOneById(siteID).getImage());
+        return convertImageToBase64(imageRepo.getImageForSite(siteID));
     }
 
     @Override

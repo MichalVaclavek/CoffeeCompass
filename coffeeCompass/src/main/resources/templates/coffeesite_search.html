@@ -13,8 +13,8 @@
       
       <div th:replace="fragments/header :: header-css"/>
       
-	   <script type="text/javascript" src="https://api.mapy.cz/loader.js"></script>
-	   <script type="text/javascript">Loader.load()</script> <!-- loads mapy.cz API	 -->   
+	  <script type="text/javascript" src="https://api.mapy.cz/loader.js"></script>
+	  <script type="text/javascript">Loader.load()</script> <!-- loads mapy.cz API	 -->
 	   
 </head>
 
@@ -26,7 +26,6 @@
 		<h2 th:text="#{site.search-site}" class="w3-container">Search coffee sites</h2>
 	</div>
 	
-	<!--<div class="w3-display-container"> -->
 	<div class="w3-display-container"> <!-- Main container for complete page layout  -->
 	
 		<div class="w3-row w3-content w3-margin-bottom" style="max-width:1400px"> <!-- row with search form and map on the right -->
@@ -53,7 +52,7 @@
 			
 			    	<form id="searchByCoordinatesForm" action="#" th:action="@{/searchSites}" th:object="${searchCriteria}" method="GET">
 			    
-			        	<!-- <div class="w3-cell-row w3-margin-top">  --> <!-- row for Latitude and Longitude -->
+			        	<!-- row for Latitude and Longitude -->
 			          	<div class="w3-cell-row"> 
 				        	<div class="w3-cell">
 				            	<div th:classappend="${#fields.hasErrors('lat1')} ? 'has-error' : ''">
@@ -208,22 +207,7 @@
 			        <thead>        
 			        <tbody id="foundSitesTableBody">
 			        <!-- Table body content is inserted within JS insertSitesToTable(/*[[${foundSites}]]*/, document.getElementById('foundSitesTableBody')); -->
-			        
-			        <!--
-				        <tr th:each="site : ${foundSites}" style="cursor: pointer"
-				        	th:if="${site.visible}"
-				        	th:onclick="'javascript:rowClicked(\'' + ${site.id} + '\');'"> --> <!-- Reference na js /showSite/{site.id} viz nize -->
-						<!--
-						  <td th:text="${site.siteName}">SiteName</td>
-						  <td th:text="${site.mesto}">City name</td>
-						  <td th:text="${site.statusZarizeni.status}">SiteStatus</td>
-						  <td th:text="${site.typPodniku.coffeeSiteType}">TypPodniku</td>
-						  <td><span th:each="sort, iterStat : ${site.coffeeSorts}" th:text="!${iterStat.last} ? ${sort}+', ' : ${sort}">Coffee Sorts</span></td>
-			              <td><span th:each="offer, iterStat : ${site.otherOffers}" th:text="!${iterStat.last} ? ${offer}+', ' : ${offer}">Other Offer</span></td>
-						  <td th:text="${site.distFromSearchPoint}">Distance</td>
-			  			  <td th:text="${site.averageStarsWithNumOfHodnoceni.common}">Stars</td>
-					   </tr>
-					   -->
+
 				    </tbody>
 				</table>
 				
@@ -241,7 +225,7 @@
 	
 	
 	
-	<!-- Script to swap two div element. Used for cityNameInput and cityNameSelect --> 
+	<!-- Script to swap two div elements. Used for cityNameInput and cityNameSelect -->
 	<script type="text/javascript">
 		function swapDivsWithClick(div1, div2) {
 		   if ( div2.style.display == "none" ) {
@@ -288,8 +272,7 @@
 		var lonInput = document.getElementById("lon1");
 		var latLabel = document.getElementById("searchPointLatLabel");
 		var lonLabel = document.getElementById("searchPointLonLabel");
-		
-     </script> 
+     </script>
      
      <script th:inline="javascript">
 	     map.create(latInput, lonInput, latLabel, lonLabel);  
@@ -338,6 +321,6 @@
 	     /*]]>*/
      </script>
 
-	
+	</div>
 </body>
 </html>

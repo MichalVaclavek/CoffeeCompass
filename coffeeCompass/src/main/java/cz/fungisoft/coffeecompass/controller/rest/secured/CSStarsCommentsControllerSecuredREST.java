@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.controller.rest.secured;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.validation.Valid;
 
@@ -24,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 import cz.fungisoft.coffeecompass.controller.models.StarAndCommentForSiteModel;
 import cz.fungisoft.coffeecompass.controller.models.StarsAndCommentModel;
 import cz.fungisoft.coffeecompass.dto.CommentDTO;
-import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.Comment;
 import cz.fungisoft.coffeecompass.entity.StarsForCoffeeSiteAndUser;
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
@@ -80,7 +80,7 @@ public class CSStarsCommentsControllerSecuredREST {
      * Returns list of comments belonging to this coffeeSite id
      * 
      * @param starsAndComment
-     * @param id CoffeeSite id to which the StarsAndCommentModel belongs to
+     * @param coffeeSiteId CoffeeSite id to which the StarsAndCommentModel belongs to
      * 
      * @return list of comments belonging to this coffeeSitie id
      */
@@ -92,16 +92,16 @@ public class CSStarsCommentsControllerSecuredREST {
         try {
             // Ulozit hodnoceni if not empty
             starsForCoffeeSiteService.saveStarsForCoffeeSiteAndLoggedInUser(coffeeSiteId, starsAndComment.getStars().getNumOfStars());
-        } catch (Exception ex) { // can be resource not found exception in case of wron coffeeSiteId
+        } catch (Exception ex) { // can be resource not found exception in case of wrong coffeeSiteId
             throw new ResourceNotFoundException("Comments", "coffeeSiteId", coffeeSiteId);
         }
         
-        CoffeeSite cs = coffeeSiteService.findOneById(coffeeSiteId);
-        
-        // Ulozit Comment for the CoffeeSite, if not empty
-        if ((starsAndComment.getComment() != null) && !starsAndComment.getComment().isEmpty()) {
-            commentsService.saveTextAsComment(starsAndComment.getComment(), cs);
-        }
+        coffeeSiteService.findOneById(coffeeSiteId).ifPresent(cs -> {
+            // Ulozit Comment for the CoffeeSite, if not empty
+            if ((starsAndComment.getComment() != null) && !starsAndComment.getComment().isEmpty()) {
+                commentsService.saveTextAsComment(starsAndComment.getComment(), cs);
+            }
+        });
         
         // Gets all comments for this coffeeSite
         List<CommentDTO> comments = commentsService.getAllCommentsForSiteId(coffeeSiteId);
@@ -130,7 +130,7 @@ public class CSStarsCommentsControllerSecuredREST {
      * 
      * Returns true if there was no error during saving
      * 
-     * @param list of StarAndCommentForSiteModel containig Comments and Stars rating to be saved
+     * @param starsAndComments list of StarAndCommentForSiteModel containing Comments and Stars rating to be saved
      * 
      * @return true if no error during saving
      */
@@ -142,27 +142,23 @@ public class CSStarsCommentsControllerSecuredREST {
             throw new InvalidParameterValueException("Comments_stars_rating", bindingResult.getFieldErrors());
         }
         LOG.debug("Saving comments and/or stars rating. Number of items to be saved: {}", starsAndComments.size());
-        int savedComments = 0;
+        AtomicInteger savedComments = new AtomicInteger();
         // Ulozit vsechna hodnoceni if not empty
         for (StarAndCommentForSiteModel starsAndComment : starsAndComments) {
             long coffeeSiteId = starsAndComment.getCoffeeSiteId();
-            try {
                 starsForCoffeeSiteService.saveStarsForCoffeeSiteAndLoggedInUser(coffeeSiteId, starsAndComment.getStars());
             
-                CoffeeSite cs = coffeeSiteService.findOneById(coffeeSiteId);
-                // Ulozit Comment for the CoffeeSite, if not empty
-                if ((starsAndComment.getComment() != null) && !starsAndComment.getComment().isEmpty()) {
-                    if (commentsService.saveTextAsComment(starsAndComment.getComment(), cs) != null) {
-                        savedComments++;
+                coffeeSiteService.findOneById(coffeeSiteId).ifPresent(cs -> {
+                    // Ulozit Comment for the CoffeeSite, if not empty
+                    if ((starsAndComment.getComment() != null) && !starsAndComment.getComment().isEmpty()) {
+                        if (commentsService.saveTextAsComment(starsAndComment.getComment(), cs) != null) {
+                            savedComments.getAndIncrement();
+                        }
                     }
-            }
-            } catch (Exception ex) { // can be resource not found exception in case of wron coffeeSiteId
-                LOG.error("Wrong CoffeeSite for saving stars rating and/or comment. CoffeeSite id: {}", coffeeSiteId);
-                // do not re-throw, other comments to be saved are coming
-            }
+                });
         }
         
-        LOG.debug("Number of comments saved: {}", savedComments);
+        LOG.debug("Number of comments saved: {}", savedComments.get());
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
     
@@ -185,7 +181,7 @@ public class CSStarsCommentsControllerSecuredREST {
      *       "starsFromUser": 4
      *   }
      * 
-     * @param comment Comment to be updated. Muze obsahovat prazdny text, pak je komentar smazan a odeslan status HttpStatus.NOT_FOUND
+     * @param commentDTO Comment to be updated. Muze obsahovat prazdny text, pak je komentar smazan a odeslan status HttpStatus.NOT_FOUND
      * 
      * @return updatovany Comment nebo indikace chyby na vstupu (HttpStatus.BAD_REQUEST) nebo HttpStatus.NOT_FOUND,
      *         pokud byl Comment smazan nebo nebyl nalezen.
@@ -315,7 +311,7 @@ public class CSStarsCommentsControllerSecuredREST {
      * Muze byt volano pouze ADMINEM nebo prihlasenym autorem hodnoceni s roli USER.<br>
      * Vrati aktualni pocet Comments pro coffee site, ke kteremu patril smazany komentar.<br>
      * 
-     * @param id of the Comment to be deleted
+     * @param commentId id of the Comment to be deleted
      * @return number of Comments of the coffeeSite where the deleted comment belonged to
      */
     @DeleteMapping("/deleteComment/{commentId}")

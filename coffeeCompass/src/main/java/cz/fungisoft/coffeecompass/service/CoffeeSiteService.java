@@ -1,6 +1,7 @@
 package cz.fungisoft.coffeecompass.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -52,8 +53,13 @@ public interface CoffeeSiteService {
     Integer getNumberOfSitesNotCanceledFromUserId(long userId);
     Integer getNumberOfSitesNotCanceledFromLoggedInUser();
     
-    CoffeeSiteDTO findOneToTransfer(Long siteId);
-    CoffeeSite findOneById(Long id);
+    Optional<CoffeeSiteDTO> findOneToTransfer(Long siteId);
+
+    /**
+     * @param id
+     * @return
+     */
+    Optional<CoffeeSite> findOneById(Long id);
     CoffeeSiteDTO findByName(String siteName);
     
     /**

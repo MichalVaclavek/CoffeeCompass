@@ -57,7 +57,7 @@ public class PushNotificationController {
      *   "token":"long-token-string"
      *   }
      * 
-     * 2) selected, upt to 5, towns:
+     * 2) selected, up to 5, towns:
      * {
      *   "topic":"new_coffeeSite",
      *   "subTopics": [
@@ -66,8 +66,7 @@ public class PushNotificationController {
      *                 "Nymburk"                                
      *                ],
      *   "token":"long-token-string"
-     *
-     *   }
+     *  }
      * 
      * @param request
      * @return

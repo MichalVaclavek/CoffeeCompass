@@ -17,6 +17,7 @@ import cz.fungisoft.coffeecompass.entity.PriceRange;
 import cz.fungisoft.coffeecompass.entity.SiteLocationType;
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
 import cz.fungisoft.coffeecompass.entity.User;
+import cz.fungisoft.coffeecompass.exceptions.rest.InvalidParameterValueException;
 import cz.fungisoft.coffeecompass.service.CSStatusService;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteTypeService;
@@ -50,6 +51,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -63,8 +65,8 @@ import java.util.stream.IntStream;
  * @author Michal Václavek
  */
 @Controller
-public class CoffeeSiteController
-{
+public class CoffeeSiteController {
+
     @Autowired
     private OtherOfferService offerService;
     
@@ -173,6 +175,24 @@ public class CoffeeSiteController
     
         return mav;       
     }
+
+    /**
+     * Metoda pro zobrazeni seznamu vsech CoffeeSites v mape.
+     *
+     * https://localhost:8443/allSitesInMap
+     *
+     * @return
+     */
+    @GetMapping("/allSitesInMap")
+    public ModelAndView allSitesInMap() {
+        ModelAndView mav = new ModelAndView();
+
+        List<CoffeeSiteDTO> allCoffeeSites = coffeeSiteService.findAll("createdOn", "DESC");
+        mav.addObject("allSites", allCoffeeSites);
+
+        mav.setViewName("coffeesites_all_map");
+        return mav;
+    }
     
     /**
      * Vrati stranku zobrazujici vsechny informace pro jeden CoffeeSite. Pokud je prihlaseny nejaky uzivatel,<br>
@@ -186,54 +206,53 @@ public class CoffeeSiteController
     @GetMapping("/showSite/{siteId}") // napr. http://localhost:8080/showSite/2
     public ModelAndView showSiteDetailForm(@PathVariable Long siteId, ModelMap model) {
         
-        ModelAndView mav = new ModelAndView();
-        
-        // Add CoffeeSite to model
-        CoffeeSiteDTO cs = coffeeSiteService.findOneToTransfer(siteId);
-        
-        mav.addObject("coffeeSite", cs);
+        ModelAndView mav = new ModelAndView("404");
 
-        // Add object to cary users's comment and stars evaluation
-        // If a user is logged-in, than find if he already saved comment for this site. If yes, this stars to model.
-        StarsAndCommentModel starsAndComment = new StarsAndCommentModel();
-        
-        StarsQualityDescription userStarsForThisSite = starsForCoffeeSiteService.getStarsForCoffeeSiteAndLoggedInUser(cs);
-        if (userStarsForThisSite != null )
-            starsAndComment.setStars(userStarsForThisSite);
-            
-        mav.addObject("starsAndComment", starsAndComment);
-        
-        // Add all comments for this coffeeSite
-        List<CommentDTO> comments = commentsService.getAllCommentsForSiteId(siteId);
-        mav.addObject("comments", comments);
-        
-        // Add current image ID of the CoffeeSite if available - to allow its deletition in a View
-        Integer thisSiteImageId = imageStorageService.getImageIdForSiteId(siteId);
-        thisSiteImageId = (thisSiteImageId == null) ? 0 : thisSiteImageId;
-        
-        mav.addObject("thisSiteImageId", thisSiteImageId); // needed in model in case of deletition request
-        
-        // Add new Image to model
-        if (!model.containsAttribute("newImage")) { // othervise returned after validation error and model already contains newImage object 
-            Image newImage = new Image();
-            newImage.setId(0); 
-            
-            newImage.setCoffeeSiteID(siteId); // pomocny atribut. needed for later upload/save within ImageUploadController
-            mav.addObject("newImage", newImage);
-        }
-        
-        // Add picture object (image of this coffee site) to the model
-        // Here inserted on the server, not as URL REST link to be loaded from browser  
-        String picString = imageStorageService.getImageAsBase64ForSiteId(cs.getId());
-        mav.addObject("pic", picString);
-        
-        // Get Weather info for the geo location of the CofeeSite to be shown
-        WeatherDTO weather = weatherService.getWeatherDTO(cs);
-        mav.addObject("weatherData", weather);
-        
-        mav.setViewName("coffeesite_detail");
-        
-        return mav;
+        return coffeeSiteService.findOneToTransfer(siteId).map(cs -> {
+            // Add CoffeeSite to model
+            mav.addObject("coffeeSite", cs);
+
+            // Add object to cary users's comment and stars evaluation
+            // If a user is logged-in, than find if he already saved comment for this site. If yes, this stars to model.
+            StarsAndCommentModel starsAndComment = new StarsAndCommentModel();
+
+            StarsQualityDescription userStarsForThisSite = starsForCoffeeSiteService.getStarsForCoffeeSiteAndLoggedInUser(cs);
+            if (userStarsForThisSite != null )
+                starsAndComment.setStars(userStarsForThisSite);
+
+            mav.addObject("starsAndComment", starsAndComment);
+
+            // Add all comments for this coffeeSite
+            List<CommentDTO> comments = commentsService.getAllCommentsForSiteId(siteId);
+            mav.addObject("comments", comments);
+
+            // Add current image ID of the CoffeeSite if available - to allow its deletition in a View
+            Integer thisSiteImageId = imageStorageService.getImageIdForSiteId(siteId);
+            thisSiteImageId = (thisSiteImageId == null) ? 0 : thisSiteImageId;
+
+            mav.addObject("thisSiteImageId", thisSiteImageId); // needed in model in case of deletition request
+
+            // Add new Image to model
+            if (!model.containsAttribute("newImage")) { // othervise returned after validation error and model already contains newImage object
+                Image newImage = new Image();
+                newImage.setId(0);
+
+                newImage.setCoffeeSiteID(siteId); // pomocny atribut. needed for later upload/save within ImageUploadController
+                mav.addObject("newImage", newImage);
+            }
+
+            // Add picture object (image of this coffee site) to the model
+            // Here inserted on the server, not as URL REST link to be loaded from browser
+            String picString = imageStorageService.getImageAsBase64ForSiteId(cs.getId());
+            mav.addObject("pic", picString);
+
+            // Get Weather info for the geo location of the CofeeSite to be shown
+            WeatherDTO weather = weatherService.getWeatherDTO(cs);
+            mav.addObject("weatherData", weather);
+
+            mav.setViewName("coffeesite_detail");
+            return mav;
+        }).orElse(mav);
     }
     
     
@@ -243,7 +262,7 @@ public class CoffeeSiteController
      * 
      * @return
      */
-    @GetMapping("/mySitesPaginated/") // napr. http://coffeecompass.cz/mySitesPaginated/?size=5&page=1
+    @GetMapping("/mySitesPaginated/") // napr. https://coffeecompass.cz/mySitesPaginated/?size=5&page=1
     public ModelAndView showMySitesPaginated(@RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
         
         ModelAndView mav = new ModelAndView();
@@ -329,12 +348,12 @@ public class CoffeeSiteController
      */
     @GetMapping("/modifySite/{id}")
     public ModelAndView showSiteUpdatePage(@PathVariable(name = "id") Long id) {
-        CoffeeSiteDTO cs = coffeeSiteService.findOneToTransfer(id);
-        
-        ModelAndView mav = new ModelAndView();
-        mav.addObject("coffeeSite", cs);
-        mav.setViewName("coffeesite_create");
-        return mav;
+        ModelAndView mav = new ModelAndView("404");
+        return coffeeSiteService.findOneToTransfer(id).map(cs -> {
+            mav.addObject("coffeeSite", cs);
+            mav.setViewName("coffeesite_create");
+            return mav;
+        }).orElse(mav);
     }
    
     /**
@@ -373,7 +392,6 @@ public class CoffeeSiteController
         
         returnView = (cs != null) ? returnView + cs.getId() + returnSuffix
                                   : "404";
-        
         return returnView;
     }
     
@@ -385,11 +403,17 @@ public class CoffeeSiteController
     @PutMapping("/activateSite/{id}") 
     public String activateCoffeeSite(@PathVariable(name = "id") Long id) {
         
-        CoffeeSite cs = coffeeSiteService.findOneById(id);
-        
-        // After CoffeeSite activation, go to the same page and show confirmation message
-        cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, CoffeeSiteRecordStatusEnum.ACTIVE);
-        return "redirect:/showSite/" + cs.getId() + "?activationSuccess";
+        AtomicReference<String> returnPage = new AtomicReference<>("404");
+        coffeeSiteService.findOneById(id).ifPresent(cs -> {
+            if (coffeeSiteService.isLocationAlreadyOccupiedByActiveSite(cs.getZemSirka(), cs.getZemDelka(), 5, cs.getId())) {
+                returnPage.set("redirect:/showSite/" + cs.getId() + "?anyOtherSiteActiveOnSamePosition");
+            } else {
+                cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, CoffeeSiteRecordStatusEnum.ACTIVE);
+                // After CoffeeSite activation, go to the same page and show confirmation message
+                returnPage.set("redirect:/showSite/" + cs.getId() + "?activationSuccess");
+            }
+        });
+        return returnPage.get();
     }
     
     @PutMapping("/deactivateSite/{id}") 
@@ -406,11 +430,12 @@ public class CoffeeSiteController
             return modifyStatusAndReturnSameView(id, CoffeeSiteRecordStatusEnum.CANCELED);
         }
         else { // Normal USER is redirected to list of his/her sites after cancelling site
-            CoffeeSite cs = coffeeSiteService.findOneById(id);
-            cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, CoffeeSiteRecordStatusEnum.CANCELED);
-            String siteName = cs.getSiteName();
-            redirectAttributes.addFlashAttribute("canceledSiteName", siteName);
-            return "redirect:/mySitesPaginated/";
+            return coffeeSiteService.findOneById(id).map(cs -> {
+                cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, CoffeeSiteRecordStatusEnum.CANCELED);
+                String siteName = cs.getSiteName();
+                redirectAttributes.addFlashAttribute("canceledSiteName", siteName);
+                return  "redirect:/mySitesPaginated/";
+            }).orElse("404");
         }
     }
 
@@ -420,9 +445,10 @@ public class CoffeeSiteController
      * ostatni maji specialni redirect
      */
     private String modifyStatusAndReturnSameView(Long csID, CoffeeSiteRecordStatusEnum newStatus) {
-        CoffeeSite cs = coffeeSiteService.findOneById(csID);
-        cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, newStatus);
-        return "redirect:/showSite/" + cs.getId();
+        return coffeeSiteService.findOneById(csID).map(cs -> {
+            cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, newStatus);
+            return "redirect:/showSite/" + cs.getId();
+        }).orElse("404");
     }
     
     /**
@@ -435,10 +461,16 @@ public class CoffeeSiteController
      */
     @DeleteMapping("/finalDeleteSite/{id}") // Mapovani http DELETE na DB operaci delete
     public String finalDelete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        String siteName = coffeeSiteService.findOneById(id).getSiteName();
-        redirectAttributes.addFlashAttribute("deletedSiteName", siteName);
-        coffeeSiteService.delete(id);
-        return "redirect:/allSitesPaginated/";
+
+        AtomicReference<String> returnPage = new AtomicReference<>("404");
+        coffeeSiteService.findOneById(id).ifPresent(cs -> {
+            String siteName = cs.getSiteName();
+            redirectAttributes.addFlashAttribute("deletedSiteName", siteName);
+            coffeeSiteService.delete(id);
+            returnPage.set("redirect:/allSitesPaginated/");
+        });
+
+        return returnPage.get();
     }
     
     /* *** Atributes for coffeesite_create.html and other Forms **** */
