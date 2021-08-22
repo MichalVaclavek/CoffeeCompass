@@ -13,6 +13,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Data;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * Dalsi nabidka, krome kafe ... caj, kafe s necim, polivka atp.
@@ -21,9 +23,11 @@ import lombok.Data;
  */
 @Data
 @Entity
+@javax.persistence.Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="nabidka", schema="coffeecompass")
-public class OtherOffer
-{
+public class OtherOffer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

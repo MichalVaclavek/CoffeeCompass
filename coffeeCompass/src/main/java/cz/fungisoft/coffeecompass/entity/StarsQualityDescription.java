@@ -12,6 +12,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * Slovni a čiselný popis kvality kavy, automatu, podniku ...
@@ -21,11 +23,12 @@ import lombok.Data;
  */
 @Data
 @Entity
+@javax.persistence.Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="stars_hodnoceni_kvality", schema="coffeecompass")
-public class StarsQualityDescription
-{
-    public enum StarsQualityEnum implements Serializable
-    {
+public class StarsQualityDescription {
+
+    public enum StarsQualityEnum implements Serializable {
         ONE("Břečka"),
         TWO("Slabota"),
         THREE("Průměr"),
@@ -34,7 +37,7 @@ public class StarsQualityDescription
          
         private String starsQuality;
          
-        private StarsQualityEnum(String starsQuality) {
+        StarsQualityEnum(String starsQuality) {
             this.starsQuality = starsQuality;
         }
          
@@ -98,8 +101,7 @@ public class StarsQualityDescription
     public void setQuality(StarsQualityEnum qual) {
         this.quality = qual.starsQuality;
         
-        switch (qual)
-        {
+        switch (qual) {
             case ONE:
                 numOfStars = 1;
                 break;
@@ -123,8 +125,7 @@ public class StarsQualityDescription
     public void setQuality(String quality) {
         this.quality = quality;
         
-        switch (StarsQualityEnum.fromString(quality))
-        {
+        switch (StarsQualityEnum.fromString(quality)) {
           case ONE:
               numOfStars = 1;
               break;

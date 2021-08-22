@@ -6,16 +6,15 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.web.multipart.MultipartFile;
 
 import cz.fungisoft.coffeecompass.validators.ImageFileValidatorConstraint;
@@ -27,28 +26,25 @@ import lombok.Data;
  * @author Michal Václavek
  */
 @Entity
+@javax.persistence.Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="images", schema="coffeecompass")
 @Data
-public class Image implements Serializable
-{	
+public class Image implements Serializable {
+
 	private static final long serialVersionUID = 4976306313068414171L;
 
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
-	  
-	@OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "coffeesite_id")
-    private CoffeeSite coffeeSite;
-	
-	public void setCoffeeSite(CoffeeSite coffeeSite) {
-	    this.coffeeSite = coffeeSite;
-	    this.coffeeSiteID = this.coffeeSite.getId();
+
+	public void setCoffeeSiteID(Long coffeeSiteId) {
+	    this.coffeeSiteID = coffeeSiteId;
 	}
 	
 	/**
 	 * Used to transfer coffeeSite id between different Views/Forms in case only Image object is handled by the Form
 	 */
-	@Transient
+	@Column(name = "coffeesite_id")
 	private Long coffeeSiteID = 0L;
 	
 	@Column(name = "saved_on", nullable = false)
@@ -76,7 +72,7 @@ public class Image implements Serializable
 	public Image() {}
 	
 	public Image(CoffeeSite cfSite, MultipartFile imageFile) throws IOException {
-		setCoffeeSite(cfSite);
+		setCoffeeSiteID(cfSite.getId());
 		setFileName(imageFile.getOriginalFilename());
 		setImageBytes(imageFile.getBytes());
 	}

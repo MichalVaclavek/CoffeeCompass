@@ -12,6 +12,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 import lombok.Data;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * Jmeno dodavatele automatu nebo jmeno podniku.
@@ -21,9 +23,11 @@ import lombok.Data;
  */
 @Data
 @Entity
+@javax.persistence.Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="dodavatel_nebo_jmeno_podniku", schema="coffeecompass")
-public class Company
-{
+public class Company {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

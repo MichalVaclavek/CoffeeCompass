@@ -1,5 +1,8 @@
 package cz.fungisoft.coffeecompass.entity;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -10,9 +13,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
  
 @Entity
+@javax.persistence.Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="user_profile", schema = "coffeecompass")
-public class UserProfile implements Serializable
-{
+public class UserProfile implements Serializable {
+
     private static final long serialVersionUID = 5515645036753999883L;
 
     @Id

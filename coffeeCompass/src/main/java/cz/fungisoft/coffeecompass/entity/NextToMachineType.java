@@ -14,6 +14,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * Druh automatu, ktere stoji vedle kavoveho automatu.
@@ -22,12 +24,13 @@ import lombok.Data;
  */
 @Data
 @Entity
+@javax.persistence.Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="dalsi_automat_vedle_type", schema="coffeecompass")
-public class NextToMachineType
-{
+public class NextToMachineType {
+
     /* INNER STATIC CLASS */
-    public enum NextToMachineTypeEnum implements Serializable
-    {
+    public enum NextToMachineTypeEnum implements Serializable {
         NAPOJE("Nápoje"),
         SLADKOSTI("Sladkosti"),
         BAGETY("Bagety"),
@@ -35,7 +38,7 @@ public class NextToMachineType
          
         String nextToMachineType;
          
-        private NextToMachineTypeEnum(String nextToMachineType) {
+        NextToMachineTypeEnum(String nextToMachineType) {
             this.nextToMachineType = nextToMachineType;
         }
          

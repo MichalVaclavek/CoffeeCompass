@@ -12,6 +12,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * Typ lokality kde se vyskytuje CoffeeSite. Napr. nadrazi, obchodni centrum atp.
@@ -20,9 +22,11 @@ import lombok.Data;
  */
 @Data
 @Entity
+@javax.persistence.Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="typ_lokality", schema="coffeecompass")
-public class SiteLocationType
-{
+public class SiteLocationType {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

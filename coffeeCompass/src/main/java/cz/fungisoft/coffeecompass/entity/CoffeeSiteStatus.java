@@ -14,6 +14,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * Status coffee situ.<br>
@@ -27,12 +29,13 @@ import lombok.Data;
  */
 @Data
 @Entity
+@javax.persistence.Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="coffee_site_status", schema="coffeecompass")
-public class CoffeeSiteStatus
-{
+public class CoffeeSiteStatus {
+
     /* INNER STATIC CLASS */
-    public enum CoffeeSiteStatusEnum implements Serializable
-    {
+    public enum CoffeeSiteStatusEnum implements Serializable {
         INSERVICE("V provozu"),
         CANCELED("Zrušeno"),
         TEMP_CANCELED("Dočasně zrušeno"),
@@ -40,7 +43,7 @@ public class CoffeeSiteStatus
         
         String siteStatus;
          
-        private CoffeeSiteStatusEnum(String siteStatus) {
+        CoffeeSiteStatusEnum(String siteStatus) {
             this.siteStatus = siteStatus;
         }
          

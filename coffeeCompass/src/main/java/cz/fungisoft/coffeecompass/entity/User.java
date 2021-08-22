@@ -19,17 +19,21 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import cz.fungisoft.coffeecompass.controller.models.AuthProviders;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
- 
+
 /**
  * Zakladni trida/entita/model pro uchovani udaju o uzivateli.
  * 
  * @author Michal Vaclavek
  */
 @Entity
+@javax.persistence.Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="user", schema="coffeecompass")
-public class User implements Serializable
-{ 
+public class User implements Serializable {
+
     private static final long serialVersionUID = -9006499187256143209L;
     
     public User() {
@@ -60,6 +64,7 @@ public class User implements Serializable
     private String email;
  
     @NotNull
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_to_user_profile", schema = "coffeecompass",
                joinColumns = { @JoinColumn(name = "user_id") }, 

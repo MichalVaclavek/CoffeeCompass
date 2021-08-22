@@ -6,27 +6,32 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import cz.fungisoft.coffeecompass.entity.User;
+import org.springframework.data.jpa.repository.QueryHints;
+
+import javax.persistence.QueryHint;
 
 /**
  * JpaRepository<User, Long> - Long znamena ze primarni klic pro User je typu Long
  */
-public interface UsersRepository extends JpaRepository<User, Long>, UsersRepositoryCustom
-{
+public interface UsersRepository extends JpaRepository<User, Long>, UsersRepositoryCustom {
+
+    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select u from User u where userName= ?1")
-    public Optional<User> searchByUsername(String userName);
-    
+    Optional<User> searchByUsername(String userName);
+
+    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select u from User u where email= ?1")
-    public Optional<User> searchByEmail(String email);
+    Optional<User> searchByEmail(String email);
     
     @Query("delete from User u where userName= ?1") 
-    public void deleteByUserName(String userName);
+    void deleteByUserName(String userName);
 
     @Query("select count(id) from User u")
-    public Long countAllUsers();
+    Long countAllUsers();
     
     @Query("select count(id) from User u WHERE u.enabled=true")
-    public Long countAllEnabledUsers();
+    Long countAllEnabledUsers();
     
     @Query("select count(id) from User u WHERE date(u.createdOn) > (current_date - 7) AND u.enabled=true")
-    public Long getNumOfUsersRegisteredLast7Days();
+    Long getNumOfUsersRegisteredLast7Days();
 }

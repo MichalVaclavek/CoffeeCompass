@@ -11,6 +11,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * Typ kelimku
@@ -20,11 +22,12 @@ import lombok.Data;
  */
 @Data
 @Entity
+@javax.persistence.Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="typ_kelimku", schema="coffeecompass")
-public class CupType
-{
-    public enum CupTypeEnum implements Serializable
-    {
+public class CupType {
+
+    public enum CupTypeEnum implements Serializable {
         PLASTIC("plastový"),
         PAPER("papírový"),
         CHINA("porcelán");

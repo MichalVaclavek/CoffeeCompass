@@ -12,6 +12,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * Cenovy rozsah.
@@ -20,9 +22,11 @@ import lombok.Data;
  */
 @Data
 @Entity
+@javax.persistence.Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="price_range", schema="coffeecompass")
-public class PriceRange
-{
+public class PriceRange {
+
     /* ======= INSTANCES VARIABLES ======== */
     
     @Id

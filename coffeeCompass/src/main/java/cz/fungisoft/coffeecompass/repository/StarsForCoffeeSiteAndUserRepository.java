@@ -4,22 +4,27 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import cz.fungisoft.coffeecompass.entity.StarsForCoffeeSiteAndUser;
+import org.springframework.data.jpa.repository.QueryHints;
+
+import javax.persistence.QueryHint;
 
 /**
  * Interface s metodami pro cteni z DB repository pro objekty typu StarsForCoffeeSiteAndUser.
  * 
  * @author Michal Vaclavek
  */
-public interface StarsForCoffeeSiteAndUserRepository extends JpaRepository<StarsForCoffeeSiteAndUser, Integer>
-{
+public interface StarsForCoffeeSiteAndUserRepository extends JpaRepository<StarsForCoffeeSiteAndUser, Integer> {
+
     @Query("select stcsu from StarsForCoffeeSiteAndUser stcsu where coffeeSite.id=?1 and user.id=?2")
-    public StarsForCoffeeSiteAndUser getOneStarEvalForSiteAndUser(Long coffeeSiteID, Long userID);
-    
+    StarsForCoffeeSiteAndUser getOneStarEvalForSiteAndUser(Long coffeeSiteID, Long userID);
+
+    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select avg(stars.numOfStars) from StarsForCoffeeSiteAndUser stcsu where coffeeSite.id=?1")
-    public double averageStarsForSiteID(Long coffeeSiteID);
-    
+    double averageStarsForSiteID(Long coffeeSiteID);
+
+    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select count(*) from StarsForCoffeeSiteAndUser stcsu where coffeeSite.id=?1")
-    public int getNumOfHodnoceniForSite(Long coffeeSiteID);
+    int getNumOfHodnoceniForSite(Long coffeeSiteID);
     
     /**
      * Gets average stars evaluation for one USer for all CoffeeSites the user evaluated.
@@ -27,11 +32,11 @@ public interface StarsForCoffeeSiteAndUserRepository extends JpaRepository<Stars
      * @return
      */
     @Query("select avg(stars.numOfStars) from StarsForCoffeeSiteAndUser stcsu where user.id=?1")
-    public double averageStarsForUserID(Long userID);
+    double averageStarsForUserID(Long userID);
     
     /**
      * Deletes stars evaluation of one User for one CoffeeSite
      */
     @Query("delete StarsForCoffeeSiteAndUser where coffeeSite.id=?1 and user.id=?1")
-    public void deleteStarsForSiteAndUser(Long coffeeSiteID, Long userID);
+    void deleteStarsForSiteAndUser(Long coffeeSiteID, Long userID);
 }

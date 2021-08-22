@@ -10,7 +10,7 @@ import cz.fungisoft.coffeecompass.entity.StatisticsToShow.DBReturnPair;
  * @author Michal Vaclavek
  *
  */
-public interface UsersRepositoryCustom
-{
-    public List<DBReturnPair> getTop5Users();
+public interface UsersRepositoryCustom {
+
+    List<DBReturnPair> getTop5Users();
 }

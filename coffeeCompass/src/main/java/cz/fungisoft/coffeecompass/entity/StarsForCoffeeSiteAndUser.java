@@ -15,6 +15,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * Trida/objekt pro hodncoeni daneho CoffeeSite jednim Userem. Reprezentuje jeden radek
@@ -24,25 +26,30 @@ import lombok.Data;
  */
 @Data
 @Entity
+@javax.persistence.Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="hodnoceni", schema="coffeecompass")
-public class StarsForCoffeeSiteAndUser
-{
+public class StarsForCoffeeSiteAndUser {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
 
     @NotNull
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
     
     @NotNull
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @ManyToOne
     @JoinColumn(name = "coffeesite_id", nullable = false)
     private CoffeeSite coffeeSite;
     
     @OneToOne
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "stars_id")
     private StarsQualityDescription stars;
     

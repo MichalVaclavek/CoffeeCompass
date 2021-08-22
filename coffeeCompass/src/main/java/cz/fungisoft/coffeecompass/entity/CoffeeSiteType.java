@@ -12,6 +12,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 
 /**
@@ -21,9 +23,10 @@ import lombok.Data;
  */
 @Data
 @Entity
+@javax.persistence.Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="typ_podniku", schema="coffeecompass")
-public class CoffeeSiteType
-{
+public class CoffeeSiteType {
 
     /* ======= INSTANCES VARIABLES ======== */
     

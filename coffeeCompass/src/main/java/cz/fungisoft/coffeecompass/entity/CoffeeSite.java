@@ -2,33 +2,12 @@ package cz.fungisoft.coffeecompass.entity;
 
 import lombok.Data;
 
-import javax.persistence.StoredProcedureParameter;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.ColumnResult;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
-import javax.persistence.NamedStoredProcedureQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.NamedStoredProcedureQueries;
-import javax.persistence.ParameterMode;
-import javax.persistence.SqlResultSetMapping;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.LazyToOne;
-import org.hibernate.annotations.LazyToOneOption;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -49,6 +28,8 @@ import java.util.Set;
  */
 @Data
 @Entity
+@javax.persistence.Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="coffee_site", schema="coffeecompass")
 @NamedStoredProcedureQueries({   
     @NamedStoredProcedureQuery(
@@ -164,73 +145,80 @@ public class CoffeeSite {
     /* **** MANY TO ONE relations **** */
     
     @ManyToOne(fetch = FetchType.LAZY)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "status_zaznamu_id")
     private CoffeeSiteRecordStatus recordStatus;
     
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "zadal_user_id")
     private User originalUser;
     
     @ManyToOne(fetch = FetchType.LAZY)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "naposledy_upravil_user_id")
     private User lastEditUser;
     
     @ManyToOne(fetch = FetchType.LAZY)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "smazal_user_id")
     private User canceledUser;
     
     @ManyToOne(fetch = FetchType.LAZY)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "typ_podniku_id")
     private CoffeeSiteType typPodniku;
     
     @ManyToOne(fetch = FetchType.LAZY)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "status_zarizeni_id")
     private CoffeeSiteStatus statusZarizeni;
     
     @ManyToOne(fetch = FetchType.LAZY)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "dodavatel_jmeno_podniku_id")
     private Company dodavatelPodnik;  
     
     @ManyToOne(fetch = FetchType.LAZY)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "cena_id")
     private PriceRange cena;
     
     @ManyToOne(fetch = FetchType.LAZY)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "typ_lokality_id")
     private SiteLocationType typLokality;
     
     /* **** MANY TO MANY relations **** */
-    
+
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @ManyToMany(fetch= FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(name = "coffee_site_to_typ_kelimku", schema="coffeecompass",
                    joinColumns = { @JoinColumn(name = "coffee_site_id") }, 
                       inverseJoinColumns = { @JoinColumn(name = "typ_kelimku_id") })
     private Set<CupType> cupTypes = new HashSet<>();
-    
+
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @ManyToMany(fetch= FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(name = "coffee_site_to_nabidka", schema="coffeecompass",
                    joinColumns = { @JoinColumn(name = "id_mainsitetab") }, 
                       inverseJoinColumns = { @JoinColumn(name = "id_nabidka") })
     private Set<OtherOffer> otherOffers = new HashSet<>();
 
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @ManyToMany(fetch= FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(name = "coffee_site_to_dalsi_automat_vedle", schema="coffeecompass",
                     joinColumns = { @JoinColumn(name = "id_mainsitetab") }, 
                        inverseJoinColumns = { @JoinColumn(name = "id_dalsi_automat") })
     private Set<NextToMachineType> nextToMachineTypes = new HashSet<>();
-    
+
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @ManyToMany(fetch= FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(name = "coffee_site_to_druhy_kavy", schema="coffeecompass",
                     joinColumns = { @JoinColumn(name = "coffee_site_id") }, 
                        inverseJoinColumns = { @JoinColumn(name = "druhy_kavy_id") })
     private Set<CoffeeSort> coffeeSorts = new HashSet<>();      
-    
-    /* **** ONE TO ONE relations **** */
-    
-    @OneToOne(mappedBy = "coffeeSite", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @LazyToOne(LazyToOneOption.NO_PROXY)
-    private Image image;
     
     /* **** ONE TO MANY relations **** */
     /**
@@ -240,9 +228,11 @@ public class CoffeeSite {
      * si uzivatel zobrazi informace o jednom CoffeeSite.
      * Nebude se tedy ziskavat cely seznam commentu pri kazdem dotazu na CoffeeSite.???
      * */
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @OneToMany(mappedBy="coffeeSite", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
-    
+
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @OneToMany(mappedBy="coffeeSite", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<StarsForCoffeeSiteAndUser> ratings = new ArrayList<>();
 }

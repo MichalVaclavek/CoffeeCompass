@@ -14,6 +14,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * Druh kavy. Obsahuje i výčet konstantních hodnot, které odpovídají hodnotám v DB.
@@ -23,9 +25,11 @@ import lombok.Data;
  */
 @Data
 @Entity
+@javax.persistence.Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="druhy_kavy", schema="coffeecompass")
-public class CoffeeSort
-{
+public class CoffeeSort {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -36,8 +40,7 @@ public class CoffeeSort
     private String coffeeSort;
    
     /* CONST FOR BASIC COFFEESORT INNER STATIC CLASS */
-    public enum CoffeeSortEnum implements Serializable
-    {
+    public enum CoffeeSortEnum implements Serializable {
         ESPRESSO("espresso"),
         FILTERED("překapávaná"),
         INSTANT("instantní"),
@@ -46,7 +49,7 @@ public class CoffeeSort
         
         String coffeeType;
          
-        private CoffeeSortEnum(String cfType) {
+        CoffeeSortEnum(String cfType) {
             this.coffeeType = cfType;
         }
          

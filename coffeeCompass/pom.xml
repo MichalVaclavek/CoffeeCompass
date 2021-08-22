@@ -238,17 +238,42 @@
 			<version>6.8.1</version>
 		</dependency>
 		
-		<!-- Google Maps Services client - used for Geocoding resolvin town from coordinates  -->
+		<!-- Google Maps Services client - used for Geocoding resolving town from coordinates  -->
 		<dependency>
   			<groupId>com.google.maps</groupId>
   			<artifactId>google-maps-services</artifactId>
   			<version>0.17.0</version>
 		</dependency>
 
-	</dependencies>
-	
+		<!-- Hibernate's L2 caching  -->
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-cache</artifactId>-->
+<!--		</dependency>-->
+		<!-- Hibernate's L2 caching  -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-ehcache</artifactId>
+			<version>5.4.21.Final</version>
+		</dependency>
 
-	<!-- Plugin, ktery umi, mimo jine, pracovat napr. s -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-jcache</artifactId>
+			<version>5.4.21.Final</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>3.8.1</version>
+			<scope>runtime</scope>
+		</dependency>
+
+	</dependencies>
+
+
+<!-- Plugin, ktery umi, mimo jine, pracovat napr. s -->
 	<!-- knihovnou lombok, ktera generuje casti kodu jako -->
 	<!-- konstruktory a getters a setters -->
 	<build>

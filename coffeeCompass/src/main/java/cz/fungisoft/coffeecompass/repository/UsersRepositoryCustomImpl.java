@@ -22,8 +22,8 @@ import cz.fungisoft.coffeecompass.entity.StatisticsToShow.DBReturnPair;
  */
 @Repository
 @Transactional
-public class UsersRepositoryCustomImpl implements UsersRepositoryCustom
-{
+public class UsersRepositoryCustomImpl implements UsersRepositoryCustom {
+
     @PersistenceContext
     private EntityManager em;
     

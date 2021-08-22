@@ -2,13 +2,17 @@ package cz.fungisoft.coffeecompass.repository;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 
+import javax.persistence.QueryHint;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Zakladni Repository trida pro CoffeeSite objekt.
@@ -30,6 +34,18 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
 
     @Query("select cs from CoffeeSite cs where siteName=?1")
     CoffeeSite searchByName(String name);
+
+    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+    @Override
+    List<CoffeeSite> findAll();
+
+    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+    @Override
+    List<CoffeeSite> findAll(Sort sort);
+
+    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+    @Override
+    Optional<CoffeeSite> findById(Long id);
 
     @Query(nativeQuery = true, value = "SELECT count(*) FROM coffee_site") // SQL
     long countItems();
@@ -56,13 +72,6 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
      */
     @Query("select count(id) from CoffeeSite cs where cs.recordStatus.status='ACTIVE'")
     Long getNumOfAllActiveSites();
-
-    /**
-     * Returns number of CoffeeSites which will be returned in case of 'Offline mode' download request
-     * @return
-     */
-//    @Query("select count(id) from CoffeeSite cs where NOT cs.recordStatus.status='CANCELED'")
-//    Long getNumOfSitesToDownload();
 
     @Query("select count(id) from CoffeeSite cs where date(cs.createdOn) = current_date")
     Long getNumOfSitesCreatedToday();
