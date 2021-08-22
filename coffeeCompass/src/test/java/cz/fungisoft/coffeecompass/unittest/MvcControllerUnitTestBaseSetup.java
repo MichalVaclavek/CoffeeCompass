@@ -1,5 +1,6 @@
 package cz.fungisoft.coffeecompass.unittest;
 
+import cz.fungisoft.coffeecompass.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -10,20 +11,6 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.web.context.WebApplicationContext;
 
 import cz.fungisoft.coffeecompass.security.JwtTokenProviderService;
-import cz.fungisoft.coffeecompass.service.CSRecordStatusService;
-import cz.fungisoft.coffeecompass.service.CSStatusService;
-import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
-import cz.fungisoft.coffeecompass.service.CoffeeSiteTypeService;
-import cz.fungisoft.coffeecompass.service.CoffeeSortService;
-import cz.fungisoft.coffeecompass.service.CupTypeService;
-import cz.fungisoft.coffeecompass.service.IContactMeMessageService;
-import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
-import cz.fungisoft.coffeecompass.service.NextToMachineTypeService;
-import cz.fungisoft.coffeecompass.service.OtherOfferService;
-import cz.fungisoft.coffeecompass.service.PriceRangeService;
-import cz.fungisoft.coffeecompass.service.SiteLocationTypeService;
-import cz.fungisoft.coffeecompass.service.StarsQualityService;
-import cz.fungisoft.coffeecompass.service.StatisticsInfoService;
 import cz.fungisoft.coffeecompass.service.comment.ICommentService;
 import cz.fungisoft.coffeecompass.service.image.ImageResizeAndRotateService;
 import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
@@ -146,5 +133,8 @@ public abstract class MvcControllerUnitTestBaseSetup {
     
     @MockBean
     protected PushNotificationService pushNotificationService;
+
+    @MockBean
+    protected DataDownloadSizeService dataDownloadSizeService;
     
 }

@@ -49,8 +49,18 @@
                 <a sec:authorize="hasRole('ADMIN')" th:href="@{/user/all}" th:text="#{mainmenu.allusers}" class="w3-bar-item w3-button">Users</a>
                 <!-- link to show all sites, for admin user user, with loader image after click -->
 				<!--<div sec:authorize="hasAnyRole('USER', 'ADMIN', 'DBA')" -->
-				<div th:onclick="'javascript:referenceClickedWithLoaderImage(\'' + '/allSitesPaginated/?orderBy=createdOn&direction=desc&page=1&size=20' + '\');'"
-				     th:text="#{mainmenu.allsites}" class="w3-bar-item w3-button">To show all Coffee sites</div>
+<!--				<div th:onclick="'javascript:referenceClickedWithLoaderImage(\'' + '/allSitesInMap' + '\');'"-->
+<!--				     th:text="#{mainmenu.allsites}" class="w3-bar-item w3-button">To show all Coffee sites</div>-->
+
+			   <div class="w3-dropdown-hover">
+				   <button class="w3-button" th:text="#{mainmenu.allsites}">Hover Over Me!</button>
+				   <div class="w3-dropdown-content w3-bar-block w3-border">
+					   <a th:onclick="'javascript:referenceClickedWithLoaderImage(\'' + '/allSitesInMap' + '\');'"
+						  th:text="#{mainmenu.allsites.map}" class="w3-bar-item w3-button">Link 1</a>
+					   <a th:onclick="'javascript:referenceClickedWithLoaderImage(\'' + '/allSitesPaginated/?orderBy=createdOn&direction=desc&page=1&size=20' + '\');'"
+						  th:text="#{mainmenu.allsites.table}" class="w3-bar-item w3-button">Link 2</a>
+				   </div>
+			   </div>
 				      
                 <div sec:authorize="hasAnyRole('USER', 'ADMIN', 'DBA')"
                      th:onclick="'javascript:referenceClickedWithLoaderImage(\'' + '/mySitesPaginated/?page=1&size=15' + '\');'"

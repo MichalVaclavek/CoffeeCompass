@@ -16,12 +16,8 @@ import cz.fungisoft.coffeecompass.entity.StatisticsToShow.DBReturnPair;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
 import cz.fungisoft.coffeecompass.repository.UsersRepository;
 
-//@RunWith(SpringRunner.class)
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-//@AutoConfigureMockMvc
-//@Log4j2
-//TODO Create some CoffeeSites and Users into DB first
 class StatisticsTest {
     
     @Autowired
@@ -33,7 +29,6 @@ class StatisticsTest {
     private StatisticsToShow statsToShow;
     
     @Test
-    @Disabled
     void testStatistics() {
         statsToShow = new StatisticsToShow();
         
