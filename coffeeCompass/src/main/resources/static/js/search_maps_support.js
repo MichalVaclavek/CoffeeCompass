@@ -10,6 +10,15 @@ var lonSearchLabel; /* field to show current searching point longitude */
 var rangeSearchLabel; /* field to show current searching range in m */ 
 
 var souradnice = []; /* souradnice vsech bodu/znacek v mape */
+var allSites = []; // all found sites
+var markers = []; // all site's standard markers
+var markersSelected = []; // all site's markers when selected
+var markerCards = []; // cards - vizitka, for all sites (for their markers)
+var markerCardsBodyText = []; // body text of the card - includes link to site's image
+
+var base_url = window.location.origin;
+
+var lastSelectedMarkerID = -1;
 
 /**
  * Creates map with movable marker on the lat1, lon1 input coordinates
@@ -28,12 +37,11 @@ createMap = function(lat1, lon1) {
 	 m.addControl(mouse); 
 	   
 	 layer = new SMap.Layer.Marker();
-	 m.addLayer(layer);
-	   
+
 	 var card = new SMap.Card();
 	 card.getHeader().innerHTML = "Střed hledání, přesuň mě!";
 	
-	 var marker = new SMap.Marker(center);
+	 var marker = new SMap.Marker(center); // movable Marker to select center of searching
 	 marker.decorate(SMap.Marker.Feature.Card, card);
 	 marker.decorate(SMap.Marker.Feature.Draggable);
 	 layer.addMarker(marker);
@@ -88,6 +96,24 @@ map.create = function(aLatSearchInput, aLonSearchInput, aLatSearchLabel, aLonSea
 	 createMap(latInit, lonInit);
 }
 
+getNormalMarkerImage = function(site) {
+    var options = {
+				url: base_url + "/images/cup_basic_16px.png", /* cesta k /src/resources/images/cup.png v resourcech */
+				title: site.siteName,
+				anchor: {left:10, bottom: 10}  /* Ukotvení značky za bod uprostřed dole */
+			}
+	return options;
+}
+
+getSelectedMarkerImage = function(site) {
+    var options = {
+				url: base_url + "/images/cup_red2_16px.png", /* cesta k /src/resources/images/cup.png v resourcech */
+				title: site.siteName,
+				anchor: {left:10, bottom: 10}  /* Ukotvení značky za bod uprostřed dole */
+			}
+	return options;
+}
+
 /*
  * Inserts all CoffeeSites geo coordinates into the map as markers/icons
  * with CoffeeSite image and some additional info to be shown on
@@ -97,58 +123,93 @@ map.insertSites = function(foundSites)
 {
 	if (foundSites != null && foundSites.length > 0)
 	{	     		     	
+		allSites = foundSites;
 		// vytvoreni markeru pro kazdy site
 		foundSites.forEach(function(site) {
 			var c = SMap.Coords.fromWGS84(site.zemDelka, site.zemSirka); /* Souřadnice značky, z textového formátu souřadnic */
-		  
-			var base_url = window.location.origin;
-			
-			var options = {
-				url: base_url + "/images/cup_basic.png", /* cesta k /src/resources/images/cup.png v resourcech */	
-				title: site.siteName, 
-				anchor: {left:10, bottom: 1}  /* Ukotvení značky za bod uprostřed dole */
-			}
-			
-			// prirazeni id jednotlivemu markeru - vlastni id, jinak se generuje nahodne
-			var znacka = new SMap.Marker(c, site.id, options);
-			var card = new SMap.Card();
-			
-			var headerText = "<b><span style='display:block;text-align:center; margin-bottom:10px;'>" + site.siteName + "</span></b>";
-			
-			card.getHeader().innerHTML = headerText;
-			
-			var bodyImage = "";
-			
-			if (!(site.mainImageURL === "")) { 
-				bodyImage = "<img style='height:240px;' src='" + site.mainImageURL + "'/>";
-				bodyImage += "<br><br>"; // to create space above text, because of rotated image
-			}
-			
-			var textVizitka = bodyImage 
-							  + site.typPodniku.coffeeSiteType + ", " + site.typLokality.locationType + "<br>" 
-							  + site.statusZarizeni.status + "<br>"
-							  + "hodnoceni: " + site.averageStarsWithNumOfHodnoceni.common + "<br>";
-			if (site.distFromSearchPoint > 0) {
-				textVizitka += "vzdálenost: " + site.distFromSearchPoint + " m";
-			}
-			
-			card.getBody().innerHTML = textVizitka;
-			
-			// Inserts link to CoffeeSite details page
-			var footerText = "<a href='" + base_url + "/showSite/"; 
-			footerText += site.id + "'>Další detaily ...</a>";
-			
-			card.getFooter().innerHTML = footerText;
-	
-			znacka.decorate(SMap.Marker.Feature.Card, card);
-			
+
+		    // prirazeni id jednotlivemu markeru - vlastni id, jinak se generuje nahodne
+			var znacka = new SMap.Marker(c, site.id, getNormalMarkerImage(site));
+            var znackaSelected = new SMap.Marker(c, site.id, getSelectedMarkerImage(site));
+
+			createMarkerCards(site);
+
 			souradnice.push(c);
-			layer.addMarker(znacka);
+
+			markers.push(znacka);
+            markersSelected.push(znackaSelected);
 		});
-	
+
+	    layer.addMarker(markers);
+	    m.addLayer(layer);
+
 		var cz = m.computeCenterZoom(souradnice); /* Spočítat pozici mapy tak, aby v3echny značky byly vidět */
 		m.setCenterZoom(cz[0], cz[1]);
+
+		// poslouchani na kliknuti u markeru
+        m.getSignals().addListener(this, "marker-click", function(e) {
+            // vybrany marker
+            var marker = e.target;
+            var id = marker.getId();
+
+            // zobrazit data o lokaci v tab. - parovani vybraneho markeru pomoci jeho id a nasich vstupnich dat
+            for (var i = 0; i < markers.length; i++) {
+                if (allSites[i].id == id) {
+                    var card = markerCards[i];
+                    card.getBody().innerHTML = markerCardsBodyText[i];
+                    // remove standard marker for currently selected marker
+                    layer.removeMarker(markers[i]);
+                    // insert selected marker for currently selected marker
+                    layer.addMarker(markersSelected[i]);
+                    markersSelected[i].decorate(SMap.Marker.Feature.Card, card);
+
+                    if (lastSelectedMarkerID != -1) {
+                        // remove selected marker for previously selected marker
+                        layer.removeMarker(markersSelected[lastSelectedMarkerID]);
+                        // insert standard marker for previously selected marker
+                        layer.addMarker(markers[lastSelectedMarkerID]);
+                    }
+
+                    m.addCard(card, markersSelected[i].getCoords()); // to show card immediately after the click
+
+                    lastSelectedMarkerID = i;
+                    break;
+                }
+            }
+        });
 	}
+}
+
+createMarkerCards = function(site) {
+    var card = new SMap.Card();
+
+    var headerText = "<b><span style='display:block;text-align:center; margin-bottom:10px;'>" + site.siteName + "</span></b>";
+
+    card.getHeader().innerHTML = headerText;
+
+    var bodyImage = "";
+
+    if (!(site.mainImageURL === "")) {
+        bodyImage = "<img style='height:240px;' src='" + site.mainImageURL + "'/>";
+        bodyImage += "<br><br>"; // to create space above text, because of rotated image
+    }
+
+    var textVizitka = bodyImage
+                      + site.typPodniku.coffeeSiteType + ", " + site.typLokality.locationType + "<br>"
+                      + site.statusZarizeni.status + "<br>"
+                      + "hodnoceni: " + site.averageStarsWithNumOfHodnoceni.common + "<br>";
+    if (site.distFromSearchPoint > 0) {
+        textVizitka += "vzdálenost: " + site.distFromSearchPoint + " m";
+    }
+
+    // Inserts link to CoffeeSite details page
+    var footerText = "<a href='" + base_url + "/showSite/";
+    footerText += site.id + "'>Další detaily ...</a>";
+
+    card.getFooter().innerHTML = footerText;
+
+    markerCards.push(card);
+    markerCardsBodyText.push(textVizitka);
 }
 
 

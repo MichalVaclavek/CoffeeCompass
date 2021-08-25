@@ -43,8 +43,7 @@ import lombok.extern.log4j.Log4j2;
 @Repository
 @Transactional
 @Log4j2
-public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom
-{
+public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
     /*
      * Skoro vSechny vyhledavaci SQL query v teto tride budou mit stejny tvar. Na zacatku SELECT vsech polozek z coffeecompass.coffee_site tab. a na konci
      * omezeni podle geograficke polohy pomoci podminky s ulozenou procedurou. Proto se tento dotaz bude rozdelovat na 3 casti,

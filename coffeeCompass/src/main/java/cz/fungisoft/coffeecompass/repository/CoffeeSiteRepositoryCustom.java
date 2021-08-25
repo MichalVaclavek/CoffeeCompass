@@ -20,8 +20,8 @@ import cz.fungisoft.coffeecompass.entity.StatisticsToShow.DBReturnPair;
  *  
  * @author Michal Vaclavek
  */
-public interface CoffeeSiteRepositoryCustom 
-{    
+public interface CoffeeSiteRepositoryCustom {
+
    /**
     * Vyhledani vsech CoffeeSites od bodu sirka, delka v rozmezi meters pomoci ulozene DB procedury.
     * 
@@ -30,7 +30,7 @@ public interface CoffeeSiteRepositoryCustom
     * @param rangeMeters
     * @return
     */
-    public List<CoffeeSite> findSitesWithinRangeByProcedure(double sirka, double delka, long rangeMeters);   
+    List<CoffeeSite> findSitesWithinRangeByProcedure(double sirka, double delka, long rangeMeters);
    
     /**
      * Vyhledani vsech CoffeeSites od bodu sirka, delka v rozmezi meters pomoci NamedQuery a EntityManageru.
@@ -40,7 +40,7 @@ public interface CoffeeSiteRepositoryCustom
      * @param rangeMeters
      * @return
      */
-    public List<CoffeeSite> findSitesWithinRange(double sirka, double delka, long rangeMeters);  
+    List<CoffeeSite> findSitesWithinRange(double sirka, double delka, long rangeMeters);
     
     /**
      * Vyhledani vsech CoffeeSites od bodu sirka, delka v rozmezi meters a s typem kavy,
@@ -52,13 +52,13 @@ public interface CoffeeSiteRepositoryCustom
      *
      * @return
      */
-    public List<CoffeeSite> findSitesWithStatus(double sirka, double delka, long rangeMeters, CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus);
+    List<CoffeeSite> findSitesWithStatus(double sirka, double delka, long rangeMeters, CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus);
 
-    public List<CoffeeSite> findSitesWithCoffeeSort(double sirka, double delka, long rangeMeters, CoffeeSort sort, CoffeeSiteRecordStatus csRecordStatus);
+    List<CoffeeSite> findSitesWithCoffeeSort(double sirka, double delka, long rangeMeters, CoffeeSort sort, CoffeeSiteRecordStatus csRecordStatus);
 
-    public List<CoffeeSite> findSitesWithRecordStatus(double sirka, double delka, long rangeMeters, CoffeeSiteRecordStatus csRecordStatus);
+    List<CoffeeSite> findSitesWithRecordStatus(double sirka, double delka, long rangeMeters, CoffeeSiteRecordStatus csRecordStatus);
 
-    public List<CoffeeSite> findSitesWithCoffeeSortAndSiteStatus(double sirka, double delka, long rangeMeters, CoffeeSort sort,
+    List<CoffeeSite> findSitesWithCoffeeSortAndSiteStatus(double sirka, double delka, long rangeMeters, CoffeeSort sort,
                                                                  CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus);
     /**
      * Varianta zakladniho dotazu, kdy se k zakladnim vyhledavacim parametrum, jako je poloha, pridava jeste vyhledavani podle:
@@ -78,18 +78,18 @@ public interface CoffeeSiteRepositoryCustom
      *
      * @return
      */
-    public List<CoffeeSite> findSitesWithSortAndSiteStatusAndRangeAndCity(double sirka, double delka, long rangeMeters,
+    List<CoffeeSite> findSitesWithSortAndSiteStatusAndRangeAndCity(double sirka, double delka, long rangeMeters,
                                                                           CoffeeSort sort,
                                                                           CoffeeSiteStatus siteStatus,
                                                                           CoffeeSiteRecordStatus csRecordStatus,
                                                                           String cityName);
     
-    public Long countNumOfSitesInGivenState(CoffeeSiteRecordStatus csRecordStatus);
+    Long countNumOfSitesInGivenState(CoffeeSiteRecordStatus csRecordStatus);
     
     /**
      * Gets 5 cities with most ACTIVE CoffeeSites
      * 
      * @return
      */
-     public List<DBReturnPair> getTop5CityNames();
+     List<DBReturnPair> getTop5CityNames();
 }

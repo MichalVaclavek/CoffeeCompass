@@ -187,7 +187,16 @@ public class CoffeeSiteController {
     public ModelAndView allSitesInMap() {
         ModelAndView mav = new ModelAndView();
 
-        List<CoffeeSiteDTO> allCoffeeSites = coffeeSiteService.findAll("createdOn", "DESC");
+        List<CoffeeSiteDTO> allCoffeeSites;
+
+        Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
+
+        if (loggedInUser.isPresent() &&  userService.hasADMINorDBARole(loggedInUser.get())) {
+            allCoffeeSites = coffeeSiteService.findAll("createdOn", "DESC");
+        } else {
+            allCoffeeSites = coffeeSiteService.findAllWithRecordStatus(CoffeeSiteRecordStatusEnum.ACTIVE);
+        }
+
         mav.addObject("allSites", allCoffeeSites);
 
         mav.setViewName("coffeesites_all_map");
