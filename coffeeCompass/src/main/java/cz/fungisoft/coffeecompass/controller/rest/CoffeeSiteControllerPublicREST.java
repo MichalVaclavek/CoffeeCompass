@@ -1,5 +1,6 @@
 package cz.fungisoft.coffeecompass.controller.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,12 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
@@ -43,6 +39,7 @@ import cz.fungisoft.coffeecompass.service.PriceRangeService;
 import cz.fungisoft.coffeecompass.service.SiteLocationTypeService;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
 import io.swagger.annotations.Api;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -257,6 +254,27 @@ public class CoffeeSiteControllerPublicREST {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else
             return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * Method to handle request to show all CoffeeSites of one town.<br>
+     *
+     * Returns list of found CoffeeSites in town.
+     *
+     * @param townName jmeno mesta, ve kterem se maji hledat CoffeeSites, inserted like URL parameter.
+     * @return list of found CoffeeSites in town
+     */
+    @GetMapping("/getSitesInTown/") // napr.  https://coffeecompass.cz/rest/site/getSitesInTown/?townName=Tišnov
+    public ResponseEntity<List<CoffeeSiteDTO>> sitesInTown(@RequestParam(value="townName", defaultValue="") String townName) {
+
+        List<CoffeeSiteDTO> foundSites = new ArrayList<>();
+
+        if (!townName.trim().isEmpty()) {
+            foundSites = coffeeSiteService.findAllByCityNameExactly(townName);
+        }
+
+        return (foundSites.isEmpty()) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                                      : new ResponseEntity<>(foundSites, HttpStatus.OK);
     }
     
     

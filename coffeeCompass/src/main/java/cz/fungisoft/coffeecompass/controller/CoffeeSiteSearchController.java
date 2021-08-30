@@ -229,7 +229,8 @@ public class CoffeeSiteSearchController {
     * entry point for "city" searching Form on 'coffeesite_search.html' page.
     * 
     * @param cityName - jmeno mesta z home.html ze statistiky mest s nejvetsim poctem aktivnich CoffeeSites
-    * @return opet ModelAndView pro vyhledavaci stranku, s presmerovanim na "/searchSitesInCityForm" s parametry "cityName" a "searchCityNameExactly", ktery urcuje, ze se CoffeeSites maji hledat, tak aby jejich atribut mesto byl presne shodny s "cityName"
+    * @return opet ModelAndView pro vyhledavaci stranku, s presmerovanim na "/searchSitesInCityForm" s parametry "cityName" a "searchCityNameExactly",
+    * ktery urcuje, ze se CoffeeSites maji hledat, tak aby jejich atribut mesto byl presne shodny s "cityName"
     */
    @GetMapping("/showCitySites/") // napr. http://coffeecompass.cz/showCitySites/?cityName=Tišnov
    public ModelAndView  showCitySites(@RequestParam(value="cityName", defaultValue="") String cityName) {
