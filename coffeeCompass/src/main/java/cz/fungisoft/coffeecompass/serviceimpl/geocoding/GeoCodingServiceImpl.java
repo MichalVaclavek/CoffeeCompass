@@ -170,5 +170,4 @@ public class GeoCodingServiceImpl implements GeoCodingService {
         }
         return result;
     }
-
 }

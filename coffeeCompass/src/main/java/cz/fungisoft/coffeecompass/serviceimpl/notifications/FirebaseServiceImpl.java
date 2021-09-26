@@ -158,5 +158,4 @@ public class FirebaseServiceImpl implements FirebaseNotificationService {
                 .setApnsConfig(apnsConfig).setAndroidConfig(androidConfig).setNotification(
                         new Notification(request.getTitle(), request.getMessage()));
     }
-
 }

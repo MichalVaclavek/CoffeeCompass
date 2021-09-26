@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
  *
  */
 public interface ImageStorageService {
+
     /**
      * Save Image and return db ID of the saved image.
      * This is version used for saving Image inserted via web form in Thymeleaf
@@ -38,7 +39,7 @@ public interface ImageStorageService {
      */
     Integer storeImageFile(MultipartFile file, Long siteID, boolean resize);
     
-    public void saveImageToDB(Image image);
+    void saveImageToDB(Image image);
 
     Image getImageById(Integer imageID);
     String getImageAsBase64(Integer imageID);

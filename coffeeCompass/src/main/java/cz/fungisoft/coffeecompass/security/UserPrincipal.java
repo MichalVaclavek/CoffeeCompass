@@ -22,11 +22,8 @@ import cz.fungisoft.coffeecompass.entity.UserProfile;
  * @author https://www.callicoder.com/spring-boot-security-oauth2-social-login-part-2/
  * @author Michal Václavek
  */
-public class UserPrincipal implements OAuth2User, UserDetails
-{
-    /**
-     * 
-     */
+public class UserPrincipal implements OAuth2User, UserDetails {
+
     private static final long serialVersionUID = 2750856799274399097L;
     
     private Long id;

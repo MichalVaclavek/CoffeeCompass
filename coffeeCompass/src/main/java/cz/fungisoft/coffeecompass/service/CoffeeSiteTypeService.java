@@ -4,8 +4,8 @@ import java.util.List;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteType;
 
-public interface CoffeeSiteTypeService
-{
-    public CoffeeSiteType findCoffeeSiteTypeByName(String coffeeSiteType);
-    public List<CoffeeSiteType> getAllCoffeeSiteTypes();
+public interface CoffeeSiteTypeService {
+
+    CoffeeSiteType findCoffeeSiteTypeByName(String coffeeSiteType);
+    List<CoffeeSiteType> getAllCoffeeSiteTypes();
 }

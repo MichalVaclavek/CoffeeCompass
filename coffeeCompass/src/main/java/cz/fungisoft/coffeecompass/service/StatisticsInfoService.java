@@ -10,16 +10,16 @@ import cz.fungisoft.coffeecompass.entity.StatisticsToShow;
  * @author Michal Vaclavek
  *
  */
-public interface StatisticsInfoService
-{
+public interface StatisticsInfoService {
+
     /**
      * Gets all current statistical data.
      * 
      * @return
      */
-    public StatisticsToShow getCurrentStatisticalInfoToShow();
+    StatisticsToShow getCurrentStatisticalInfoToShow();
     
-    public DiagnosticData getCurrentDiagnosticData();
+    DiagnosticData getCurrentDiagnosticData();
     
-    public void saveDiagnosticData(DiagnosticData diagData);
+    void saveDiagnosticData(DiagnosticData diagData);
 }

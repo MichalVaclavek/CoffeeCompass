@@ -15,7 +15,7 @@ import cz.fungisoft.coffeecompass.service.SiteLocationTypeService;
 @Transactional
 public class SiteLocationTypeServiceImpl implements SiteLocationTypeService {
 
-    private SiteLocationTypeRepository siteLocTypeRepo;
+    private final SiteLocationTypeRepository siteLocTypeRepo;
     
     @Autowired
     public SiteLocationTypeServiceImpl(SiteLocationTypeRepository siteLocTypeRepo) {

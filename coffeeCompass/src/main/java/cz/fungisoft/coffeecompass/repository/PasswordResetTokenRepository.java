@@ -11,11 +11,11 @@ import cz.fungisoft.coffeecompass.entity.User;
  * @author Michal Vaclavek
  *
  */
-public interface PasswordResetTokenRepository extends JpaRepository<PasswordResetToken, Long>
-{
-    public PasswordResetToken findByToken(String token);
+public interface PasswordResetTokenRepository extends JpaRepository<PasswordResetToken, Long> {
+
+    PasswordResetToken findByToken(String token);
     
-    public PasswordResetToken findByUser(User user);
+    PasswordResetToken findByUser(User user);
     
-    public void deleteByToken(String token);
+    void deleteByToken(String token);
 }

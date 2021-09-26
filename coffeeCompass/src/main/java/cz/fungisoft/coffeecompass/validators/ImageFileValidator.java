@@ -87,5 +87,4 @@ public class ImageFileValidator implements ConstraintValidator<ImageFileValidato
     private boolean isAcceptableSize(MultipartFile file) {
         return file.getSize() <= maxFileSize;
     }
- 
 }

@@ -20,8 +20,8 @@ import lombok.Data;
  */
 @Data
 @PasswordMatches
-public class UserDTO
-{
+public class UserDTO {
+
     private Long id; 
      
     @Size(min=3, max=30)

@@ -64,7 +64,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
 
     private static final String ERROR_SAVING_SITES = "Error saving list of CoffeeSites.";
 
-    private CoffeeSiteRepository coffeeSiteRepo;
+    private final CoffeeSiteRepository coffeeSiteRepo;
     
     @Autowired
     private CoffeeSitePageableRepository coffeeSitePaginatedRepo;
@@ -136,8 +136,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         site.setVisible(isVisible(site));
         site.setCanBeCommented(canBeCommented(site));
         site.setCanBeRatedByStars(canBeRateByStars(site));
-        //site.setAnyOtherSiteActiveOnSamePosition(isLocationAlreadyOccupiedByActiveSite(site.getZemSirka(), site.getZemDelka(), 5, site.getId()));
-        
+
         site.setMainImageURL(getMainImageURL(site));
         
         return site;
@@ -925,7 +924,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         return new PageImpl<>(list, PageRequest.of(currentPage, pageSize), coffeeSitesList.size());
     }
 
-   
     
     //TODO dalsi vyhledavaci metody podle ruznych kriterii?
     // CriteriaQuery a CriteriaQueryBuilder

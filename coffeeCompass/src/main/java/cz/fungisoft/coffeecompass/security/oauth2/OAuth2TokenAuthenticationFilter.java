@@ -28,11 +28,11 @@ import java.io.IOException;
  *
  */
 @Log4j2
-public class OAuth2TokenAuthenticationFilter extends OncePerRequestFilter
-{
-    private JwtTokenProviderService jwtTokenProviderService;
+public class OAuth2TokenAuthenticationFilter extends OncePerRequestFilter {
 
-    private CustomUserDetailsService customUserDetailsService;
+    private final JwtTokenProviderService jwtTokenProviderService;
+
+    private final CustomUserDetailsService customUserDetailsService;
 
     
     @Autowired
@@ -72,5 +72,4 @@ public class OAuth2TokenAuthenticationFilter extends OncePerRequestFilter
         }
         return null;
     }
-
 }

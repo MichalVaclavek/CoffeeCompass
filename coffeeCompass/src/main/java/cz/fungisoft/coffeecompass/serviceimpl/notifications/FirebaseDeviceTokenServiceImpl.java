@@ -24,7 +24,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class FirebaseDeviceTokenServiceImpl implements FirebaseDeviceTokenService {
 
-    private FirebaseDeviceTokenRepository firebaseDeviceTokenRepository;
+    private final FirebaseDeviceTokenRepository firebaseDeviceTokenRepository;
     
     
     public FirebaseDeviceTokenServiceImpl(FirebaseDeviceTokenRepository firebaseDeviceTokenRepository) {
@@ -60,5 +60,4 @@ public class FirebaseDeviceTokenServiceImpl implements FirebaseDeviceTokenServic
         firebaseDeviceTokenRepository.deleteToken(token);
         log.info("Firebase token deleted. Token: {}", token);
     }
-
 }

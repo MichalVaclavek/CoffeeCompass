@@ -15,7 +15,7 @@ import cz.fungisoft.coffeecompass.service.StarsQualityService;
 @Transactional
 public class StarsQualityServiceImpl implements StarsQualityService {
 
-    private StarsQualityDescriptionRepository starsQaulityRepo;
+    private final StarsQualityDescriptionRepository starsQaulityRepo;
         
     @Autowired
     public StarsQualityServiceImpl(StarsQualityDescriptionRepository starsQaulityRepo) {

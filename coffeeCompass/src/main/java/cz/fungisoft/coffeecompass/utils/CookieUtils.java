@@ -14,8 +14,8 @@ import java.util.Optional;
  * @author https://www.callicoder.com/spring-boot-security-oauth2-social-login-part-2/
  *
  */
-public class CookieUtils
-{
+public class CookieUtils {
+
     /**
      * Private constructor to hide implicit public one
      */

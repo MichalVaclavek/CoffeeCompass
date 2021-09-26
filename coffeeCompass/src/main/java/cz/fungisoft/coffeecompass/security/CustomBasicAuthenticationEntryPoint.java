@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
  
-public class CustomBasicAuthenticationEntryPoint extends BasicAuthenticationEntryPoint
-{
+public class CustomBasicAuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
+
     @Override
     public void commence(final HttpServletRequest request,
                          final HttpServletResponse response, 

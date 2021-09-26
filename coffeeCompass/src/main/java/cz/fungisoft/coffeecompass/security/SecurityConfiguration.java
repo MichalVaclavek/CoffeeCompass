@@ -45,8 +45,8 @@ import cz.fungisoft.coffeecompass.serviceimpl.user.CustomOAuth2UserService;
  */
 @Configuration
 @EnableWebSecurity
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter
-{
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
     /** REST endpoints security config **/
     private static final RequestMatcher PROTECTED_REST_URLS = new OrRequestMatcher(new AntPathRequestMatcher("/rest/secured/**"));
     

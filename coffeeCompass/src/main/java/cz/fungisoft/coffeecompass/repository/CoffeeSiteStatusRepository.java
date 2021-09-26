@@ -11,8 +11,8 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
 /**
  * @author Michal Vaclavek
  */
-public interface CoffeeSiteStatusRepository extends JpaRepository<CoffeeSiteStatus, Integer>
-{
+public interface CoffeeSiteStatusRepository extends JpaRepository<CoffeeSiteStatus, Integer> {
+
     @Query("select css from CoffeeSiteStatus css where status=?1")
     CoffeeSiteStatus searchByName(String status);
 }

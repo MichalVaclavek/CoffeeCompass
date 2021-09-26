@@ -50,11 +50,11 @@ public class CSStarsCommentsControllerSecuredREST {
     
     private static final Logger LOG = LoggerFactory.getLogger(CSStarsCommentsControllerSecuredREST.class);
     
-    private ICommentService commentsService;
+    private final ICommentService commentsService;
     
-    private IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService;
+    private final IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService;
     
-    private CoffeeSiteService coffeeSiteService;
+    private final CoffeeSiteService coffeeSiteService;
     
     
     @Autowired

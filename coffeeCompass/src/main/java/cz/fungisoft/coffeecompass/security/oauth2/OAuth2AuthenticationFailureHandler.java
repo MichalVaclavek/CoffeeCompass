@@ -28,11 +28,11 @@ import static cz.fungisoft.coffeecompass.security.oauth2.HttpCookieOAuth2Authori
  */
 @Component
 @Log4j2
-public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler
-{
-    private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+
+    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     
-    private JwtAndOAuth2Properties ouat2Properties;
+    private final JwtAndOAuth2Properties ouat2Properties;
 
     public OAuth2AuthenticationFailureHandler(HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository,
                                               JwtAndOAuth2Properties ouat2Properties) {

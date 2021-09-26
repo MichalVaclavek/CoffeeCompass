@@ -17,9 +17,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
-public class DefaultAccessDeniedHandler implements AccessDeniedHandler
-{
-    private static Logger logger = LoggerFactory.getLogger(DefaultAccessDeniedHandler.class);
+public class DefaultAccessDeniedHandler implements AccessDeniedHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(DefaultAccessDeniedHandler.class);
 
     @Override
     public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,

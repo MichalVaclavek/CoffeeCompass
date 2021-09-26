@@ -15,14 +15,13 @@ import io.swagger.annotations.Api;
  * REST varianta zakladniho Controleru
  * 
  * @author Michal Vaclavek
- *
  */
 @Api // Swagger
 @RestController
 @RequestMapping("/rest") 
-public class BasicControllerREST
-{
-    private StatisticsInfoService statsService;
+public class BasicControllerREST {
+
+    private final StatisticsInfoService statsService;
     
     @Autowired
     public BasicControllerREST(StatisticsInfoService statsService) {

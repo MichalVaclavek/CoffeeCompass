@@ -17,7 +17,7 @@ public interface ISendEmailService {
      * @param toEmail - email address where to send e-mail (usually read from Configuration)
      * @param message
      */
-    public void sendMeSimpleEmail(String fromName, String authorEmail, String fromEmail, String toEmail, String message);
+    void sendMeSimpleEmail(String fromName, String authorEmail, String fromEmail, String toEmail, String message);
     
-    public void sendEmail(String from, String to, String subject, String message);
+    void sendEmail(String from, String to, String subject, String message);
 }

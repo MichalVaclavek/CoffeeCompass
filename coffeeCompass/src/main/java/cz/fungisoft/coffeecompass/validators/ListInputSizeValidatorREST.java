@@ -37,7 +37,6 @@ public class ListInputSizeValidatorREST implements ConstraintValidator<ListInput
             // is intended to be used when requesting not available resources not for validating Controller input
             //TODO - read error message template from messages.properties
             throw new BadRESTRequestException(String.format(defaultMessageTemplate, maxListSize, minListSize));
-            //throw new InvalidParameterValueException("CoffeeSite list", "number of items", values.size(), String.format(defaultMessageTemplate, maxListSize, minListSize));
         }
 
         return result;

@@ -11,9 +11,9 @@ import cz.fungisoft.coffeecompass.entity.CupType;
 import cz.fungisoft.coffeecompass.service.CupTypeService;
 
 @Component
-public class CupTypeFormatter implements Formatter<CupType>
-{
-    private CupTypeService cupTypeService;
+public class CupTypeFormatter implements Formatter<CupType> {
+
+    private final CupTypeService cupTypeService;
     
     @Autowired
     public CupTypeFormatter(CupTypeService cupTypeService) {

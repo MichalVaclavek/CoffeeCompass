@@ -42,9 +42,9 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     // Currently not used in production (image files are stored in DB). Can be used for testing.
     private final Path fileStorageLocation;
     
-    private ImageRepository imageRepo;
+    private final ImageRepository imageRepo;
     
-    private ImageResizeAndRotateService imageResizer;
+    private final ImageResizeAndRotateService imageResizer;
 
     private CoffeeSiteService coffeeSiteService;
     
@@ -137,10 +137,8 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     @Transactional
     public Integer storeImageFile(Image image, MultipartFile file, Long siteID, boolean resize) {
         
-        //Integer retVal = 0;
         AtomicReference<Image> atomicImage = new AtomicReference<>(image);
 
-        //CoffeeSite cs = coffeeSiteService.findOneById(siteID);
         coffeeSiteService.findOneById(siteID).ifPresent(cs -> {
             try {
                 // Check if there is already image assigned to the CS. If yes, delete the old image first
@@ -153,49 +151,20 @@ public class ImageStorageServiceImpl implements ImageStorageService {
             } catch (IOException e) {
                 log.warn("Error during creating Image object. File name: {}. CoffeeSite name: {}. Exception: {}", atomicImage.get().getFileName(), cs.getSiteName(), e.getMessage());
             }
-            //try {
-                if (resize) {
-                    atomicImage.getAndUpdate(image2 -> {
-                        try {
-                            return imageResizer.resize(image2);
-                        } catch (IOException e) {
-                            log.warn("Error during resizing Image. File name: {}. CoffeeSite name: {}. Exception: {}", atomicImage.get().getFileName(), cs.getSiteName(), e.getMessage());
-                        }
-                        return null;
-                    });
-                    //atomicImage.get() = imageResizer.resize(atomicImage.get());
-                }
-//            } catch (IOException e) {
-//                log.warn("Error during resizing Image. File name: {}. CoffeeSite name: {}. Exception: {}", atomicImage.get().getFileName(), cs.getSiteName(), e.getMessage());
-//            }
+            if (resize) {
+                atomicImage.getAndUpdate(image2 -> {
+                    try {
+                        return imageResizer.resize(image2);
+                    } catch (IOException e) {
+                        log.warn("Error during resizing Image. File name: {}. CoffeeSite name: {}. Exception: {}", atomicImage.get().getFileName(), cs.getSiteName(), e.getMessage());
+                    }
+                    return null;
+                });
+            }
             imageRepo.save(atomicImage.get());
             log.info("Image saved. File name: {}. CoffeeSite name: {}", image.getFileName(), cs.getSiteName());
-            //retVal = atomicImage.get().getId();
         });
-//        if (cs != null) {
-//            try {
-//                // Check if there is already image assigned to the CS. If yes, delete the old image first
-//                Optional.ofNullable(imageRepo.getImageForSite(siteID))
-//                        .ifPresent(oldImage -> imageRepo.delete(oldImage));
-//                image.setImageBytes(file.getBytes());
-//                image.setFile(file);
-//                image.setCoffeeSiteID(cs.getId());
-//                image.setSavedOn(new Timestamp(new Date().getTime()));
-//            } catch (IOException e) {
-//                log.warn("Error during creating Image object. File name: {}. CoffeeSite name: {}. Exception: {}", image.getFileName(), cs.getSiteName(), e.getMessage());
-//            }
-//            try {
-//                if (resize) {
-//                    image = imageResizer.resize(image);
-//                }
-//            } catch (IOException e) {
-//                log.warn("Error during resizing Image. File name: {}. CoffeeSite name: {}. Exception: {}", image.getFileName(), cs.getSiteName(), e.getMessage());
-//            }
-//            imageRepo.save(image);
-//            log.info("Image saved. File name: {}. CoffeeSite name: {}", image.getFileName(), cs.getSiteName());
-//            retVal = image.getId();
-//        }
-        
+
         return atomicImage.get() == null ? 0 : atomicImage.get().getId();
     }
     
@@ -344,5 +313,4 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     public String getBaseImageURLPath() {
         return baseImageURLPath;
     }
-
 }

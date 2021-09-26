@@ -4,9 +4,9 @@ import java.util.List;
 
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
 
-public interface StarsQualityService
-{
-    public StarsQualityDescription findStarsQualityDescr(String starsQualityDescr);
-    public List<StarsQualityDescription> getAllStarsQualityDescriptions();
-    public StarsQualityDescription findStarsQualityById(Integer id);
+public interface StarsQualityService {
+
+    StarsQualityDescription findStarsQualityDescr(String starsQualityDescr);
+    List<StarsQualityDescription> getAllStarsQualityDescriptions();
+    StarsQualityDescription findStarsQualityById(Integer id);
 }

@@ -140,7 +140,7 @@ public class CoffeeCompassConfiguration implements WebMvcConfigurer {
     }
     
     /**
-     * We override the default {@link DefaultErrorAttributes}
+     * We override the default {@code DefaultErrorAttributes} (see Spring doc.)
      *
      * @return A custom implementation of ErrorAttributes
      */

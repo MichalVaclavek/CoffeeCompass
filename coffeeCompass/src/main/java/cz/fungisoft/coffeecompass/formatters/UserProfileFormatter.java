@@ -11,9 +11,9 @@ import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.service.user.UserProfileService;
 
 @Component
-public class UserProfileFormatter implements Formatter<UserProfile>
-{
-    private UserProfileService userProfileService;
+public class UserProfileFormatter implements Formatter<UserProfile> {
+
+    private final UserProfileService userProfileService;
     
     @Autowired
     public UserProfileFormatter(UserProfileService userProfileService) {

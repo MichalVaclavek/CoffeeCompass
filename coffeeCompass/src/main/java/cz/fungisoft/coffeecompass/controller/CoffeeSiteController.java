@@ -109,7 +109,7 @@ public class CoffeeSiteController {
     @Autowired
     private WeatherApiService weatherService;
 
-    private CoffeeSiteService coffeeSiteService;
+    private final CoffeeSiteService coffeeSiteService;
     
     /**
      * Dependency Injection pomoci konstruktoru, neni potreba uvadet @Autowired u atributu, Spring toto umi automaticky.

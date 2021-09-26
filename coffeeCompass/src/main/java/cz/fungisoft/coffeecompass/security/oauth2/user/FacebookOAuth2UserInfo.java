@@ -6,8 +6,8 @@ import java.util.Map;
  * Maps facebook's oauth2 user info into internal {@link OAuth2UserInfo}
  * 
  */
-public class FacebookOAuth2UserInfo extends OAuth2UserInfo
-{
+public class FacebookOAuth2UserInfo extends OAuth2UserInfo {
+
     public FacebookOAuth2UserInfo(Map<String, Object> attributes) {
         super(attributes);
     }
@@ -55,5 +55,4 @@ public class FacebookOAuth2UserInfo extends OAuth2UserInfo
     public boolean isEmailConfirmed() {
         return !((String) attributes.get("email")).isEmpty();
     }
-    
 }

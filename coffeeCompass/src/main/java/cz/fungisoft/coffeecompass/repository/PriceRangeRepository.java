@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import cz.fungisoft.coffeecompass.entity.PriceRange;
 
-public interface PriceRangeRepository extends JpaRepository<PriceRange, Integer>
-{
+public interface PriceRangeRepository extends JpaRepository<PriceRange, Integer> {
+
     @Query("select pr from PriceRange pr where priceRange=?1")
-    public PriceRange searchByName(String range);
+    PriceRange searchByName(String range);
 }

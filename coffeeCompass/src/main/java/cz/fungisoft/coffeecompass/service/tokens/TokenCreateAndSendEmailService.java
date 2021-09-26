@@ -12,20 +12,21 @@ import cz.fungisoft.coffeecompass.entity.UserEmailVerificationToken;
  * @author Michal Vaclavek
  */
 public interface TokenCreateAndSendEmailService {
+
     /**
      * Sets basic data needed to create and sent verification token e-mail.
      * 
      * @param user
      * @param locale
      */
-    public void setUserVerificationData(User user, Locale locale);
+    void setUserVerificationData(User user, Locale locale);
     
     /**
      * Creates and send verification token e-mail to confirm user's e-mail address.
      * 
      * @return created token string
      */
-    public String createAndSendVerificationTokenEmail();
+    String createAndSendVerificationTokenEmail();
 
     /**
      * Creates and send new verification token e-mail to confirm user's e-mail address.
@@ -33,33 +34,33 @@ public interface TokenCreateAndSendEmailService {
      * 
      * @return created new token string
      */
-    public String reSendUserVerificationTokenEmail(String existingToken);
+    String reSendUserVerificationTokenEmail(String existingToken);
     
     // -------- User registration and verification by token and e-mail ---------- //
 
-    public void createUserVerificationToken(User user, String token);
+    void createUserVerificationToken(User user, String token);
     
-    public UserEmailVerificationToken generateNewUserVerificationToken(String existingToken); 
+    UserEmailVerificationToken generateNewUserVerificationToken(String existingToken);
     
-    public UserEmailVerificationToken getUserVerificationToken(String verificationToken);
+    UserEmailVerificationToken getUserVerificationToken(String verificationToken);
     
-    public void deleteRegistrationToken(String token);
+    void deleteRegistrationToken(String token);
     
     // ---- Reset password token and e-mail ---- //
     
     /**
      * Sets basic data needed to create reset password token
      * 
-     * @param user
+     * @param userEmail
      * @param locale
      */
-    public void setResetPasswordTokenData(String userEmail, Locale locale);
+    void setResetPasswordTokenData(String userEmail, Locale locale);
     
-    public void createPasswordResetToken(User user, String token);
+    void createPasswordResetToken(User user, String token);
     
-    public String createAndSendResetPasswordTokenEmail();
+    String createAndSendResetPasswordTokenEmail();
     
-    public PasswordResetToken getPasswordResetToken(String passwordResetToken);
+    PasswordResetToken getPasswordResetToken(String passwordResetToken);
     
-    public void deletePasswordResetToken(String token);
+    void deletePasswordResetToken(String token);
 }

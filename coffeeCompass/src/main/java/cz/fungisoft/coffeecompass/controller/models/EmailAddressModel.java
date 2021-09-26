@@ -10,8 +10,8 @@ import cz.fungisoft.coffeecompass.validators.ValidEmail;
  * @author Michal
  *
  */
-public class EmailAddressModel
-{
+public class EmailAddressModel {
+
     @NotEmpty
     @ValidEmail
     private String emailAddr = "";

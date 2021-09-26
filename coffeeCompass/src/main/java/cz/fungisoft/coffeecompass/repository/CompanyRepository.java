@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import cz.fungisoft.coffeecompass.entity.Company;
 
-public interface CompanyRepository extends JpaRepository<Company, Integer>
-{
+public interface CompanyRepository extends JpaRepository<Company, Integer> {
+
     @Query("select comp from Company comp where nameOfCompany=?1")
     Company searchByName(String company);
 }

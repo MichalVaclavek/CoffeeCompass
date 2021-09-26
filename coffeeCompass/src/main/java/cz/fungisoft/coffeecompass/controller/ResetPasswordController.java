@@ -42,8 +42,8 @@ import lombok.extern.log4j.Log4j2;
  */
 @Controller
 @Log4j2
-public class ResetPasswordController
-{
+public class ResetPasswordController {
+
     private static final String FORGOT_PASSWD_VIEW = "forgotPassword";
     private static final String UPDATE_PASSWD_VIEW = "updatePassword";
     
@@ -51,15 +51,15 @@ public class ResetPasswordController
     private static final String TOKEN_ATTRIB_KEY = "token";
     
     
-    private UserService userService;
+    private final UserService userService;
     
-    private TokenCreateAndSendEmailService passwordTokenService;
+    private final TokenCreateAndSendEmailService passwordTokenService;
     
-    private ValidateTokenService validateTokenService;
+    private final ValidateTokenService validateTokenService;
     
-    private UserSecurityService userSecurityService;
+    private final UserSecurityService userSecurityService;
     
-    private MessageSource messages;
+    private final MessageSource messages;
     
     /**
      * Standard constructor.
@@ -67,8 +67,6 @@ public class ResetPasswordController
      * @param userService
      * @param passwordTokenService
      * @param validateTokenService
-     * @param authenticationFacade
-     * @param userDetailsService
      */
     public ResetPasswordController(UserService userService,
                                    TokenCreateAndSendEmailService passwordTokenService,
@@ -199,7 +197,7 @@ public class ResetPasswordController
      * Serves click on save/reset new password form on updatePassword page
      * 
      * @param locale
-     * @param passwordDto
+     * @param resetedPassword
      * @return
      */
     @PostMapping(value = "/user/saveNewPassword/")

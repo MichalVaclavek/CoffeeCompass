@@ -13,7 +13,8 @@ import javax.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = EmailValidator.class)
 @Documented
-public @interface ValidEmail {   
+public @interface ValidEmail {
+
     String message() default "{error.user.email.wrong}";
     Class<?>[] groups() default {}; 
     Class<? extends Payload>[] payload() default {};

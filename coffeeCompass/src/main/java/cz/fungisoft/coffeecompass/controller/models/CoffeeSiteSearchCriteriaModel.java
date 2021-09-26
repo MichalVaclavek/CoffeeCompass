@@ -4,6 +4,8 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
+import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
+import cz.fungisoft.coffeecompass.entity.CoffeeSort;
 import cz.fungisoft.coffeecompass.entity.CoffeeSort.CoffeeSortEnum;
 import lombok.Data;
 
@@ -23,11 +25,10 @@ import lombok.Data;
  * @author Michal Václavek
  */
 @Data
-public class CoffeeSiteSearchCriteriaModel
-{
+public class CoffeeSiteSearchCriteriaModel {
     
-    private final Double STRED_CR_LAT = 49.8250401; // defaultni hodnoty, stred CR
-    private final Double STRED_CR_LON = 15.4190817; // defaultni hodnoty, stred CR
+    private static final Double STRED_CR_LAT = 49.8250401; // defaultni hodnoty, stred CR
+    private static final Double STRED_CR_LON = 15.4190817; // defaultni hodnoty, stred CR
     
     @DecimalMax(value="180.0")
     @DecimalMin(value="-180.0")

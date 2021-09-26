@@ -14,9 +14,9 @@ import cz.fungisoft.coffeecompass.service.user.UserProfileService;
  
 @Service("userProfileService")
 @Transactional
-public class UserProfileServiceImpl implements UserProfileService
-{
-    private UserProfileRepository userProfRepository;
+public class UserProfileServiceImpl implements UserProfileService {
+
+    private final UserProfileRepository userProfRepository;
         
     @Autowired
     public UserProfileServiceImpl(UserProfileRepository userProfRepository) {
@@ -44,5 +44,4 @@ public class UserProfileServiceImpl implements UserProfileService
     public List<UserProfile> findAll() {
         return userProfRepository.findAll();
     }
-    
 }

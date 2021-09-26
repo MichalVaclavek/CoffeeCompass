@@ -16,6 +16,7 @@ import cz.fungisoft.coffeecompass.entity.User;
  *
  */
 public interface IStarsForCoffeeSiteAndUserService {
+
     /**
      * Hodnoceni jednoho uzivatele pro jeden CoffeeSite.
      * 
@@ -23,16 +24,16 @@ public interface IStarsForCoffeeSiteAndUserService {
      * @param user
      * @return
      */
-    public Integer getStarsForCoffeeSiteAndUser(CoffeeSite coffeeSite, User user);
-    public Integer getStarsForCoffeeSiteAndUser(Long coffeeSiteId, Long userId);
+    Integer getStarsForCoffeeSiteAndUser(CoffeeSite coffeeSite, User user);
+    Integer getStarsForCoffeeSiteAndUser(Long coffeeSiteId, Long userId);
     
-    public String getStarsForCoffeeSiteAndUser(CoffeeSiteDTO coffeeSite, User user);
-    public String getStarsStringForCoffeeSiteAndLoggedInUser(CoffeeSiteDTO coffeeSite);
-    public StarsQualityDescription getStarsForCoffeeSiteAndLoggedInUser(CoffeeSiteDTO coffeeSite);
+    String getStarsForCoffeeSiteAndUser(CoffeeSiteDTO coffeeSite, User user);
+    String getStarsStringForCoffeeSiteAndLoggedInUser(CoffeeSiteDTO coffeeSite);
+    StarsQualityDescription getStarsForCoffeeSiteAndLoggedInUser(CoffeeSiteDTO coffeeSite);
     
-    public void saveStarsForCoffeeSiteAndLoggedInUser(Long coffeeSiteID, Integer stars);
-    public void saveStarsForCoffeeSiteAndUser(CoffeeSite coffeeSite, User user, int stars);
-    public StarsForCoffeeSiteAndUser updateStarsForCoffeeSiteAndUser(Long coffeeSiteID, Long userId, int stars);
+    void saveStarsForCoffeeSiteAndLoggedInUser(Long coffeeSiteID, Integer stars);
+    void saveStarsForCoffeeSiteAndUser(CoffeeSite coffeeSite, User user, int stars);
+    StarsForCoffeeSiteAndUser updateStarsForCoffeeSiteAndUser(Long coffeeSiteID, Long userId, int stars);
     
     /**
      * Updates stars rating for CoffeeSite included in CommentsDTO object
@@ -40,12 +41,12 @@ public interface IStarsForCoffeeSiteAndUserService {
      * @param comment
      * @return
      */
-    public StarsForCoffeeSiteAndUser updateStarsForCoffeeSiteAndUser(CommentDTO comment);
+    StarsForCoffeeSiteAndUser updateStarsForCoffeeSiteAndUser(CommentDTO comment);
     
-    public void cancelStarsForCoffeeSite(CoffeeSite coffeeSite, User user);
+    void cancelStarsForCoffeeSite(CoffeeSite coffeeSite, User user);
     
-    public double avgStarsForSite(Long coffeeSiteID);
-    public double avgStarsForUser(Long userID);
+    double avgStarsForSite(Long coffeeSiteID);
+    double avgStarsForUser(Long userID);
     
-    public AverageStarsForSiteDTO getStarsAndNumOfHodnoceniForSite(Long coffeeSiteID);
+    AverageStarsForSiteDTO getStarsAndNumOfHodnoceniForSite(Long coffeeSiteID);
 }

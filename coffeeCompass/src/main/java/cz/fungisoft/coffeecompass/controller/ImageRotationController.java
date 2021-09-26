@@ -17,8 +17,6 @@ public class ImageRotationController {
     
     private final ImageResizeAndRotateService imageRotateService;
     
-    private final CoffeeSiteService cofeeSiteService;
-    
     @Autowired
     public ImageRotationController(ImageStorageService imageStorageService,
                                    ImageResizeAndRotateService imageRotateService,
@@ -26,7 +24,6 @@ public class ImageRotationController {
         super();
         this.imageStorageService = imageStorageService;
         this.imageRotateService = imageRotateService;
-        this.cofeeSiteService = cofeeSiteService;
     }
 
     /**

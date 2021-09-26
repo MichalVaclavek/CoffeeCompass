@@ -29,8 +29,8 @@ import lombok.Data;
  * @author Michal Vaclavek
  */
 @Data
-public class CoffeeSiteDTO
-{
+public class CoffeeSiteDTO {
+
     private Long id;
 
     @Size(min=3, max=50)

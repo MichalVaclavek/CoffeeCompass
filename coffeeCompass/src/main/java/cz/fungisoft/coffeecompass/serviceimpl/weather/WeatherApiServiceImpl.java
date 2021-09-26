@@ -28,9 +28,9 @@ public class WeatherApiServiceImpl implements WeatherApiService {
     
     private final String APP_ID;
     
-    private MapperFacade mapperFacade;
+    private final MapperFacade mapperFacade;
     
-    private CoffeeSiteService coffeeSiteService;
+    private final CoffeeSiteService coffeeSiteService;
 
     public WeatherApiServiceImpl( @Value("${weather.api.url}") String api_url, @Value("${weather.api.id}") String api_id,
                                   MapperFacade mapperFacade, CoffeeSiteService coffeeSiteService) {

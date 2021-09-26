@@ -58,8 +58,6 @@ public class DeviceFirebaseToken {
     
     /**
      * Default consctructor needed for Hibernate
-     * 
-     * @param token
      */
     public DeviceFirebaseToken() {
     }

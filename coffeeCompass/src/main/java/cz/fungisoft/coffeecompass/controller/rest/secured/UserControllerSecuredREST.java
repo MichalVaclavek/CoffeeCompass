@@ -43,13 +43,13 @@ import io.swagger.annotations.Api;
 @Api // Swagger
 @RequestMapping("/rest/secured/user")
 @RestController
-public class UserControllerSecuredREST
-{  
+public class UserControllerSecuredREST {
+
     private static final Logger logger = LoggerFactory.getLogger(UserControllerSecuredREST.class); 
     
-    private UserService userService;
+    private final UserService userService;
      
-    private UserSecurityService userSecurityService;
+    private final UserSecurityService userSecurityService;
     
      /**
       * Vyuziti Dependency Injection pomoci konstruktoru. Jde o preferovany zpusob (na rozdil od @Autowired na atributu nebo setteru)       
@@ -176,7 +176,7 @@ public class UserControllerSecuredREST
     /**
      * REST logout by username. Kept because of backward compatibility.
      * 
-     * @param user
+     * @param userName
      * @return
      */
     @GetMapping("/logout")
@@ -188,7 +188,7 @@ public class UserControllerSecuredREST
     /**
      * REST logout by userID
      * 
-     * @param user
+     * @param userId
      * @return
      */
     @GetMapping("/logout/{userId}")

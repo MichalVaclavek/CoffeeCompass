@@ -11,8 +11,8 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSort;
 /**
  * @author Michal Vaclavek
  */
-public interface CoffeeSortRepository extends JpaRepository<CoffeeSort, Integer>
-{
+public interface CoffeeSortRepository extends JpaRepository<CoffeeSort, Integer> {
+
     @Query("select csort from CoffeeSort csort where coffeeSort=?1")
-    public CoffeeSort searchByName(String coffeeSort);
+    CoffeeSort searchByName(String coffeeSort);
 }

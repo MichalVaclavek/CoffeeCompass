@@ -60,13 +60,13 @@ public class ConfigProperties
     private Long maxUploadFileByteSize;
     
     /**
-     * Should be a role automaticaly added to user's profile (list of roles), when user confirms it's email address?
+     * Should be a role automatically added to user's profile (list of roles), when user confirms it's email address?
      */
     @Value("${user.addrole.whenemailaddress.confirmed}")
     private boolean addRoleWhenUsersEmailIsConfirmed = false;
     
     /**
-     * A role to be automaticaly added to user's profile (list of roles), when user confirms it's email address?
+     * A role to be automatically added to user's profile (list of roles), when user confirms it's email address?
      */
     @Value("${user.addrole.whenemailaddress.confirmed.role}")
     private String roleToAddWhenUsersEmailIsConfirmed = "DBA";

@@ -30,21 +30,21 @@ import cz.fungisoft.coffeecompass.service.user.UserService;
  * @author Michal Vaclavek
  */
 @Service("tokenCreateAndSendByEmail")
-public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailService
-{
+public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailService {
+
     private User user;
     
     private Locale locale;
     
-    private UserService userService;
+    private final UserService userService;
     
-    private ISendEmailService sendEmailService;
+    private final ISendEmailService sendEmailService;
     
-    private MessageSource messages;
+    private final MessageSource messages;
     
-    private UserEmailVerificationTokenRepository userEmailVerificationTokenRepository;
+    private final UserEmailVerificationTokenRepository userEmailVerificationTokenRepository;
     
-    private PasswordResetTokenRepository passwordResetTokenRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
 
     /**
      * Constructor
@@ -204,5 +204,4 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
     public void deletePasswordResetToken(String token) {
         passwordResetTokenRepository.deleteByToken(token);
     }
-
 }

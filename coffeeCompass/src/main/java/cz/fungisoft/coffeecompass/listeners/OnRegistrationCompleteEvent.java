@@ -10,11 +10,8 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class OnRegistrationCompleteEvent extends ApplicationEvent
-{
-    /**
-     * 
-     */
+public class OnRegistrationCompleteEvent extends ApplicationEvent {
+
     private static final long serialVersionUID = -4098439041309044675L;
     
     private Locale locale;

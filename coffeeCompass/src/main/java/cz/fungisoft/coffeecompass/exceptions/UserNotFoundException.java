@@ -9,11 +9,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author Michal Vaclavek
  */
 @ResponseStatus(value=HttpStatus.NOT_FOUND, reason="User Not Found Exception!")
-public class UserNotFoundException extends RuntimeException
-{
-    /**
-     * 
-     */
+public class UserNotFoundException extends RuntimeException {
+
     private static final long serialVersionUID = -3953771079191608961L;
     
     private String localizedMessageCode;

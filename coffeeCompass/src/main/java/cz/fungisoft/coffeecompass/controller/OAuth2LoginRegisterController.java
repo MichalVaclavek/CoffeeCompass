@@ -34,13 +34,13 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/oauth2")
 @Controller
 @Log4j2
-public class OAuth2LoginRegisterController
-{
-    private UserService userService;
+public class OAuth2LoginRegisterController {
 
-    private MessageSource messages;
+    private final UserService userService;
+
+    private final MessageSource messages;
     
-    private JwtTokenProviderService tokenProvider;
+    private final JwtTokenProviderService tokenProvider;
     
 
     public OAuth2LoginRegisterController(UserService userService,

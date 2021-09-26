@@ -83,8 +83,8 @@ public class BasicController
         clientRegistrations.forEach(registration ->  oauth2AuthenticationUrls.put(registration.getClientName().toLowerCase(), 
                                     oAuth2AuthorizationRequestBaseUri + "/" + registration.getRegistrationId()));
         
-        model.addAttribute("oAuth2RegUrlGoogle", oauth2AuthenticationUrls.get(AuthProviders.google.toString()));
-        model.addAttribute("oAuth2RegUrlFacebook", oauth2AuthenticationUrls.get(AuthProviders.facebook.toString()));
+        model.addAttribute("oAuth2RegUrlGoogle", oauth2AuthenticationUrls.get(AuthProviders.GOOGLE.toString()));
+        model.addAttribute("oAuth2RegUrlFacebook", oauth2AuthenticationUrls.get(AuthProviders.FACEBOOK.toString()));
         
         return "login";
     }

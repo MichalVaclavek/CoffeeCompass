@@ -12,7 +12,8 @@ import cz.fungisoft.coffeecompass.service.CoffeeSiteTypeService;
 
 @Service("coffeeSiteTypeService")
 public class CoffeeSiteTypeServiceImpl implements CoffeeSiteTypeService {
-    private CoffeeSiteTypeRepository coffeeSiteTypeRepo;
+
+    private final CoffeeSiteTypeRepository coffeeSiteTypeRepo;
     
     @Autowired
     public CoffeeSiteTypeServiceImpl(CoffeeSiteTypeRepository coffeeSiteTypeRepo) {

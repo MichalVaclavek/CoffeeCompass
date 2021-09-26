@@ -30,18 +30,19 @@ import io.swagger.annotations.Api;
 @RestController
 @RequestMapping("/rest/public/user")
 public class UsersControllerPublicREST {
+
     @NonNull
-    private CustomRESTUserAuthenticationService authentication;
+    private final CustomRESTUserAuthenticationService authentication;
       
     @NonNull
-    private UserService usersService;
+    private final UserService usersService;
     
     @NonNull
-    private TokenService tokens;
+    private final TokenService tokens;
     
-    private MessageSource messages;
+    private final MessageSource messages;
     
-    private TokenCreateAndSendEmailService verificationTokenSendEmailService;
+    private final TokenCreateAndSendEmailService verificationTokenSendEmailService;
     
     
     public UsersControllerPublicREST(@NonNull

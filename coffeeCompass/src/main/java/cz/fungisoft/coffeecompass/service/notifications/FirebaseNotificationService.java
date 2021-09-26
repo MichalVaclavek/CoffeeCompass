@@ -33,5 +33,4 @@ public interface FirebaseNotificationService {
     void subscribeToTopic(List<String> registrationTokens, String topic) throws InterruptedException, ExecutionException;
 
     void unsubscribeFromTopic(List<String> registrationTokens, String topic) throws InterruptedException, ExecutionException;
-    
 }

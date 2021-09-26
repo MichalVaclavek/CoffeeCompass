@@ -15,7 +15,7 @@ import cz.fungisoft.coffeecompass.service.OtherOfferService;
 @Transactional
 public class OtherOfferServiceImpl implements OtherOfferService {
 
-    private OfferRepository offerRepo;
+    private final OfferRepository offerRepo;
     
     @Autowired
     public OtherOfferServiceImpl(OfferRepository offerRepo) {

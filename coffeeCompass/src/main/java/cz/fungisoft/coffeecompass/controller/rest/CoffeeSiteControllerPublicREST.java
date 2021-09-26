@@ -39,7 +39,6 @@ import cz.fungisoft.coffeecompass.service.PriceRangeService;
 import cz.fungisoft.coffeecompass.service.SiteLocationTypeService;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
 import io.swagger.annotations.Api;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -90,9 +89,9 @@ public class CoffeeSiteControllerPublicREST {
     @Autowired
     private CoffeeSiteTypeService coffeeSiteTypeService;
     
-    private CoffeeSiteService coffeeSiteService;
+    private final CoffeeSiteService coffeeSiteService;
     
-    private IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService;
+    private final IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService;
     
     /**
      * Dependency Injection pomoci konstruktoru, neni potreba uvadet @Autowired u atributu, Spring toto umi automaticky.<br>
@@ -270,7 +269,7 @@ public class CoffeeSiteControllerPublicREST {
         List<CoffeeSiteDTO> foundSites = new ArrayList<>();
 
         if (!townName.trim().isEmpty()) {
-            foundSites = coffeeSiteService.findAllByCityNameExactly(townName);
+            foundSites = coffeeSiteService.findAllByCityNameAtStart(townName);
         }
 
         return (foundSites.isEmpty()) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
@@ -291,19 +290,19 @@ public class CoffeeSiteControllerPublicREST {
      * @param lon1
      * @param rangeMeters
      * @param status
-     * @param sort
+     * @param coffeeSort
      * @return
      */
     @GetMapping("/searchSites") 
     public ResponseEntity<List<CoffeeSiteDTO>> searchSitesWithStatusAndCoffeeSort(@RequestParam(value="lat1") double lat1, @RequestParam(value="lon1") double lon1,
                                                                                   @RequestParam(value="range") long rangeMeters,
                                                                                   @RequestParam(value="status", defaultValue="V provozu") String status,
-                                                                                  @RequestParam(value="sort", defaultValue="espresso") String sort) {
+                                                                                  @RequestParam(value="sort", defaultValue="espresso") String coffeeSort) {
         // CoffeeSort is not intended as a filter criteria id sort=?
-        if ("?".equals(sort)) {
-            sort = "";
+        if ("?".equals(coffeeSort)) {
+            coffeeSort = "";
         }
-        List<CoffeeSiteDTO> result = coffeeSiteService.findAllWithinCircleWithCSStatusAndCoffeeSort(lat1, lon1, rangeMeters, sort, status);
+        List<CoffeeSiteDTO> result = coffeeSiteService.findAllWithinCircleWithCSStatusAndCoffeeSort(lat1, lon1, rangeMeters, coffeeSort, status);
         return (result == null || result.isEmpty()) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
                                                     : new ResponseEntity<>(result, HttpStatus.OK); 
     }

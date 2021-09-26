@@ -16,7 +16,7 @@ import java.util.Map;
 public class Clouds {
 
     private Integer all;
-    private Map<String, Object> additionalProperties = new HashMap<>();
+    private final Map<String, Object> additionalProperties = new HashMap<>();
 
     public Integer getAll() {
         return all;

@@ -12,8 +12,8 @@ import cz.fungisoft.coffeecompass.validators.PasswordMatches;
  *
  */
 @PasswordMatches
-public class NewPasswordInputModel
-{
+public class NewPasswordInputModel {
+
     @Size(min = 4)
     private String newPassword;
     

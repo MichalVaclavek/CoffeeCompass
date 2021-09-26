@@ -16,5 +16,4 @@ import cz.fungisoft.coffeecompass.controller.models.rest.PushNotificationRequest
     void sendPushNotificationWithoutData(PushNotificationRequest request);
     
     void sendPushNotificationToToken(PushNotificationRequest request);
-    
 }

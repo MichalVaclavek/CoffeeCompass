@@ -22,11 +22,11 @@ import cz.fungisoft.coffeecompass.service.tokens.ValidateTokenService;
  *
  */
 @Service
-public class ValidateTokenServiceImpl implements ValidateTokenService
-{
-    private PasswordResetTokenRepository passwordTokenRepository;
+public class ValidateTokenServiceImpl implements ValidateTokenService {
+
+    private final PasswordResetTokenRepository passwordTokenRepository;
     
-    private TokenCreateAndSendEmailService userVerificationTokenService;
+    private final TokenCreateAndSendEmailService userVerificationTokenService;
     
     /**
      * 
@@ -83,5 +83,4 @@ public class ValidateTokenServiceImpl implements ValidateTokenService
         // token valid
         return "";
     }
-
 }

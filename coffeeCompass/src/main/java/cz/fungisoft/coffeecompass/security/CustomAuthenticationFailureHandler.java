@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.LocaleResolver;
 
 @Component
-public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler
-{
+public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+
     @Autowired
     private MessageSource messages;
  

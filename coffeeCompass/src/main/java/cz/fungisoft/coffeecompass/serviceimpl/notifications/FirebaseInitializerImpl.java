@@ -37,5 +37,4 @@ public class FirebaseInitializerImpl implements FirebaseInitializer {
             log.error(e.getMessage());
         }
     }
-
 }

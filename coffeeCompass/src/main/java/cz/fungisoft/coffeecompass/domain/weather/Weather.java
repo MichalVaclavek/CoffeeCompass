@@ -20,7 +20,7 @@ public class Weather {
     private String description;
     private String icon;
     
-    private Map<String, Object> additionalProperties = new HashMap<>();
+    private final Map<String, Object> additionalProperties = new HashMap<>();
 
     public Integer getId() {
         return id;

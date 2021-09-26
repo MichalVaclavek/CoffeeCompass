@@ -11,8 +11,8 @@ import lombok.Data;
  *
  */
 @Data
-public class LatLong
-{
+public class LatLong {
+
     private double latitude = 0.0d;
     private double longitude = 0.0d;
     

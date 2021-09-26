@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  */
 @ResponseStatus(value=HttpStatus.INSUFFICIENT_STORAGE, reason="File cannot be saved!")
-public class StorageFileException extends RuntimeException
-{
+public class StorageFileException extends RuntimeException {
+
     private static final long serialVersionUID = 6647429455776075744L;
 
     public StorageFileException(String message) {

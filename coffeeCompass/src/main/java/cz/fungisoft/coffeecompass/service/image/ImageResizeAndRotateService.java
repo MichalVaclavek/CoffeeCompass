@@ -13,6 +13,7 @@ import cz.fungisoft.coffeecompass.entity.Image;
  *
  */
 public interface ImageResizeAndRotateService {
+
     /**
      * Sets the default image size. All images are to be resized to this Width and Height.
      * 

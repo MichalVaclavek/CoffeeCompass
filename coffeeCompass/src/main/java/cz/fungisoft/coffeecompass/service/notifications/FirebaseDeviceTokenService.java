@@ -7,7 +7,6 @@ import cz.fungisoft.coffeecompass.entity.DeviceFirebaseToken;
 import cz.fungisoft.coffeecompass.entity.User;
 
 
-
 /**
  * Service to save/delete and get FirebaseDeviceTokens objects
  * 

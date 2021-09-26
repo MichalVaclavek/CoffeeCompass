@@ -18,9 +18,9 @@ import cz.fungisoft.coffeecompass.service.OtherOfferService;
  *
  */
 @Component
-public class OtherOfferFormatter implements Formatter<OtherOffer>
-{
-    private OtherOfferService offerService;
+public class OtherOfferFormatter implements Formatter<OtherOffer> {
+
+    private final OtherOfferService offerService;
     
     @Autowired
     public OtherOfferFormatter(OtherOfferService offerService) {

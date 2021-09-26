@@ -12,8 +12,8 @@ import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.security.oauth2.user.OAuth2UserInfo;
 
  
-public interface UserService
-{     
+public interface UserService {
+
     Optional<UserDTO> findByIdToTransfer(Long id);
     
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -89,8 +89,8 @@ public interface UserService
      */
     boolean isADMINloggedIn();
     
-    public Optional<User> getCurrentLoggedInUser();
-    public Optional<UserDTO> getCurrentLoggedInUserDTO();
+    Optional<User> getCurrentLoggedInUser();
+    Optional<UserDTO> getCurrentLoggedInUserDTO();
 
     /**
      * Saves/updated User, which was verified by token.

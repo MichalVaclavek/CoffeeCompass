@@ -22,11 +22,11 @@ import ma.glasnost.orika.MapperFacade;
 @Log4j2
 public class ContactMeMessageServiceImpl implements IContactMeMessageService {
 
-    private ContactMeMessageRepository contactMeMessageRepo;
+    private final ContactMeMessageRepository contactMeMessageRepo;
     
-    private MapperFacade mapperFacade;
+    private final MapperFacade mapperFacade;
     
-    private ISendEmailService sendMeEmailService;
+    private final ISendEmailService sendMeEmailService;
     
     @Autowired
     private ConfigProperties config;
@@ -85,5 +85,4 @@ public class ContactMeMessageServiceImpl implements IContactMeMessageService {
         cmmToSave.setCreatedTime(new Timestamp(new Date().getTime()));
         return saveContactMeMessage(cmmToSave);
     }
-    
 }

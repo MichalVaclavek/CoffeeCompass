@@ -4,8 +4,8 @@ import java.util.List;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
 
-public interface CSStatusService
-{
-    public CoffeeSiteStatus findCoffeeSiteStatusByName(String coffeeSiteStatus);
-    public List<CoffeeSiteStatus> getAllCoffeeSiteStatuses();
+public interface CSStatusService {
+
+    CoffeeSiteStatus findCoffeeSiteStatusByName(String coffeeSiteStatus);
+    List<CoffeeSiteStatus> getAllCoffeeSiteStatuses();
 }

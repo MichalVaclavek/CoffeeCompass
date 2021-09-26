@@ -31,11 +31,11 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class TopicsServiceImpl implements TopicsForPushNotificationsService {
 
-    private FirebaseTopicRepository firebaseTopicRepository;
+    private final FirebaseTopicRepository firebaseTopicRepository;
     
-    private FirebaseDeviceTokenRepository firebaseDeviceTokenRepository;
+    private final FirebaseDeviceTokenRepository firebaseDeviceTokenRepository;
     
-    private MessageSource messages;
+    private final MessageSource messages;
     
     /**
      * 
@@ -215,5 +215,4 @@ public class TopicsServiceImpl implements TopicsForPushNotificationsService {
         firebaseTopicRepository.deleteTopic(topic, subTopic);
         log.info("Main Topic {} and subTopic {} deleted", topic, subTopic);
     }
-
 }

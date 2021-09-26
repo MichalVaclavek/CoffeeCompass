@@ -32,15 +32,15 @@ import io.swagger.annotations.Api;
 @Api // Swagger
 @RestController 
 @RequestMapping("/rest/secured/image")
-public class ImageControllerSecuredREST
-{
+public class ImageControllerSecuredREST {
+
     private static final Logger log = LoggerFactory.getLogger(ImageControllerSecuredREST.class);
     
     private final ImageStorageService imageStorageService;
     
-    private CoffeeSiteService coffeeSiteService;
+    private final CoffeeSiteService coffeeSiteService;
     
-    private MessageSource messages;
+    private final MessageSource messages;
 
     @Autowired
     public ImageControllerSecuredREST(ImageStorageService storageService,

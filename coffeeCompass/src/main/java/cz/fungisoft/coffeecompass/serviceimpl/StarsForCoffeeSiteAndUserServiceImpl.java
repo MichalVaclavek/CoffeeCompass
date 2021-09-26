@@ -35,7 +35,7 @@ import ma.glasnost.orika.MapperFacade;
 @Log4j2
 public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSiteAndUserService {
 
-    private StarsForCoffeeSiteAndUserRepository avgStarsRepo;
+    private final StarsForCoffeeSiteAndUserRepository avgStarsRepo;
     
     @Autowired
     private StarsQualityService starsQualService;
@@ -185,11 +185,6 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
             Optional<User> logedInUser = userService.getCurrentLoggedInUser();
             logedInUser.ifPresent(user -> saveStarsForCoffeeSiteAndUser(cs, mapperFacade.map(user, User.class), stars));
         });
-//        Optional<User> logedInUser = userService.getCurrentLoggedInUser();
-//
-//        if (logedInUser.isPresent()) {
-//            saveStarsForCoffeeSiteAndUser(cs, mapperFacade.map(logedInUser.get(), User.class), stars);
-//        }
     }
     
 
@@ -257,5 +252,4 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
         log.info("Average Stars for Coffee site id {} retrieved.", coffeeSiteID);
         return starsDto;
     }
-
 }

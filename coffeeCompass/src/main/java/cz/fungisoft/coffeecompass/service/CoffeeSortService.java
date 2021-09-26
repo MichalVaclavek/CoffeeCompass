@@ -4,8 +4,8 @@ import java.util.List;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSort;
 
-public interface CoffeeSortService
-{
-    public CoffeeSort findCoffeeSortByName(String coffeeSortName);
-    public List<CoffeeSort> getAllCoffeeSorts();
+public interface CoffeeSortService {
+
+    CoffeeSort findCoffeeSortByName(String coffeeSortName);
+    List<CoffeeSort> getAllCoffeeSorts();
 }

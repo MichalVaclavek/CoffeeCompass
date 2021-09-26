@@ -31,7 +31,7 @@ public class WeatherData {
     private String name;
     private Integer cod;
     
-    private Map<String, Object> additionalProperties = new HashMap<>();
+    private final Map<String, Object> additionalProperties = new HashMap<>();
 
     public Coord getCoord() {
         return coord;

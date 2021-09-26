@@ -11,9 +11,9 @@ import cz.fungisoft.coffeecompass.entity.NextToMachineType;
 import cz.fungisoft.coffeecompass.service.NextToMachineTypeService;
 
 @Component
-public class NextToMachineTypeFormatter implements Formatter<NextToMachineType>
-{
-    private NextToMachineTypeService ntmtService;
+public class NextToMachineTypeFormatter implements Formatter<NextToMachineType> {
+
+    private final NextToMachineTypeService ntmtService;
     
     @Autowired
     public NextToMachineTypeFormatter(NextToMachineTypeService ntmtService) {

@@ -13,14 +13,15 @@ import org.springframework.security.core.userdetails.UserDetails;
  *
  */
 public interface CustomRESTUserAuthenticationService {
+
     /**
      * Logs in with the given {@code username} and {@code password}.
      *
-     * @param username
+     * @param userName
      * @param password
      * @return an {@link Optional} of a user when login succeeds
      */
-    public Optional<String> login(String userName, String password, String deviceID);
+    Optional<String> login(String userName, String password, String deviceID);
 
     /**
      * Finds a user by its token.
@@ -28,12 +29,12 @@ public interface CustomRESTUserAuthenticationService {
      * @param token for mobile user.
      * @return
      */
-    public Optional<UserDetails> findByToken(String token);
+    Optional<UserDetails> findByToken(String token);
     
     /**
      * Logs out the given input {@code user}.
      *
      * @param user the user to logout
      */
-    public void logout(UserDetails user);
+    void logout(UserDetails user);
 }

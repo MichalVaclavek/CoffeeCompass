@@ -28,13 +28,13 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  */
 @Controller 
-public class CSStarsRatingAndCommentsController
-{
-    private ICommentService commentsService;
+public class CSStarsRatingAndCommentsController {
+
+    private final ICommentService commentsService;
     
-    private IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService;
+    private final IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService;
     
-    private CoffeeSiteService coffeeSiteService;
+    private final CoffeeSiteService coffeeSiteService;
     
     
     @Autowired

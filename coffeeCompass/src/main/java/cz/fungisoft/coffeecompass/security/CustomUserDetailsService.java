@@ -28,11 +28,11 @@ import cz.fungisoft.coffeecompass.service.user.UserService;
  *
  */
 @Service("customUserDetailsService")
-public class CustomUserDetailsService implements UserDetailsService
-{
+public class CustomUserDetailsService implements UserDetailsService {
+
     static final Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
      
-    private UserService userService;
+    private final UserService userService;
     
     /**
      * Anotace @Lazy pridana proto, ze se udajne tvorila Circular dependency pri vytvareni UserService, CustomUserDetailsService

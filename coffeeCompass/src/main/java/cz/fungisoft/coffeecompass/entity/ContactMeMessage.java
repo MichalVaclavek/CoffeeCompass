@@ -24,8 +24,8 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name="contact_me_message", schema="coffeecompass")
-public class ContactMeMessage implements Serializable
-{
+public class ContactMeMessage implements Serializable {
+
 	private static final long serialVersionUID = -2996183922875213246L;
 
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)

@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteType;
 
-public interface CoffeeSiteTypeRepository extends JpaRepository<CoffeeSiteType, Integer>
-{
+public interface CoffeeSiteTypeRepository extends JpaRepository<CoffeeSiteType, Integer> {
+
     @Query("select cst from CoffeeSiteType cst where coffeeSiteType=?1")
-    public CoffeeSiteType searchByName(String siteType);
+    CoffeeSiteType searchByName(String siteType);
 }

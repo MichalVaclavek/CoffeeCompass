@@ -7,17 +7,9 @@ import java.util.Map;
  */
 public interface TokenService {
 
-    public String permanent(Map<String, String> attributes);
+    String permanent(Map<String, String> attributes);
 
-    public String expiring(Map<String, String> attributes);
-
-    /**
-     * Checks the validity of the given credentials.
-     *
-     * @param token
-     * @return attributes if verified
-     */
-    public Map<String, String> untrusted(String token);
+    String expiring(Map<String, String> attributes);
 
     /**
      * Checks the validity of the given credentials.
@@ -25,5 +17,13 @@ public interface TokenService {
      * @param token
      * @return attributes if verified
      */
-    public Map<String, String> verify(String token);
+    Map<String, String> untrusted(String token);
+
+    /**
+     * Checks the validity of the given credentials.
+     *
+     * @param token
+     * @return attributes if verified
+     */
+    Map<String, String> verify(String token);
 }

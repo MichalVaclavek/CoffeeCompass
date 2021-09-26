@@ -11,9 +11,9 @@ import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
 
 @Component
-public class StarsQualityDescriptionFormatter implements Formatter<StarsQualityDescription>
-{
-    private StarsQualityService starsQualityService;
+public class StarsQualityDescriptionFormatter implements Formatter<StarsQualityDescription> {
+
+    private final StarsQualityService starsQualityService;
     
     @Autowired
     public StarsQualityDescriptionFormatter(StarsQualityService starsQualityService) {

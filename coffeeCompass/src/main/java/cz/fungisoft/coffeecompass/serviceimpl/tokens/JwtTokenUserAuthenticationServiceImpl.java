@@ -22,21 +22,21 @@ import cz.fungisoft.coffeecompass.service.user.UserService;
  * This class is responsible of performing logging in and out operations for the users,<br>
  * as well as deliver the authentication tokens for REST requests.<br>
  * 
- * @see https://octoperf.com/blog/2018/03/08/securing-rest-api-spring-security/
+ * @see <a href="https://octoperf.com/blog/2018/03/08/securing-rest-api-spring-security/">...</a>
  * 
  * @author Michal Vaclavek
  *
  */
 @Service("jwtTokenUserAuthenticationService")
-public class JwtTokenUserAuthenticationServiceImpl implements CustomRESTUserAuthenticationService
-{
-    private UserService usersService;
+public class JwtTokenUserAuthenticationServiceImpl implements CustomRESTUserAuthenticationService {
+
+    private final UserService usersService;
     
-    private TokenService tokens;
+    private final TokenService tokens;
     
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     
-    private UserSecurityService userSecurityService;
+    private final UserSecurityService userSecurityService;
     
     
     public JwtTokenUserAuthenticationServiceImpl(UserService usersService,
@@ -86,5 +86,4 @@ public class JwtTokenUserAuthenticationServiceImpl implements CustomRESTUserAuth
     public void logout(final UserDetails user) {
         userSecurityService.logout(user);
     }
-
 }

@@ -15,7 +15,7 @@ import cz.fungisoft.coffeecompass.service.CSStatusService;
 @Transactional
 public class CSStatusServiceImpl implements CSStatusService {
 
-    private CoffeeSiteStatusRepository csStatusRepo;
+    private final CoffeeSiteStatusRepository csStatusRepo;
     
     @Autowired
     public CSStatusServiceImpl(CoffeeSiteStatusRepository csStatusRepo) {

@@ -13,7 +13,7 @@ import cz.fungisoft.coffeecompass.service.CoffeeSortService;
 @Service("coffeeSortService")
 public class CoffeeSortServiceImpl implements CoffeeSortService {
 
-    private CoffeeSortRepository coffeeSortRepo;
+    private final CoffeeSortRepository coffeeSortRepo;
     
     @Autowired
     public CoffeeSortServiceImpl(CoffeeSortRepository coffeeSort) {

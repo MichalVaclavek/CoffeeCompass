@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import cz.fungisoft.coffeecompass.entity.NextToMachineType;
 
-public interface NextToMachineTypeRepository extends JpaRepository<NextToMachineType, Integer>
-{
+public interface NextToMachineTypeRepository extends JpaRepository<NextToMachineType, Integer> {
+
     @Query("select ntmt from NextToMachineType ntmt where type=?1")
-    public NextToMachineType searchByName(String ntmType);
+    NextToMachineType searchByName(String ntmType);
 }

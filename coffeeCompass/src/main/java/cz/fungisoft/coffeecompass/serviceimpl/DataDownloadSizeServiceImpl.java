@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 @Service("dataDownloadSizeService")
 public class DataDownloadSizeServiceImpl implements DataDownloadSizeService {
 
-    private CoffeeSiteRepository coffeeSiteRepo;
+    private final CoffeeSiteRepository coffeeSiteRepo;
 
-    private CommentRepository commentsRepo;
+    private final CommentRepository commentsRepo;
 
-    private ImageRepository imageRepo;
+    private final ImageRepository imageRepo;
 
 
     public DataDownloadSizeServiceImpl(CoffeeSiteRepository coffeeSiteRepo, CommentRepository commentsRepo, ImageRepository imageRepo) {

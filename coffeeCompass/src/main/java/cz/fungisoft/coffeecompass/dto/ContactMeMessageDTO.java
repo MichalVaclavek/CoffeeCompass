@@ -12,8 +12,8 @@ import lombok.Data;
  *
  */
 @Data
-public class ContactMeMessageDTO
-{
+public class ContactMeMessageDTO {
+
     private Integer id;
     
     @Size(max=50)

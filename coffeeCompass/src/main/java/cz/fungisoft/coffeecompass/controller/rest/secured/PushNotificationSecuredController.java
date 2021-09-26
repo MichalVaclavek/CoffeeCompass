@@ -37,9 +37,9 @@ public class PushNotificationSecuredController {
     
     private static final Logger log = LoggerFactory.getLogger(PushNotificationSecuredController.class);
     
-    private PushNotificationService pushNotificationService;
+    private final PushNotificationService pushNotificationService;
     
-    private NotificationSubscriptionService notificationSubscriptionService;
+    private final NotificationSubscriptionService notificationSubscriptionService;
     
     public PushNotificationSecuredController(PushNotificationService pushNotificationService, NotificationSubscriptionService notificationSubscriptionService) {
         this.pushNotificationService = pushNotificationService;

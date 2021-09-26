@@ -1,6 +1,3 @@
-/**
- * 
- */
 package cz.fungisoft.coffeecompass.entity;
 
 import javax.persistence.Column;

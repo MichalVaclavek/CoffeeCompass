@@ -7,14 +7,14 @@ import java.io.Serializable;
  * 
  * @author Michal Vaclavek
  */
-public enum UserProfileTypeEnum implements Serializable
-{
+public enum UserProfileTypeEnum implements Serializable {
+
     USER("USER"),
     DBA("DBA"),
     ADMIN("ADMIN"),
     TEST("TEST");
      
-    private String userProfileType;
+    private final String userProfileType;
      
     private UserProfileTypeEnum(String userProfileType) {
         this.userProfileType = userProfileType;

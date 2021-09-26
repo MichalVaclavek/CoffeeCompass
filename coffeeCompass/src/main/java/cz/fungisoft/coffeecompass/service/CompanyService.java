@@ -4,9 +4,9 @@ import java.util.List;
 
 import cz.fungisoft.coffeecompass.entity.Company;
 
-public interface CompanyService
-{
-    public Company findCompanyByName(String companyName);
-    public List<Company> getAllCompanies();
-    public Company saveCompany(String comapnyName);
+public interface CompanyService {
+
+    Company findCompanyByName(String companyName);
+    List<Company> getAllCompanies();
+    Company saveCompany(String comapnyName);
 }

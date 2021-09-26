@@ -56,9 +56,9 @@ public class CoffeeSiteSearchController {
     private static final String SEARCH_CRITERIA_MODEL_KEY = "searchCriteria";
     
     
-    private CoffeeSiteService coffeeSiteService;
+    private final CoffeeSiteService coffeeSiteService;
     
-    private CoffeeSortService coffeeSortService;
+    private final CoffeeSortService coffeeSortService;
     
     
     /**
@@ -171,7 +171,7 @@ public class CoffeeSiteSearchController {
             return mavRedirect;
         }
         
-        if (foundSites != null && foundSites.size() == 0) {
+        if (foundSites != null && foundSites.isEmpty()) {
             mav.addObject(EMPTY_RESULT_MODEL_KEY, true); // nothing found, let to know to model
         }
         mav.addObject(FOUND_SITES_MODEL_KEY, foundSites);
@@ -184,8 +184,7 @@ public class CoffeeSiteSearchController {
         mav.setViewName(SEARCH_HTML_PAGE);
         return mav;
    }
-    
-   
+
    
    /**
     * Processes request to show one CoffeeSite in a map on the 'coffeesite_search.html' page, which then allows further searching.
@@ -292,7 +291,6 @@ public class CoffeeSiteSearchController {
        List<CoffeeSiteDTO> foundSites = new ArrayList<>();
        
        if (!currentSearchCity.isEmpty()) {
-           
            foundSites = (searchExactly) ? coffeeSiteService.findAllByCityNameExactly(currentSearchCity)
                                         : coffeeSiteService.findAllByCityNameAtStart(currentSearchCity);
            

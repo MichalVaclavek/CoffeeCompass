@@ -24,7 +24,7 @@ public interface FirebaseDeviceTokenRepository extends JpaRepository<DeviceFireb
      * @return
      */
     @Query("SELECT dft FROM DeviceFirebaseToken dft WHERE user.id=?1")
-    public List<DeviceFirebaseToken> getAllTokensForUser(Long userId);
+    List<DeviceFirebaseToken> getAllTokensForUser(Long userId);
     
     /**
      * Get one DeviceFirebaseToken according token string
@@ -33,13 +33,12 @@ public interface FirebaseDeviceTokenRepository extends JpaRepository<DeviceFireb
      * @return
      */
     @Query("SELECT dft FROM DeviceFirebaseToken dft WHERE firebaseToken=?1")
-    public Optional<DeviceFirebaseToken> getOneToken(String tokenString);
+    Optional<DeviceFirebaseToken> getOneToken(String tokenString);
     
     @Modifying // required by Hibernate, otherwise there is an exception ' ... Illegal state ...'
     @Query("delete FROM DeviceFirebaseToken dft where user.id=?1")
-    public void deleteAllFromUser(Long userID);
+    void deleteAllFromUser(Long userID);
     
     @Query("delete FROM DeviceFirebaseToken dft where firebaseToken=?1")
-    public void deleteToken(String tokenString);
-   
+    void deleteToken(String tokenString);
 }

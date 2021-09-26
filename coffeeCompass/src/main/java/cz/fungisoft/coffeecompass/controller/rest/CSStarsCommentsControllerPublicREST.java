@@ -42,11 +42,11 @@ import io.swagger.annotations.Api;
 @RequestMapping("/rest/public/starsAndComments")
 public class CSStarsCommentsControllerPublicREST {
 
-    private ICommentService commentsService;
+    private final ICommentService commentsService;
     
-    private StarsQualityService starsQualityService;
+    private final StarsQualityService starsQualityService;
     
-    private CoffeeSiteService coffeeSiteService;
+    private final CoffeeSiteService coffeeSiteService;
     
     @Autowired
     public CSStarsCommentsControllerPublicREST(ICommentService commentsService,
@@ -90,7 +90,6 @@ public class CSStarsCommentsControllerPublicREST {
     public List<CommentDTO> getAllComments() {
         // Gets all comments 
         return  commentsService.getAllComments();
-        
     }
     
     /**

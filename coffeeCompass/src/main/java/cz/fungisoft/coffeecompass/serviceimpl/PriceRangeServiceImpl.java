@@ -15,7 +15,7 @@ import cz.fungisoft.coffeecompass.service.PriceRangeService;
 @Transactional
 public class PriceRangeServiceImpl implements PriceRangeService {
 
-    private PriceRangeRepository priceRangeRepo;
+    private final PriceRangeRepository priceRangeRepo;
     
     @Autowired
     public PriceRangeServiceImpl(PriceRangeRepository priceRangeRepo) {

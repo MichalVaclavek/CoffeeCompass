@@ -53,8 +53,8 @@ import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
  */
 @RequestMapping("/user") // uvadi se, pokud vsechny dotazy/url requesty v kontroleru maji zacinat timto retezcem
 @Controller
-public class UserController
-{  
+public class UserController {
+
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     
     
@@ -64,17 +64,17 @@ public class UserController
     private static final String USER_DELETE_FAIL_ATTRIB_KEY = "userDeleteFailure";
     
     
-    private UserService userService;
+    private final UserService userService;
     
-    private UserSecurityService userSecurityService;
+    private final UserSecurityService userSecurityService;
     
-    private UserProfileService userProfileService;
+    private final UserProfileService userProfileService;
     
-    private MessageSource messages;
+    private final MessageSource messages;
     
-    private ICommentService commentsService;
+    private final ICommentService commentsService;
     
-    private CoffeeSiteService coffeeSiteService;
+    private final CoffeeSiteService coffeeSiteService;
     
     @Autowired
     private ApplicationEventPublisher eventPublisher;

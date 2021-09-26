@@ -17,8 +17,8 @@ import lombok.Data;
  *
  */
 @Data
-public class WeatherDTO
-{
+public class WeatherDTO {
+
     private List<Weather> weather = null;
     
     private Main main;

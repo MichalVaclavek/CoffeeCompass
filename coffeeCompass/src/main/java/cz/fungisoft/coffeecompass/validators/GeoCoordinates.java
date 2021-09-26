@@ -21,6 +21,7 @@ import javax.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.METHOD, ElementType.FIELD })
 public @interface GeoCoordinates {
+
     String message() default "Not a valid geo coordinates format.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

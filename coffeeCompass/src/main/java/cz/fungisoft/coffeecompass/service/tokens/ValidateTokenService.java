@@ -6,13 +6,13 @@ package cz.fungisoft.coffeecompass.service.tokens;
  * @author Michal Vaclavek
  *
  */
-public interface ValidateTokenService
-{
-    final static String TOKEN_EXPIRED = "expiredToken";
+public interface ValidateTokenService {
+
+    String TOKEN_EXPIRED = "expiredToken";
     
-    final static String TOKEN_INVALID = "invalidToken";
+    String TOKEN_INVALID = "invalidToken";
     
-    final static String TOKEN_INVALID_USER =  "invalidTokenUser";
+    String TOKEN_INVALID_USER =  "invalidTokenUser";
     
     /**
      * Validates password reset token sent to user on request.
@@ -22,7 +22,7 @@ public interface ValidateTokenService
      * 
      * @return empty string if token is valid, otherwise invalid token reason i.e. "expiredToken" or "invalidToken" or "invalidUser"
      */
-    public String validatePasswordResetToken(long id, String token);
+    String validatePasswordResetToken(long id, String token);
     
     /**
      * Validates registration confirm e-mail token sent to user's email during registration process.
@@ -31,5 +31,5 @@ public interface ValidateTokenService
      * 
      * @return empty string if token is valid, otherwise invalid token reason i.e. "expiredToken" or "invalidToken"
      */
-    public String validateUserRegistrationToken(String token);
+    String validateUserRegistrationToken(String token);
 }

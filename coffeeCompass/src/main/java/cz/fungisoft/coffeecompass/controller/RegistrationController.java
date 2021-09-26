@@ -26,26 +26,24 @@ import cz.fungisoft.coffeecompass.service.user.UserService;
  * @author Michal Vaclavek
  */
 @Controller
-public class RegistrationController
-{
+public class RegistrationController {
     
     private static final String REDIRECT_HOME_VIEW = "redirect:/home";
     private static final String TOKEN_FAILURE_VIEW = "redirect:/registrationTokenFailure";
     
     
-    private UserService userService;
+    private final UserService userService;
     
-    private TokenCreateAndSendEmailService userVerificationTokenService;
+    private final TokenCreateAndSendEmailService userVerificationTokenService;
     
-    private ValidateTokenService validateTokenService;
+    private final ValidateTokenService validateTokenService;
     
-    private UserSecurityService userSecurityService;
+    private final UserSecurityService userSecurityService;
     
     /**
      * 
      * @param userService
      * @param verificationTokenService
-     * @param messagesSource
      */
     public RegistrationController(UserService userService,
                                   TokenCreateAndSendEmailService verificationTokenService,

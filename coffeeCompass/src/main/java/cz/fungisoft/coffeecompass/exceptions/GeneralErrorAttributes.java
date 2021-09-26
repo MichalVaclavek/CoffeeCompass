@@ -18,8 +18,7 @@ import cz.fungisoft.coffeecompass.controller.models.rest.CommonRestError;
  * @author Michal Vaclavek
  *
  */
-public class GeneralErrorAttributes extends DefaultErrorAttributes
-{
+public class GeneralErrorAttributes extends DefaultErrorAttributes {
  
     public GeneralErrorAttributes() {
         super();

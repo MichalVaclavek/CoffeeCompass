@@ -10,8 +10,8 @@ import lombok.Data;
  *
  */
 @Data
-public class DeleteUserAccountModel
-{
+public class DeleteUserAccountModel {
+
     private Long userId;
     
     private String userName;

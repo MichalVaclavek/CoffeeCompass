@@ -24,6 +24,7 @@ import cz.fungisoft.coffeecompass.pojo.LatLong;
 * @author Michal Václavek
 */
 public interface CoffeeSiteService {
+
     /**
      * Gets all CoffeeSites ordered by selected CoffeeSite's property in given direction
      * 
@@ -264,5 +265,4 @@ public interface CoffeeSiteService {
     
     @Transactional
     CoffeeSite updateSite(CoffeeSiteDTO cs);
-    
 }

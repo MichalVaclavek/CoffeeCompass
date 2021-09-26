@@ -34,8 +34,7 @@ import java.time.LocalDateTime;
  * 
  */
 @Service("jwtTokenProviderService")
-public class JwtTokenProviderService implements Clock, TokenService
-{
+public class JwtTokenProviderService implements Clock, TokenService {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenProviderService.class);
     
@@ -192,9 +191,10 @@ public class JwtTokenProviderService implements Clock, TokenService
     }
     
     /**
-     * Pomocna metoda nahrazujici metodu z Apache common knihovny
-     * @param token
-     * @param dot2
+     * Pomocna metoda nahrazujici metodu z Apache common knihovny.
+     *
+     * @param str
+     * @param separator
      * @return
      */
     private String substringBeforeLast(String str, String separator) {

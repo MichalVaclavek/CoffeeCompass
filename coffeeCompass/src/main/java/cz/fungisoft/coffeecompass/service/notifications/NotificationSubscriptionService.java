@@ -39,5 +39,4 @@ public interface NotificationSubscriptionService {
      * @throws ExecutionException
      */
     void unsubscribeFromAllTopics(String token) throws InterruptedException, ExecutionException;
-    
 }

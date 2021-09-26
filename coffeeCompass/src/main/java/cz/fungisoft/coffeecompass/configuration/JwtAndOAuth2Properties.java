@@ -14,12 +14,11 @@ import java.util.List;
  * @author Michal Vaclavek
  *
  */
-//@PropertySource("classpath:application-${spring.profiles.active}.properties")
 @Profile("default")
 @Configuration
 @ConfigurationProperties(prefix = "app")
-public class JwtAndOAuth2Properties
-{
+public class JwtAndOAuth2Properties {
+
     private final JwtAuth jwtAuth = new JwtAuth();
     private final OAuth2 oauth2 = new OAuth2();
     
@@ -117,5 +116,4 @@ public class JwtAndOAuth2Properties
             return defaultErrorLoginRedirectURI;
         }
     }
-
 }

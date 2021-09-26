@@ -200,7 +200,7 @@ public class CommentService implements ICommentService {
      * Adds attributes to CoffeeSite to identify what operations can be done with Comment in UI.
      * Also adds Stars from user for this CoffeeSite.
      * 
-     * @param comments
+     * @param comment
      * @return list of CommentDTO to be sent to client
      */
     private CommentDTO modifyToTransfer(Comment comment) {

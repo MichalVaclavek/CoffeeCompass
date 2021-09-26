@@ -9,11 +9,11 @@ package cz.fungisoft.coffeecompass.controller.models;
  * @author Michal V.
  *
  */
-public enum AuthProviders
-{
-    local,
-    google,
-    facebook,
-    linkedin,
-    instagram
+public enum AuthProviders {
+
+    LOCAL,
+    GOOGLE,
+    FACEBOOK,
+    LINKEDIN,
+    INSTAGRAM
 }

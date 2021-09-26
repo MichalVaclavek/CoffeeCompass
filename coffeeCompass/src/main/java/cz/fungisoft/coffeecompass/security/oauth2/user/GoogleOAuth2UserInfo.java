@@ -6,8 +6,7 @@ import java.util.Map;
  * Maps google's oauth2 user info into internal {@link OAuth2UserInfo}
  * 
  */
-public class GoogleOAuth2UserInfo extends OAuth2UserInfo
-{
+public class GoogleOAuth2UserInfo extends OAuth2UserInfo {
 
     public GoogleOAuth2UserInfo(Map<String, Object> attributes) {
         super(attributes);
@@ -47,5 +46,4 @@ public class GoogleOAuth2UserInfo extends OAuth2UserInfo
     public boolean isEmailConfirmed() {
         return (boolean) attributes.get("email_verified");
     }
-    
 }

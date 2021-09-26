@@ -45,8 +45,8 @@ import ma.glasnost.orika.MapperFacade;
 @RequiredArgsConstructor // Creates Constructor with all dependencies (used by Spring to inject them)
 @Transactional
 @Log4j2
-public class UserServiceImpl implements UserService
-{
+public class UserServiceImpl implements UserService {
+
     private final UsersRepository usersRepository;
    
     private final PasswordEncoder passwordEncoder;
@@ -65,22 +65,6 @@ public class UserServiceImpl implements UserService
     
      
     /* Constructor created by lombok */
-    
-//    /**
-//     * Konstruktor, ktery vyuzije Spring pro injection zavislosti. Neni potreba uvadet anotaci @Autowired na atributech
-//     *         
-//     * @param usersRepository
-//     * @param passwordEncoder
-//     * @param mapperFacade
-//     */
-//    @Autowired
-//    public UserServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder, MapperFacade mapperFacade, ConfigProperties configProperties) {
-//        super();
-//        this.usersRepository = usersRepository;
-//        this.passwordEncoder = passwordEncoder;
-//        this.mapperFacade = mapperFacade;
-//        this.config = configProperties;
-//    }
     
     // ** Findind User ** /
 
@@ -644,5 +628,4 @@ public class UserServiceImpl implements UserService
     public Optional<UserDTO> getCurrentLoggedInUserDTO() {
         return findByUserNameToTransfer(userSecurityService.getCurrentLoggedInUserName());
     }
-
 }

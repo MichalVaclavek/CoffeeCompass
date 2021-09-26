@@ -31,13 +31,13 @@ import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
  *
  */
 @Service("userSecurityService")
-public class UserSecurityServiceImpl implements UserSecurityService
-{
-    private IAuthenticationFacade authenticationFacade;
+public class UserSecurityServiceImpl implements UserSecurityService {
+
+    private final IAuthenticationFacade authenticationFacade;
     
-    private CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
     
-    private CustomRESTUserAuthenticationService restUserDetailsService;
+    private final CustomRESTUserAuthenticationService restUserDetailsService;
     
     public UserSecurityServiceImpl(IAuthenticationFacade authenticationFacade,
                                    CustomUserDetailsService userDetailsService,
@@ -147,5 +147,4 @@ public class UserSecurityServiceImpl implements UserSecurityService
             logout();
         }
     }
-
 }

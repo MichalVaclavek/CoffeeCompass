@@ -6,7 +6,6 @@ package cz.fungisoft.coffeecompass.entity;
  * @author Michal Vaclavek
  *
  */
-public class DiagnosticData
-{
+public class DiagnosticData {
 //TODO
 }

@@ -35,7 +35,7 @@ public class StarsQualityDescription {
         FOUR("Dobrá"),
         FIVE("Vynikající");
          
-        private String starsQuality;
+        private final String starsQuality;
          
         StarsQualityEnum(String starsQuality) {
             this.starsQuality = starsQuality;

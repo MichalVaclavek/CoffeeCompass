@@ -12,8 +12,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint
-{
+public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest httpServletRequest,

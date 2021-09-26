@@ -13,7 +13,8 @@ import javax.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = PasswordMatchesValidator.class)
 @Documented
-public @interface PasswordMatches { 
+public @interface PasswordMatches {
+
     String message() default "Passwords don't match";
     Class<?>[] groups() default {}; 
     Class<? extends Payload>[] payload() default {};

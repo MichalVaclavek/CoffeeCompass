@@ -28,7 +28,7 @@ import javax.validation.constraints.NotNull;
 @Table(name="password_reset_token", schema = "coffeecompass")
 public class PasswordResetToken {
   
-    private static final int EXPIRATION_MINUTES = 60 * 1; // 1 hour validity
+    private static final int EXPIRATION_MINUTES = 60; // 1 hour validity
   
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

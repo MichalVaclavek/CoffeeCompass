@@ -14,17 +14,17 @@ import cz.fungisoft.coffeecompass.entity.ContactMeMessage;
 /**
  * @author Michal Vaclavek
  */
-public interface ContactMeMessageRepository extends JpaRepository<ContactMeMessage, Integer>
-{
+public interface ContactMeMessageRepository extends JpaRepository<ContactMeMessage, Integer> {
+
     @Query("select cmm from ContactMeMessage cmm where authorName=?1")
-    public List<ContactMeMessage> getAllFromAuthor(String authorName);
+    List<ContactMeMessage> getAllFromAuthor(String authorName);
     
     /**
      * Gets all ContactMeMessage created from Date to now.
      * 
-     * @param authorName
+     * @param dateFrom
      * @return
      */
     @Query("select cmm from ContactMeMessage cmm where createdTime > ?1")
-    public List<ContactMeMessage> getAllFromDate(Timestamp dateFrom);
+    List<ContactMeMessage> getAllFromDate(Timestamp dateFrom);
 }

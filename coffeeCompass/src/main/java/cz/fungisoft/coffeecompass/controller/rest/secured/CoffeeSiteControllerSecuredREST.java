@@ -57,9 +57,9 @@ public class CoffeeSiteControllerSecuredREST  {
 
     private static final Logger log = LoggerFactory.getLogger(CoffeeSiteControllerSecuredREST.class);
     
-    private CoffeeSiteService coffeeSiteService;
+    private final CoffeeSiteService coffeeSiteService;
     
-    private MessageSource messages;
+    private final MessageSource messages;
 
     private static final String INPUT_SIZE_ERROR_MESSAGE_KEY = "{error.input.coffeesites.list.size}";
     

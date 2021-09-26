@@ -4,7 +4,6 @@ import cz.fungisoft.coffeecompass.controller.models.rest.PushNotificationRespons
 import cz.fungisoft.coffeecompass.controller.models.rest.PushNotificationSubscriptionRequest;
 import cz.fungisoft.coffeecompass.exceptions.rest.InvalidParameterValueException;
 import cz.fungisoft.coffeecompass.service.notifications.NotificationSubscriptionService;
-import cz.fungisoft.coffeecompass.service.notifications.PushNotificationService;
 import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +20,7 @@ import java.util.concurrent.ExecutionException;
 
 /**
  * REST Controller to handle requests related to Push notifications of Firebase.
- * This is non-secured version of the contrller, so can be used without login-in user.
+ * This is non-secured version of the controller, so can be used without login-in user.
  *  
  * @author Michal Vaclavek
  */
@@ -32,12 +31,9 @@ public class PushNotificationController {
     
     private static final Logger log = LoggerFactory.getLogger(PushNotificationController.class);
     
-    private PushNotificationService pushNotificationService;
+    private final NotificationSubscriptionService notificationSubscriptionService;
     
-    private NotificationSubscriptionService notificationSubscriptionService;
-    
-    public PushNotificationController(PushNotificationService pushNotificationService, NotificationSubscriptionService notificationSubscriptionService) {
-        this.pushNotificationService = pushNotificationService;
+    public PushNotificationController(NotificationSubscriptionService notificationSubscriptionService) {
         this.notificationSubscriptionService = notificationSubscriptionService;
     }
     

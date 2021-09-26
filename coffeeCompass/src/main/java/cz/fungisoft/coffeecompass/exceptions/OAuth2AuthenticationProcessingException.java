@@ -2,11 +2,8 @@ package cz.fungisoft.coffeecompass.exceptions;
 
 import org.springframework.security.core.AuthenticationException;
 
-public class OAuth2AuthenticationProcessingException extends AuthenticationException
-{
-    /**
-     * 
-     */
+public class OAuth2AuthenticationProcessingException extends AuthenticationException {
+
     private static final long serialVersionUID = -9177256050734451139L;
     
     private String providerName;

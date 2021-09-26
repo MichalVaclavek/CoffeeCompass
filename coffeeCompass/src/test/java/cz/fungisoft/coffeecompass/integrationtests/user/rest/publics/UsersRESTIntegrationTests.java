@@ -47,7 +47,7 @@ class UsersRESTIntegrationTests extends IntegrationTestBaseConfig {
     @Autowired
     private MockMvc mockMvc;
     
-    private static String deviceID = "4545454545";
+    private static final String deviceID = "4545454545";
     
     private User admin = new User();
     private SignUpAndLoginRESTDto signUpAndLoginRESTDtoAdmin;

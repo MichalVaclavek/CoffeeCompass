@@ -81,5 +81,4 @@ public interface TopicsForPushNotificationsService {
     void deleteSelectedTopicsOfToken(String tokenString, List<String> topics);
 
     void deleteTopicAndSubtopic(String topic, String subTopic);
-    
 }

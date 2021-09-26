@@ -33,9 +33,9 @@ import cz.fungisoft.coffeecompass.service.user.UserService;
  */
 @Service
 @Transactional
-public class CustomOAuth2UserService extends DefaultOAuth2UserService
-{
-    private UserService userService;
+public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+
+    private final UserService userService;
     
     public CustomOAuth2UserService(@Lazy UserService userService) {
         super();

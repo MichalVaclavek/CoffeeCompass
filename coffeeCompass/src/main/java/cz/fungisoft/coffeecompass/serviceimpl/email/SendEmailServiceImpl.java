@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 import cz.fungisoft.coffeecompass.service.email.ISendEmailService;
 
 @Service("sendMeEmailService")
-public class SendEmailServiceImpl implements ISendEmailService
-{
+public class SendEmailServiceImpl implements ISendEmailService {
+
     private static final Logger logger = LogManager.getLogger(SendEmailServiceImpl.class);
     
-    public JavaMailSender emailSender;
+    public final JavaMailSender emailSender;
 
     @Autowired
     public SendEmailServiceImpl(JavaMailSender emailSender) {
@@ -56,5 +56,4 @@ public class SendEmailServiceImpl implements ISendEmailService
             throw e;
         }
     }
-    
 }

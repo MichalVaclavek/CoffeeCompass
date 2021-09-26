@@ -16,8 +16,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-public class OnNewCoffeeSiteEvent extends ApplicationEvent
-{
+public class OnNewCoffeeSiteEvent extends ApplicationEvent {
     
     private static final long serialVersionUID = 8367834543095239220L;
     

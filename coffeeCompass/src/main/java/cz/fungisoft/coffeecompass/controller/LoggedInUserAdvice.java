@@ -19,9 +19,9 @@ import cz.fungisoft.coffeecompass.service.user.UserService;
  * @author Michal Vaclavek
  */
 @ControllerAdvice
-public class LoggedInUserAdvice
-{    
-    private UserService userService;
+public class LoggedInUserAdvice {
+
+    private final UserService userService;
     
     @Autowired
     public LoggedInUserAdvice(UserService userService) {

@@ -14,7 +14,8 @@ import cz.fungisoft.coffeecompass.service.CupTypeService;
 @Service("cupTypeService")
 @Transactional
 public class CupTypeServiceImpl implements CupTypeService {
-    private CupTypeRepository cupTypeRepo;
+
+    private final CupTypeRepository cupTypeRepo;
     
     @Autowired
     public CupTypeServiceImpl(CupTypeRepository cupTypeRepo) {

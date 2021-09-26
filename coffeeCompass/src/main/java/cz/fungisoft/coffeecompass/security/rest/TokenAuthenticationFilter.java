@@ -27,11 +27,11 @@ import static com.google.common.net.HttpHeaders.AUTHORIZATION;
  * @author Michal Vaclavek
  *
  */
-public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingFilter
-{
+public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+
     private static final String BEARER = "Bearer";
     
-    private UserSecurityService userSecurityService;
+    private final UserSecurityService userSecurityService;
     
 
     public TokenAuthenticationFilter(final RequestMatcher requiresAuth, UserSecurityService userSecurityService) {

@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import cz.fungisoft.coffeecompass.service.tokens.TokenCreateAndSendEmailService;
 
 @Component
-public class RegistrationListener implements ApplicationListener<OnRegistrationCompleteEvent>
-{
+public class RegistrationListener implements ApplicationListener<OnRegistrationCompleteEvent> {
+
     @Autowired
     private TokenCreateAndSendEmailService verificationTokenSendEmailService;
     

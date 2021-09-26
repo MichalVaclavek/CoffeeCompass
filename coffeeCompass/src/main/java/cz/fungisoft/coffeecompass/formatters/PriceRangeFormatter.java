@@ -11,9 +11,9 @@ import cz.fungisoft.coffeecompass.entity.PriceRange;
 import cz.fungisoft.coffeecompass.service.PriceRangeService;
 
 @Component
-public class PriceRangeFormatter implements Formatter<PriceRange>
-{
-    private PriceRangeService priceRangeService;
+public class PriceRangeFormatter implements Formatter<PriceRange> {
+
+    private final PriceRangeService priceRangeService;
     
     @Autowired
     public PriceRangeFormatter(PriceRangeService priceRangeService) {

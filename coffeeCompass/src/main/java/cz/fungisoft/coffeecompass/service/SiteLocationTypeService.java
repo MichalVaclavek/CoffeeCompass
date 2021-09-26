@@ -4,8 +4,8 @@ import java.util.List;
 
 import cz.fungisoft.coffeecompass.entity.SiteLocationType;
 
-public interface SiteLocationTypeService
-{
-    public SiteLocationType findSiteLocationType(String siteLocationType);
-    public List<SiteLocationType> getAllSiteLocationTypes();
+public interface SiteLocationTypeService {
+
+    SiteLocationType findSiteLocationType(String siteLocationType);
+    List<SiteLocationType> getAllSiteLocationTypes();
 }

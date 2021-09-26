@@ -18,7 +18,7 @@ import lombok.Data;
 public class StarAndCommentForSiteModel {
     
     @Min(1)
-    @Max(1)
+    @Max(5)
     private int stars;
 
     @Size(max=320)

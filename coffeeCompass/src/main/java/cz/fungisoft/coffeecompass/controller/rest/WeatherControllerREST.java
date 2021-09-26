@@ -24,7 +24,7 @@ import io.swagger.annotations.Api;
 @RequestMapping("/rest/weather") 
 public class WeatherControllerREST {
     
-    private WeatherApiService weatherService;
+    private final WeatherApiService weatherService;
 
     public WeatherControllerREST(WeatherApiService weatherService) {
         super();

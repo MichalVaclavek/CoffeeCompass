@@ -25,8 +25,8 @@ import cz.fungisoft.coffeecompass.utils.CookieUtils;
  * 
  * @author source: https://www.callicoder.com/spring-boot-security-oauth2-social-login-part-2/
  */
-public class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest>
-{
+public class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
+
     public static final String OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2_auth_request";
     public static final String REDIRECT_URI_PARAM_COOKIE_NAME = "redirect_uri";
     private static final int COOKIE_EXPIRY_SECONDS = 180;

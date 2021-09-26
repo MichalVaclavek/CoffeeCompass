@@ -24,8 +24,8 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name="user_verification_token", schema = "coffeecompass")
-public class UserEmailVerificationToken
-{
+public class UserEmailVerificationToken {
+
     private static final int EXPIRATION_MINUTES = 60 * 24; // 24 hours as default
     
     @Id

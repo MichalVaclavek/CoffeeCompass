@@ -26,9 +26,9 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class StatisticsInfoServiceImpl implements StatisticsInfoService {
 
-    private CoffeeSiteRepository csRepo;
+    private final CoffeeSiteRepository csRepo;
     
-    private UsersRepository usersRepo;
+    private final UsersRepository usersRepo;
 
     /**
      * Object to be created, filled-in by respective data and returned on request.
@@ -71,5 +71,4 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
     public void saveDiagnosticData(DiagnosticData diagData) {
         // TODO Auto-generated method stub
     }
-
 }

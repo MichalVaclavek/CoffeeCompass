@@ -16,7 +16,7 @@ import cz.fungisoft.coffeecompass.service.CSRecordStatusService;
 @Transactional
 public class CSRecordStatusServiceImpl implements CSRecordStatusService {
 
-    private CoffeeSiteRecordStatusRepository csRecordStatusRepo;
+    private final CoffeeSiteRecordStatusRepository csRecordStatusRepo;
     
     @Autowired
     public CSRecordStatusServiceImpl(CoffeeSiteRecordStatusRepository csRecordStatusRepo) {

@@ -30,13 +30,13 @@ import lombok.extern.log4j.Log4j2;
 @Component
 public class NewCoffeeSiteEventListener implements ApplicationListener<OnNewCoffeeSiteEvent> {
     
-    private FirebaseNotificationService notificationService;
+    private final FirebaseNotificationService notificationService;
     
-    private TopicsForPushNotificationsService firebaseTopicService;
+    private final TopicsForPushNotificationsService firebaseTopicService;
     
-    private MessageSource messages;
+    private final MessageSource messages;
     
-    private GeoCodingService geoCodingService;
+    private final GeoCodingService geoCodingService;
     
     
     public NewCoffeeSiteEventListener(FirebaseNotificationService notificationService,
@@ -116,7 +116,7 @@ public class NewCoffeeSiteEventListener implements ApplicationListener<OnNewCoff
     /**
      * Prepares notification data
      * 
-     * @param csId - coffeeSite id
+     * @param coffeeSiteId - coffeeSite id
      * @param town
      * @param topic
      * @return

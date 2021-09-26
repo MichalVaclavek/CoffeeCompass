@@ -16,8 +16,8 @@ import lombok.Data;
  *
  */
 @Data
-public class AuthRESTResponse
-{
+public class AuthRESTResponse {
+
     private String accessToken;
     private String tokenType = "Bearer";
     

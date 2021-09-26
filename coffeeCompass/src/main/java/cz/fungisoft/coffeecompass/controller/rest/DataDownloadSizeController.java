@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class DataDownloadSizeController {
 
     @NonNull
-    private DataDownloadSizeService dataDownloadSizeService;
+    private final DataDownloadSizeService dataDownloadSizeService;
 
     public DataDownloadSizeController(@NonNull DataDownloadSizeService dataDownloadSizeService) {
         this.dataDownloadSizeService = dataDownloadSizeService;
@@ -103,5 +103,4 @@ public class DataDownloadSizeController {
     public Long getSizeOfAllExceptImagesToDownload() {
         return dataDownloadSizeService.getKBytesOfAllDataWithoutImagesToDownload();
     }
-
 }

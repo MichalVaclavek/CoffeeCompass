@@ -24,11 +24,11 @@ import cz.fungisoft.coffeecompass.service.user.UserService;
  * @author Michal Vaclavek
  */
 @Controller
-public class ContactMeMessageController
-{
-    private IContactMeMessageService contactMeService;
+public class ContactMeMessageController {
+
+    private final IContactMeMessageService contactMeService;
     
-    private UserService userService;
+    private final UserService userService;
     
     @Autowired
     public ContactMeMessageController(IContactMeMessageService contactMeService,

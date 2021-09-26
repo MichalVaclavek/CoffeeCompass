@@ -11,9 +11,9 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSort;
 import cz.fungisoft.coffeecompass.service.CoffeeSortService;
 
 @Component
-public class CoffeeSortsFormatter implements Formatter<CoffeeSort>
-{
-    private CoffeeSortService coffeeSortService;
+public class CoffeeSortsFormatter implements Formatter<CoffeeSort> {
+
+    private final CoffeeSortService coffeeSortService;
     
     @Autowired
     public CoffeeSortsFormatter(CoffeeSortService coffeeSortService) {
