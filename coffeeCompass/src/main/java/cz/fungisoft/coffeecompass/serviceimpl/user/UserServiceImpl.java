@@ -1,11 +1,7 @@
 package cz.fungisoft.coffeecompass.serviceimpl.user;
 
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
@@ -527,7 +523,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isUserNameUnique(Long id, String sso) {
         Optional<User> user = usersRepository.searchByUsername(sso);
-        return (!user.isPresent() || ((id != null) && (user.get().getId() == id)));
+        return (!user.isPresent() || ((id != null) && (Objects.equals(user.get().getId(), id))));
     }
 
     /**
@@ -542,7 +538,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isEmailUnique(Long id, String email) {
         Optional<User> user = usersRepository.searchByEmail(email);
-        return (!user.isPresent() || ((id != null) && (user.get().getId() == id)));
+        return (!user.isPresent() || ((id != null) && (user.get().getId().equals(id))));
     }
     
     @Override
@@ -566,7 +562,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isLoggedInUserToManageItself(User user) {
         Optional<User> loggedInUser = getCurrentLoggedInUser();
-        return loggedInUser.isPresent() && loggedInUser.get().getId() == user.getId();        
+        return loggedInUser.isPresent() && loggedInUser.get().getId().equals(user.getId());
     }
 
     @Override

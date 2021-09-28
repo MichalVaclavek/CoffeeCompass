@@ -45,7 +45,9 @@ public interface TokenCreateAndSendEmailService {
     UserEmailVerificationToken getUserVerificationToken(String verificationToken);
     
     void deleteRegistrationToken(String token);
-    
+
+    void deleteRegistrationTokenByUser(User user);
+
     // ---- Reset password token and e-mail ---- //
     
     /**

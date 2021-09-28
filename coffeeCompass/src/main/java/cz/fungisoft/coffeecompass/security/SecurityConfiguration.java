@@ -36,6 +36,8 @@ import cz.fungisoft.coffeecompass.security.rest.TokenAuthenticationFilter;
 import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
 import cz.fungisoft.coffeecompass.serviceimpl.user.CustomOAuth2UserService;
 
+import javax.servlet.Filter;
+
 
 /**
  * Zakladni nastaveni zabezpeceni pristupu na stranky, pristup k datum uzivatelu apod.
@@ -207,8 +209,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      * Disable Spring boot automatic filter registration.
      */
     @Bean
-    FilterRegistrationBean disableAutoRegistration(final TokenAuthenticationFilter filter) {
-        final FilterRegistrationBean registration = new FilterRegistrationBean(filter);
+    FilterRegistrationBean<Filter> disableAutoRegistration(final TokenAuthenticationFilter filter) {
+        final FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>(filter);
         registration.setEnabled(false);
         return registration;
     }

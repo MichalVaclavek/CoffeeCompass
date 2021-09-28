@@ -74,6 +74,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
      * @param authentication
      * @return
      */
+    @Override
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         
         Optional<String> redirectUri = Optional.of(ouat2Properties.getOauth2().getDefaultSuccessLoginRedirectURI());

@@ -191,7 +191,7 @@ public class CoffeeSiteController {
 
         Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
 
-        if (loggedInUser.isPresent() &&  userService.hasADMINorDBARole(loggedInUser.get())) {
+        if (loggedInUser.isPresent() && userService.hasADMINorDBARole(loggedInUser.get())) {
             allCoffeeSites = coffeeSiteService.findAll("createdOn", "DESC");
         } else {
             allCoffeeSites = coffeeSiteService.findAllWithRecordStatus(CoffeeSiteRecordStatusEnum.ACTIVE);

@@ -48,7 +48,10 @@ public class PushNotificationServiceImpl implements PushNotificationService {
     public void sendPushNotificationWithoutData(PushNotificationRequest request) {
         try {
             fcmService.sendMessageWithoutDataToTopic(request);
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            log.error(PUSH_NOTIFICATION_ERROR, e.getMessage());
+        } catch (ExecutionException e) {
             log.error(PUSH_NOTIFICATION_ERROR, e.getMessage());
         }
     }
@@ -57,7 +60,10 @@ public class PushNotificationServiceImpl implements PushNotificationService {
     public void sendPushNotificationToToken(PushNotificationRequest request) {
         try {
             fcmService.sendMessageToToken(request);
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            log.error(PUSH_NOTIFICATION_ERROR, e.getMessage());
+        } catch (ExecutionException e) {
             log.error(PUSH_NOTIFICATION_ERROR, e.getMessage());
         }
     }

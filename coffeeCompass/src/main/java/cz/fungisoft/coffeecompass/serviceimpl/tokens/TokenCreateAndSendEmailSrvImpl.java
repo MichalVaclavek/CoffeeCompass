@@ -23,9 +23,8 @@ import cz.fungisoft.coffeecompass.service.tokens.TokenCreateAndSendEmailService;
 import cz.fungisoft.coffeecompass.service.user.UserService;
 
 /**
- * 
  * Service implementing creation and sending token links for verification<br>
- * of the newly created user's e-mail and for reseting user's password.
+ * of the newly created user's e-mail and for resetting user's password.
  * 
  * @author Michal Vaclavek
  */
@@ -127,14 +126,12 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
         return newToken.getToken();
     }
     
-    @Transactional
     @Override
     public void createUserVerificationToken(User user, String token) {
         UserEmailVerificationToken myToken = new UserEmailVerificationToken(token, user);
         userEmailVerificationTokenRepository.save(myToken);
     }
     
-    @Transactional
     @Override
     public UserEmailVerificationToken generateNewUserVerificationToken(String existingToken) {
         UserEmailVerificationToken oldToken = getUserVerificationToken(existingToken);
@@ -155,6 +152,12 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
         userEmailVerificationTokenRepository.deleteByToken(token);
     }
 
+    @Transactional
+    @Override
+    public void deleteRegistrationTokenByUser(User user) {
+        userEmailVerificationTokenRepository.deleteByUser(user);
+    }
+
     // ---- Password reset token ------  //
     
     @Override
@@ -163,7 +166,6 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
         this.locale = locale;
     }
 
-    @Transactional
     @Override
     public void createPasswordResetToken(User user, String token) {
         PasswordResetToken resetPasswdToken = new PasswordResetToken(token, user);

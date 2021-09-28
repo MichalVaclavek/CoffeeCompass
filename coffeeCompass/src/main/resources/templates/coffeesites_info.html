@@ -15,21 +15,21 @@
    		<h2 th:text="#{app.sites-list}" class="w3-center">Details</h2>
     </div>
     
-    <!-- Confirmation messages - used in case coffeeSite was Activated susccessfuly -->
+    <!-- Confirmation messages - used in case coffeeSite was Activated successfully -->
    	<div th:if="${activatedSiteName}" class="w3-pale-blue w3-display-container w3-round w3-panel">
 	    <span onclick="this.parentElement.style.display='none'"
 	  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
 	    <p><span th:text="#{site.activated.success}"></span><b><span th:text="${activatedSiteName}"></span></b>
 	    </p>
 	</div>
-    <!-- Used in case coffeeSite was Canceled susccessfuly -->
+    <!-- Used in case coffeeSite was Canceled successfully -->
    	<div th:if="${canceledSiteName}" class="w3-pale-blue w3-display-container w3-round w3-panel">
 	    <span onclick="this.parentElement.style.display='none'"
 	  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
 	    <p><span th:text="#{site.canceled.success}"></span><b><span th:text="${canceledSiteName}"></span></b>
 	    </p>
 	</div>
-	<!-- Used in case coffeeSite was Deleted susccessfuly -->
+	<!-- Used in case coffeeSite was Deleted successfully -->
    	<div th:if="${deletedSiteName}" class="w3-pale-blue w3-display-container w3-round w3-panel">
 	    <span onclick="this.parentElement.style.display='none'"
 	  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
@@ -84,7 +84,7 @@
 		            </form>
 		          </td>
 		          
-		          <!-- Form to generate GET http request with Modify button -->
+		          <!-- Form to generate GET http request with Delete button -->
 		          <!-- Available only for logged-in user who created the site or for DBA or ADMIN user -->
 		          <td  th:if="${site.canBeDeleted}">
 		            <form action="#" th:action="@{'/finalDeleteSite/' + ${site.id}}" th:method="DELETE" >

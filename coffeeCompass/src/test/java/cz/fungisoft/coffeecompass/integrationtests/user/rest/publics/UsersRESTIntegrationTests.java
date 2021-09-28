@@ -27,7 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-
 /**
  * Integration test for all actions related to User object.
  * Whole context of Spring is loaded, using @SpringBootTest and

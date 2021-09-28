@@ -296,8 +296,7 @@ public class CoffeeSiteSearchController {
            
            if (foundSites == null || foundSites.isEmpty()) { // nothing found, let to know to model
                mav.addObject(EMPTY_RESULT_MODEL_KEY, true); 
-           } 
-           else {
+           } else {
                searchCriteria = addAverageLocationToSearchCriteriaForFoundCoffeeSites(searchCriteria, foundSites);
            }
        }

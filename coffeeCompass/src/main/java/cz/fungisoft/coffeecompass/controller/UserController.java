@@ -150,8 +150,8 @@ public class UserController {
 
     /**
      * Obslouzi pozadavek na vytvoreni noveho uzivatele/uctu.<br>
-     * Vytvorit uzivatele muze vytvaret pouze neprihlaseny uzivatel.<br>
-     * Po uspesne registraci je uzivatel automaticky loged-in.<br>
+     * Vytvorit uzivatele muze pouze neprihlaseny uzivatel.<br>
+     * Po uspesne registraci je uzivatel automaticky logged-in.<br>
      * <p>
      * Je potreba provest kontrolu/validaci password, ktera je v prisusnem DTO vypnuta (v UserDataDto nema zadnou javax.validation.constraints.)
      * protoze stejny UserDataDto objekt je pouzit i pro modifikaci, kdy prazdne heslo znamena, ze se heslo nepozaduje menit.
@@ -187,7 +187,6 @@ public class UserController {
     
             // Kontrola i na e-mail adresu, pokud je zadana
             if (userDto.getEmail() != null && !userDto.getEmail().isEmpty()) { // should be true as input of e-mail has been validated
-                
                 if (!userService.isEmailUnique(null, userDto.getEmail())) {
                     result.rejectValue("email", "error.user.emailused", "There is already an account registered with that e-mail address.");
                 }
@@ -480,41 +479,45 @@ public class UserController {
      * except userID and username. So, the user record is kept to allow all<br>
      * related items be link to user's record.  
      * 
-     * @param id
+     * @param userDataToDelete
      * @return
      */
     @DeleteMapping(value = "/delete/")
     public ModelAndView deleteUserAndRelatedItems(@ModelAttribute("userDataModelToDelete") DeleteUserAccountModel userDataToDelete,
                                                   RedirectAttributes attr) {
         ModelAndView mav = new ModelAndView();
-        
-        Optional<UserDTO> user = userService.findByIdToTransfer(userDataToDelete.getUserId());
+
+        Optional<UserDTO> userDto = userService.findByIdToTransfer(userDataToDelete.getUserId());
         Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
         
         String userName = "";
        
-        if (user.isPresent() && loggedInUser.isPresent()) {
+        if (userDto.isPresent() && loggedInUser.isPresent()) {
             
-           userName = user.get().getUserName();
+           userName = userDto.get().getUserName();
            
            // Prihlaseny uzivatel maze svoje data?
            // Pokud jineho usera maze ADMIN, neodhlasovat z app
-           if (user.get().getId().equals(loggedInUser.get().getId())
+           if (userDto.get().getId().equals(loggedInUser.get().getId())
                    && !userService.isADMINloggedIn()) { 
                userSecurityService.logout();
            }
             
-           // smazat user's coffee sites if requested
+           // delete user's coffee sites if requested
            if (userDataToDelete.isDeleteUsersCoffeeSites()) {
                coffeeSiteService.deleteCoffeeSitesFromUser(userDataToDelete.getUserId());
            }
             
-           // smazat user's comments if requested
+           // delete user's comments if requested
            if (userDataToDelete.isDeleteUsersComments()) {
                commentsService.deleteAllCommentsFromUser(userDataToDelete.getUserId());
            }
-           
-           if (commentsService.getAllCommentsFromUser(user.get().getId()).isEmpty()
+
+           // Delete user's email verification tokens
+           userService.findById(userDataToDelete.getUserId())
+                      .ifPresent(userToDelete -> tokenCreateAndSendEmailService.deleteRegistrationTokenByUser(userToDelete));
+
+           if (commentsService.getAllCommentsFromUser(userDto.get().getId()).isEmpty()
                    && coffeeSiteService.findAllFromUserName(userName).isEmpty()) { // user's comments and CoffeeSites deleted, now User can be deleted too
                try {
                    userService.deleteUserById(userDataToDelete.getUserId());

@@ -119,9 +119,9 @@ public class UserControllerSecuredREST {
         
         if (updatedUser != null) {
             Optional<UserDTO> userDTO = userService.findByIdToTransfer(updatedUser.getId());
-            
-            return (userDTO.get() == null) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
-                                           : new ResponseEntity<>(userDTO.get(), HttpStatus.OK);
+
+            return userDTO.map(userDTO1 -> new ResponseEntity<>(userDTO1, HttpStatus.OK))
+                          .orElse(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
         }
         
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

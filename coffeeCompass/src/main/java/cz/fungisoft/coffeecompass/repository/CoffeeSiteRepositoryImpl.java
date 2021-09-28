@@ -227,11 +227,10 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
             if (siteStatus != null) {
                 sites.setParameter(7, siteStatus.getId());
             }
-        } else {
-            if (siteStatus != null) {
+        } else if (siteStatus != null) {
                 sites.setParameter(6, siteStatus.getId());
-            }
         }
+
         
         return sites.getResultList();
     }

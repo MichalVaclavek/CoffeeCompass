@@ -102,8 +102,8 @@ public class CommentService implements ICommentService {
     
     @Override
     public Comment saveTextAsComment(String commentText, CoffeeSite coffeeSite) {
-        Optional<User> logedInUser =  userService.getCurrentLoggedInUser();
-        return saveTextAsComment(commentText, mapperFacade.map(logedInUser.get(), User.class), coffeeSite);
+        Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
+        return saveTextAsComment(commentText, mapperFacade.map(loggedInUser.get(), User.class), coffeeSite);
     }
     
     /**

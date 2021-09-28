@@ -12,7 +12,6 @@ import lombok.Setter;
  * subscribed for them in Firebase.
  * 
  * @author Michal V.
- *
  */
 @Setter
 @Getter
@@ -24,7 +23,6 @@ public class OnNewCoffeeSiteEvent extends ApplicationEvent {
  
     public OnNewCoffeeSiteEvent(CoffeeSite coffeeSite) {
         super(coffeeSite);
-         
         this.coffeeSite = coffeeSite;
     }
 }

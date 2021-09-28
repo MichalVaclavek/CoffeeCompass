@@ -268,7 +268,7 @@
 	</dependencies>
 
 
-<!-- Plugin, ktery umi, mimo jine, pracovat napr. s -->
+    <!-- Plugin, ktery umi, mimo jine, pracovat napr. s -->
 	<!-- knihovnou lombok, ktera generuje casti kodu jako -->
 	<!-- konstruktory a getters a setters -->
 	<build>

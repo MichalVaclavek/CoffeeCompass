@@ -404,8 +404,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * 
      * @param coffeeSite
      */
-    public CoffeeSite updateSite(CoffeeSiteDTO coffeeSite)
-    {
+    public CoffeeSite updateSite(CoffeeSiteDTO coffeeSite) {
         CoffeeSite entityFromDB = coffeeSiteRepo.findById(coffeeSite.getId()).orElse(null);
         
         if (entityFromDB != null) {
@@ -527,13 +526,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         // if it is current modified site, then the location is considered to be available.
         // Means only move of the CoffeeSite to correct new position with no other neighbors
         if (numOfSites == 1 && siteId > 0) {
-
             return !findOneById(siteId).isPresent();
-
-//            CoffeeSite neighborSite = findOneById(siteId);
-//            if (neighborSite != null) { // its only requested site here, so, the position is not ocupied
-//                return false;
-//            }
         }
             
         return numOfSites > 0;
@@ -633,7 +626,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         CoffeeSort cfSort = coffeeSortRepo.searchByName(cfSortStr);
         CoffeeSiteStatus csStatus =  coffeeSiteStatusRepo.searchByName(siteStatus);
         
-        List<CoffeeSite> coffeeSites = new ArrayList<CoffeeSite>();
+        List<CoffeeSite> coffeeSites;
         coffeeSites = coffeeSiteRepo.findSitesWithSortAndSiteStatusAndRangeAndCity(zemSirka, zemDelka, rangeMeters, cfSort, csStatus, csRS, cityName);
         
         log.info("Coffee sites within circle (Latit.: {} , Long.: {}, range: {}) and city {} retrieved: {}", zemSirka, zemDelka, rangeMeters, cityName, coffeeSites.size());
@@ -739,8 +732,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     private boolean siteUserMatch(CoffeeSiteDTO cs) {
         if (loggedInUser.isPresent() && cs.getOriginalUserName() != null) {
             return (loggedInUser.get().getUserName().equals(cs.getOriginalUserName()) || userService.hasADMINorDBARole(loggedInUser.get()));
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -785,11 +777,10 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     private boolean canBeCanceled(CoffeeSiteDTO cs) {
         return siteUserMatch(cs) /* all users allowed to modify are also allowed change status from Inactive to Cancel or from CREATED to Cancel */
                &&
-               (
-                  cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.INACTIVE)
+               (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.INACTIVE)
                   ||
-                  cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CREATED)
-                );
+                cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CREATED)
+               );
     }
 
     /**
@@ -863,8 +854,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
 
     @Override
     public LatLong getAverageLocation(List<CoffeeSiteDTO> coffeeSites) {
-        OptionalDouble avgLat = coffeeSites.stream().mapToDouble(cs -> cs.getZemSirka()).average();
-        OptionalDouble avgLong = coffeeSites.stream().mapToDouble(cs -> cs.getZemDelka()).average();
+        OptionalDouble avgLat = coffeeSites.stream().mapToDouble(CoffeeSiteDTO::getZemSirka).average();
+        OptionalDouble avgLong = coffeeSites.stream().mapToDouble(CoffeeSiteDTO::getZemDelka).average();
         return new LatLong(avgLat.orElse(0), avgLong.orElse(0));
     }
     

@@ -22,6 +22,7 @@ import static io.jsonwebtoken.impl.TextCodec.BASE64;
 import static java.util.Objects.requireNonNull;
 
 import java.time.LocalDateTime;
+
 /**
  * This class contains code to generate and verify Json Web Tokens.
  * <p>

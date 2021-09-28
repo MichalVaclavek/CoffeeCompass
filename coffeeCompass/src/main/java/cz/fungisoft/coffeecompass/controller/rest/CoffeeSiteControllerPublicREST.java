@@ -265,13 +265,11 @@ public class CoffeeSiteControllerPublicREST {
      */
     @GetMapping("/getSitesInTown/") // napr.  https://coffeecompass.cz/rest/site/getSitesInTown/?townName=Tišnov
     public ResponseEntity<List<CoffeeSiteDTO>> sitesInTown(@RequestParam(value="townName", defaultValue="") String townName) {
-
         List<CoffeeSiteDTO> foundSites = new ArrayList<>();
 
         if (!townName.trim().isEmpty()) {
             foundSites = coffeeSiteService.findAllByCityNameAtStart(townName);
         }
-
         return (foundSites.isEmpty()) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
                                       : new ResponseEntity<>(foundSites, HttpStatus.OK);
     }

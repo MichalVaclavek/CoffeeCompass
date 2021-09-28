@@ -48,8 +48,8 @@ public class ImageFileValidator implements ConstraintValidator<ImageFileValidato
 
         if (fileToUpload != null) {
             if (!fileToUpload.isEmpty()) {
-            
                 String contentType = fileToUpload.getContentType();
+                assert contentType != null;
                 if (!isSupportedContentType(contentType)) {
                     cxt.disableDefaultConstraintViolation();
                     cxt.buildConstraintViolationWithTemplate("{ImageFileValidatorConstraint.Image.file.type}") // retrieve message from Validation Messages source defined in CoffeeCompassConfiguration

@@ -53,10 +53,9 @@ public class UserSecurityServiceImpl implements UserSecurityService {
 
     @Override
     public void authWithoutPassword(User user) {
-        
         Authentication auth = authenticationFacade.getContext().getAuthentication();
         if (auth == null || auth.getName().equalsIgnoreCase("anonymousUser")) {    
-            Collection<SimpleGrantedAuthority>  nowAuthorities = (Collection<SimpleGrantedAuthority>) userDetailsService.getGrantedAuthorities(user);
+            Collection<SimpleGrantedAuthority> nowAuthorities = (Collection<SimpleGrantedAuthority>) userDetailsService.getGrantedAuthorities(user);
             UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(user.getUserName(), null, nowAuthorities);
             authenticationFacade.getContext().setAuthentication(newAuthentication);                 
         }
@@ -64,10 +63,9 @@ public class UserSecurityServiceImpl implements UserSecurityService {
     
     @Override
     public void authWithPassword(User user, String password) {
-        
         Authentication auth = authenticationFacade.getContext().getAuthentication();
         if (auth == null || auth.getName().equalsIgnoreCase("anonymousUser")) {    
-            Collection<SimpleGrantedAuthority>  nowAuthorities = (Collection<SimpleGrantedAuthority>) userDetailsService.getGrantedAuthorities(user);
+            Collection<SimpleGrantedAuthority> nowAuthorities = (Collection<SimpleGrantedAuthority>) userDetailsService.getGrantedAuthorities(user);
             UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(user.getUserName(), password, nowAuthorities);
             authenticationFacade.getContext().setAuthentication(newAuthentication);                 
         }
@@ -79,7 +77,7 @@ public class UserSecurityServiceImpl implements UserSecurityService {
      */
     @Override
     public Authentication authWithToken(String token) {
-        
+
         Authentication auth = authenticationFacade.getContext().getAuthentication();
         
         Optional<UserDetails> userDetails = restUserDetailsService.findByToken(token);

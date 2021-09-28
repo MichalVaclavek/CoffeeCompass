@@ -107,13 +107,10 @@ public class CustomUserDetailsService implements UserDetailsService {
      * @return
      */
     public List<? extends GrantedAuthority> getGrantedAuthorities(User user) {
-        
         List<GrantedAuthority> authorities = new ArrayList<>();
-         
         for (UserProfile userProfile : user.getUserProfiles()) {
             authorities.add(new SimpleGrantedAuthority("ROLE_" + userProfile.getType()));
         }
-        
         logger.info("authorities : {}", authorities);
         return authorities;
     }
