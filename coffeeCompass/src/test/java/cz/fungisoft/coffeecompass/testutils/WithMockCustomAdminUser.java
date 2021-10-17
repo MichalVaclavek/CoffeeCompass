@@ -15,8 +15,8 @@ import org.springframework.security.test.context.support.WithSecurityContext;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @WithSecurityContext(factory = WithMockCustomUserSecurityContextFactory.class)
-public @interface WithMockCustomAdminUser
-{
+public @interface WithMockCustomAdminUser {
+
     String userName() default "admin";
 
     String email() default "richard@feynman.edu";

@@ -125,7 +125,7 @@ public class RegistrationController {
      * User requests another verification link, in case the previous one expired.
      * REST variant, not working yet, problems in a view "registrationTokenFailure"
      * 
-     //TODO DO NOT DELETE, NEEDS TO BE REPAIRED as REST reponse
+     //TODO DO NOT DELETE, NEEDS TO BE REPAIRED as REST response
      * 
      * @param request
      * @param existingToken
@@ -166,8 +166,7 @@ public class RegistrationController {
         String newToken = "";
         
         try {
-            userVerificationTokenService.setUserVerificationData(user, request.getLocale());
-            newToken = userVerificationTokenService.reSendUserVerificationTokenEmail(existingToken);
+            newToken = userVerificationTokenService.reSendUserVerificationTokenEmail( existingToken, request.getLocale());
             
             attr.addFlashAttribute("userName", user.getUserName());
             attr.addFlashAttribute("verificationEmailSent", true);

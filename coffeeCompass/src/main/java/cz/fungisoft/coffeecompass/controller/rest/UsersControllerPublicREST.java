@@ -1,5 +1,6 @@
 package cz.fungisoft.coffeecompass.controller.rest;
 
+import cz.fungisoft.coffeecompass.listeners.OnRegistrationCompleteEvent;
 import lombok.NonNull;
 
 import java.util.Locale;
@@ -7,7 +8,9 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,7 +45,10 @@ public class UsersControllerPublicREST {
     
     private final MessageSource messages;
     
-    private final TokenCreateAndSendEmailService verificationTokenSendEmailService;
+    //private final TokenCreateAndSendEmailService verificationTokenSendEmailService;
+
+//    @Autowired
+    private ApplicationEventPublisher eventPublisher;
     
     
     public UsersControllerPublicREST(@NonNull
@@ -51,13 +57,15 @@ public class UsersControllerPublicREST {
                                      TokenCreateAndSendEmailService verificationTokenSendEmailService,
                                      @NonNull UserService usersService,
                                      TokenService tokens,
+                                     ApplicationEventPublisher eventPublisher,
                                      MessageSource messages) {
         super();
         this.authentication = authentication;
         this.usersService = usersService;
         this.tokens = tokens;
         this.messages = messages;
-        this.verificationTokenSendEmailService = verificationTokenSendEmailService;
+        this.eventPublisher = eventPublisher;
+        //this.verificationTokenSendEmailService = verificationTokenSendEmailService;
     }
 
 
@@ -76,13 +84,14 @@ public class UsersControllerPublicREST {
             throw new InvalidParameterValueException("User", "password", "", messages.getMessage("error.user.password.empty", null, locale));
         }
       
-        // Remove blank characters at the end of user name and e-mail
+        // Saves user to DB
         User newUser = usersService.registerNewRESTUser(registerRequest);
         
         // Sent new user's e-mail address verification e-mail
         if (newUser != null && newUser.getEmail() != null && !newUser.getEmail().isEmpty()) {
-            verificationTokenSendEmailService.setUserVerificationData(newUser, locale);
-            verificationTokenSendEmailService.createAndSendVerificationTokenEmail();
+            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(newUser, locale)); // invokes sending verification e-mail to the new user
+//            verificationTokenSendEmailService.setUserVerificationData(newUser, locale);
+//            verificationTokenSendEmailService.createAndSendVerificationTokenEmail();
         }
         
         return login(registerRequest, locale);

@@ -68,8 +68,8 @@ import cz.fungisoft.coffeecompass.testutils.CoffeeSiteAttributesDBSaver;
 @ActiveProfiles("test") // pro HSQL db pouzit @ActiveProfiles("testhsql")
 //@SqlConfig(separator=org.springframework.jdbc.datasource.init.ScriptUtils.EOF_STATEMENT_SEPARATOR)
 @ExtendWith(SpringExtension.class)
-class CoffeeSiteRepositoryTests
-{
+class CoffeeSiteRepositoryTests {
+
     @Autowired
     private TestEntityManager entityManager;
     

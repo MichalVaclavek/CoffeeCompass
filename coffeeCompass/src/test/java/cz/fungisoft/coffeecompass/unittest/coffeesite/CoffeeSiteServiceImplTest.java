@@ -59,8 +59,7 @@ import ma.glasnost.orika.impl.DefaultMapperFactory;
  *
  */
 @ExtendWith(SpringExtension.class)
-class CoffeeSiteServiceImplTest
-{
+class CoffeeSiteServiceImplTest {
     
     @MockBean
     private CoffeeSiteRepository coffeeSiteRepository;

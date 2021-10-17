@@ -39,8 +39,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  */
 @ExtendWith(SpringExtension.class)
-public class UserServiceImplTest
-{
+public class UserServiceImplTest {
+
     @MockBean
     private static UserProfileRepository userProfileRepository;
 

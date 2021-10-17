@@ -5,6 +5,7 @@ import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
 import cz.fungisoft.coffeecompass.controller.rest.UsersControllerPublicREST;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
+import cz.fungisoft.coffeecompass.listeners.OnRegistrationCompleteEvent;
 import cz.fungisoft.coffeecompass.service.*;
 import cz.fungisoft.coffeecompass.service.tokens.TokenCreateAndSendEmailService;
 import cz.fungisoft.coffeecompass.service.tokens.TokenService;
@@ -19,8 +20,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +37,7 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.Mockito.*;
 
 /**
@@ -45,8 +49,8 @@ import static org.mockito.Mockito.*;
  *
  */
 @ExtendWith(SpringExtension.class)
-public class UserRESTPublicControllerTests
-{
+public class UserRESTPublicControllerTests {
+
     @MockBean
     private CustomRESTUserAuthenticationService authenticationService;
     
@@ -72,6 +76,9 @@ public class UserRESTPublicControllerTests
 
     @MockBean
     private  MessageSource messages;
+
+    @MockBean
+    private ApplicationEventPublisher eventPublisher;
     
     
     private UsersControllerPublicREST usersControllerPublicREST;
@@ -131,7 +138,7 @@ public class UserRESTPublicControllerTests
         given(tokenService.expiring(Mockito.anyMap())).willReturn(token);
         
         usersControllerPublicREST = new UsersControllerPublicREST(authenticationService, tokenCreateAndSendEmailService,
-                                                                  userService, tokenService, messages);
+                                                                  userService, tokenService, eventPublisher, messages);
     }
  
     /**
@@ -162,11 +169,9 @@ public class UserRESTPublicControllerTests
         given(userService.registerNewRESTUser(Mockito.any(SignUpAndLoginRESTDto.class))).willReturn(john); //registerNewRESTUser(registerRequest);
         given(authenticationService.login(Mockito.any(String.class), Mockito.any(String.class), Mockito.any(String.class))).willReturn(Optional.of(token));
 
-        ArgumentCaptor<User> valueCapture = ArgumentCaptor.forClass(User.class);
-        doNothing().when( tokenCreateAndSendEmailService).setUserVerificationData(valueCapture.capture(), Mockito.any(Locale.class));
-        given(tokenCreateAndSendEmailService.createAndSendVerificationTokenEmail()).willReturn(token);
+        given(tokenCreateAndSendEmailService.createAndSendVerificationTokenEmail(Mockito.any(User.class), Mockito.any(Locale.class))).willReturn(token);
 
-        // when and then       
+        // when
         ResponseEntity<AuthRESTResponse> authResponse = usersControllerPublicREST.register(signUpAndLoginRESTDto, Locale.getDefault()); 
         
         // then
@@ -174,7 +179,12 @@ public class UserRESTPublicControllerTests
         assertThat(authResponse.getBody().getTokenType()).isEqualTo("Bearer");
         assertThat(authResponse.getBody().getAccessToken()).isEqualTo(token);
         verify(userService, VerificationModeFactory.times(1)).registerNewRESTUser(Mockito.eq(signUpAndLoginRESTDto));
-        assertThat(john).isEqualTo(valueCapture.getValue());
+
+        ArgumentCaptor<OnRegistrationCompleteEvent> sendEmailEventCapture = ArgumentCaptor.forClass(OnRegistrationCompleteEvent.class);
+        verify(eventPublisher, VerificationModeFactory.times(1)).publishEvent(sendEmailEventCapture.capture());
+
+        assertThat(john).isEqualTo(sendEmailEventCapture.getValue().getUser());
+        assertThat(john.getUserName()).isEqualTo(sendEmailEventCapture.getValue().getUser().getUserName());
     }
     
 }

@@ -265,7 +265,7 @@ public class IntegrationTestBaseConfig {
      * Provede nastaveni Spring/Hibernate promennych pro pripojeni do DB bezici v Docker containeru.
      * Provede se pred vytvorenim instance testovaci tridy.
      * 
-     * @author Michal
+     * @author Michal V.
      *
      */
     static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
@@ -278,6 +278,7 @@ public class IntegrationTestBaseConfig {
                 "spring.jpa.hibernate.ddl-auto=none",
                 "spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect",
                 "spring.jpa.show-sql=true",
+//                "spring.datasource.hikari.maximum-pool-size=10",
                 "spring.jpa.properties.hibernate.format_sql=true",
                 "spring.datasource.initialization-mode=always"
             ).applyTo(configurableApplicationContext.getEnvironment());

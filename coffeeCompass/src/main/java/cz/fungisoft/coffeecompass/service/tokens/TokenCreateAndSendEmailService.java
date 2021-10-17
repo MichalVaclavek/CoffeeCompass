@@ -14,27 +14,19 @@ import cz.fungisoft.coffeecompass.entity.UserEmailVerificationToken;
 public interface TokenCreateAndSendEmailService {
 
     /**
-     * Sets basic data needed to create and sent verification token e-mail.
-     * 
-     * @param user
-     * @param locale
-     */
-    void setUserVerificationData(User user, Locale locale);
-    
-    /**
      * Creates and send verification token e-mail to confirm user's e-mail address.
      * 
      * @return created token string
      */
-    String createAndSendVerificationTokenEmail();
+    String createAndSendVerificationTokenEmail(User user, Locale locale);
 
     /**
      * Creates and send new verification token e-mail to confirm user's e-mail address.
      * 'Old', existing token is deleted from DB.
      * 
-     * @return created new token string
+     * @return created new token string based on existing token (and it's user)
      */
-    String reSendUserVerificationTokenEmail(String existingToken);
+    String reSendUserVerificationTokenEmail(String existingToken, Locale locale);
     
     // -------- User registration and verification by token and e-mail ---------- //
 

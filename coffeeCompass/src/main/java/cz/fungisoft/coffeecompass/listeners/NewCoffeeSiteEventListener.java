@@ -75,7 +75,7 @@ public class NewCoffeeSiteEventListener implements ApplicationListener<OnNewCoff
     
 
     /**
-     * Sends push notification mesage to Topic, with additional data made of town and coffeeSiteId
+     * Sends push notification message to Topic, with additional data made of town and coffeeSiteId
      * 
      * @param topic
      * @param town
@@ -135,7 +135,7 @@ public class NewCoffeeSiteEventListener implements ApplicationListener<OnNewCoff
     
     /**
      * Sends push notifications about new CoffeeSite created in the town to all Tokens
-     * susbcribed to receive such notificatin Topic.
+     * susbcribed to receive such notification Topic.
      * 
      * @param newCoffeeSite - coffeeSite, created in the town, about which we want to notify those subscribed 
      * @param town - town, where the CoffeeSite were created

@@ -64,27 +64,19 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
         this.locale = LocaleContextHolder.getLocale();
     }
     
-    /**
-     * Enters User data and locale (to get correct language for the e-mail texts) to send
-     * e-mail for user's e-mail address validation.
-     * Locale can be null
-     */
     @Override
-    public void setUserVerificationData(User user, Locale locale) {
+    public String createAndSendVerificationTokenEmail(User user, Locale locale) {
         this.user = user;
         if (locale != null) {
             this.locale = locale;
         }
-    }
-       
-    @Override
-    public String createAndSendVerificationTokenEmail() {
-        String token = UUID.randomUUID().toString();
-        
-        if (user != null) {
-            createUserVerificationToken(user, token);
+
+        if (this.user != null) {
+            String token = UUID.randomUUID().toString();
+
+            createUserVerificationToken(this.user, token);
             
-            String recipientAddress = user.getEmail();
+            String recipientAddress = this.user.getEmail();
             String subject = messages.getMessage("register.verificationemail.subject", null, locale);
             String message = messages.getMessage("register.verificationemail.message", null, locale);
             
@@ -105,12 +97,12 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
 
     /**
      * Creates a new verification token and send it by e-mail.
-     * 
      */
     @Override
-    public String reSendUserVerificationTokenEmail(String existingToken) {
+    public String reSendUserVerificationTokenEmail(String existingToken, Locale locale) {
         
         UserEmailVerificationToken newToken = generateNewUserVerificationToken(existingToken);
+        // user's token is refreshed now (old user's token is deleted)
         this.user = userService.getUserByRegistrationToken(newToken.getToken());
         
         ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequest();
@@ -121,7 +113,7 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
         String message = messages.getMessage("register.verificationemail.resendToken.message", null, locale);
         String fromEmail = messages.getMessage("register.verificationemail.from", null, locale);
         
-        this.sendEmailService.sendEmail(fromEmail, user.getEmail(), subject, message + "\r\n\r\n" + confirmationUrl);
+        this.sendEmailService.sendEmail(fromEmail, this.user.getEmail(), subject, message + "\r\n\r\n" + confirmationUrl);
         
         return newToken.getToken();
     }

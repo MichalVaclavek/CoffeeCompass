@@ -136,5 +136,4 @@ class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
                .andExpect(jsonPath("$", hasSize(4)));
         
     }
-    
 }

@@ -28,8 +28,8 @@ import cz.fungisoft.coffeecompass.entity.User;
  * 
  * @author Michal Vaclavek
  */
-public class CoffeeSiteBuilder
-{
+public class CoffeeSiteBuilder {
+
     private CoffeeSite coffeeSite;
     
     /**

@@ -155,10 +155,10 @@ public class UserServiceImpl implements UserService {
     public User registerNewRESTUser(SignUpAndLoginRESTDto restRegisterDTO) {
         User user = new User();
         
-        user.setUserName(restRegisterDTO.getUserName());
+        user.setUserName(restRegisterDTO.getUserName().trim());
         user.setPassword(passwordEncoder.encode(restRegisterDTO.getPassword()));
         if (restRegisterDTO.getEmail() != null) {
-            user.setEmail(restRegisterDTO.getEmail());
+            user.setEmail(restRegisterDTO.getEmail().trim());
         }
         
         user.setRegisterEmailConfirmed(false);

@@ -18,7 +18,7 @@ public class UserRegistrationListener implements ApplicationListener<OnRegistrat
     }
  
     private void confirmRegistration(OnRegistrationCompleteEvent event) {
-        verificationTokenSendEmailService.setUserVerificationData(event.getUser(), event.getLocale());
-        verificationTokenSendEmailService.createAndSendVerificationTokenEmail();
+        //verificationTokenSendEmailService.setUserVerificationData(event.getUser(), event.getLocale());
+        verificationTokenSendEmailService.createAndSendVerificationTokenEmail(event.getUser(), event.getLocale());
     }
 }

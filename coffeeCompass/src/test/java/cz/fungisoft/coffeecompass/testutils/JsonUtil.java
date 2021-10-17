@@ -9,11 +9,11 @@ import java.io.IOException;
  * Used mainly for integration testing to create JSON Requestbody
  * from object to REST requests sent from test client to server.
  * 
- * @author Michal
+ * @author Michal V.
  *
  */
-public class JsonUtil
-{
+public class JsonUtil {
+
     public static byte[] toJson(Object object) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);

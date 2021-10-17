@@ -100,6 +100,8 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
     
     private static User admin = new User();
     private SignUpAndLoginRESTDto signUpAndLoginRESTDtoAdmin;
+
+    private static Locale csLocale = new Locale("cs");
     
     
     @BeforeAll
@@ -177,8 +179,8 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
         //given(authenticationService.login(Mockito.any(String.class), Mockito.any(String.class), Mockito.any(String.class))).willReturn(Optional.of(token));
 
         ArgumentCaptor<User> valueCapture = ArgumentCaptor.forClass(User.class);
-        doNothing().when( tokenCreateAndSendEmailService).setUserVerificationData(valueCapture.capture(), Mockito.any(Locale.class));
-        given(tokenCreateAndSendEmailService.createAndSendVerificationTokenEmail()).willReturn(token);
+//        doNothing().when( tokenCreateAndSendEmailService).setUserVerificationData(valueCapture.capture(), Mockito.any(Locale.class));
+        given(tokenCreateAndSendEmailService.createAndSendVerificationTokenEmail(valueCapture.capture(), Mockito.any(Locale.class))).willReturn(token);
        
         // when and then
         mockMvc.perform(post("/rest/public/user/register").contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(signUpAndLoginRESTDto)))

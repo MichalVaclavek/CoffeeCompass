@@ -228,7 +228,7 @@ public class UserController {
             
             if (!newUser.getEmail().isEmpty()) { // non empty, valid e-mail available for user (UserDataDTO validated e-mail using annotation)
                 try {
-                    eventPublisher.publishEvent(new OnRegistrationCompleteEvent(newUser, request.getLocale()));
+                    eventPublisher.publishEvent(new OnRegistrationCompleteEvent(newUser, request.getLocale())); // invokes sending verification e-mail to the new user
                     attr.addFlashAttribute("verificationEmailSent", true);
                 }
                 catch(MailException e) {
@@ -371,9 +371,9 @@ public class UserController {
                 // Check if the email address is confirmed
                 if (!updatedUser.isRegisterEmailConfirmed()
                      && !updatedUser.getEmail().isEmpty()) { // novy email nepotvrzen a neprazdny. Poslat confirm e-mail token
-                    tokenCreateAndSendEmailService.setUserVerificationData(updatedUser, request.getLocale());
+                    //tokenCreateAndSendEmailService.setUserVerificationData(updatedUser, request.getLocale());
                     try {
-                        tokenCreateAndSendEmailService.createAndSendVerificationTokenEmail();
+                        tokenCreateAndSendEmailService.createAndSendVerificationTokenEmail(updatedUser, request.getLocale());
                         attr.addFlashAttribute("verificationEmailSent", true); // requires processing of the "verificationEmailSent" attr. in "redirect:/user/edit/", see bellow
                     } catch(MailException e) {
                         logger.error("MailException: {}", e.getMessage());

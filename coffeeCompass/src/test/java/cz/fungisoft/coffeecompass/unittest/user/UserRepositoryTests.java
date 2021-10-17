@@ -31,8 +31,8 @@ import static org.junit.Assert.assertTrue;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest // automaticky vytvori propojeni na H2 in-memory DB, ktera je uvedena v pom.xml dependency
 @ActiveProfiles("test") // pro HSQL db pouzit @ActiveProfiles("testhsql")
-public class UserRepositoryTests
-{
+public class UserRepositoryTests {
+
     @Autowired
     private TestEntityManager entityManager;
  

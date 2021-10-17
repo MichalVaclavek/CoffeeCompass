@@ -30,8 +30,8 @@ import static org.mockito.Mockito.*;
  *
  */
 @ExtendWith(SpringExtension.class)
-public class UserRESTSecuredControllerTests
-{
+public class UserRESTSecuredControllerTests {
+
     @MockBean //provided by Spring Context
     private UserService userService;
   

@@ -36,8 +36,8 @@ import cz.fungisoft.coffeecompass.entity.UserProfile;
  * @author Michal Vaclavek
  *
  */
-public class CoffeeSiteAttributesDBSaver
-{
+public class CoffeeSiteAttributesDBSaver {
+
     private TestEntityManager entityManager;
     
     private static PriceRange pr = new PriceRange();
