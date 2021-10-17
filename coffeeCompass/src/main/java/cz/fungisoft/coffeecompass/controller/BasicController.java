@@ -28,8 +28,8 @@ import cz.fungisoft.coffeecompass.service.StatisticsInfoService;
  * @author Michal Vaclavek
  */
 @Controller
-public class BasicController
-{   
+public class BasicController {
+
     private StatisticsInfoService statsService;
     
     private CoffeeSiteService coffeeSiteService;

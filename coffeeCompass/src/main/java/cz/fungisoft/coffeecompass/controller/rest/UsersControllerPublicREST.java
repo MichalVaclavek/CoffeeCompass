@@ -45,9 +45,6 @@ public class UsersControllerPublicREST {
     
     private final MessageSource messages;
     
-    //private final TokenCreateAndSendEmailService verificationTokenSendEmailService;
-
-//    @Autowired
     private ApplicationEventPublisher eventPublisher;
     
     
@@ -65,7 +62,6 @@ public class UsersControllerPublicREST {
         this.tokens = tokens;
         this.messages = messages;
         this.eventPublisher = eventPublisher;
-        //this.verificationTokenSendEmailService = verificationTokenSendEmailService;
     }
 
 
@@ -90,8 +86,6 @@ public class UsersControllerPublicREST {
         // Sent new user's e-mail address verification e-mail
         if (newUser != null && newUser.getEmail() != null && !newUser.getEmail().isEmpty()) {
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(newUser, locale)); // invokes sending verification e-mail to the new user
-//            verificationTokenSendEmailService.setUserVerificationData(newUser, locale);
-//            verificationTokenSendEmailService.createAndSendVerificationTokenEmail();
         }
         
         return login(registerRequest, locale);

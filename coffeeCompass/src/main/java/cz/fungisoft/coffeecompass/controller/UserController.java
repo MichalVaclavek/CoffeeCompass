@@ -371,7 +371,6 @@ public class UserController {
                 // Check if the email address is confirmed
                 if (!updatedUser.isRegisterEmailConfirmed()
                      && !updatedUser.getEmail().isEmpty()) { // novy email nepotvrzen a neprazdny. Poslat confirm e-mail token
-                    //tokenCreateAndSendEmailService.setUserVerificationData(updatedUser, request.getLocale());
                     try {
                         tokenCreateAndSendEmailService.createAndSendVerificationTokenEmail(updatedUser, request.getLocale());
                         attr.addFlashAttribute("verificationEmailSent", true); // requires processing of the "verificationEmailSent" attr. in "redirect:/user/edit/", see bellow
