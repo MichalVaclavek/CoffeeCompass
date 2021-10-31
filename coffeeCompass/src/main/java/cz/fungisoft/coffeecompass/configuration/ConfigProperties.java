@@ -20,8 +20,8 @@ import lombok.Data;
 @Profile("default")
 @Configuration
 @Data
-public class ConfigProperties
-{   
+public class ConfigProperties {
+
     @Email
     @Value("${contactme.mail.to}")
     private String contactMeEmailTo = "sadlokan@email.cz";

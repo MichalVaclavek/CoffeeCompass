@@ -86,19 +86,19 @@ class CoffeeSiteRepositoryTests {
      * Tyto atributy se musi vytvorit a ulozit do DB pred praci s CoffeeSite, ktery na tyto atributy 
      * odkazuje a pouziva, ale ktere nejsou zatim v testovaci DB ulozeny.
      */
-    private PriceRange pr = new PriceRange();
-    private Set<CoffeeSort> csorts = new HashSet<>();
-    private Set<CupType> cups = new HashSet<>();
-    private Company comp = new Company();
+    private final PriceRange pr = new PriceRange();
+    private final Set<CoffeeSort> csorts = new HashSet<>();
+    private final Set<CupType> cups = new HashSet<>();
+    private final Company comp = new Company();
 //    private StarsQualityDescription stars = new StarsQualityDescription();
     private double stars;
-    private Set<NextToMachineType> ntmtSet = new HashSet<>(); 
-    private Set<OtherOffer> nabidka = new HashSet<>();
-    private SiteLocationType nadr = new SiteLocationType();
-    private User origUser = new User();
-    private CoffeeSiteStatus siteStatus = new CoffeeSiteStatus();
+    private final Set<NextToMachineType> ntmtSet = new HashSet<>();
+    private final Set<OtherOffer> nabidka = new HashSet<>();
+    private final SiteLocationType nadr = new SiteLocationType();
+    private final User origUser = new User();
+    private final CoffeeSiteStatus siteStatus = new CoffeeSiteStatus();
     private CoffeeSiteType siteType;
-    private CoffeeSiteRecordStatus recordStatus = new CoffeeSiteRecordStatus();
+    private final CoffeeSiteRecordStatus recordStatus = new CoffeeSiteRecordStatus();
     
     /**
      * Trida CoffeeSite obsahuje odkazy na nekolik dalsich trid/objektu ktere jsou taky

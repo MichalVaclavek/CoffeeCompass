@@ -37,6 +37,7 @@ createMap = function(lat1, lon1) {
 	 m.addControl(mouse); 
 	   
 	 layer = new SMap.Layer.Marker();
+	 m.addLayer(layer);
 
 	 var card = new SMap.Card();
 	 card.getHeader().innerHTML = "Střed hledání, přesuň mě!";

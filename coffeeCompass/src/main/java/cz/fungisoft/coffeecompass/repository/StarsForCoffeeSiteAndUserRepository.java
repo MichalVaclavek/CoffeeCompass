@@ -18,11 +18,9 @@ public interface StarsForCoffeeSiteAndUserRepository extends JpaRepository<Stars
     @Query("select stcsu from StarsForCoffeeSiteAndUser stcsu where coffeeSite.id=?1 and user.id=?2")
     StarsForCoffeeSiteAndUser getOneStarEvalForSiteAndUser(Long coffeeSiteID, Long userID);
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select avg(stars.numOfStars) from StarsForCoffeeSiteAndUser stcsu where coffeeSite.id=?1")
     double averageStarsForSiteID(Long coffeeSiteID);
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select count(*) from StarsForCoffeeSiteAndUser stcsu where coffeeSite.id=?1")
     int getNumOfHodnoceniForSite(Long coffeeSiteID);
     

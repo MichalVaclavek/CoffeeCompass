@@ -366,8 +366,7 @@ public class UserController {
         
         if (updatedUser != null) {
             userModifySuccess = true;
-            if (loggedInUser.isPresent() 
-                && updatedUser.getId().equals(loggedInUser.get().getId())) { // If the user modifies it's own profile
+            if (loggedInUser.isPresent() && updatedUser.getId().equals(loggedInUser.get().getId())) { // If the user modifies it's own profile
                 // Check if the email address is confirmed
                 if (!updatedUser.isRegisterEmailConfirmed()
                      && !updatedUser.getEmail().isEmpty()) { // novy email nepotvrzen a neprazdny. Poslat confirm e-mail token

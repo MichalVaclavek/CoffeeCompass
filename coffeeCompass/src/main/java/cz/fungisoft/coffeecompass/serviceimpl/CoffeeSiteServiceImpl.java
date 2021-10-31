@@ -1,12 +1,7 @@
 package cz.fungisoft.coffeecompass.serviceimpl;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalDouble;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,7 +120,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      */
     @Override
     public CoffeeSiteDTO evaluateOperationalAttributes(CoffeeSiteDTO site) {
-        // Currently logged-in user needed for evaluation of available operations for CoffeeSiteDto 
+        // logged-in user needed for evaluation of available operations for CoffeeSiteDto
         loggedInUser = userService.getCurrentLoggedInUser();
         
         site.setCanBeActivated(canBeActivated(site));
@@ -681,7 +676,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         
         // Usporadani vysledku db dotazu (seznam CoffeeSites v danem okruhu) podle vzdalenosti od bodu hledani
         // Sama DB tyto vzdalenosti pro dane CoffeeSites nevraci
-        sites.sort((cs1, cs2) -> Long.compare(cs1.getDistFromSearchPoint(), cs2.getDistFromSearchPoint()));
+        sites.sort(Comparator.comparingLong(CoffeeSiteDTO::getDistFromSearchPoint));
         
         return sites;
     }
