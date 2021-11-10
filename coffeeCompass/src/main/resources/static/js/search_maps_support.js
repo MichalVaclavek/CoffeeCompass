@@ -142,7 +142,6 @@ map.insertSites = function(foundSites)
 		});
 
 	    layer.addMarker(markers);
-	    m.addLayer(layer);
 
 		var cz = m.computeCenterZoom(souradnice); /* Spočítat pozici mapy tak, aby v3echny značky byly vidět */
 		m.setCenterZoom(cz[0], cz[1]);
