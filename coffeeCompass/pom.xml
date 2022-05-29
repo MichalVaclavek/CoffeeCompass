@@ -26,6 +26,7 @@
    		<jwt.version>0.9.1</jwt.version>
 		<java.version>1.8</java.version>
 		<testcontainers.version>1.15.2</testcontainers.version> <!-- For integration testing with PostgreSQL DB in Docker -->
+		<log4j2.version>2.16.0</log4j2.version> <!-- had to be changed due to Log4J2 Vulnerability CVE-2021-44228 -->
 	</properties>
 
 
@@ -112,8 +113,7 @@
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
 		<dependency>
     		<groupId>org.springframework.boot</groupId>
-    		<artifactId>spring-boot-starter-security</artifactId>   		
-    		<!-- <version>1.5.9.RELEASE</version> -->
+    		<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>	
 				
 		<!-- Pro praci s DB resp. podpora JPA resp. Hibernate tj. ORM -->
@@ -146,7 +146,6 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<!-- <version>1.18.12</version> -->
 			<scope>provided</scope>
 		</dependency>
 
@@ -180,8 +179,8 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-log4j2</artifactId>
-		</dependency>	
-		
+		</dependency>
+
 		<!--	Test Dependencies	- for Integration tests using Postgre SQL DB within Docker container-->
 		<dependency>
 			<groupId>org.testcontainers</groupId>

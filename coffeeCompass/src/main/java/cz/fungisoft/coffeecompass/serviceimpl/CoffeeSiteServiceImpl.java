@@ -782,7 +782,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * Only ADMIN is allowed to Delete site permanently (from every CoffeeSite state)
      */
     private boolean canBeDeleted(CoffeeSiteDTO cs) {
-        return (loggedInUser.isPresent()) ? userService.hasADMINRole(loggedInUser.get()) : false;
+        return loggedInUser.filter(user -> userService.hasADMINRole(user)).isPresent();
     }
 
     /**
@@ -844,7 +844,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     @Override
     public boolean isSiteNameUnique(Long id, String siteName) {
         CoffeeSite site = coffeeSiteRepo.searchByName(siteName);
-        return ( site == null || ((id != null) && site.getId().equals(id)));
+        return ( site == null || (site.getId().equals(id)));
     }
 
     @Override

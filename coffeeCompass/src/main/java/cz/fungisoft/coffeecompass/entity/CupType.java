@@ -30,11 +30,11 @@ public class CupType {
     public enum CupTypeEnum implements Serializable {
         PLASTIC("plastový"),
         PAPER("papírový"),
-        CHINA("porcelán");
+        OWN("vlastní");
          
         String cupType;
          
-        private CupTypeEnum(String cupType) {
+        CupTypeEnum(String cupType) {
             this.cupType = cupType;
         }
          

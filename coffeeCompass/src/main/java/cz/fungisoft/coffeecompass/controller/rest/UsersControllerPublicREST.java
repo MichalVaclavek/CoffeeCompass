@@ -1,14 +1,20 @@
 package cz.fungisoft.coffeecompass.controller.rest;
 
+import com.google.common.collect.ImmutableMap;
+import cz.fungisoft.coffeecompass.controller.models.rest.TokenRefreshRequest;
+import cz.fungisoft.coffeecompass.controller.models.rest.TokenRefreshResponse;
+import cz.fungisoft.coffeecompass.entity.RefreshToken;
+import cz.fungisoft.coffeecompass.exceptions.rest.TokenRefreshException;
 import cz.fungisoft.coffeecompass.listeners.OnRegistrationCompleteEvent;
+import cz.fungisoft.coffeecompass.service.tokens.RefreshTokenService;
 import lombok.NonNull;
 
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
@@ -23,13 +29,12 @@ import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.exceptions.rest.BadAuthorizationRESTRequestException;
 import cz.fungisoft.coffeecompass.exceptions.rest.InvalidParameterValueException;
-import cz.fungisoft.coffeecompass.service.tokens.TokenCreateAndSendEmailService;
 import cz.fungisoft.coffeecompass.service.tokens.TokenService;
 import cz.fungisoft.coffeecompass.service.user.CustomRESTUserAuthenticationService;
 import cz.fungisoft.coffeecompass.service.user.UserService;
 import io.swagger.annotations.Api;
 
-@Api // Swagger
+@Api
 @RestController
 @RequestMapping("/rest/public/user")
 public class UsersControllerPublicREST {
@@ -41,7 +46,10 @@ public class UsersControllerPublicREST {
     private final UserService usersService;
     
     @NonNull
-    private final TokenService tokens;
+    private final TokenService tokenService;
+
+    @NonNull
+    RefreshTokenService refreshTokenService;
     
     private final MessageSource messages;
     
@@ -51,15 +59,16 @@ public class UsersControllerPublicREST {
     public UsersControllerPublicREST(@NonNull
                                      @Qualifier("jwtTokenUserAuthenticationService")
                                      CustomRESTUserAuthenticationService authentication,
-                                     TokenCreateAndSendEmailService verificationTokenSendEmailService,
                                      @NonNull UserService usersService,
-                                     TokenService tokens,
+                                     TokenService tokenService,
+                                     RefreshTokenService refreshTokenService,
                                      ApplicationEventPublisher eventPublisher,
                                      MessageSource messages) {
         super();
         this.authentication = authentication;
         this.usersService = usersService;
-        this.tokens = tokens;
+        this.tokenService = tokenService;
+        this.refreshTokenService = refreshTokenService;
         this.messages = messages;
         this.eventPublisher = eventPublisher;
     }
@@ -98,9 +107,24 @@ public class UsersControllerPublicREST {
         String token = authentication.login(loginRequest.getUserName(), loginRequest.getPassword(), loginRequest.getDeviceID())
                                      .orElseThrow(() -> new BadAuthorizationRESTRequestException(messages.getMessage("error.user.login.failed", null, locale)));
         
-        long expiryDate = Long.parseLong(tokens.verify(token).get("exp"));
-        AuthRESTResponse authResponse = new AuthRESTResponse(token, expiryDate);
+        long expiryDate = Long.parseLong(tokenService.verify(token).get("exp"));
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(loginRequest.getUserName());
+        AuthRESTResponse authResponse = new AuthRESTResponse(token, expiryDate, refreshToken.getToken());
         
         return ResponseEntity.ok(authResponse);
+    }
+
+    @PostMapping("/refreshToken")
+    public ResponseEntity<TokenRefreshResponse> refreshToken(@Valid @RequestBody TokenRefreshRequest request) {
+        String requestRefreshToken = request.getRefreshToken();
+        return refreshTokenService.findByToken(requestRefreshToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    Map<String, String> tokenAttributes = ImmutableMap.of("deviceID", request.getDeviceId(), "userName", user.getUserName());
+                    String accessToken = tokenService.expiring(tokenAttributes);
+                    return ResponseEntity.ok(new TokenRefreshResponse(accessToken, requestRefreshToken));
+                })
+                .orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!"));
     }
 }

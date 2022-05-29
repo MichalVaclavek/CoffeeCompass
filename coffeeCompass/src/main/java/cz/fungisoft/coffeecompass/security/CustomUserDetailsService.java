@@ -21,7 +21,7 @@ import cz.fungisoft.coffeecompass.service.user.UserService;
 
 /**
  * Custom implementation of Spring's UserDetailsService. Provides {@code UserDetails}
- * for Spring security framwork.<br>
+ * for Spring security framework.<br>
  * Allows login using both username and email.
  * 
  * @author Michal Vaclavek

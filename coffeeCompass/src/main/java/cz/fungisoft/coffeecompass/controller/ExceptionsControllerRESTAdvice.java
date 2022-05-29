@@ -2,11 +2,7 @@ package cz.fungisoft.coffeecompass.controller;
 
 import com.nimbusds.oauth2.sdk.ErrorResponse;
 import cz.fungisoft.coffeecompass.controller.models.rest.CommonRestError;
-import cz.fungisoft.coffeecompass.exceptions.rest.BadAuthorizationRESTRequestException;
-import cz.fungisoft.coffeecompass.exceptions.rest.BadRESTRequestException;
-import cz.fungisoft.coffeecompass.exceptions.rest.InvalidParameterValueException;
-import cz.fungisoft.coffeecompass.exceptions.rest.RESTException;
-import cz.fungisoft.coffeecompass.exceptions.rest.ResourceNotFoundException;
+import cz.fungisoft.coffeecompass.exceptions.rest.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,6 +23,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -151,5 +148,15 @@ public class ExceptionsControllerRESTAdvice extends ResponseEntityExceptionHandl
                                                                      "InternalError");
          
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
+    @ExceptionHandler(value = TokenRefreshException.class)
+    public  ResponseEntity<CommonRestError> handleTokenRefreshException(TokenRefreshException ex, WebRequest request) {
+        myLogger.error("403 Status Code", ex);
+        CommonRestError bodyOfErrorResponse = new CommonRestError("/errors/authentication", "Wrong authentication, refresh token expired.",
+                403, ex.getLocalizedErrorMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(bodyOfErrorResponse, HttpStatus.FORBIDDEN);
     }
 }

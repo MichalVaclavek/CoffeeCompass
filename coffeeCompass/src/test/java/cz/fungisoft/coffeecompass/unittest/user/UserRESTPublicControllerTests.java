@@ -7,6 +7,7 @@ import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.listeners.OnRegistrationCompleteEvent;
 import cz.fungisoft.coffeecompass.service.*;
+import cz.fungisoft.coffeecompass.service.tokens.RefreshTokenService;
 import cz.fungisoft.coffeecompass.service.tokens.TokenCreateAndSendEmailService;
 import cz.fungisoft.coffeecompass.service.tokens.TokenService;
 import cz.fungisoft.coffeecompass.service.user.CustomRESTUserAuthenticationService;
@@ -56,6 +57,9 @@ public class UserRESTPublicControllerTests {
     
     @MockBean
     private static TokenService tokenService;
+
+    @MockBean
+    private static RefreshTokenService refreshTokenService;
   
     @MockBean //provided by Spring Context
     private static UserService userService;
@@ -137,8 +141,8 @@ public class UserRESTPublicControllerTests {
         given(tokenService.verify(Mockito.anyString())).willReturn(tokenMap);
         given(tokenService.expiring(Mockito.anyMap())).willReturn(token);
         
-        usersControllerPublicREST = new UsersControllerPublicREST(authenticationService, tokenCreateAndSendEmailService,
-                                                                  userService, tokenService, eventPublisher, messages);
+        usersControllerPublicREST = new UsersControllerPublicREST(authenticationService, userService,
+                tokenService, refreshTokenService, eventPublisher, messages);
     }
  
     /**
