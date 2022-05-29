@@ -20,15 +20,18 @@ public class AuthRESTResponse {
 
     private String accessToken;
     private String tokenType = "Bearer";
+    private String refreshToken;
     
     @JsonIgnore
     private long jwtExpiryDateFromEpoch;
+
     @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
     private LocalDateTime expiryDate;
 
-    public AuthRESTResponse(String accessToken, long jwtExpiryDate) {
+    public AuthRESTResponse(String accessToken, long jwtExpiryDate, String refreshToken) {
         this.accessToken = accessToken;
         this.jwtExpiryDateFromEpoch = jwtExpiryDate;
+        this.refreshToken = refreshToken;
         expiryDate = Instant.ofEpochMilli(jwtExpiryDate * 1000).atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 }

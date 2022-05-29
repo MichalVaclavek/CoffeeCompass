@@ -8,7 +8,7 @@ import lombok.Data;
 /**
  * A DTO object for accepting REST register or login request from mobile
  * client app.<br>
- * It is simlified version of {@link cz.fungisoft.coffeecompass.dto.UserDTO}.
+ * It is simplified version of {@link cz.fungisoft.coffeecompass.dto.UserDTO}.
  * but deviceID attribute is added to distinquish what device
  * the user is registering or loging from.
  * 

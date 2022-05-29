@@ -53,6 +53,7 @@ public interface UserService {
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     User updateUser(UserDTO user);
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     User updateUser(User user);
     

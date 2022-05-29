@@ -4,8 +4,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -31,6 +33,7 @@ import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
  *
  */
 @Service("userSecurityService")
+@Log4j2
 public class UserSecurityServiceImpl implements UserSecurityService {
 
     private final IAuthenticationFacade authenticationFacade;
@@ -78,13 +81,13 @@ public class UserSecurityServiceImpl implements UserSecurityService {
     @Override
     public Authentication authWithToken(String token) {
 
-        Authentication auth = authenticationFacade.getContext().getAuthentication();
+        Authentication auth;
         
         Optional<UserDetails> userDetails = restUserDetailsService.findByToken(token);
         if (userDetails.isPresent()) {
             auth = new UsernamePasswordAuthenticationToken(userDetails.get().getUsername(), userDetails.get().getPassword(), userDetails.get().getAuthorities());
         } else {
-            throw new BadAuthorizationRESTRequestException("Bad authorization.");
+            throw new BadCredentialsException("Bad authorization. User not found or expired token.");
         }
         
         authenticationFacade.getContext().setAuthentication(auth);
