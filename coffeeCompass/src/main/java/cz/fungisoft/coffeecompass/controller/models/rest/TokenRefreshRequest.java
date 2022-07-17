@@ -12,6 +12,5 @@ public class TokenRefreshRequest {
     @NotBlank
     private String refreshToken;
 
-    @NotBlank
-    private String deviceId;
+    private String deviceID;
 }

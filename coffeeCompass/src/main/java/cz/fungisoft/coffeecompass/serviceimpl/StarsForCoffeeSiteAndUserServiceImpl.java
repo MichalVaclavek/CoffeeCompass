@@ -95,8 +95,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
         
         if (sfcsu == null) { // Pokud zaznam pro tohoto uzivatele a CoffeeSite jeste v DB neni, vytvori novy
             sfcsu = new StarsForCoffeeSiteAndUser(coffeeSite, user, starsQualService.findStarsQualityById(stars));
-        }
-        else {
+        } else {
             sfcsu.setStars(starsQualService.findStarsQualityById(stars));
         }
         
@@ -118,8 +117,8 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
         if (logedInUser.isPresent() && logedInUser.get().getId().equals(userId)) {
             // Ziskat prislusny objekt StarsForCoffeeSiteAndUser z DB
             StarsForCoffeeSiteAndUser sfcsu = avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSiteID, userId);
-            
-            if (sfcsu != null) { // Pokud zaznam pro tohoto uzivatele a CoffeeSite jeste v DB neni, vytvori novy
+
+            if (sfcsu != null) {
                 sfcsu.setStars(starsQualService.findStarsQualityById(stars));
                 // Updatovane hodnoceni ulozit do Repositoy
                 sfcsu = avgStarsRepo.save(sfcsu);
@@ -180,7 +179,6 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
      */
     @Override
     public void saveStarsForCoffeeSiteAndLoggedInUser(Long coffeeSiteID, Integer stars) {
-//        CoffeeSite cs = coffeeSiteService.findOneById(coffeeSiteID);
         coffeeSiteService.findOneById(coffeeSiteID).ifPresent(cs -> {
             Optional<User> logedInUser = userService.getCurrentLoggedInUser();
             logedInUser.ifPresent(user -> saveStarsForCoffeeSiteAndUser(cs, mapperFacade.map(user, User.class), stars));

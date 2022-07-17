@@ -2,7 +2,6 @@ package cz.fungisoft.coffeecompass.controller.rest;
 
 import com.google.common.collect.ImmutableMap;
 import cz.fungisoft.coffeecompass.controller.models.rest.TokenRefreshRequest;
-import cz.fungisoft.coffeecompass.controller.models.rest.TokenRefreshResponse;
 import cz.fungisoft.coffeecompass.entity.RefreshToken;
 import cz.fungisoft.coffeecompass.exceptions.rest.TokenRefreshException;
 import cz.fungisoft.coffeecompass.listeners.OnRegistrationCompleteEvent;
@@ -115,15 +114,16 @@ public class UsersControllerPublicREST {
     }
 
     @PostMapping("/refreshToken")
-    public ResponseEntity<TokenRefreshResponse> refreshToken(@Valid @RequestBody TokenRefreshRequest request) {
+    public ResponseEntity<AuthRESTResponse> refreshToken(@Valid @RequestBody TokenRefreshRequest request) {
         String requestRefreshToken = request.getRefreshToken();
         return refreshTokenService.findByToken(requestRefreshToken)
                 .map(refreshTokenService::verifyExpiration)
                 .map(RefreshToken::getUser)
                 .map(user -> {
-                    Map<String, String> tokenAttributes = ImmutableMap.of("deviceID", request.getDeviceId(), "userName", user.getUserName());
+                    Map<String, String> tokenAttributes = ImmutableMap.of("deviceID", request.getDeviceID(), "userName", user.getUserName());
                     String accessToken = tokenService.expiring(tokenAttributes);
-                    return ResponseEntity.ok(new TokenRefreshResponse(accessToken, requestRefreshToken));
+                    long expiryDate = Long.parseLong(tokenService.verify(accessToken).get("exp"));
+                    return ResponseEntity.ok(new AuthRESTResponse(accessToken, expiryDate, requestRefreshToken));
                 })
                 .orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!"));
     }
