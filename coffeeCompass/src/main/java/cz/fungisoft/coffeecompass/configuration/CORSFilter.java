@@ -10,7 +10,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import cz.fungisoft.coffeecompass.serviceimpl.CoffeeSiteServiceImpl;
 import lombok.extern.log4j.Log4j2;
 
 /**
