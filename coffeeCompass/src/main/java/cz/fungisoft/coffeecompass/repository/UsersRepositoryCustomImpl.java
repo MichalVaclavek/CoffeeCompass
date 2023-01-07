@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 import cz.fungisoft.coffeecompass.entity.StatisticsToShow.DBReturnPair;
 
 /**
- * Gets special statistics or other info abou Users.
+ * Gets special statistics or other info about Users.
  * 
  * @author Michal Vaclavek
  *

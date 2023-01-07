@@ -276,7 +276,7 @@ public class CoffeeSiteControllerPublicREST {
     
     
     /**
-     *  REST/JSON varianta obsluhu POST pozadavku z klienta, ktery obsahuje vyplnene hodnoty vyhledavacich kriterii
+     *  REST/JSON varianta obsluhu GET pozadavku z klienta, ktery obsahuje vyplnene hodnoty vyhledavacich kriterii
      *  pro vyhledavani CoffeeSites.<br>
      *  napr. http://localhost:8080/rest/site/searchSites/?lat1=50.1669497&lon1=14.7657927&range=50000&status=Opened&sort=espresso<br>
      *  nebo<br>
@@ -303,6 +303,35 @@ public class CoffeeSiteControllerPublicREST {
         List<CoffeeSiteDTO> result = coffeeSiteService.findAllWithinCircleWithCSStatusAndCoffeeSort(lat1, lon1, rangeMeters, coffeeSort, status);
         return (result == null || result.isEmpty()) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
                                                     : new ResponseEntity<>(result, HttpStatus.OK); 
+    }
+
+    /**
+     *  REST/JSON GET pozadavek z klienta, ktery obsahuje vyplnene hodnoty vyhledavacich kriterii
+     *  pro vyhledavani poctu CoffeeSites.<br>
+     *  napr. http://localhost:8080/rest/site/getNumberOfSites/?lat1=50.1669497&lon1=14.7657927&range=50000&status=Opened&sort=espresso<br>
+     *  nebo<br>
+     *  http://localhost:8080/rest/site/getNumberOfSites/?lat1=50.1594279&lon1=14.7444524&range=5000
+     *  pokud se nema filtovat podle druhu kavy.
+     *
+     * @param lat1
+     * @param lon1
+     * @param rangeMeters
+     * @param status
+     * @param coffeeSort
+     * @return pocet lokaci v danem okruhu s kavou podle coffeeSite statusu. druhu kavy a typu lokace
+     */
+    @GetMapping("/getNumberOfSites")
+    public ResponseEntity<Integer> getNumberOfSitesWithStatusAndCoffeeSort(@RequestParam(value="lat1") double lat1, @RequestParam(value="lon1") double lon1,
+                                                                                       @RequestParam(value="range") long rangeMeters,
+                                                                                       @RequestParam(value="status", defaultValue="V provozu") String status,
+                                                                                       @RequestParam(value="sort", defaultValue="espresso") String coffeeSort) {
+        // CoffeeSort is not intended as a filter criteria id sort=?
+        if ("?".equals(coffeeSort)) {
+            coffeeSort = "";
+        }
+        List<CoffeeSiteDTO> result = coffeeSiteService.findAllWithinCircleWithCSStatusAndCoffeeSort(lat1, lon1, rangeMeters, coffeeSort, status);
+        return (result == null) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                                : new ResponseEntity<>(result.size(), HttpStatus.OK);
     }
     
     /**

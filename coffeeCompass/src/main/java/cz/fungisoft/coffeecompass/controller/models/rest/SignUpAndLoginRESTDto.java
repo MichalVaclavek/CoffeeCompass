@@ -35,6 +35,5 @@ public class SignUpAndLoginRESTDto {
     @NotBlank
     private String password;
     
-    @NotBlank
     private String deviceID;
 }
