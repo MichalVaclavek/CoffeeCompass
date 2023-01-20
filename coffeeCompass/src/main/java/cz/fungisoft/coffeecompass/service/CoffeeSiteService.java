@@ -143,7 +143,17 @@ public interface CoffeeSiteService {
     List<CoffeeSiteDTO> findAllWithinCircleAndCityWithCSStatusAndCoffeeSort(double zemSirka, double zemDelka, long rangeMeters,
                                                                                    String cfSort, String siteStatus, String cityName);
     
-    List<CoffeeSiteDTO> findAllWithinRangeWithRecordStatus(double zemSirka, double zemDelka, long rangeMeters,  CoffeeSiteRecordStatus csRecordStatus);
+    List<CoffeeSiteDTO> findAllWithinRangeWithRecordStatus(double zemSirka, double zemDelka, long rangeMeters, CoffeeSiteRecordStatus csRecordStatus);
+
+    /**
+     * Returns list of integers, each representing number of coffee sites in different distances from given location
+     * @param zemSirka
+     * @param zemDelka
+     * @param distances - list of distances for which the number of sites is requested
+     * @param siteStatus
+     * @return
+     */
+    List<Integer> findNumbersOfSitesInGivenDistances(double zemSirka, double zemDelka, List<Integer> distances, String siteStatus);
     
     List<CoffeeSiteDTO> findAllWithRecordStatus(CoffeeSiteRecordStatusEnum csRecordStatus);
     Page<CoffeeSiteDTO> findAllWithRecordStatusPaginated(Pageable pageable, CoffeeSiteRecordStatusEnum csRecordStatus);

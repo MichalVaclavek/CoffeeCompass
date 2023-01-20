@@ -1,8 +1,6 @@
 package cz.fungisoft.coffeecompass.controller.rest;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -317,23 +315,29 @@ public class CoffeeSiteControllerPublicREST {
      * @param lon1
      * @param rangeMeters
      * @param status
-     * @param coffeeSort
      * @return pocet lokaci v danem okruhu s kavou podle coffeeSite statusu. druhu kavy a typu lokace
      */
     @GetMapping("/getNumberOfSites")
-    public ResponseEntity<Integer> getNumberOfSitesWithStatusAndCoffeeSort(@RequestParam(value="lat1") double lat1, @RequestParam(value="lon1") double lon1,
-                                                                                       @RequestParam(value="range") long rangeMeters,
-                                                                                       @RequestParam(value="status", defaultValue="V provozu") String status,
-                                                                                       @RequestParam(value="sort", defaultValue="espresso") String coffeeSort) {
-        // CoffeeSort is not intended as a filter criteria id sort=?
-        if ("?".equals(coffeeSort)) {
-            coffeeSort = "";
-        }
-        List<CoffeeSiteDTO> result = coffeeSiteService.findAllWithinCircleWithCSStatusAndCoffeeSort(lat1, lon1, rangeMeters, coffeeSort, status);
+    public ResponseEntity<Integer> getNumberOfSitesWithStatus(@RequestParam(value="lat1") double lat1,
+                                                              @RequestParam(value="lon1") double lon1,
+                                                              @RequestParam(value="range") int rangeMeters,
+                                                              @RequestParam(value="status", defaultValue="V provozu") String status) {
+        List<Integer> distances = Collections.singletonList(rangeMeters);
+        List<Integer> result = coffeeSiteService.findNumbersOfSitesInGivenDistances(lat1, lon1, distances, status);
         return (result == null) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
-                                : new ResponseEntity<>(result.size(), HttpStatus.OK);
+                                : new ResponseEntity<>(result.size() == 0 ? 0 : result.get(0), HttpStatus.OK);
     }
-    
+
+    @GetMapping("/getNumberOfSitesInGivenDistances")
+    public ResponseEntity<List<Integer>> getNumbersOfSitesWithStatus(@RequestParam(value="lat1") double lat1,
+                                                                     @RequestParam(value="lon1") double lon1,
+                                                                     @RequestParam(value="status", defaultValue="V provozu") String status,
+                                                                     @RequestBody Map<String, List<Integer>> distances) {
+        List<Integer> result = coffeeSiteService.findNumbersOfSitesInGivenDistances(lat1, lon1, distances.get("distances"), status);
+        return (result == null) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                                : new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
     /**
      * REST endpoint for obtaining number of stars gived by userID to coffeeSiteID
      * If there was no rating for this site and user yet, then returns zero 0.

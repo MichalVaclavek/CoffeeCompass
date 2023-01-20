@@ -186,12 +186,23 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     
     /** 
      * Used to get all CoffeeSites from search point with respective record status. Especially for non logged-in user
-     * which can retrieve omly ACTIVE sites.
+     * which can retrieve only ACTIVE sites.
      */
     @Override
     public List<CoffeeSiteDTO> findAllWithinRangeWithRecordStatus(double zemSirka, double zemDelka, long meters, CoffeeSiteRecordStatus csRecordStatus) {
         List<CoffeeSite> items = coffeeSiteRepo.findSitesWithRecordStatus(zemSirka, zemDelka, meters, csRecordStatus);
         return countDistancesAndSortByDist(modifyToTransfer(items), zemSirka, zemDelka);
+    }
+
+    /**
+     * Used to get number of CoffeeSites from search point in different distances from search point with respective record status. Especially for non logged-in user
+     * which can retrieve only ACTIVE sites.
+     */
+    @Override
+    public List<Integer> findNumbersOfSitesInGivenDistances(double zemSirka, double zemDelka, List<Integer> distances, String siteStatus) {
+        CoffeeSiteStatus csS =  coffeeSiteStatusRepo.searchByName(siteStatus);
+        // only ACTIVE sites are relevant for distance searching - all users (even non-registered, not loggedd-in) can search, so only ACTIVE are interesting
+        return  coffeeSiteRepo.findNumbersOfSitesInGivenDistances(zemSirka, zemDelka, distances, csS, csRecordStatusService.findCSRecordStatus(CoffeeSiteRecordStatusEnum.ACTIVE));
     }
     
     @Override
@@ -602,6 +613,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         log.info("Coffee sites within circle (Latit.: {} , Long.: {}, range: {}) retrieved: {}", zemSirka, zemDelka, meters, coffeeSites.size());
         return countDistancesAndSortByDist(modifyToTransfer(coffeeSites), zemSirka, zemDelka);
     }
+
+
     
     /**
      * TODO - NOT working with CoffeeSite status is null and CoffeeSort is not null. Error in Repository.

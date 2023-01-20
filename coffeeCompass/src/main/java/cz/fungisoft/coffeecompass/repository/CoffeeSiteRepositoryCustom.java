@@ -59,7 +59,10 @@ public interface CoffeeSiteRepositoryCustom {
     List<CoffeeSite> findSitesWithRecordStatus(double sirka, double delka, long rangeMeters, CoffeeSiteRecordStatus csRecordStatus);
 
     List<CoffeeSite> findSitesWithCoffeeSortAndSiteStatus(double sirka, double delka, long rangeMeters, CoffeeSort sort,
-                                                                 CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus);
+                                                          CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus);
+
+    List<Integer> findNumbersOfSitesInGivenDistances(double sirka, double delka, List<Integer> distances, CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus);
+
     /**
      * Varianta zakladniho dotazu, kdy se k zakladnim vyhledavacim parametrum, jako je poloha, pridava jeste vyhledavani podle:
      *  {@link CoffeeSort},

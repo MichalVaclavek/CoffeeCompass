@@ -270,7 +270,7 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
 
         String selectQuery = "SELECT *, poloha_gps_sirka, poloha_gps_delka"
                           + " FROM coffeecompass.coffee_site AS cs"
-                          + " WHERE status_zarizeni_id=?4 "
+                          + " WHERE status_zarizeni_id=?4"
                           + " AND status_zaznamu_id=?5"
                           + " AND (distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
                       
@@ -308,6 +308,18 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
         return sites.getResultList();
     }
 
+    /**
+     * Implementace metody pro vyhledani poctu CoffeeSites v seznamu vdalenosti od vyhledavaciho bodu s danym statusem DB zaznamu {@code CoffeeSiteRecordStatus}
+     */
+    @Override
+    public List<Integer> findNumbersOfSitesInGivenDistances(double sirka, double delka, List<Integer> distances, CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus) {
+        List<Integer> retVal = new ArrayList<>();
+        for (Integer distance : distances) {
+            retVal.add(findSitesWithStatus(sirka, delka, distance, siteStatus, csRecordStatus).size());
+        }
+        return retVal;
+    }
+
     @Override
     public Long countNumOfSitesInGivenState(CoffeeSiteRecordStatus csRecordStatus) {
         String selectQuery = "SELECT COUNT(*)"
@@ -340,8 +352,8 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
         
         log.info("Top 5 cities statistics retrieved.");
         
-        return results.stream().filter(record -> !((String)record[0]).isEmpty())
-                      .map(record -> new DBReturnPair((String)record[0], (BigInteger)record[1]))
+        return results.stream().filter(rec -> !((String)rec[0]).isEmpty())
+                      .map(rec -> new DBReturnPair((String)rec[0], (BigInteger)rec[1]))
                       .collect(Collectors.toList());
     }
 }
