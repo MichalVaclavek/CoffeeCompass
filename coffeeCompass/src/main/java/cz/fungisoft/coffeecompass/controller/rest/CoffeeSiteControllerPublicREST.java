@@ -276,7 +276,7 @@ public class CoffeeSiteControllerPublicREST {
     /**
      *  REST/JSON varianta obsluhu GET pozadavku z klienta, ktery obsahuje vyplnene hodnoty vyhledavacich kriterii
      *  pro vyhledavani CoffeeSites.<br>
-     *  napr. http://localhost:8080/rest/site/searchSites/?lat1=50.1669497&lon1=14.7657927&range=50000&status=Opened&sort=espresso<br>
+     *  napr. http://localhost:8080/rest/site/searchSites/?lat1=50.1669497&lon1=14.7657927&range=50000&status=V%20provozu&sort=espresso<br>
      *  nebo<br>
      *  http://localhost:8080/rest/site/searchSites/?lat1=50.1669497&lon1=14.7657927&range=50000&status=V%20provozu&sort=?<br>
      *  http://localhost:8080/rest/site/searchSites/?lat1=50.1669497&lon1=14.7657927&range=50000&sort=?
@@ -306,7 +306,7 @@ public class CoffeeSiteControllerPublicREST {
     /**
      *  REST/JSON GET pozadavek z klienta, ktery obsahuje vyplnene hodnoty vyhledavacich kriterii
      *  pro vyhledavani poctu CoffeeSites.<br>
-     *  napr. http://localhost:8080/rest/site/getNumberOfSites/?lat1=50.1669497&lon1=14.7657927&range=50000&status=Opened&sort=espresso<br>
+     *  napr. http://localhost:8080/rest/site/getNumberOfSites/?lat1=50.1669497&lon1=14.7657927&range=50000&status=V%20provozu<br>
      *  nebo<br>
      *  http://localhost:8080/rest/site/getNumberOfSites/?lat1=50.1594279&lon1=14.7444524&range=5000
      *  pokud se nema filtovat podle druhu kavy.
@@ -323,17 +323,26 @@ public class CoffeeSiteControllerPublicREST {
                                                               @RequestParam(value="range") int rangeMeters,
                                                               @RequestParam(value="status", defaultValue="V provozu") String status) {
         List<Integer> distances = Collections.singletonList(rangeMeters);
-        List<Integer> result = coffeeSiteService.findNumbersOfSitesInGivenDistances(lat1, lon1, distances, status);
+        Map<String, Integer> result = coffeeSiteService.findNumbersOfSitesInGivenDistances(lat1, lon1, distances, status);
         return (result == null) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
-                                : new ResponseEntity<>(result.size() == 0 ? 0 : result.get(0), HttpStatus.OK);
+                                : new ResponseEntity<>(result.size() == 0 ? 0 : result.get(rangeMeters), HttpStatus.OK);
     }
 
-    @GetMapping("/getNumberOfSitesInGivenDistances")
-    public ResponseEntity<List<Integer>> getNumbersOfSitesWithStatus(@RequestParam(value="lat1") double lat1,
-                                                                     @RequestParam(value="lon1") double lon1,
-                                                                     @RequestParam(value="status", defaultValue="V provozu") String status,
-                                                                     @RequestBody Map<String, List<Integer>> distances) {
-        List<Integer> result = coffeeSiteService.findNumbersOfSitesInGivenDistances(lat1, lon1, distances.get("distances"), status);
+    /**
+     * Returns number of Coffee sites in different distances from search location point
+     *
+     * @param lat1
+     * @param lon1
+     * @param status
+     * @param distances - map containing one value name "distances" wit list of search distances as value
+     * @return
+     */
+    @PostMapping("/getNumberOfSitesInGivenDistances")
+    public ResponseEntity<Map<String, Integer>> getNumbersOfSitesWithStatus(@RequestParam(value="lat1") double lat1,
+                                                                            @RequestParam(value="lon1") double lon1,
+                                                                            @RequestParam(value="status", defaultValue="V provozu") String status,
+                                                                            @RequestBody Map<String, List<Integer>> distances) {
+        Map<String, Integer> result = coffeeSiteService.findNumbersOfSitesInGivenDistances(lat1, lon1, distances.get("distances"), status);
         return (result == null) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
                                 : new ResponseEntity<>(result, HttpStatus.OK);
     }

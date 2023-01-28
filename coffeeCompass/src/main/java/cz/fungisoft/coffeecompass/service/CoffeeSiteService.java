@@ -1,6 +1,7 @@
 package cz.fungisoft.coffeecompass.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -153,7 +154,7 @@ public interface CoffeeSiteService {
      * @param siteStatus
      * @return
      */
-    List<Integer> findNumbersOfSitesInGivenDistances(double zemSirka, double zemDelka, List<Integer> distances, String siteStatus);
+    Map<String, Integer> findNumbersOfSitesInGivenDistances(double zemSirka, double zemDelka, List<Integer> distances, String siteStatus);
     
     List<CoffeeSiteDTO> findAllWithRecordStatus(CoffeeSiteRecordStatusEnum csRecordStatus);
     Page<CoffeeSiteDTO> findAllWithRecordStatusPaginated(Pageable pageable, CoffeeSiteRecordStatusEnum csRecordStatus);

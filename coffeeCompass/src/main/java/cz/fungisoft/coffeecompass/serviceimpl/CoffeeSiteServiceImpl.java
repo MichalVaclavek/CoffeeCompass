@@ -199,7 +199,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * which can retrieve only ACTIVE sites.
      */
     @Override
-    public List<Integer> findNumbersOfSitesInGivenDistances(double zemSirka, double zemDelka, List<Integer> distances, String siteStatus) {
+    public Map<String, Integer> findNumbersOfSitesInGivenDistances(double zemSirka, double zemDelka, List<Integer> distances, String siteStatus) {
         CoffeeSiteStatus csS =  coffeeSiteStatusRepo.searchByName(siteStatus);
         // only ACTIVE sites are relevant for distance searching - all users (even non-registered, not loggedd-in) can search, so only ACTIVE are interesting
         return  coffeeSiteRepo.findNumbersOfSitesInGivenDistances(zemSirka, zemDelka, distances, csS, csRecordStatusService.findCSRecordStatus(CoffeeSiteRecordStatusEnum.ACTIVE));

@@ -1,6 +1,7 @@
 package cz.fungisoft.coffeecompass.repository;
 
 import java.util.List;
+import java.util.Map;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
@@ -61,7 +62,7 @@ public interface CoffeeSiteRepositoryCustom {
     List<CoffeeSite> findSitesWithCoffeeSortAndSiteStatus(double sirka, double delka, long rangeMeters, CoffeeSort sort,
                                                           CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus);
 
-    List<Integer> findNumbersOfSitesInGivenDistances(double sirka, double delka, List<Integer> distances, CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus);
+    Map<String, Integer> findNumbersOfSitesInGivenDistances(double sirka, double delka, List<Integer> distances, CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus);
 
     /**
      * Varianta zakladniho dotazu, kdy se k zakladnim vyhledavacim parametrum, jako je poloha, pridava jeste vyhledavani podle:

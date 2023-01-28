@@ -2,7 +2,9 @@ package cz.fungisoft.coffeecompass.repository;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -312,10 +314,10 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
      * Implementace metody pro vyhledani poctu CoffeeSites v seznamu vdalenosti od vyhledavaciho bodu s danym statusem DB zaznamu {@code CoffeeSiteRecordStatus}
      */
     @Override
-    public List<Integer> findNumbersOfSitesInGivenDistances(double sirka, double delka, List<Integer> distances, CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus) {
-        List<Integer> retVal = new ArrayList<>();
+    public Map<String, Integer> findNumbersOfSitesInGivenDistances(double sirka, double delka, List<Integer> distances, CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus) {
+        Map<String, Integer> retVal = new HashMap<>();
         for (Integer distance : distances) {
-            retVal.add(findSitesWithStatus(sirka, delka, distance, siteStatus, csRecordStatus).size());
+            retVal.put(distance.toString(), findSitesWithStatus(sirka, delka, distance, siteStatus, csRecordStatus).size());
         }
         return retVal;
     }
