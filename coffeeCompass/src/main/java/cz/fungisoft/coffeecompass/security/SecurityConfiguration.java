@@ -55,17 +55,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final RequestMatcher PUBLIC_REST_URLS = new OrRequestMatcher(new AntPathRequestMatcher("/rest/public/**"));
     
     
-    private UserSecurityService userSecurityService;
+    private final UserSecurityService userSecurityService;
           
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
     
-    private CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOAuth2UserService customOAuth2UserService;
     
-    private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
-    private OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
     
-    private AccessDeniedHandler accessDeniedHandler;
+    private final AccessDeniedHandler accessDeniedHandler;
  
     /**
      * Dependency Injection pomoci konstruktoru. Preferovany zpusob ve Spring.

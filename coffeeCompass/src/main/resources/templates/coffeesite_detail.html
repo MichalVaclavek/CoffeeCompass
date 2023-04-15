@@ -311,7 +311,7 @@
 		     		</div>
 		     		
 		     		<!-- Element to show current weather data and Sunrise, Sunset times  on the CoffeeSite coordinates  -->
-		     		<div class="w3-margin-top" th:if="${!coffeeSite.canBeModified}">	
+		     		<div class="w3-margin-top" th:if="${!coffeeSite.canBeModified} AND ${weatherData != null}">
 				    	<p>
 				    		<span th:text="#{site.detail.weather.label}" class="w3-text-green"></span>
 					        <strong><span th:text="${weatherData.weather[0].description} +' ,'"></span></strong>

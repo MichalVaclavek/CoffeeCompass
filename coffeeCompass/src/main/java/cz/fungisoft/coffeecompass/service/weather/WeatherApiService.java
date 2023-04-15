@@ -29,7 +29,7 @@ public interface WeatherApiService {
      * @param units - usually 'metric' i.e. Celsius degree are return as temperature values
      * @return
      */
-    WeatherData getWeather(Double lat, Double lon, String lang, String units);
+    Optional<WeatherData>  getWeather(Double lat, Double lon, String lang, String units);
     
     /**
      * Gets weather information for given CoffeeSite's geo coordinations, language 'cz' and 'metric' units  i.e. Celsius degree,
@@ -38,7 +38,7 @@ public interface WeatherApiService {
      * @param coffeeSite who's geo coordinations are used as input data for obtaining current weather info from openweathermap.com
      * @return
      */
-    WeatherDTO getWeatherDTO(CoffeeSiteDTO coffeeSite);
+    Optional<WeatherDTO> getWeatherDTO(CoffeeSiteDTO coffeeSite);
     
     /**
      * Gets weather information for given CoffeeSite's geo coordinations, language 'cz' and 'metric' units  i.e. Celsius degree,

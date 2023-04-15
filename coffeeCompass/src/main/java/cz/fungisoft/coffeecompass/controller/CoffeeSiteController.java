@@ -17,7 +17,6 @@ import cz.fungisoft.coffeecompass.entity.PriceRange;
 import cz.fungisoft.coffeecompass.entity.SiteLocationType;
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
 import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.exceptions.rest.InvalidParameterValueException;
 import cz.fungisoft.coffeecompass.service.CSStatusService;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteTypeService;
@@ -256,8 +255,9 @@ public class CoffeeSiteController {
             mav.addObject("pic", picString);
 
             // Get Weather info for the geo location of the CofeeSite to be shown
-            WeatherDTO weather = weatherService.getWeatherDTO(cs);
-            mav.addObject("weatherData", weather);
+            weatherService.getWeatherDTO(cs)
+                          .ifPresent(w ->  mav.addObject("weatherData", w));
+
 
             mav.setViewName("coffeesite_detail");
             return mav;

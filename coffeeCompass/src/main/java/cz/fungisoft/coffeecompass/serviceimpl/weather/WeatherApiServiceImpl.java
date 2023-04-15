@@ -1,5 +1,9 @@
 package cz.fungisoft.coffeecompass.serviceimpl.weather;
 
+import cz.fungisoft.coffeecompass.controller.rest.secured.ImageControllerSecuredREST;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -12,6 +16,7 @@ import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.weather.WeatherApiService;
 import ma.glasnost.orika.MapperFacade;
 
+import java.io.IOException;
 import java.util.Optional;
 
 /**
@@ -23,6 +28,8 @@ import java.util.Optional;
  */
 @Service
 public class WeatherApiServiceImpl implements WeatherApiService {
+
+    private static final Logger log = LoggerFactory.getLogger(WeatherApiServiceImpl.class);
 
     private final String WEATHER_API_URL;
     
@@ -41,7 +48,7 @@ public class WeatherApiServiceImpl implements WeatherApiService {
     }
     
     @Override
-    public WeatherData getWeather(Double lat, Double lon, String lang, String units) {
+    public Optional<WeatherData> getWeather(Double lat, Double lon, String lang, String units) {
         
         RestTemplate restTemplate = new RestTemplate();
         
@@ -52,17 +59,23 @@ public class WeatherApiServiceImpl implements WeatherApiService {
                 .queryParam( "APPID", APP_ID)
                 .queryParam( "lang", lang)
                 .queryParam( "units", units);
-
-        WeatherData jsonNode = restTemplate.getForObject(uriBuilder.toUriString(), WeatherData.class);
+        Optional<WeatherData> jsonNode = Optional.empty();
+        try {
+            WeatherData jsonResponse = restTemplate.getForObject(uriBuilder.toUriString(), WeatherData.class);
+            jsonNode = Optional.ofNullable(jsonResponse);
+        }
+        catch (Exception ex) {
+            log.error("Error retrieving weather information: {}", ex.getMessage());
+        }
         
         return jsonNode;
 
     }
 
     @Override
-    public WeatherDTO getWeatherDTO(CoffeeSiteDTO coffeeSite) {
-        WeatherData weather = getWeather(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), "cz", "metric");
-        return mapperFacade.map(weather, WeatherDTO.class);
+    public Optional<WeatherDTO> getWeatherDTO(CoffeeSiteDTO coffeeSite) {
+        Optional<WeatherData> weather = getWeather(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), "cz", "metric");
+        return weather.map(w -> mapperFacade.map(w, WeatherDTO.class));
     }
 
     @Override
