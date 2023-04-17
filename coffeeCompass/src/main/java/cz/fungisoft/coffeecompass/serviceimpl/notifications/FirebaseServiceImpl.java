@@ -3,11 +3,14 @@ package cz.fungisoft.coffeecompass.serviceimpl.notifications;
 import java.util.List;
 import java.util.Map;
 
+import com.google.api.core.ApiFuture;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import com.google.firebase.messaging.AndroidConfig;
 import com.google.firebase.messaging.AndroidNotification;
@@ -50,7 +53,7 @@ public class FirebaseServiceImpl implements FirebaseNotificationService {
      * @param request - request containing Topic, token, message and title
      */
     @Override
-    public void sendMessageWithDataToToken(Map<String, String> data, PushNotificationRequest request) throws InterruptedException, ExecutionException {
+    public void sendMessageWithDataToToken(Map<String, String> data, PushNotificationRequest request) throws InterruptedException, ExecutionException, TimeoutException {
         Message message = getPreconfiguredMessageWithDataToToken(data, request);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonOutput = gson.toJson(message);
@@ -65,7 +68,7 @@ public class FirebaseServiceImpl implements FirebaseNotificationService {
      * @param request - request containing Topic, token, message and title
      */
     @Override
-    public void sendMessageWithDataToTopic(Map<String, String> data, PushNotificationRequest request) throws InterruptedException, ExecutionException {
+    public void sendMessageWithDataToTopic(Map<String, String> data, PushNotificationRequest request) throws InterruptedException, ExecutionException, TimeoutException {
         Message message = getPreconfiguredMessageWithDataToTopic(data, request);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonOutput = gson.toJson(message);
@@ -74,14 +77,14 @@ public class FirebaseServiceImpl implements FirebaseNotificationService {
     }
     
     @Override
-    public void sendMessageWithoutDataToTopic(PushNotificationRequest request) throws InterruptedException, ExecutionException {
+    public void sendMessageWithoutDataToTopic(PushNotificationRequest request) throws InterruptedException, ExecutionException, TimeoutException {
         Message message = getPreconfiguredMessageWithoutDataToTopic(request);
         String response = sendAndGetResponse(message);
         log.info("Push notification message sent without data.. Topic: {}, {}", request.getTopic(), response);
     }
     
     @Override
-    public void sendMessageToToken(PushNotificationRequest request) throws InterruptedException, ExecutionException {
+    public void sendMessageToToken(PushNotificationRequest request) throws InterruptedException, ExecutionException, TimeoutException {
         Message message = getPreconfiguredMessageWithoutDataToToken(request);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonOutput = gson.toJson(message);
@@ -115,8 +118,9 @@ public class FirebaseServiceImpl implements FirebaseNotificationService {
     
     /* *** Supporting methods preparing Firebase Message *** */
     
-    private String sendAndGetResponse(Message message) throws InterruptedException, ExecutionException {
-        return FirebaseMessaging.getInstance().sendAsync(message).get();
+    private String sendAndGetResponse(Message message) throws InterruptedException, ExecutionException, TimeoutException {
+        ApiFuture<String> firebaseApiFuture = FirebaseMessaging.getInstance().sendAsync(message);
+        return firebaseApiFuture.get(7000, TimeUnit.MILLISECONDS);
     }
     
     private AndroidConfig getAndroidConfig(String topic) {

@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import cz.fungisoft.coffeecompass.dto.*;
+import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -18,10 +20,6 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import cz.fungisoft.coffeecompass.domain.weather.WeatherData;
-import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
-import cz.fungisoft.coffeecompass.dto.CommentDTO;
-import cz.fungisoft.coffeecompass.dto.UserDTO;
-import cz.fungisoft.coffeecompass.dto.WeatherDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.Comment;
 import cz.fungisoft.coffeecompass.entity.User;
@@ -111,7 +109,16 @@ public class CoffeeCompassConfiguration implements WebMvcConfigurer {
                      .customize(customMapper)
                      .byDefault()
                      .register();
-        
+
+        // Only userName and CoffeeSiteID is needed for CommentDTO object
+        mapperFactory.classMap(CoffeeSiteRecordStatus.class, CoffeeSiteRecordStatusDTO.class)
+                .byDefault()
+                .register();
+
+        mapperFactory.classMap(CoffeeSiteRecordStatusDTO.class, CoffeeSiteRecordStatus.class)
+                .byDefault()
+                .register();
+
         return mapperFactory.getMapperFacade();
     }    
     

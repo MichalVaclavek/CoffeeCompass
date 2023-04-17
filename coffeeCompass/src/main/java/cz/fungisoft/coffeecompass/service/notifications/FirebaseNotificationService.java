@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.service.notifications;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -18,16 +19,16 @@ import cz.fungisoft.coffeecompass.controller.models.rest.PushNotificationRequest
 public interface FirebaseNotificationService {
     
     @PreAuthorize("isAuthenticated()")
-    void sendMessageWithDataToToken(Map<String, String> data, PushNotificationRequest request) throws InterruptedException, ExecutionException;
+    void sendMessageWithDataToToken(Map<String, String> data, PushNotificationRequest request) throws InterruptedException, ExecutionException, TimeoutException;
     
     @PreAuthorize("isAuthenticated()")
-    void sendMessageWithDataToTopic(Map<String, String> data, PushNotificationRequest request) throws InterruptedException, ExecutionException;
+    void sendMessageWithDataToTopic(Map<String, String> data, PushNotificationRequest request) throws InterruptedException, ExecutionException, TimeoutException;
     
     @PreAuthorize("isAuthenticated()")
-    void sendMessageWithoutDataToTopic(PushNotificationRequest request) throws InterruptedException, ExecutionException;
+    void sendMessageWithoutDataToTopic(PushNotificationRequest request) throws InterruptedException, ExecutionException, TimeoutException;
     
     @PreAuthorize("isAuthenticated()")
-    void sendMessageToToken(PushNotificationRequest request) throws InterruptedException, ExecutionException;
+    void sendMessageToToken(PushNotificationRequest request) throws InterruptedException, ExecutionException, TimeoutException;
 
     
     void subscribeToTopic(List<String> registrationTokens, String topic) throws InterruptedException, ExecutionException;

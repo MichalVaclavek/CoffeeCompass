@@ -2,6 +2,7 @@ package cz.fungisoft.coffeecompass.serviceimpl.notifications;
 
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,7 @@ public class PushNotificationServiceImpl implements PushNotificationService {
         } catch (InterruptedException e) {
             log.error(PUSH_NOTIFICATION_ERROR, e.getMessage());
             Thread.currentThread().interrupt();
-        } catch (ExecutionException e) {
+        } catch (ExecutionException | TimeoutException e) {
             log.error(PUSH_NOTIFICATION_ERROR, e.getMessage());
         }
     }
@@ -51,7 +52,7 @@ public class PushNotificationServiceImpl implements PushNotificationService {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             log.error(PUSH_NOTIFICATION_ERROR, e.getMessage());
-        } catch (ExecutionException e) {
+        } catch (ExecutionException | TimeoutException e) {
             log.error(PUSH_NOTIFICATION_ERROR, e.getMessage());
         }
     }
@@ -63,7 +64,7 @@ public class PushNotificationServiceImpl implements PushNotificationService {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             log.error(PUSH_NOTIFICATION_ERROR, e.getMessage());
-        } catch (ExecutionException e) {
+        } catch (ExecutionException | TimeoutException e) {
             log.error(PUSH_NOTIFICATION_ERROR, e.getMessage());
         }
     }

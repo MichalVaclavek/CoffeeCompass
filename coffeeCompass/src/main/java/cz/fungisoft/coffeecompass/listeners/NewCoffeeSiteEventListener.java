@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
@@ -91,7 +92,7 @@ public class NewCoffeeSiteEventListener implements ApplicationListener<OnNewCoff
         } catch (InterruptedException e) {
             log.debug("Error sending notification message for CoffeeSite id: {} in {} town.", coffeeSiteId, town);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException e) {
+        } catch (ExecutionException | TimeoutException e) {
            log.debug("Error sending notification message for CoffeeSite id: {} in {} town.", coffeeSiteId, town);
         }
     }

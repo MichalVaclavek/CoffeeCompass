@@ -19,7 +19,7 @@
       <form th:object="${coffeeSite}" action="#" th:action="@{/createModifySite}" method="post" class="w3-container w3-round-large w3-light-gray">
         <input th:type="hidden" name="id" th:field="${coffeeSite.id}" />
         <input th:type="hidden" name="originalUserName" th:field="${coffeeSite.originalUserName}" />
-        <input th:type="hidden" name="recordStatus" th:field="${coffeeSite.recordStatus}" />
+        <input th:type="hidden" name="recordStatus" th:field="${coffeeSite.recordStatus.status}" />
         
         <div class="w3-light-grey w3-margin-bottom w3-center">
      	   <h2  th:if="${coffeeSite.id} != 0" th:text="#{site.modify-site.label}" class="w3-center">Modify</h2>

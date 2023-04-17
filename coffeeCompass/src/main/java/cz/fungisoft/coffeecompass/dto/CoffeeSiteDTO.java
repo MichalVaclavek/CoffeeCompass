@@ -55,7 +55,7 @@ public class CoffeeSiteDTO {
     private CoffeeSiteStatus statusZarizeni;
     
     // status zaznamu je potreba prenaset, protoze uzivatele budou moci tento status u "svych" CoffeeSite menit.
-    private CoffeeSiteRecordStatus recordStatus; 
+    private CoffeeSiteRecordStatusDTO recordStatus;
     
     private Company dodavatelPodnik;
     

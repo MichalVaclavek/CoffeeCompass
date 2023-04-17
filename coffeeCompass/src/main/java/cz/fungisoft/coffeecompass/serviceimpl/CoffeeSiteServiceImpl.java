@@ -64,11 +64,11 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     @Autowired
     private CoffeeSitePageableRepository coffeeSitePaginatedRepo;
     
-    private CoffeeSortRepository coffeeSortRepo;
+    private final CoffeeSortRepository coffeeSortRepo;
     
-    private CoffeeSiteStatusRepository coffeeSiteStatusRepo;
+    private final CoffeeSiteStatusRepository coffeeSiteStatusRepo;
 
-    private MapperFacade mapperFacade;
+    private final MapperFacade mapperFacade;
     
     @Autowired
     private UserService userService;
@@ -92,7 +92,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     private ApplicationEventPublisher eventPublisher; // to inform about new/deleted CoffeeSites
     
     private ConfigProperties config;
-    
+
+    // TODO predelat na User
     private Optional<User> loggedInUser;
     
     
@@ -476,7 +477,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
             entityFromDB.setInitialComment(coffeeSite.getInitialComment());
             
             if (coffeeSite.getRecordStatus() != null) {
-                entityFromDB.setRecordStatus(coffeeSite.getRecordStatus());
+//                entityFromDB.setRecordStatus(coffeeSite.getRecordStatus().getStatus());
+                entityFromDB.setRecordStatus(mapperFacade.map(coffeeSite.getRecordStatus(), CoffeeSiteRecordStatus.class));
             }
             
             log.info("CoffeeSite name {} updated.", coffeeSite.getSiteName());
@@ -749,8 +751,11 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * CoffeeSite can be modified only if it is in CREATED or INACTIVE states.
      */
     private boolean canBeModified(CoffeeSiteDTO cs) {
-        return siteUserMatch(cs) && (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CREATED)
-                                 || cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.INACTIVE));
+        return siteUserMatch(cs) && (
+                CoffeeSiteRecordStatusEnum.CREATED.toString().equals(cs.getRecordStatus().getStatus())
+                  ||
+                CoffeeSiteRecordStatusEnum.INACTIVE.toString().equals(cs.getRecordStatus().getStatus())
+        );
     }
 
     /**
@@ -761,19 +766,22 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      */
     private boolean canBeActivated(CoffeeSiteDTO cs) {
         return siteUserMatch(cs) /* all authenticated users can modify from Created to Active or Inactive to Active */
-               && 
-               (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CREATED)
-                || cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.INACTIVE)
-               );
+                &&
+                (CoffeeSiteRecordStatusEnum.CREATED.toString().equals(cs.getRecordStatus().getStatus())
+                  ||
+                 CoffeeSiteRecordStatusEnum.INACTIVE.toString().equals(cs.getRecordStatus().getStatus())
+                );
     }
 
     private boolean canBeDeactivated(CoffeeSiteDTO cs) {
         return siteUserMatch(cs) /* all allowed users modify from Active to Inactive */
                &&
-               (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.ACTIVE)
-                || (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CANCELED) // Admin or DBA users can modify from CANCELED to INACTIVE or Inactive to Active
-                    && loggedInUser.isPresent() && userService.hasADMINorDBARole(loggedInUser.get())
-                   )    
+               (CoffeeSiteRecordStatusEnum.ACTIVE.toString().equals(cs.getRecordStatus().getStatus())
+                 ||
+                   (CoffeeSiteRecordStatusEnum.CANCELED.toString().equals(cs.getRecordStatus().getStatus()) // Admin or DBA users can modify from CANCELED to INACTIVE or Inactive to Active
+                     &&
+                    loggedInUser.isPresent() && userService.hasADMINorDBARole(loggedInUser.get())
+                   )
                );
     }
 
@@ -785,9 +793,9 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     private boolean canBeCanceled(CoffeeSiteDTO cs) {
         return siteUserMatch(cs) /* all users allowed to modify are also allowed change status from Inactive to Cancel or from CREATED to Cancel */
                &&
-               (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.INACTIVE)
+               (CoffeeSiteRecordStatusEnum.INACTIVE.toString().equals(cs.getRecordStatus().getStatus())
                   ||
-                cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CREATED)
+                CoffeeSiteRecordStatusEnum.CREATED.toString().equals(cs.getRecordStatus().getStatus())
                );
     }
 
@@ -822,11 +830,11 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      *  If CANCELED then only loggedd-in user with ADMIN or DBA Roles can see the CoffeeSite
      */
     private boolean isVisible(CoffeeSiteDTO cs) {
-        if (cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.ACTIVE))
+        if (CoffeeSiteRecordStatusEnum.ACTIVE.toString().equals(cs.getRecordStatus().getStatus()))
             return true;
         else {
             
-            if (!cs.getRecordStatus().getRecordStatus().equals(CoffeeSiteRecordStatusEnum.CANCELED)) {
+            if (!CoffeeSiteRecordStatusEnum.CANCELED.toString().equals(cs.getRecordStatus().getStatus())) {
                 // not ACTIVE site and not CANCELED, logged-in user
                 // Logged-in user can see only ACTIVE Sites or only the sites he/she created
                 return loggedInUser.isPresent() && siteUserMatch(cs);
