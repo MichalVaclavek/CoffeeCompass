@@ -221,9 +221,9 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     
     @Override
     public Integer getNumberOfSitesFromLoggedInUser() {
-        loggedInUser = userService.getCurrentLoggedInUser();
-        return (loggedInUser.isPresent()) ? getNumberOfSitesFromUserId(loggedInUser.get().getId())
-                                          : 0;
+        return userService.getCurrentLoggedInUser()
+                          .map(user -> getNumberOfSitesFromUserId(user.getId()))
+                          .orElse(0);
     }
     
     @Override
@@ -234,47 +234,41 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
 
     @Override
     public Integer getNumberOfSitesNotCanceledFromLoggedInUser() {
-        loggedInUser = userService.getCurrentLoggedInUser();
-        return (loggedInUser.isPresent()) ? getNumberOfSitesNotCanceledFromUserId(loggedInUser.get().getId())
-                                          : 0;
+        return userService.getCurrentLoggedInUser()
+                          .map(user -> getNumberOfSitesNotCanceledFromUserId(user.getId()))
+                          .orElse(0);
     }
     
     @Override
     public List<CoffeeSiteDTO> findAllFromUserName(String userName) {
-        Optional<User> user = userService.findByUserName(userName);
-        return (user.isPresent()) ? findAllFromUser(user.get()) : null;
+        return userService.findByUserName(userName)
+                          .map(this::findAllFromUser)
+                          .orElse(Collections.emptyList());
     }
     
     @Override
     public List<CoffeeSiteDTO> findAllFromLoggedInUser() {
-        loggedInUser = userService.getCurrentLoggedInUser();
-        return findAllFromUser(mapperFacade.map(loggedInUser.get(), User.class));
+        return userService.getCurrentLoggedInUser()
+                          .map(user -> findAllFromUser(mapperFacade.map(user, User.class)))
+                          .orElse(Collections.emptyList());
     }
     
 
     @Override
     public Page<CoffeeSiteDTO> findAllFromLoggedInUserPaginated(Pageable pageable) {
-        
-        loggedInUser = userService.getCurrentLoggedInUser();
-        if (loggedInUser.isPresent()) {
-            Page<CoffeeSite> coffeeSitesPage = coffeeSitePaginatedRepo.findByOriginalUser(loggedInUser.get(), pageable);
-            return coffeeSitesPage.map(this::mapOneToTransfer);
-        } else { 
-            // TODO throw exception
-            return null;
-        }
+
+        return userService.getCurrentLoggedInUser()
+                .map(user -> coffeeSitePaginatedRepo.findByOriginalUser(user, pageable))
+                .map(coffeeSitesPage -> coffeeSitesPage.map(this::mapOneToTransfer))
+                .orElseGet(Page::empty);
     }
 
     @Override
     public Page<CoffeeSiteDTO> findAllNotCancelledFromLoggedInUserPaginated(Pageable pageable) {
-        loggedInUser = userService.getCurrentLoggedInUser();
-        if (loggedInUser.isPresent()) {
-            Page<CoffeeSite> coffeeSitesPage = coffeeSitePaginatedRepo.findByOriginalUserAndRecordStatusStatusNot(loggedInUser.get(), "CANCELED", pageable);
-            return coffeeSitesPage.map(this::mapOneToTransfer);
-        } else {
-            // TODO throw exception
-            return null;
-        }
+        return userService.getCurrentLoggedInUser()
+                .map(user -> coffeeSitePaginatedRepo.findByOriginalUserAndRecordStatusStatusNot(user, "CANCELED", pageable)
+                .map(this::mapOneToTransfer))
+                .orElseGet(Page::empty);
     }
 
 
@@ -419,10 +413,10 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
             
             entityFromDB.setUpdatedOn(new Timestamp(new Date().getTime()));
             
-            loggedInUser.ifPresent(loggedInUser -> {
-                loggedInUser.setUpdatedSites(loggedInUser.getUpdatedSites() + 1);
-                userService.saveUser(loggedInUser);
-                entityFromDB.setLastEditUser(loggedInUser);
+            loggedInUser.ifPresent(user -> {
+                user.setUpdatedSites(user.getUpdatedSites() + 1);
+                userService.saveUser(user);
+                entityFromDB.setLastEditUser(user);
             });
             
             entityFromDB.setCena(coffeeSite.getCena());
@@ -477,7 +471,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
             entityFromDB.setInitialComment(coffeeSite.getInitialComment());
             
             if (coffeeSite.getRecordStatus() != null) {
-//                entityFromDB.setRecordStatus(coffeeSite.getRecordStatus().getStatus());
                 entityFromDB.setRecordStatus(mapperFacade.map(coffeeSite.getRecordStatus(), CoffeeSiteRecordStatus.class));
             }
             

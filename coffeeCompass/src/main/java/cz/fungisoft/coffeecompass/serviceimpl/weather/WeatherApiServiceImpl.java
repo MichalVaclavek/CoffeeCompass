@@ -39,10 +39,10 @@ public class WeatherApiServiceImpl implements WeatherApiService {
     
     private final CoffeeSiteService coffeeSiteService;
 
-    public WeatherApiServiceImpl( @Value("${weather.api.url}") String api_url, @Value("${weather.api.id}") String api_id,
+    public WeatherApiServiceImpl( @Value("${weather.api.url}") String apiUrl, @Value("${weather.api.id}") String apiId,
                                   MapperFacade mapperFacade, CoffeeSiteService coffeeSiteService) {
-        this.WEATHER_API_URL = api_url;
-        this.APP_ID = api_id;
+        this.WEATHER_API_URL = apiUrl;
+        this.APP_ID = apiId;
         this.mapperFacade = mapperFacade;
         this.coffeeSiteService = coffeeSiteService;
     }

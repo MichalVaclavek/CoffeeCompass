@@ -606,7 +606,8 @@ public class UserServiceImpl implements UserService {
             return false;
         }
         user.setPassword(passwordEncoder.encode(newPassword));
-        return usersRepository.save(user) != null;
+        usersRepository.save(user);
+        return true;
     }
 
     @Override
