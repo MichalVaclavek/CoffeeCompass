@@ -401,7 +401,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
 
     
     /**
-     * Ulozeni modifikovaneho CoffeeSiteDTO.
+     * Ulozeni modifikovaneho CoffeeSiteDTO. Status zaznamu se touto metodou menit nemuze. Pro zmenu statusu zaznamu
+     * existuji samostatne metody.
      * 
      * @param coffeeSite
      */
@@ -469,10 +470,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
             entityFromDB.setZemDelka(coffeeSite.getZemDelka());
             entityFromDB.setZemSirka(coffeeSite.getZemSirka());
             entityFromDB.setInitialComment(coffeeSite.getInitialComment());
-            
-            if (coffeeSite.getRecordStatus() != null) {
-                entityFromDB.setRecordStatus(mapperFacade.map(coffeeSite.getRecordStatus(), CoffeeSiteRecordStatus.class));
-            }
             
             log.info("CoffeeSite name {} updated.", coffeeSite.getSiteName());
         }
