@@ -40,7 +40,7 @@ After importing/creating project from GitHub, a DB must be created. If the Postg
 
 ## Built With
 
-* [Eclipse] - IDE
+* [IntelliJ IDEA, Eclipse] - IDE
 * [Maven](https://maven.apache.org/) - Dependency Management
 * [SpringBoot]
 * [Thymeleaf]
