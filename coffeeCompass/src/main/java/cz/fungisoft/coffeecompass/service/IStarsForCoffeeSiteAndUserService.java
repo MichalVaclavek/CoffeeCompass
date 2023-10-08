@@ -8,6 +8,8 @@ import cz.fungisoft.coffeecompass.entity.StarsForCoffeeSiteAndUser;
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
 import cz.fungisoft.coffeecompass.entity.User;
 
+import java.util.Optional;
+
 /**
  * Serisni vrstva pro ziskavani udaju u prumernem hodnoceni urciteho CoffeeSite nebo<br>
  * o prumernem hodnoceni urciteho uzivatele.<br>
@@ -28,7 +30,7 @@ public interface IStarsForCoffeeSiteAndUserService {
     Integer getStarsForCoffeeSiteAndUser(Long coffeeSiteId, Long userId);
     
     String getStarsForCoffeeSiteAndUser(CoffeeSiteDTO coffeeSite, User user);
-    String getStarsStringForCoffeeSiteAndLoggedInUser(CoffeeSiteDTO coffeeSite);
+    Optional<String> getStarsStringForCoffeeSiteAndLoggedInUser(CoffeeSiteDTO coffeeSite);
     StarsQualityDescription getStarsForCoffeeSiteAndLoggedInUser(CoffeeSiteDTO coffeeSite);
     
     void saveStarsForCoffeeSiteAndLoggedInUser(Long coffeeSiteID, Integer stars);

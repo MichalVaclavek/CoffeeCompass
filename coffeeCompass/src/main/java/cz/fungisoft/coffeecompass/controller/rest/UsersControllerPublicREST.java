@@ -52,7 +52,7 @@ public class UsersControllerPublicREST {
     
     private final MessageSource messages;
     
-    private ApplicationEventPublisher eventPublisher;
+    private final ApplicationEventPublisher eventPublisher;
     
     
     public UsersControllerPublicREST(@NonNull

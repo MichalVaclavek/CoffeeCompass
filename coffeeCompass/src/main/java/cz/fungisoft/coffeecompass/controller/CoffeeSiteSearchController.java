@@ -64,7 +64,7 @@ public class CoffeeSiteSearchController {
     /**
      * Patern pro povolene jmeno mesta. Alespon 2 znaky a oddelovace pro viceslovna jmena jako mezera, -, .
      */
-    private String allowedCityNamePattern = "^([\\p{IsAlphabetic}]{2})[\\p{IsAlphabetic}\\s-.,]+$";
+    private final String allowedCityNamePattern = "^([\\p{IsAlphabetic}]{2})[\\p{IsAlphabetic}\\s-.,]+$";
     
     
     /**
@@ -74,7 +74,8 @@ public class CoffeeSiteSearchController {
      * @param coffeeSiteService
      */
     @Autowired
-    public CoffeeSiteSearchController(CoffeeSiteService coffeeSiteService, CoffeeSortService coffeeSortService) {
+    public CoffeeSiteSearchController(CoffeeSiteService coffeeSiteService
+            , CoffeeSortService coffeeSortService) {
         super();
         this.coffeeSiteService = coffeeSiteService;
         this.coffeeSortService = coffeeSortService;

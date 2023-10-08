@@ -39,17 +39,12 @@ import javax.validation.ValidationException;
 @Log4j2
 public class ImageStorageServiceImpl implements ImageStorageService {
 
-    // Currently not used in production (image files are stored in DB). Can be used for testing.
-    private final Path fileStorageLocation;
-    
     private final ImageRepository imageRepo;
     
     private final ImageResizeAndRotateService imageResizer;
 
     private CoffeeSiteService coffeeSiteService;
-    
-    private ConfigProperties config;
-    
+
     /**
      * Base part of the CoffeeSite's image URL, loaded from ConfigProperties.<br>
      * Complete URL of the image is provided by {@link CoffeeSiteServiceImpl#getMainImageURL(CoffeeSiteDTO)}.
@@ -70,12 +65,13 @@ public class ImageStorageServiceImpl implements ImageStorageService {
         
         this.imageRepo = imageRepo;
         this.imageResizer = imageResizer;
-        
-        this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
-                                        .toAbsolutePath().normalize();
+
+        // Currently not used in production (image files are stored in DB). Can be used for testing.
+        Path fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
+                .toAbsolutePath().normalize();
         
         try {
-            Files.createDirectories(this.fileStorageLocation);
+            Files.createDirectories(fileStorageLocation);
         } catch (Exception ex) {
             throw new StorageFileException("Could not create the directory for storing uploaded files.", ex);
         }
@@ -99,8 +95,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
      */
     @Autowired
     public void setConfig(ConfigProperties config) {
-        this.config = config;
-        if (this.config != null) {
+        if (config != null) {
             baseImageURLPath = config.getBaseURLPathforImages();
         }
     }
@@ -143,7 +138,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
             try {
                 // Check if there is already image assigned to the CS. If yes, delete the old image first
                 Optional.ofNullable(imageRepo.getImageForSite(siteID))
-                        .ifPresent(oldImage -> imageRepo.delete(oldImage));
+                        .ifPresent(imageRepo::delete);
                 atomicImage.get().setImageBytes(file.getBytes());
                 atomicImage.get().setFile(file);
                 atomicImage.get().setCoffeeSiteID(cs.getId());
@@ -179,7 +174,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
         coffeeSiteService.findOneById(siteID).ifPresent(cs -> {
             // Check if there is already image assigned to the CS. If yes, delete the old image first
             Optional.ofNullable(imageRepo.getImageForSite(siteID))
-                    .ifPresent(oldImage -> imageRepo.delete(oldImage));
+                    .ifPresent(imageRepo::delete);
             Image image = new Image();
             try {
                 image.setImageBytes(file.getBytes());
@@ -228,7 +223,6 @@ public class ImageStorageServiceImpl implements ImageStorageService {
    
     @Override
     public String getImageAsBase64(Integer imageID) {
-        
         Image imFromDB = getImageById(imageID);
         return convertImageToBase64(imFromDB);
     }
@@ -292,7 +286,6 @@ public class ImageStorageServiceImpl implements ImageStorageService {
         return coffeeSiteId;
     }
     
-    //@Transactional
     @Override
     public Image getImageForSiteId(Long siteId) {
         return imageRepo.getImageForSite(siteId);

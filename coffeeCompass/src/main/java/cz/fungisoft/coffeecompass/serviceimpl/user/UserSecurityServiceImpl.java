@@ -2,6 +2,7 @@ package cz.fungisoft.coffeecompass.serviceimpl.user;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 import lombok.extern.log4j.Log4j2;
@@ -131,7 +132,7 @@ public class UserSecurityServiceImpl implements UserSecurityService {
 
     @Override
     public void authWithUserNameAndPasswordAndRole(String userName, String passwd, String role) {
-        Authentication auth = new UsernamePasswordAuthenticationToken(userName, passwd, Arrays.asList(new SimpleGrantedAuthority(role)));
+        Authentication auth = new UsernamePasswordAuthenticationToken(userName, passwd, Collections.singletonList(new SimpleGrantedAuthority(role)));
         authenticationFacade.getContext().setAuthentication(auth);
     }
 

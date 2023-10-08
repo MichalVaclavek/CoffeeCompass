@@ -18,9 +18,7 @@ import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
 public class ImageFileValidator implements ConstraintValidator<ImageFileValidatorConstraint, MultipartFile> {
 
     private Long maxFileSize = 5_242_880L; // 5 MB
-    
-    private ConfigProperties properties;
-    
+
     /**
      * Default construktor needed for Hibernate? othervise Exception is thrown
      */
@@ -33,8 +31,7 @@ public class ImageFileValidator implements ConstraintValidator<ImageFileValidato
      */
     public ImageFileValidator(ConfigProperties properties) {
         super();
-        this.properties = properties;
-        maxFileSize = this.properties.getMaxUploadFileByteSize();
+        maxFileSize = properties.getMaxUploadFileByteSize();
     }
 
     @Override

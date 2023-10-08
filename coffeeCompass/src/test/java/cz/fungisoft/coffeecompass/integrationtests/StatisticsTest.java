@@ -26,11 +26,9 @@ class StatisticsTest {
     @Autowired
     private UsersRepository usersRepo;
 
-    private StatisticsToShow statsToShow;
-    
     @Test
     void testStatistics() {
-        statsToShow = new StatisticsToShow();
+        StatisticsToShow statsToShow = new StatisticsToShow();
         
         statsToShow.setNumOfAllSites(csRepo.getNumOfAllActiveSites());
         statsToShow.setNumOfNewSitesToday(csRepo.getNumOfSitesCreatedToday());

@@ -30,14 +30,14 @@ import cz.fungisoft.coffeecompass.service.StatisticsInfoService;
 @Controller
 public class BasicController {
 
-    private StatisticsInfoService statsService;
+    private final StatisticsInfoService statsService;
     
-    private CoffeeSiteService coffeeSiteService;
+    private final CoffeeSiteService coffeeSiteService;
     
-    private ClientRegistrationRepository clientRegistrationRepository;
+    private final ClientRegistrationRepository clientRegistrationRepository;
     
-    private static String oAuth2AuthorizationRequestBaseUri = "/oauth2/authorize";
-    private Map<String, String> oauth2AuthenticationUrls = new HashMap<>();
+    private static final String oAuth2AuthorizationRequestBaseUri = "/oauth2/authorize";
+    private final Map<String, String> oauth2AuthenticationUrls = new HashMap<>();
     
     
     @Autowired

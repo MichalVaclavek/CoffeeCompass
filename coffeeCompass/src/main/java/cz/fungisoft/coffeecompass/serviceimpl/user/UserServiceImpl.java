@@ -131,7 +131,7 @@ public class UserServiceImpl implements UserService {
             log.warn("User with e-mail {} not found.", email);
         }
         else {
-            log.info("User with e-mail {} found. User name: ", email, user.get().getUserName());
+            log.info("User with e-mail {} found. User name: {}", email, user.get().getUserName());
         }
         
         return user;

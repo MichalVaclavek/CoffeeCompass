@@ -218,9 +218,9 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     }
 
     @Override
-    public String getStarsStringForCoffeeSiteAndLoggedInUser(CoffeeSiteDTO coffeeSite) {
+    public Optional<String> getStarsStringForCoffeeSiteAndLoggedInUser(CoffeeSiteDTO coffeeSite) {
         Optional<User> logedInUser = userService.getCurrentLoggedInUser();
-        return getStarsForCoffeeSiteAndUser(coffeeSite, logedInUser.get());
+        return logedInUser.map(liu -> getStarsForCoffeeSiteAndUser(coffeeSite, liu));
     }
 
     @Override

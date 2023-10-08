@@ -42,20 +42,20 @@ public class JwtTokenProviderService implements Clock, TokenService {
     private static final String DOT = ".";
     private static final GzipCompressionCodec COMPRESSION_CODEC = new GzipCompressionCodec();
 
-    private String issuer;
-    private int expirationSec;
-    private int clockSkewSec;
-    private String secretKey;
+    private final String issuer;
+    private final int expirationSec;
+    private final int clockSkewSec;
+    private final String secretKey;
     
 
-    private JwtAndOAuth2Properties jwtPoperties;
+    private final JwtAndOAuth2Properties jwtPoperties;
 
     public JwtTokenProviderService(JwtAndOAuth2Properties appProperties) {
         this.jwtPoperties = appProperties;
         
         this.issuer = requireNonNull(jwtPoperties.getJwtAuth().getIssuer());
-        this.expirationSec = requireNonNull(jwtPoperties.getJwtAuth().getTokenExpirationSec());
-        this.clockSkewSec = requireNonNull(jwtPoperties.getJwtAuth().getClockSkewSec());
+        this.expirationSec = jwtPoperties.getJwtAuth().getTokenExpirationSec();
+        this.clockSkewSec = jwtPoperties.getJwtAuth().getClockSkewSec();
         this.secretKey = BASE64.encode(requireNonNull(jwtPoperties.getJwtAuth().getTokenSecret()));
     }
 

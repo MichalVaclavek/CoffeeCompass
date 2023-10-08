@@ -198,14 +198,15 @@ public class TopicsServiceImpl implements TopicsForPushNotificationsService {
     }
 
     /**
-     * Deletes selected Topics/subTopics related to the token.
+     * Deletes selected Topics/subTopics related to the Firebase's token.
      *
      * @param tokenString
      */
     @Override
-    public void deleteSelectedTopicsOfToken(String tokenString, List<String> topics) {
+    public void deleteSelectedTopicsOfToken(String tokenString, List<String> topicsToDelete) {
         firebaseDeviceTokenRepository.getOneToken(tokenString)
-                .ifPresent(token -> token.getTopics().removeIf(topic -> topics.stream().anyMatch(topic::equals)));
+                                     .ifPresent(token -> token.getTopics()
+                                                              .removeIf(firebaseTopic -> topicsToDelete.stream().anyMatch(topicToDelete -> topicToDelete.equals(firebaseTopic.getMainTopic()))));
 
         log.info("Selected Topics for the Token deleted. Token: {}", tokenString);
     }

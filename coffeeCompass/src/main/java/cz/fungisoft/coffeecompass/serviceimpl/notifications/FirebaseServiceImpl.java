@@ -113,7 +113,7 @@ public class FirebaseServiceImpl implements FirebaseNotificationService {
                                                             .unsubscribeFromTopicAsync(registrationTokens, topic)
                                                             .get();
         // See the TopicManagementResponse reference documentation for the contents of response.
-        log.info("Number of Tokens unregistrated from topic '{}': {}. Response: ", topic, response.getSuccessCount(), response);
+        log.info("Number of Tokens unregistrated from topic '{}': {}. Response: {}", topic, response.getSuccessCount(), response);
     }
     
     /* *** Supporting methods preparing Firebase Message *** */

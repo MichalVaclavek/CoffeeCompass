@@ -33,7 +33,7 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
     /**
      * Object to be created, filled-in by respective data and returned on request.
      */
-    private StatisticsToShow statsToShow;
+    private final StatisticsToShow statsToShow;
     
     @Autowired
     public StatisticsInfoServiceImpl(CoffeeSiteRepository csRepo, UsersRepository usersRepo) {

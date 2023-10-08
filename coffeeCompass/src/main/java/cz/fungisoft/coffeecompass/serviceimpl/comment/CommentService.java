@@ -46,12 +46,12 @@ public class CommentService implements ICommentService {
     @Autowired
     private UserService userService;
     
-    private CommentRepository commentsRepo;
+    private final CommentRepository commentsRepo;
     
     @Autowired
     private CommentsPageableRepository commentsPageableRepo;
     
-    private MapperFacade mapperFacade;
+    private final MapperFacade mapperFacade;
     
     /**
      * Used to add rating of the CoffeeSite from user to comments of the CoffeeSite from the same User

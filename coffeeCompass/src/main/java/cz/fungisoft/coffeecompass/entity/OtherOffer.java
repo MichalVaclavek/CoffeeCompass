@@ -52,12 +52,8 @@ public class OtherOffer {
             return false;
         if (offer == null)
         {
-            if (other.offer != null)
-                return false;
-        } else if (!offer.equals(other.offer))
-            return false;
-        
-        return true;
+            return other.offer == null;
+        } else return offer.equals(other.offer);
     }
 
     @Override

@@ -50,11 +50,9 @@ public class NotificationSubscriptionServiceImpl implements NotificationSubscrip
     
     private final UserService userService;
     
-    private GeoCodingService geoCodingService;
-    
-    private MessageSource messages;
-    
-    private static String ALL_TOWNS_SUBTOPIC; 
+    private final GeoCodingService geoCodingService;
+
+    private static String ALL_TOWNS_SUBTOPIC;
     
     public NotificationSubscriptionServiceImpl(FirebaseNotificationService fcmService,
                                                FirebaseDeviceTokenService firebaseDeviceTokenService,
@@ -67,8 +65,7 @@ public class NotificationSubscriptionServiceImpl implements NotificationSubscrip
         this.topicsService = topicsService;
         this.userService = userService;
         this.geoCodingService = geoCodingService;
-        this.messages = messages;
-        ALL_TOWNS_SUBTOPIC = this.messages.getMessage("push.notification.subTopic.all_towns", null, new Locale("cs"));
+        ALL_TOWNS_SUBTOPIC = messages.getMessage("push.notification.subTopic.all_towns", null, new Locale("cs"));
     }
 
     /**
