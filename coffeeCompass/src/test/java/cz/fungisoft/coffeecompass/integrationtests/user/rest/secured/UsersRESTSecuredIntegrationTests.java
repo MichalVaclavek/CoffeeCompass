@@ -4,9 +4,10 @@ import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
 import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.integrationtests.IntegrationTestBaseConfig;
+import cz.fungisoft.coffeecompass.mappers.CoffeeSiteMapperImpl;
+import cz.fungisoft.coffeecompass.mappers.UserMapper;
+import cz.fungisoft.coffeecompass.mappers.UserMapperImpl;
 import cz.fungisoft.coffeecompass.service.user.UserService;
-
-import ma.glasnost.orika.MapperFacade;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -44,6 +46,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  */
 @ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {
+        UserMapperImpl.class
+})
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles({"dev"})
@@ -56,7 +61,7 @@ class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
     public UserService userService;
     
     @Autowired
-    public MapperFacade mapperFacade;
+    public UserMapper userMapper;
     
     private static String deviceID = "4545454545";
     
@@ -82,7 +87,7 @@ class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
         admin.setCreatedOn(new Timestamp(new Date().getTime()));
         admin.setUserProfiles(userProfilesADMIN);
         
-        UserDTO adminDto = mapperFacade.map(admin, UserDTO.class);
+        UserDTO adminDto = userMapper.usertoUserDTO(admin);
         userService.save(adminDto);
        
         // Testovaci objekt slouzici pro zaregistrovani noveho User uctu
@@ -107,21 +112,21 @@ class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
         john.setUserName("john");
         john.setEmail("john@vonneuman.com");
         john.setPassword("computer");
-        UserDTO johnDto = mapperFacade.map(john, UserDTO.class);
+        UserDTO johnDto = userMapper.usertoUserDTO(john);
         userService.save(johnDto);
         
         User mary = new User();
         mary.setUserName("mary");
         mary.setEmail("mary@gun.com");
         mary.setPassword("blood");
-        UserDTO maryDto = mapperFacade.map(mary, UserDTO.class);
+        UserDTO maryDto = userMapper.usertoUserDTO(mary);
         userService.save(maryDto);
         
         User dick = new User();        
         dick.setUserName("dick");
         dick.setEmail("dick@feynman.com");
         dick.setPassword("qed");
-        UserDTO dickDto = mapperFacade.map(dick, UserDTO.class);
+        UserDTO dickDto = userMapper.usertoUserDTO(dick);
         userService.save(dickDto);
         // Create and save some normal Users - END -
         

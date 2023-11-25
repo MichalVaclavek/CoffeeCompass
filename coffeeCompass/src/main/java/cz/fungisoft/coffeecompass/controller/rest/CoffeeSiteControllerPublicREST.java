@@ -2,6 +2,7 @@ package cz.fungisoft.coffeecompass.controller.rest;
 
 import java.util.*;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ import cz.fungisoft.coffeecompass.service.OtherOfferService;
 import cz.fungisoft.coffeecompass.service.PriceRangeService;
 import cz.fungisoft.coffeecompass.service.SiteLocationTypeService;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
-import io.swagger.annotations.Api;
+//import io.swagger.annotations.Api;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -50,7 +51,7 @@ import javax.validation.constraints.Min;
  * @author Michal Václavek
  *
  */
-@Api // Swagger
+@Tag(name = "CoffeeSite", description = "Coffee site operations")
 @RestController 
 @RequestMapping("/rest/site") 
 public class CoffeeSiteControllerPublicREST {

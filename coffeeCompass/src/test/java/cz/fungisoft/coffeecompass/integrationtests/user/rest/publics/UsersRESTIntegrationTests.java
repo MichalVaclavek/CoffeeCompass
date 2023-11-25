@@ -67,7 +67,6 @@ class UsersRESTIntegrationTests extends IntegrationTestBaseConfig {
         admin.setCreatedOn(new Timestamp(new Date().getTime()));
         admin.setUserProfiles(userProfilesADMIN);
        
-
         // Testovaci objekt slouzici pro zaregistrovani noveho User uctu
         signUpAndLoginRESTDtoAdmin = new SignUpAndLoginRESTDto();
         signUpAndLoginRESTDtoAdmin.setUserName(admin.getUserName());
@@ -104,9 +103,12 @@ class UsersRESTIntegrationTests extends IntegrationTestBaseConfig {
         // when and then
         mockMvc.perform(post("/rest/public/user/register").contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(signUpAndLoginRESTDto)))
                .andExpect(status().isOk())
-               .andExpect(jsonPath("$.*", hasSize(3)))
+               .andExpect(jsonPath("$.*", hasSize(4)))
                .andExpect(jsonPath("$.tokenType", Matchers.is("Bearer")))
                .andExpect(jsonPath("$.accessToken", Matchers.isA(String.class)))
-               .andExpect(jsonPath("$.accessToken").isNotEmpty());
+               .andExpect(jsonPath("$.accessToken").isNotEmpty())
+               .andExpect(jsonPath("$.refreshToken", Matchers.isA(String.class)))
+
+                .andExpect(jsonPath("$.refreshToken").isNotEmpty());
     }
 }

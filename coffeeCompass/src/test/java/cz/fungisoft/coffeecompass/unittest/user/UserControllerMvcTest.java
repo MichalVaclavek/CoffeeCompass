@@ -5,6 +5,7 @@ import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
+import cz.fungisoft.coffeecompass.service.tokens.RefreshTokenService;
 import cz.fungisoft.coffeecompass.service.user.UserService;
 import cz.fungisoft.coffeecompass.testutils.JsonUtil;
 import cz.fungisoft.coffeecompass.testutils.WithMockCustomAdminUser;
@@ -27,6 +28,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -79,10 +81,12 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
       
         @MockBean //provided by Spring Context
         public static UserService userService;
+
+        @MockBean //provided by Spring Context
+        public static RefreshTokenService refreshTokenService;
         
         @Bean("customUserDetailsService")
         public UserDetailsService customUserDetailsService() {
-          
           return new CustomUserDetailsService(userService);
         }
     }
@@ -95,13 +99,13 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
     private static UserProfile userProfADMIN;
     private static Set<UserProfile> userProfilesADMIN;
     
-    private static String token = "xy";
-    private static String deviceID = "4545454545";
+    private static final String token = "xy";
+    private static final String deviceID = "4545454545";
     
-    private static User admin = new User();
+    private static final User admin = new User();
     private SignUpAndLoginRESTDto signUpAndLoginRESTDtoAdmin;
 
-    private static Locale csLocale = new Locale("cs");
+//    private static Locale csLocale = new Locale("cs");
     
     
     @BeforeAll
@@ -111,14 +115,14 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
         userProfUser = new UserProfile();
         userProfUser.setType("USER");
         
-        userProfiles = new HashSet<UserProfile>();
+        userProfiles = new HashSet<>();
         userProfiles.add(userProfUser);
         
         // Vytvori testovaci UserProfile typu ADMIN
         userProfADMIN = new UserProfile();
         userProfADMIN.setType("ADMIN");
         
-        userProfilesADMIN = new HashSet<UserProfile>();
+        userProfilesADMIN = new HashSet<>();
         userProfilesADMIN.add(userProfADMIN);
         
         // ADMIN user used when login, before other REST request, which requires loged-in user with ADMIN
@@ -148,15 +152,14 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
         given(tokenServiceMock.verify(Mockito.anyString())).willReturn(tokenMap);
         given(tokenServiceMock.expiring(Mockito.anyMap())).willReturn(token);
         
-        //given(authenticationService.login(Mockito.any(String.class), Mockito.any(String.class), Mockito.any(String.class))).willReturn(Optional.of(token));
         given(passwordEncoder.matches(Mockito.any(String.class), Mockito.any(String.class))).willReturn(true);
         
         given(authenticationService.login(Mockito.any(String.class), Mockito.any(String.class), Mockito.any(String.class))).willReturn(Optional.of(token));
     }
  
     @Test
-    public void whenPostUser_thenCreateUser() throws Exception {
-        
+    void whenPostUser_thenCreateUser() throws Exception {
+
         // given
         User john = new User();
         john.setUserName("john");
@@ -176,7 +179,7 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
 
         given(UserControllerTestContextConfiguration.userService.registerNewRESTUser(Mockito.any(SignUpAndLoginRESTDto.class))).willReturn(john); //registerNewRESTUser(registerRequest);
         
-        //given(authenticationService.login(Mockito.any(String.class), Mockito.any(String.class), Mockito.any(String.class))).willReturn(Optional.of(token));
+//        given(authenticationService.login(Mockito.any(String.class), Mockito.any(String.class), Mockito.any(String.class))).willReturn(Optional.of(token));
 
         ArgumentCaptor<User> valueCapture = ArgumentCaptor.forClass(User.class);
 //        doNothing().when( tokenCreateAndSendEmailService).setUserVerificationData(valueCapture.capture(), Mockito.any(Locale.class));
@@ -191,7 +194,7 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
                .andExpect(jsonPath("$.accessToken").isNotEmpty());
         
         // then
-        verify(UserControllerTestContextConfiguration.userService, VerificationModeFactory.times(1)).registerNewRESTUser(Mockito.eq(signUpAndLoginRESTDto));
+        verify(UserControllerTestContextConfiguration.userService, VerificationModeFactory.times(1)).registerNewRESTUser(signUpAndLoginRESTDto);
     }
     
     /**
@@ -203,8 +206,8 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
      * @throws Exception
      */
     @Test
-    @WithMockCustomAdminUser 
-    public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {    
+    @WithMockCustomAdminUser
+    void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
         
         UserDTO johnDto = new UserDTO();
         johnDto.setUserName("john");

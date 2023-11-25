@@ -3,6 +3,7 @@
  */
 package cz.fungisoft.coffeecompass.controller.rest;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
-import io.swagger.annotations.Api;
 
 /**
  * Controller to handle operations concerning obtaining CoffeeSite's image file.<br>
@@ -24,7 +24,7 @@ import io.swagger.annotations.Api;
  * @author Michal Vaclavek
  *
  */
-@Api // Swagger
+@Tag(name = "Images", description = "Images of the coffee sites")
 @RestController
 @RequestMapping("/rest/image")
 public class ImageControllerPublicREST  {

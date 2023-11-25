@@ -11,18 +11,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Arrays;
 import java.util.List;
 
+import cz.fungisoft.coffeecompass.mappers.CoffeeSiteMapper;
+import cz.fungisoft.coffeecompass.mappers.CoffeeSiteMapperImpl;
+import cz.fungisoft.coffeecompass.mappers.UserMapperImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -33,9 +34,6 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.testutils.CoffeeSiteFactory;
-import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
 
 /**
  * Testovani Public REST Controller vrstvy pro praci s CoffeeSite s vyuzitim Spring MVC.
@@ -44,6 +42,9 @@ import ma.glasnost.orika.impl.DefaultMapperFactory;
  *
  */
 @ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {
+        CoffeeSiteMapperImpl.class
+})
 class CoffeeSiteControllerPublicMvcTests { 
     
     private MockMvc mvc;
@@ -63,33 +64,9 @@ class CoffeeSiteControllerPublicMvcTests {
     private MessageSource messageSource;
      
     @Autowired
-    private MapperFacade mapperFacade;
+    private CoffeeSiteMapper coffeeSiteMapper;
     
-    /** 
-     * Needed for maping from created User into UserDTO object, which is returned by UserControllerREST
-     * 
-     * @return
-     */
-    @TestConfiguration
-    static class CoffeeSiteControllerTestContextConfiguration {
-        
-        @Bean
-        @Primary
-        public MapperFacade mapperFacade() {
-            MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-            
-            // Only userName is needed for CoffeeSiteDto object
-            mapperFactory.classMap(CoffeeSite.class, CoffeeSiteDTO.class)
-                         .field("originalUser.userName", "originalUserName")
-                         .field("lastEditUser.userName", "lastEditUserName")
-                         .byDefault()
-                         .register();
-            
-            return mapperFactory.getMapperFacade();
-        }  
-    }
-       
-    
+
     @BeforeEach
     public void setUp() {
         coffeeSiteControllerPublic = new CoffeeSiteControllerPublicREST(csService, starsForCoffeeSiteService);
@@ -105,10 +82,10 @@ class CoffeeSiteControllerPublicMvcTests {
     void givenCoffeeSites_whenGetSites_thenReturnJsonArray() throws Exception {
         
         CoffeeSite cs1 = CoffeeSiteFactory.getCoffeeSite("ControllerTestSite1", "automat");
-        CoffeeSiteDTO cs1Dto = mapperFacade.map(cs1, CoffeeSiteDTO.class);
+        CoffeeSiteDTO cs1Dto = coffeeSiteMapper.coffeeSiteToCoffeeSiteDTO(cs1);
         
         CoffeeSite cs2 = CoffeeSiteFactory.getCoffeeSite("ControllerTestSite2", "automat");
-        CoffeeSiteDTO cs2Dto = mapperFacade.map(cs2, CoffeeSiteDTO.class);
+        CoffeeSiteDTO cs2Dto = coffeeSiteMapper.coffeeSiteToCoffeeSiteDTO(cs2);
             
         List<CoffeeSiteDTO> allSites = Arrays.asList(cs1Dto, cs2Dto);
      

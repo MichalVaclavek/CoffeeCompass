@@ -6,6 +6,7 @@ import cz.fungisoft.coffeecompass.entity.RefreshToken;
 import cz.fungisoft.coffeecompass.exceptions.rest.TokenRefreshException;
 import cz.fungisoft.coffeecompass.listeners.OnRegistrationCompleteEvent;
 import cz.fungisoft.coffeecompass.service.tokens.RefreshTokenService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 
 import java.util.Locale;
@@ -31,9 +32,8 @@ import cz.fungisoft.coffeecompass.exceptions.rest.InvalidParameterValueException
 import cz.fungisoft.coffeecompass.service.tokens.TokenService;
 import cz.fungisoft.coffeecompass.service.user.CustomRESTUserAuthenticationService;
 import cz.fungisoft.coffeecompass.service.user.UserService;
-import io.swagger.annotations.Api;
 
-@Api
+@Tag(name = "Users", description = "User management")
 @RestController
 @RequestMapping("/rest/public/user")
 public class UsersControllerPublicREST {

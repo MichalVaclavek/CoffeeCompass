@@ -47,9 +47,6 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
     @Override
     Optional<CoffeeSite> findById(Long id);
 
-    @Query(nativeQuery = true, value = "SELECT count(*) FROM coffee_site") // SQL
-    long countItems();
-
     @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select cs from CoffeeSite cs where originalUser.id=?1 order by cs.createdOn desc")
     List<CoffeeSite> findSitesFromUserID(long userId);
@@ -176,7 +173,7 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
      */    
     @Procedure(name = "distance")
     long callStoredProcedureCalculateDistance(@Param("lat1") double sirkaFrom, @Param("lon1") double delkaFrom,
-                                                     @Param("lat2") double sirkaTo, @Param("lon2") double delkaTo);
+                                              @Param("lat2") double sirkaTo, @Param("lon2") double delkaTo);
 
     /**
      * Deletes all CoffeeSites created by User id.

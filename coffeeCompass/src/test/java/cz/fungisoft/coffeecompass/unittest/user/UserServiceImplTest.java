@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.unittest.user;
 import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
+import cz.fungisoft.coffeecompass.mappers.UserMapper;
 import cz.fungisoft.coffeecompass.repository.PasswordResetTokenRepository;
 import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
 import cz.fungisoft.coffeecompass.repository.UserEmailVerificationTokenRepository;
@@ -13,7 +14,6 @@ import cz.fungisoft.coffeecompass.security.SecurityConfiguration;
 import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.user.UserService;
 import cz.fungisoft.coffeecompass.serviceimpl.user.UserServiceImpl;
-import ma.glasnost.orika.MapperFacade;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -71,14 +71,14 @@ public class UserServiceImplTest {
         private PasswordEncoder passwordEncoder = Mockito.mock(PasswordEncoder.class);
         
         @MockBean
-        private MapperFacade mapperFacade;
+        private UserMapper userMapper;
         
         @MockBean
         public static UsersRepository usersRepository;
         
         @Bean
         public UserService userService() {
-            return new UserServiceImpl(usersRepository, passwordEncoder, mapperFacade, null, userEmailVerificationTokenRepository, passwordResetTokenRepository, userSecurityService, configProps);
+            return new UserServiceImpl(usersRepository, passwordEncoder, userMapper, null, userEmailVerificationTokenRepository, passwordResetTokenRepository, userSecurityService, configProps);
         }
     }
     

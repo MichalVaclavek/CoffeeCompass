@@ -1,7 +1,7 @@
 package cz.fungisoft.coffeecompass.controller.rest;
 
 import cz.fungisoft.coffeecompass.service.DataDownloadSizeService;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Controller to handle requests about size of data to be downloaded for 'Offline mode'
  */
-@Api // Swagger
+@Tag(name = "DownloadSize", description = "Get data size for download")
 @RestController
 @RequestMapping("/rest/dataDownloadSize")
 public class DataDownloadSizeController {

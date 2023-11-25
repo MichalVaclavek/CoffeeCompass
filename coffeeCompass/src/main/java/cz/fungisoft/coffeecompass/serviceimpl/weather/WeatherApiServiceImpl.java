@@ -1,7 +1,6 @@
 package cz.fungisoft.coffeecompass.serviceimpl.weather;
 
-import cz.fungisoft.coffeecompass.controller.rest.secured.ImageControllerSecuredREST;
-import lombok.extern.slf4j.Slf4j;
+import cz.fungisoft.coffeecompass.mappers.WeatherMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,9 +13,7 @@ import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.dto.WeatherDTO;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.weather.WeatherApiService;
-import ma.glasnost.orika.MapperFacade;
 
-import java.io.IOException;
 import java.util.Optional;
 
 /**
@@ -35,15 +32,16 @@ public class WeatherApiServiceImpl implements WeatherApiService {
     
     private final String APP_ID;
     
-    private final MapperFacade mapperFacade;
+    private final WeatherMapper weatherMapper;
     
     private final CoffeeSiteService coffeeSiteService;
 
     public WeatherApiServiceImpl( @Value("${weather.api.url}") String apiUrl, @Value("${weather.api.id}") String apiId,
-                                  MapperFacade mapperFacade, CoffeeSiteService coffeeSiteService) {
+                                  WeatherMapper weatherMapper,
+                                  CoffeeSiteService coffeeSiteService) {
         this.WEATHER_API_URL = apiUrl;
         this.APP_ID = apiId;
-        this.mapperFacade = mapperFacade;
+        this.weatherMapper = weatherMapper;
         this.coffeeSiteService = coffeeSiteService;
     }
     
@@ -75,13 +73,13 @@ public class WeatherApiServiceImpl implements WeatherApiService {
     @Override
     public Optional<WeatherDTO> getWeatherDTO(CoffeeSiteDTO coffeeSite) {
         Optional<WeatherData> weather = getWeather(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), "cz", "metric");
-        return weather.map(w -> mapperFacade.map(w, WeatherDTO.class));
+        return weather.map(weatherMapper::weatherDataToWeatherDTO);
     }
 
     @Override
     public Optional<WeatherDTO> getWeatherDTO(Long coffeeSiteId) {
         return coffeeSiteService.findOneById(coffeeSiteId)
-                                .map(coffeeSite -> getWeather(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), "cz", "metric"))
-                                .map(weather -> mapperFacade.map(weather, WeatherDTO.class));
+                                .flatMap(coffeeSite -> getWeather(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), "cz", "metric"))
+                                .map(weatherMapper::weatherDataToWeatherDTO);
     }
 }

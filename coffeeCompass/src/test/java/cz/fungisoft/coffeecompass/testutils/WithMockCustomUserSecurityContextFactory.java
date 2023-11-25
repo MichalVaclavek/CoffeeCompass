@@ -23,11 +23,7 @@ import cz.fungisoft.coffeecompass.security.UserPrincipal;
  *
  */
 public class WithMockCustomUserSecurityContextFactory implements WithSecurityContextFactory<WithMockCustomAdminUser> {
-    
-    // ADMIN profile
-    private  UserProfile userProfADMIN;
-    private  Set<UserProfile> userProfilesADMIN;
-    
+
     /**
      * Can be returned as authentication object for Mocked UserSecurityService instancies
      * and respective methods, like userSecurityService.authWithToken();
@@ -48,10 +44,11 @@ public class WithMockCustomUserSecurityContextFactory implements WithSecurityCon
     public SecurityContext createSecurityContext(WithMockCustomAdminUser customUser) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-        userProfADMIN = new UserProfile();
+        // ADMIN profile
+        UserProfile userProfADMIN = new UserProfile();
         userProfADMIN.setType(customUser.roles()[0]);
-        
-        userProfilesADMIN = new HashSet<UserProfile>();
+
+        Set<UserProfile> userProfilesADMIN = new HashSet<>();
         userProfilesADMIN.add(userProfADMIN);
         
         User admin = new User();

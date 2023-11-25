@@ -4,8 +4,10 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import cz.fungisoft.coffeecompass.mappers.CoffeeSiteMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -43,7 +45,6 @@ import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
 import cz.fungisoft.coffeecompass.service.user.UserService;
 import lombok.extern.log4j.Log4j2;
-import ma.glasnost.orika.MapperFacade;
 
 /**
  * Implementace CoffeeSiteService. Implementuje vsechny metody, ktere pracuji s CoffeeSite objekty, tj.
@@ -68,8 +69,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     
     private final CoffeeSiteStatusRepository coffeeSiteStatusRepo;
 
-    private final MapperFacade mapperFacade;
-    
+    private final CoffeeSiteMapper coffeeSiteMapper;
+
     @Autowired
     private UserService userService;
     
@@ -80,12 +81,14 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     private CSRecordStatusService csRecordStatusService;
     
     @Autowired
+    @Lazy
     private IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService;
     
     @Autowired
     private CoffeeSiteRecordStatusRepository csRecordStatusRepo;
     
     @Autowired
+    @Lazy
     private ImageStorageService imageService;
     
     @Autowired 
@@ -93,19 +96,18 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     
     private ConfigProperties config;
 
-    // TODO predelat na User
-    private Optional<User> loggedInUser;
+    private User loggedInUser;
     
     
     @Autowired
     public CoffeeSiteServiceImpl(CoffeeSiteRepository coffeeSiteRepository,
                                  CoffeeSortRepository coffeeSortRepository,
                                  CoffeeSiteStatusRepository coffeeSiteStatusRepo,
-                                 MapperFacade mapperFacade)  {
+                                 CoffeeSiteMapper coffeeSiteMapper)  {
         this.coffeeSiteRepo = coffeeSiteRepository;
         this.coffeeSortRepo = coffeeSortRepository;
         this.coffeeSiteStatusRepo = coffeeSiteStatusRepo;
-        this.mapperFacade = mapperFacade;
+        this.coffeeSiteMapper = coffeeSiteMapper;
     }
     
     @Autowired
@@ -122,7 +124,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     @Override
     public CoffeeSiteDTO evaluateOperationalAttributes(CoffeeSiteDTO site) {
         // logged-in user needed for evaluation of available operations for CoffeeSiteDto
-        loggedInUser = userService.getCurrentLoggedInUser();
+        loggedInUser = userService.getCurrentLoggedInUser().orElse(null);
         
         site.setCanBeActivated(canBeActivated(site));
         site.setCanBeCanceled(canBeCanceled(site));
@@ -249,7 +251,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     @Override
     public List<CoffeeSiteDTO> findAllFromLoggedInUser() {
         return userService.getCurrentLoggedInUser()
-                          .map(user -> findAllFromUser(mapperFacade.map(user, User.class)))
+                          .map(this::findAllFromUser)
                           .orElse(Collections.emptyList());
     }
     
@@ -281,7 +283,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     private CoffeeSiteDTO mapOneToTransfer(CoffeeSite site) {
         CoffeeSiteDTO siteDto = null;
         if (site != null) {
-            siteDto = mapperFacade.map(site, CoffeeSiteDTO.class);
+            siteDto = coffeeSiteMapper.coffeeSiteToCoffeeSiteDTO(site);
             siteDto = evaluateAverageStars(evaluateOperationalAttributes(siteDto));
         }
         return siteDto;
@@ -306,7 +308,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      */
     @Override
     public CoffeeSite save(CoffeeSite coffeeSite) {
-        loggedInUser = userService.getCurrentLoggedInUser();
+        Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
         
         loggedInUser.ifPresent(user -> {
             if (coffeeSite.getId() == 0) { // Zcela novy CoffeeSite
@@ -339,7 +341,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     
     @Override
     public CoffeeSite save(CoffeeSiteDTO cs) {
-        CoffeeSite csToSave = mapperFacade.map(cs, CoffeeSite.class);
+        CoffeeSite csToSave = coffeeSiteMapper.coffeeSiteDtoToCoffeeSite(cs);
         return save(csToSave);
     }
     
@@ -410,14 +412,12 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         CoffeeSite entityFromDB = coffeeSiteRepo.findById(coffeeSite.getId()).orElse(null);
         
         if (entityFromDB != null) {
-            loggedInUser = userService.getCurrentLoggedInUser();
-            
             entityFromDB.setUpdatedOn(new Timestamp(new Date().getTime()));
-            
-            loggedInUser.ifPresent(user -> {
-                user.setUpdatedSites(user.getUpdatedSites() + 1);
-                userService.saveUser(user);
-                entityFromDB.setLastEditUser(user);
+            userService.getCurrentLoggedInUser()
+                       .ifPresent(user -> {
+                            user.setUpdatedSites(user.getUpdatedSites() + 1);
+                            userService.saveUser(user);
+                            entityFromDB.setLastEditUser(user);
             });
             
             entityFromDB.setCena(coffeeSite.getCena());
@@ -714,7 +714,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
 
     @Override
     public CoffeeSiteDTO findByName(String siteName) {
-        CoffeeSiteDTO site = mapperFacade.map(coffeeSiteRepo.searchByName(siteName), CoffeeSiteDTO.class);
+        CoffeeSiteDTO site = coffeeSiteMapper.coffeeSiteToCoffeeSiteDTO(coffeeSiteRepo.searchByName(siteName));
         if (site == null) {
             log.error("Coffee site with name {} not found in DB.",  siteName);
             throw new EntityNotFoundException("Coffee site with name " + siteName + " not found.");
@@ -730,8 +730,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * @return
      */
     private boolean siteUserMatch(CoffeeSiteDTO cs) {
-        if (loggedInUser.isPresent() && cs.getOriginalUserName() != null) {
-            return (loggedInUser.get().getUserName().equals(cs.getOriginalUserName()) || userService.hasADMINorDBARole(loggedInUser.get()));
+        if (loggedInUser != null && cs.getOriginalUserName() != null) {
+            return (loggedInUser.getUserName().equals(cs.getOriginalUserName()) || userService.hasADMINorDBARole(loggedInUser));
         } else {
             return false;
         }
@@ -770,7 +770,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
                  ||
                    (CoffeeSiteRecordStatusEnum.CANCELED.toString().equals(cs.getRecordStatus().getStatus()) // Admin or DBA users can modify from CANCELED to INACTIVE or Inactive to Active
                      &&
-                    loggedInUser.isPresent() && userService.hasADMINorDBARole(loggedInUser.get())
+                    loggedInUser != null && userService.hasADMINorDBARole(loggedInUser)
                    )
                );
     }
@@ -793,7 +793,9 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * Only ADMIN is allowed to Delete site permanently (from every CoffeeSite state)
      */
     private boolean canBeDeleted(CoffeeSiteDTO cs) {
-        return loggedInUser.filter(user -> userService.hasADMINRole(user)).isPresent();
+        return Optional.ofNullable(loggedInUser)
+                       .filter(user -> userService.hasADMINRole(user))
+                       .isPresent();
     }
 
     /**
@@ -801,7 +803,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * Currently, any logged-in user can comment the site.
      */
     private boolean canBeCommented(CoffeeSiteDTO cs) {
-        return (loggedInUser.isPresent());
+        return (loggedInUser != null);
     }
     
     /**
@@ -809,7 +811,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * Currently, any logged-in user can rate the site.
      */
     private boolean canBeRateByStars(CoffeeSiteDTO cs) {
-        return (loggedInUser.isPresent());
+        return (loggedInUser != null);
     }
 
     /**
@@ -827,10 +829,10 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
             if (!CoffeeSiteRecordStatusEnum.CANCELED.toString().equals(cs.getRecordStatus().getStatus())) {
                 // not ACTIVE site and not CANCELED, logged-in user
                 // Logged-in user can see only ACTIVE Sites or only the sites he/she created
-                return loggedInUser.isPresent() && siteUserMatch(cs);
+                return loggedInUser != null && siteUserMatch(cs);
                 
             } else { // is CANCELED, only DBA and ADMIN can see the site 
-                 return (loggedInUser.isPresent()) && userService.hasADMINorDBARole(loggedInUser.get());
+                 return (loggedInUser != null) && userService.hasADMINorDBARole(loggedInUser);
               }
         }     
     }

@@ -745,6 +745,38 @@ COMMENT ON TABLE coffeecompass.user_verification_token
     IS 'Unikatni "token", retezec pro verifikaci e-mailu noveho uzivatele pomoci e-mailu.';
 
 
+-- Table: coffeecompass.refresh_token
+
+-- DROP TABLE IF EXISTS coffeecompass.refresh_token;
+
+CREATE TABLE IF NOT EXISTS coffeecompass.refresh_token
+(
+    id serial NOT NULL,
+    user_id bigint,
+    token character varying(512) COLLATE pg_catalog."default" NOT NULL,
+    expiry_date timestamp without time zone NOT NULL,
+    CONSTRAINT refresh_token_pkey PRIMARY KEY (id),
+	CONSTRAINT fk_user FOREIGN KEY (user_id)
+        REFERENCES coffeecompass."user" (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+WITH (
+    OIDS = FALSE
+);
+
+ALTER TABLE coffeecompass.refresh_token
+    OWNER to postgres;
+COMMENT ON TABLE coffeecompass.refresh_token
+    IS 'Unikatni "token", verifikacni retezec posilany misto standardniho user verif. token, ktery vyprsel.';
+
+GRANT INSERT, DELETE, UPDATE, SELECT ON TABLE coffeecompass.refresh_token TO coffeecompass_dev_user;
+
+GRANT UPDATE, SELECT, DELETE, INSERT ON TABLE coffeecompass.refresh_token TO coffeecompass_prod_user;
+
+GRANT ALL ON TABLE coffeecompass.refresh_token TO postgres;
+
 -- -----------------------------------------------------
 -- Table: coffeecompass.comment
 -- -----------------------------------------------------

@@ -2,7 +2,9 @@ package cz.fungisoft.coffeecompass.serviceimpl.user;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import cz.fungisoft.coffeecompass.mappers.UserMapper;
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,8 +30,7 @@ import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import ma.glasnost.orika.MapperFacade;
- 
+
 /**
  * Implements all operations related to user data manipulation.<br>
  * Saves new users, updates user's profile, retrieves user's data, and so on.
@@ -47,7 +48,8 @@ public class UserServiceImpl implements UserService {
    
     private final PasswordEncoder passwordEncoder;
         
-    private final MapperFacade mapperFacade;
+//    private final MapperFacade mapperFacade;
+    private final UserMapper userMapper;
     
     private final UserProfileRepository userProfileRepository;
     
@@ -114,7 +116,7 @@ public class UserServiceImpl implements UserService {
         UserDTO userDTO = null;
         
         if (user != null) {
-            userDTO = mapperFacade.map(user, UserDTO.class);
+            userDTO = userMapper.usertoUserDTO(user);
             userDTO.setHasADMINRole(hasADMINRole(user));
             userDTO.setToManageItself(isLoggedInUserToManageItself(user));
         }
@@ -280,7 +282,7 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public User updateUser(UserDTO userDTO) {
-        return updateUser(mapperFacade.map(userDTO,  User.class));
+        return updateUser(userMapper.userDTOtoUser(userDTO));
     }
     
     /**
@@ -330,7 +332,7 @@ public class UserServiceImpl implements UserService {
             entity.setUpdatedOn(new Timestamp(new Date().getTime()));
             
             log.info("'REST' User name '{}' updated.", entity.getUserName());
-            return mapperFacade.map(entity, UserDTO.class);
+            return userMapper.usertoUserDTO(entity);
         }
         
         return null;
@@ -510,11 +512,14 @@ public class UserServiceImpl implements UserService {
  
     @Override
     public List<UserDTO> findAllUsers() {
-        List<UserDTO> usersDTO = mapperFacade.mapAsList(usersRepository.findAll(Sort.by(Sort.Direction.fromString("DESC".toUpperCase()), "createdOn")), UserDTO.class);
-        
+        List<User> users = usersRepository.findAll(Sort.by(Sort.Direction.fromString("DESC".toUpperCase()), "createdOn"));
+//        List<UserDTO> usersDTO = mapperFacade.mapAsList(usersRepository.findAll(Sort.by(Sort.Direction.fromString("DESC".toUpperCase()), "createdOn")), UserDTO.class);
+        List<UserDTO> usersDTO = users.stream()
+                                      .map(userMapper::usertoUserDTO)
+                                      .collect(Collectors.toList());
         for (UserDTO userDTO : usersDTO) {
-            userDTO.setHasADMINRole(hasADMINRole(mapperFacade.map(userDTO,  User.class)));
-            userDTO.setToManageItself(isLoggedInUserToManageItself(mapperFacade.map(userDTO,  User.class)));
+            userDTO.setHasADMINRole(hasADMINRole(userMapper.userDTOtoUser(userDTO)));
+            userDTO.setToManageItself(isLoggedInUserToManageItself(userMapper.userDTOtoUser(userDTO)));
         }
         log.info("All users retrieved: {}", usersDTO.size());
         return usersDTO;

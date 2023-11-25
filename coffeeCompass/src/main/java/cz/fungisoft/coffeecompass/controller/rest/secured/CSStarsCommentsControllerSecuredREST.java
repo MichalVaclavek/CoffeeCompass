@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.validation.Valid;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,6 @@ import cz.fungisoft.coffeecompass.exceptions.rest.ResourceNotFoundException;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.service.comment.ICommentService;
-import io.swagger.annotations.Api;
 
 /**
  * REST Controller for handling addition/deletition/update of Comment and Stars for CoffeeSite.<br>
@@ -43,7 +43,7 @@ import io.swagger.annotations.Api;
  * @author Michal Vaclavek
  *
  */
-@Api // Swagger
+@Tag(name = "RatingAndComments", description = "Coffee site's rating and comments")
 @RestController 
 @RequestMapping("/rest/secured/starsAndComments")
 public class CSStarsCommentsControllerSecuredREST {

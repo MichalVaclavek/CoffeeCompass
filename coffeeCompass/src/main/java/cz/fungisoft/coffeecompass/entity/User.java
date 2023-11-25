@@ -60,7 +60,7 @@ public class User implements Serializable {
     @Column(name="last_name")
     private String lastName;
  
-    @Column(name="email", nullable=true)
+    @Column(name="email")
     private String email;
  
     @NotNull
@@ -69,7 +69,7 @@ public class User implements Serializable {
     @JoinTable(name = "user_to_user_profile", schema = "coffeecompass",
                joinColumns = { @JoinColumn(name = "user_id") }, 
                inverseJoinColumns = { @JoinColumn(name = "user_profile_id") })
-    private Set<UserProfile> userProfiles = new HashSet<UserProfile>();
+    private Set<UserProfile> userProfiles = new HashSet<>();
  
     @NotNull
     @Column(name="created_on")
@@ -88,7 +88,7 @@ public class User implements Serializable {
     private Integer deletedSites;
     
     @Column(name = "registration_email_confirmed")
-    private boolean registerEmailConfirmed = false;
+    private boolean registerEmailConfirmed;
     
     @NotNull
     @Enumerated // V DB je cislovano od indexu 0, protoze i enum type se v defaultnim pripade cisluje od 0.

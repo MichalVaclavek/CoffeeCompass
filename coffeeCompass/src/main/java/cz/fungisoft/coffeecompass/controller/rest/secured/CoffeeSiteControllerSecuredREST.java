@@ -1,14 +1,13 @@
 package cz.fungisoft.coffeecompass.controller.rest.secured;
 
-
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.validation.Valid;
 
 import cz.fungisoft.coffeecompass.validators.ListInputSize;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,19 +36,17 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecord
 import cz.fungisoft.coffeecompass.exceptions.rest.BadRESTRequestException;
 import cz.fungisoft.coffeecompass.exceptions.rest.InvalidParameterValueException;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
-import io.swagger.annotations.Api;
 
 /**
  * Třída/kontroler, který lze použit v případě využití REST rozhraní
  * <p>
  * Základní Controller pro obsluhu požadavků, které se týkají práce s hlavním objektem CoffeeSite.<br>
  * Tj. pro základní CRUD operace a pro vyhledávání CoffeeSites.<br>
- * Tato verze je urcena pro REST, pro testovaci/prototypovaci ucely je urcena verze CoffeeSiteController, ktera vyuziva system/framework Thymeleaf
  * <br>
  * @author Michal Václavek
  *
  */
-@Api // Swagger
+@Tag(name = "CoffeeSiteCRUD", description = "Coffee site REST CRUD operations")
 @RestController
 @Validated
 @RequestMapping("/rest/secured/site")
@@ -94,7 +91,8 @@ public class CoffeeSiteControllerSecuredREST  {
     
        CoffeeSite cs = coffeeSiteService.save(coffeeSite);
        
-       HttpHeaders headers = new HttpHeaders();
+       HttpHeaders
+               headers = new HttpHeaders();
        if (cs != null) {
            log.info("New Coffee site created.");
            //TODO - why headers?

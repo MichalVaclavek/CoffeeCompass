@@ -6,22 +6,29 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Primary;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
+import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -47,12 +54,14 @@ import javax.servlet.Filter;
  */
 @Configuration
 @EnableWebSecurity
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration {
 
     /** REST endpoints security config **/
     private static final RequestMatcher PROTECTED_REST_URLS = new OrRequestMatcher(new AntPathRequestMatcher("/rest/secured/**"));
     
-    private static final RequestMatcher PUBLIC_REST_URLS = new OrRequestMatcher(new AntPathRequestMatcher("/rest/public/**"));
+    private static final RequestMatcher PUBLIC_REST_URLS_MATCHERS = new OrRequestMatcher(new AntPathRequestMatcher("/rest/public/**"));
+
+    private static final String PUBLIC_REST_URLS = "/rest/public/**";
     
     
     private final UserSecurityService userSecurityService;
@@ -66,13 +75,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
     
     private final AccessDeniedHandler accessDeniedHandler;
- 
-    /**
-     * Dependency Injection pomoci konstruktoru. Preferovany zpusob ve Spring.
-     *    
-     * @param userDetailsService
-     * @param accessDeniedHandler
-     */
+
+    private final AuthenticationConfiguration authenticationConfiguration;
+
+
     public SecurityConfiguration(@Qualifier("customUserDetailsService")
                                  UserDetailsService userDetailsService,
                                  CustomOAuth2UserService customOAuth2UserService,
@@ -81,7 +87,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                                  @Lazy
                                  OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler,
                                  AccessDeniedHandler accessDeniedHandler,
-                                 UserSecurityService userSecurityService) {
+                                 UserSecurityService userSecurityService,
+                                 AuthenticationConfiguration authenticationConfiguration) {
         super();
         this.userDetailsService = userDetailsService;
         this.customOAuth2UserService = customOAuth2UserService;
@@ -89,24 +96,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.oAuth2AuthenticationFailureHandler = oAuth2AuthenticationFailureHandler;
         this.accessDeniedHandler = accessDeniedHandler;
         this.userSecurityService = userSecurityService;
+        this.authenticationConfiguration = authenticationConfiguration;
     }
 
-    @Autowired
-    public void configureGlobalSecurity(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(authenticationProvider());
-    }
-    
     /**
      * Mobile app config.
      */
-    @Override
-    public void configure(final WebSecurity web) {
-        web.ignoring().requestMatchers(PUBLIC_REST_URLS);
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().antMatchers(PUBLIC_REST_URLS);
     }
-    
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {    
 
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // Swithes off CSRF protection for REST i.e. for URL path with /rest/ at the begining
         http.csrf()
             .requireCsrfProtectionMatcher(new AndRequestMatcher(CsrfFilter.DEFAULT_CSRF_MATCHER, new RegexRequestMatcher("^(?!/rest/)", null)));
@@ -126,6 +128,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/imageUpload", "/deleteImage/**").hasAnyRole("ADMIN", "DBA", "USER")
             .antMatchers("/user/updatePassword**", "/updatePassword**").hasAuthority("CHANGE_PASSWORD_PRIVILEGE")
             .and()
+            .authenticationManager(authenticationConfiguration.getAuthenticationManager())
             .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
             .and()
             .formLogin().loginPage("/login").defaultSuccessUrl("/home", false).permitAll()
@@ -137,6 +140,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.exceptionHandling().defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_REST_URLS)
             .and() 
             .addFilterBefore(restAuthenticationFilter(), AnonymousAuthenticationFilter.class)
+            .authenticationManager(authenticationConfiguration.getAuthenticationManager())
             .authorizeRequests()
             .requestMatchers(PROTECTED_REST_URLS)
             .authenticated();
@@ -157,6 +161,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .and()
             .successHandler(oAuth2AuthenticationSuccessHandler)
             .failureHandler(oAuth2AuthenticationFailureHandler);
+
+        return http.build();
     }
  
     @Bean
@@ -166,7 +172,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
  
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
-        
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
@@ -193,7 +198,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     TokenAuthenticationFilter restAuthenticationFilter() throws Exception {
         final TokenAuthenticationFilter filter = new TokenAuthenticationFilter(PROTECTED_REST_URLS, userSecurityService);
-        filter.setAuthenticationManager(authenticationManager());
+        filter.setAuthenticationManager(authenticationConfiguration.getAuthenticationManager());
         filter.setAuthenticationSuccessHandler(successHandler());
         return filter;
     }

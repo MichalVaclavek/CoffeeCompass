@@ -35,8 +35,8 @@ public class BasicErrorController implements ErrorController {
         return "error";
     }
  
-    @Override
-    public String getErrorPath() {
-        return "/error";
-    }
+//    @Override
+//    public String getErrorPath() {
+//        return "/error";
+//    }
 }

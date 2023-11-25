@@ -11,8 +11,6 @@ import cz.fungisoft.coffeecompass.service.comment.ICommentService;
 import cz.fungisoft.coffeecompass.service.user.UserService;
 import cz.fungisoft.coffeecompass.testutils.JsonUtil;
 
-import ma.glasnost.orika.MapperFacade;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -74,9 +72,6 @@ class CommentsRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
     
     @Autowired
     private ICommentService commentsService;
-    
-    @Autowired
-    public MapperFacade mapperFacade;
     
     private static String deviceID = "4545454545";
     

@@ -5,6 +5,7 @@ package cz.fungisoft.coffeecompass.exceptions;
 
 import java.util.Map;
 
+import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.web.context.request.WebRequest;
 
@@ -25,8 +26,8 @@ public class GeneralErrorAttributes extends DefaultErrorAttributes {
     }
  
     @Override
-    public Map<String, Object> getErrorAttributes(final WebRequest webRequest, final boolean includeStackTrace) {
-        final Map<String, Object> defaultErrorAttributes = super.getErrorAttributes(webRequest, false);
+    public Map<String, Object> getErrorAttributes(final WebRequest webRequest, ErrorAttributeOptions options) {
+        final Map<String, Object> defaultErrorAttributes = super.getErrorAttributes(webRequest, options);
         final CommonRestError restError = CommonRestError.fromDefaultAttributeMap(defaultErrorAttributes);
         return restError.toAttributeMap();
     }

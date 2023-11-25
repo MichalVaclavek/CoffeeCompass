@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import cz.fungisoft.coffeecompass.mappers.CoffeeSiteMapper;
+import cz.fungisoft.coffeecompass.mappers.CoffeeSiteMapperImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,8 +17,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
@@ -48,9 +50,6 @@ import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.user.UserService;
 import cz.fungisoft.coffeecompass.serviceimpl.CoffeeSiteServiceImpl;
 import cz.fungisoft.coffeecompass.testutils.CoffeeSiteBuilder;
-import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
 
 /**
  * Testuje Service vrstvu pro praci s objekty CoffeeSite.
@@ -59,6 +58,9 @@ import ma.glasnost.orika.impl.DefaultMapperFactory;
  *
  */
 @ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {
+        CoffeeSiteMapperImpl.class
+})
 class CoffeeSiteServiceImplTest {
     
     @MockBean
@@ -92,9 +94,8 @@ class CoffeeSiteServiceImplTest {
     private static PasswordResetTokenRepository passwordResetTokenRepository;
     
     @Autowired
-    private MapperFacade mapperFacade;
-    
-    
+    private CoffeeSiteMapper coffeeSiteMapper;
+
     @TestConfiguration
     static class UserSiteServiceImplTestContextConfiguration {
         
@@ -114,21 +115,6 @@ class CoffeeSiteServiceImplTest {
         
         @MockBean
         public static UsersRepository usersRepository;
-        
-        
-        @Bean
-        public MapperFacade getMapperFacade() {
-            MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-            
-            // Only userName is needed for CoffeeSiteDto object
-            mapperFactory.classMap(CoffeeSite.class, CoffeeSiteDTO.class)
-                         .field("originalUser.userName", "originalUserName")
-                         .field("lastEditUser.userName", "lastEditUserName")
-                         .byDefault()
-                         .register();
-            
-            return mapperFactory.getMapperFacade();
-        }
     }
     
     
@@ -191,11 +177,9 @@ class CoffeeSiteServiceImplTest {
      * including User object as an author of the CoffeeSite.
      */
     @BeforeEach
-    public void setUp()
-    {
-        coffeeSiteService = new CoffeeSiteServiceImpl(coffeeSiteRepository, coffeeSortRepository, coffeeSiteStatusRepository, mapperFacade);
+    public void setUp() {
+        coffeeSiteService = new CoffeeSiteServiceImpl(coffeeSiteRepository, coffeeSortRepository, coffeeSiteStatusRepository, coffeeSiteMapper);
 
-        
         // Priprava uzivatele, ktery CoffeeSite zalozil - origUser
         UserProfile userProfUser = new UserProfile();
         userProfUser.setType("USER");

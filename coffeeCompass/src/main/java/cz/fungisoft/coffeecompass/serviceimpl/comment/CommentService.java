@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import cz.fungisoft.coffeecompass.exceptions.UserNotFoundException;
+import cz.fungisoft.coffeecompass.mappers.CommentMapper;
+import cz.fungisoft.coffeecompass.mappers.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +30,6 @@ import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.service.comment.ICommentService;
 import cz.fungisoft.coffeecompass.service.user.UserService;
 import lombok.extern.log4j.Log4j2;
-import ma.glasnost.orika.MapperFacade;
 
 
 /**
@@ -51,8 +53,8 @@ public class CommentService implements ICommentService {
     @Autowired
     private CommentsPageableRepository commentsPageableRepo;
     
-    private final MapperFacade mapperFacade;
-    
+    private final CommentMapper commentMapper;
+
     /**
      * Used to add rating of the CoffeeSite from user to comments of the CoffeeSite from the same User
      */
@@ -60,10 +62,10 @@ public class CommentService implements ICommentService {
 		
 	@Autowired
 	public CommentService(CommentRepository commentsRepo,
-	                      MapperFacade mapperFacade,
+                          CommentMapper commentMapper,
 	                      IStarsForCoffeeSiteAndUserService starsForCoffeeSiteAndUserService) {
 	    this.commentsRepo = commentsRepo;
-	    this.mapperFacade = mapperFacade;
+        this.commentMapper = commentMapper;
 	    this.starsForCoffeeSiteAndUserService = starsForCoffeeSiteAndUserService;
 	}
 	
@@ -103,7 +105,8 @@ public class CommentService implements ICommentService {
     @Override
     public Comment saveTextAsComment(String commentText, CoffeeSite coffeeSite) {
         Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
-        return saveTextAsComment(commentText, mapperFacade.map(loggedInUser.get(), User.class), coffeeSite);
+        return loggedInUser.map(user -> saveTextAsComment(commentText, user, coffeeSite))
+                           .orElseThrow(() -> new UserNotFoundException("Comment not saved, user not logged in."));
     }
     
     /**
@@ -204,8 +207,7 @@ public class CommentService implements ICommentService {
      * @return list of CommentDTO to be sent to client
      */
     private CommentDTO modifyToTransfer(Comment comment) {
-        
-        CommentDTO commentToTransfer = mapperFacade.map(comment, CommentDTO.class);
+        CommentDTO commentToTransfer = commentMapper.commentToCommentDTO(comment);
         
         commentToTransfer.setCanBeDeleted(isDeletable(commentToTransfer));
         commentToTransfer.setStarsFromUser(starsForCoffeeSiteAndUserService.getStarsForCoffeeSiteAndUser(commentToTransfer.getCoffeeSiteID(), commentToTransfer.getUserId()));

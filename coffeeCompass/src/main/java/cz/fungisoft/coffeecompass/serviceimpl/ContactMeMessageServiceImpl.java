@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+import cz.fungisoft.coffeecompass.mappers.ContactMeMessageMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +16,6 @@ import cz.fungisoft.coffeecompass.repository.ContactMeMessageRepository;
 import cz.fungisoft.coffeecompass.service.IContactMeMessageService;
 import cz.fungisoft.coffeecompass.service.email.ISendEmailService;
 import lombok.extern.log4j.Log4j2;
-import ma.glasnost.orika.MapperFacade;
 
 @Service("contactMeMessageService")
 @Transactional
@@ -24,18 +24,18 @@ public class ContactMeMessageServiceImpl implements IContactMeMessageService {
 
     private final ContactMeMessageRepository contactMeMessageRepo;
     
-    private final MapperFacade mapperFacade;
-    
+    private final ContactMeMessageMapper contactMeMessageMapper;
+
     private final ISendEmailService sendMeEmailService;
     
     @Autowired
     private ConfigProperties config;
     
     @Autowired
-    public ContactMeMessageServiceImpl(ContactMeMessageRepository contactMeMessageRepo, MapperFacade mapperFacade, ISendEmailService sendMeEmailService) {
+    public ContactMeMessageServiceImpl(ContactMeMessageRepository contactMeMessageRepo, ContactMeMessageMapper contactMeMessageMapper, ISendEmailService sendMeEmailService) {
         super();
         this.contactMeMessageRepo = contactMeMessageRepo;
-        this.mapperFacade = mapperFacade;
+        this.contactMeMessageMapper = contactMeMessageMapper;
         this.sendMeEmailService = sendMeEmailService;
     }
 
@@ -81,7 +81,7 @@ public class ContactMeMessageServiceImpl implements IContactMeMessageService {
 
     @Override
     public ContactMeMessage saveContactMeMessage(ContactMeMessageDTO message) {
-        ContactMeMessage cmmToSave = mapperFacade.map(message, ContactMeMessage.class);
+        ContactMeMessage cmmToSave = contactMeMessageMapper.contactMeMessageDtoToContactMeMessage(message);
         cmmToSave.setCreatedTime(new Timestamp(new Date().getTime()));
         return saveContactMeMessage(cmmToSave);
     }

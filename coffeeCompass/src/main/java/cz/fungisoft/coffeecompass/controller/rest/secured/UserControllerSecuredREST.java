@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,6 @@ import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.exceptions.rest.ResourceNotFoundException;
 import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.user.UserService;
-import io.swagger.annotations.Api;
 
 /**
  * REST varianta Controlleru, ktery obsluhuje http pozadavky na praci s User objektem.<br>
@@ -40,7 +40,7 @@ import io.swagger.annotations.Api;
  * @author Michal Vaclavek
  *
  */
-@Api // Swagger
+@Tag(name = "UserSecured", description = "Users administration")
 @RequestMapping("/rest/secured/user")
 @RestController
 public class UserControllerSecuredREST {

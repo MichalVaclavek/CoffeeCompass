@@ -1,6 +1,7 @@
 package cz.fungisoft.coffeecompass.controller.rest;
 
 import cz.fungisoft.coffeecompass.exceptions.rest.ResourceNotFoundException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cz.fungisoft.coffeecompass.dto.WeatherDTO;
 import cz.fungisoft.coffeecompass.service.weather.WeatherApiService;
-import io.swagger.annotations.Api;
 
 /**
  * Helper Controller to provide data about current weather on the CoffeeSite's geo coordinates.
@@ -19,7 +19,7 @@ import io.swagger.annotations.Api;
  * @author Michal Vaclavek
  *
  */
-@Api // Anotace Swagger
+@Tag(name = "Coffee site Weather", description = "Get info about current weather on coffee site's location")
 @RestController
 @RequestMapping("/rest/weather") 
 public class WeatherControllerREST {

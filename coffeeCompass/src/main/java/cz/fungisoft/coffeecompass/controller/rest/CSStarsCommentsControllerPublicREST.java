@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.controller.rest;
 import java.util.List;
 import java.util.Optional;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,12 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cz.fungisoft.coffeecompass.dto.CommentDTO;
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
-import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.exceptions.rest.ResourceNotFoundException;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
 import cz.fungisoft.coffeecompass.service.comment.ICommentService;
-import io.swagger.annotations.Api;
+//import io.swagger.annotations.Api;
 
 /**
  * Controller for handling addition/deletition of Comment and Stars for CoffeeSite.<br>
@@ -37,7 +37,7 @@ import io.swagger.annotations.Api;
  * @author Michal Vaclavek
  *
  */
-@Api // Swagger
+@Tag(name = "Stars and comments", description = "Stars rating and comments of the coffee site")
 @RestController 
 @RequestMapping("/rest/public/starsAndComments")
 public class CSStarsCommentsControllerPublicREST {

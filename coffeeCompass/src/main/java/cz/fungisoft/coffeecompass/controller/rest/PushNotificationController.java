@@ -4,7 +4,7 @@ import cz.fungisoft.coffeecompass.controller.models.rest.PushNotificationRespons
 import cz.fungisoft.coffeecompass.controller.models.rest.PushNotificationSubscriptionRequest;
 import cz.fungisoft.coffeecompass.exceptions.rest.InvalidParameterValueException;
 import cz.fungisoft.coffeecompass.service.notifications.NotificationSubscriptionService;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ import java.util.concurrent.ExecutionException;
  *  
  * @author Michal Vaclavek
  */
-@Api // Swagger
+@Tag(name = "PushNotifications", description = "Push notifications about new coffee sites")
 @RestController
 @RequestMapping("/rest/firebase")
 public class PushNotificationController {

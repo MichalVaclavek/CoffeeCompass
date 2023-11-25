@@ -22,7 +22,6 @@ import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
 import cz.fungisoft.coffeecompass.service.user.UserService;
 import lombok.extern.log4j.Log4j2;
-import ma.glasnost.orika.MapperFacade;
 
 /**
  * Implementace prislusneho service interfacu. Vyuziva StarsForCoffeeSiteAndUserRepository
@@ -42,9 +41,6 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     
     @Autowired
     private UserService userService;
-    
-    @Autowired
-    private MapperFacade mapperFacade;
     
     @Autowired
     private CoffeeSiteService coffeeSiteService;
@@ -181,7 +177,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     public void saveStarsForCoffeeSiteAndLoggedInUser(Long coffeeSiteID, Integer stars) {
         coffeeSiteService.findOneById(coffeeSiteID).ifPresent(cs -> {
             Optional<User> logedInUser = userService.getCurrentLoggedInUser();
-            logedInUser.ifPresent(user -> saveStarsForCoffeeSiteAndUser(cs, mapperFacade.map(user, User.class), stars));
+            logedInUser.ifPresent(user -> saveStarsForCoffeeSiteAndUser(cs, user, stars));
         });
     }
     

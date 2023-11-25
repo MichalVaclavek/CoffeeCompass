@@ -3,9 +3,11 @@ package cz.fungisoft.coffeecompass.unittest.user;
 import cz.fungisoft.coffeecompass.controller.models.rest.AuthRESTResponse;
 import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
 import cz.fungisoft.coffeecompass.controller.rest.UsersControllerPublicREST;
+import cz.fungisoft.coffeecompass.entity.RefreshToken;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.listeners.OnRegistrationCompleteEvent;
+import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
 import cz.fungisoft.coffeecompass.service.*;
 import cz.fungisoft.coffeecompass.service.tokens.RefreshTokenService;
 import cz.fungisoft.coffeecompass.service.tokens.TokenCreateAndSendEmailService;
@@ -23,9 +25,11 @@ import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -60,6 +64,35 @@ public class UserRESTPublicControllerTests {
 
     @MockBean
     private static RefreshTokenService refreshTokenService;
+
+//    @TestConfiguration
+//    protected static class UserRESTPublicControllerTestsConfiguration {
+//
+//        @Bean("customUserDetailsService")
+//        public RefreshTokenService refreshTokenService() {
+//            return new RefreshTokenService(userService, ) {
+//                @Override
+//                public Optional<RefreshToken> findByToken(String token) {
+//                    return Optional.empty();
+//                }
+//
+//                @Override
+//                public RefreshToken createRefreshToken(String userName) {
+//                    return null;
+//                }
+//
+//                @Override
+//                public RefreshToken verifyExpiration(RefreshToken token) {
+//                    return null;
+//                }
+//
+//                @Override
+//                public void deleteByUserId(Long userId) {
+//
+//                }
+//            };
+//        }
+//    }
   
     @MockBean //provided by Spring Context
     private static UserService userService;
@@ -96,6 +129,8 @@ public class UserRESTPublicControllerTests {
     private static Set<UserProfile> userProfilesADMIN;
     
     private static String token = "xy";
+    private static String refreshTokenString = "refreshXy";
+    private static RefreshToken refreshToken;
     private static String deviceID = "4545454545";
     
     private User admin = new User();
@@ -140,6 +175,10 @@ public class UserRESTPublicControllerTests {
         
         given(tokenService.verify(Mockito.anyString())).willReturn(tokenMap);
         given(tokenService.expiring(Mockito.anyMap())).willReturn(token);
+        refreshToken = new RefreshToken();
+        refreshToken.setToken(refreshTokenString);
+        refreshToken.setUser(admin);
+        given(refreshTokenService.createRefreshToken(Mockito.anyString())).willReturn(refreshToken);
         
         usersControllerPublicREST = new UsersControllerPublicREST(authenticationService, userService,
                 tokenService, refreshTokenService, eventPublisher, messages);

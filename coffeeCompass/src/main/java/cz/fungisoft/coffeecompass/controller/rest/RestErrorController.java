@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.boot.autoconfigure.web.servlet.error.AbstractErrorController;
+import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,13 +36,8 @@ public class RestErrorController extends AbstractErrorController {
 
     @RequestMapping
     public ResponseEntity<Map<String, Object>> error(HttpServletRequest request) {
-        Map<String, Object> body = this.getErrorAttributes(request, false);
+        Map<String, Object> body = this.getErrorAttributes(request, ErrorAttributeOptions.of(ErrorAttributeOptions.Include.EXCEPTION));
         HttpStatus status = this.getStatus(request);
         return new ResponseEntity<>(body, status);
-    }
- 
-    @Override
-    public String getErrorPath() {
-        return REST_ERROR_PATH;
     }
 }

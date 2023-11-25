@@ -2,6 +2,7 @@ package cz.fungisoft.coffeecompass.controller.rest.secured;
 
 import java.util.Locale;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.exceptions.rest.BadRESTRequestException;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
-import io.swagger.annotations.Api;
 
 /**
 * Controller to handle operations upload or delete CoffeeSite's image file.<br>
@@ -24,7 +23,7 @@ import io.swagger.annotations.Api;
 * @author Michal Vaclavek
 *
 */
-@Api // Swagger
+@Tag(name = "CoffeeSiteImage", description = "Coffee site image REST operations")
 @RestController 
 @RequestMapping("/rest/secured/image")
 public class ImageControllerSecuredREST {
