@@ -1,7 +1,6 @@
 package cz.fungisoft.coffeecompass.serviceimpl;
 
-import java.sql.Timestamp;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import cz.fungisoft.coffeecompass.mappers.ContactMeMessageMapper;
@@ -45,7 +44,7 @@ public class ContactMeMessageServiceImpl implements IContactMeMessageService {
             throw new IllegalArgumentException("Empty message text is not allowed!");
         
         ContactMeMessage cmMessage = new ContactMeMessage();
-        cmMessage.setCreatedTime(new Timestamp(new Date().getTime()));
+        cmMessage.setCreatedTime(LocalDateTime.now());
         cmMessage.setAuthorName(authorName);
         cmMessage.setEmail(email);
         cmMessage.setTextOfMessage(message);
@@ -63,8 +62,8 @@ public class ContactMeMessageServiceImpl implements IContactMeMessageService {
     }
 
     @Override
-    public List<ContactMeMessage> getAllFromDate(Date fromDate) {
-        return contactMeMessageRepo.getAllFromDate(new Timestamp(fromDate.getTime()));
+    public List<ContactMeMessage> getAllFromDate(LocalDateTime fromDate) {
+        return contactMeMessageRepo.getAllFromDate(fromDate);
     }
 
     @Override
@@ -82,7 +81,7 @@ public class ContactMeMessageServiceImpl implements IContactMeMessageService {
     @Override
     public ContactMeMessage saveContactMeMessage(ContactMeMessageDTO message) {
         ContactMeMessage cmmToSave = contactMeMessageMapper.contactMeMessageDtoToContactMeMessage(message);
-        cmmToSave.setCreatedTime(new Timestamp(new Date().getTime()));
+        cmmToSave.setCreatedTime(LocalDateTime.now());
         return saveContactMeMessage(cmmToSave);
     }
 }

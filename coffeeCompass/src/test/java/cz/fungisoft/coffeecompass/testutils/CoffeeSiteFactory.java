@@ -1,7 +1,6 @@
 package cz.fungisoft.coffeecompass.testutils;
 
-import java.sql.Timestamp;
-
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -103,7 +102,7 @@ public class CoffeeSiteFactory
         String emailAddr = "kava@tchibo.de";
         origUser.setEmail(emailAddr);
         origUser.setPassword("kofein");
-        origUser.setCreatedOn(new Timestamp(new Date().getTime()));
+        origUser.setCreatedOn(LocalDateTime.now());
           
         Set<UserProfile> userProfiles = new HashSet<UserProfile>();
         userProfiles.add(userProfUser);
@@ -127,7 +126,7 @@ public class CoffeeSiteFactory
         coffeeS.setTypLokality(nadr);
         
         coffeeS.setRecordStatus(recordStatus);
-        coffeeS.setCreatedOn(new Timestamp(new Date().getTime()));            
+        coffeeS.setCreatedOn(LocalDateTime.now());
         
         coffeeS.setMesto("Praha");
         coffeeS.setUliceCP("Wilssonova");

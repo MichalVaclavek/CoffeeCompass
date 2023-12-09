@@ -3,6 +3,8 @@
  */
 package cz.fungisoft.coffeecompass.serviceimpl.tokens;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 
 import org.springframework.stereotype.Service;
@@ -49,8 +51,7 @@ public class ValidateTokenServiceImpl implements ValidateTokenService {
         }
    
         // Token expired ?
-        Calendar cal = Calendar.getInstance();
-        if ((passToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+        if (passToken.getExpiryDate().isBefore(LocalDateTime.now())) {
             return TOKEN_EXPIRED;
         }
    
@@ -76,8 +77,7 @@ public class ValidateTokenServiceImpl implements ValidateTokenService {
         }
 
         // Token expired ?
-        Calendar cal = Calendar.getInstance();
-        if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+        if (verificationToken.getExpiryDate().isBefore(LocalDateTime.now())) {
             return "expiredToken";
         }
         // token valid

@@ -13,7 +13,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
@@ -71,7 +71,7 @@ class UserRepositoryTests {
         String emailAddr = "paul@dirac.fy";
         newUser.setEmail(emailAddr);
         newUser.setPassword("pozitron");
-        newUser.setCreatedOn(new Timestamp(new Date().getTime()));
+        newUser.setCreatedOn(LocalDateTime.now());
         
         Set<UserProfile> userProfiles = new HashSet<UserProfile>();
         userProfiles.add(userProfUser);

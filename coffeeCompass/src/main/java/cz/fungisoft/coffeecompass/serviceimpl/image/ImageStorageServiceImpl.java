@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
-import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.Image;
 import cz.fungisoft.coffeecompass.exceptions.StorageFileException;
 import cz.fungisoft.coffeecompass.repository.ImageRepository;
@@ -20,7 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
@@ -142,7 +141,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
                 atomicImage.get().setImageBytes(file.getBytes());
                 atomicImage.get().setFile(file);
                 atomicImage.get().setCoffeeSiteID(cs.getId());
-                atomicImage.get().setSavedOn(new Timestamp(new Date().getTime()));
+                atomicImage.get().setSavedOn(LocalDateTime.now());
             } catch (IOException e) {
                 log.warn("Error during creating Image object. File name: {}. CoffeeSite name: {}. Exception: {}", atomicImage.get().getFileName(), cs.getSiteName(), e.getMessage());
             }
@@ -180,7 +179,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
                 image.setImageBytes(file.getBytes());
                 image.setFile(file);
                 image.setCoffeeSiteID(cs.getId());
-                image.setSavedOn(new Timestamp(new Date().getTime()));
+                image.setSavedOn(LocalDateTime.now());
             } catch (IOException e) {
                 log.warn("Error during creating Image object. File name: {}. CoffeeSite name: {}. Exception: {}", image.getFileName(), cs.getSiteName(), e.getMessage());
             }
@@ -209,7 +208,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     @Transactional
     public void saveImageToDB(Image image) {
         try {
-            image.setSavedOn(new Timestamp(new Date().getTime()));
+            image.setSavedOn(LocalDateTime.now());
             imageRepo.save(image);
          } catch (ValidationException ex) {
             log.error("Failed to validate: {}", ex); 
@@ -218,7 +217,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     
     @Override
     public Image getImageById(Integer imageID) {
-        return imageRepo.getOne(imageID);
+        return imageRepo.findById(imageID).get();
     }
    
     @Override

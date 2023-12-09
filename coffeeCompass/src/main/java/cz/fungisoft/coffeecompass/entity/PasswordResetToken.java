@@ -1,11 +1,8 @@
-/**
- * 
- */
 package cz.fungisoft.coffeecompass.entity;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -43,7 +40,7 @@ public class PasswordResetToken {
     private User user;
   
     @Column(name="expiry_date")
-    private Date expiryDate;
+    private LocalDateTime expiryDate;
     
 
     /**
@@ -92,23 +89,20 @@ public class PasswordResetToken {
         this.user = user;
     }
     
-    public Date getExpiryDate() {
+    public LocalDateTime getExpiryDate() {
         return expiryDate;
     }
 
 
-    public void setExpiryDate(Date expiryDate) {
+    public void setExpiryDate(LocalDateTime expiryDate) {
         this.expiryDate = expiryDate;
     }
     
-    private Date calculateExpiryDate(int expiryTimeInMinutes) {
+    private LocalDateTime calculateExpiryDate(int expiryTimeInMinutes) {
         
         if (expiryTimeInMinutes < 1) {
             expiryTimeInMinutes = EXPIRATION_MINUTES;
         }
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Timestamp(cal.getTime().getTime()));
-        cal.add(Calendar.MINUTE, expiryTimeInMinutes);
-        return new Date(cal.getTime().getTime());
+        return LocalDateTime.now().plus(expiryTimeInMinutes, ChronoUnit.MINUTES);
     }
 }

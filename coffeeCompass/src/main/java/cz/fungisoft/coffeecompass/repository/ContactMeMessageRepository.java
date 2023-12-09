@@ -3,7 +3,8 @@
  */
 package cz.fungisoft.coffeecompass.repository;
 
-import java.sql.Timestamp;
+//import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,5 +27,5 @@ public interface ContactMeMessageRepository extends JpaRepository<ContactMeMessa
      * @return
      */
     @Query("select cmm from ContactMeMessage cmm where createdTime > ?1")
-    List<ContactMeMessage> getAllFromDate(Timestamp dateFrom);
+    List<ContactMeMessage> getAllFromDate(LocalDateTime dateFrom);
 }

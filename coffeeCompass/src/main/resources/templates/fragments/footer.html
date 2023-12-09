@@ -1,6 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" 
 	  xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 </head>
 <body>
@@ -12,7 +12,7 @@
             <div sec:authorize="isAuthenticated()">  
                <div  class="w3-left w3-small w3-container">
                   <span th:text="#{app.footer.loggedinuser}" ></span> <span sec:authentication="name">User name</span> |
-                  <span th:text="#{user.created_sites} + ${loggedInUser.createdSites}">Number of sites created by logged-in user</span>
+                  <span th:text="#{user.created_sites} + ${(loggedInUser != null) ? loggedInUser.createdSites : ''}">Number of sites created by logged-in user</span>
    	        </div>
 	        </div>
 		

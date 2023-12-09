@@ -20,18 +20,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -66,7 +67,7 @@ class CommentsRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
     
     @Autowired
     private UsersRepository userRepo; // must be used repository to save User, who created CoffeeSite, immediately
-    
+
     @Autowired
     public CoffeeSiteService coffeeSiteService;
     
@@ -77,8 +78,8 @@ class CommentsRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
     
     private User testUser;
     private SignUpAndLoginRESTDto signUpAndLoginRESTuser;
-    
-    
+
+
     private static final String SITE_1_NAME = "TestSite_1";
     private static final String SITE_2_NAME = "TestSite_2";
     
@@ -104,7 +105,7 @@ class CommentsRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
         testUser.setEmail("john@vonneuman.com");
         testUser.setPassword(passwordEncoder.encode(USER_PASSWORD)); // encoded password
         testUser.setUserProfiles(userProfilesUser);
-        testUser.setCreatedOn(new Timestamp(new Date().getTime()));
+        testUser.setCreatedOn(LocalDateTime.now());
         
         userRepo.saveAndFlush(testUser);
         
@@ -143,8 +144,7 @@ class CommentsRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
      * @throws Exception
      */
     @Test
-    void givenUser_and_CoffeeSites_whenMoreCommentsToBeSavedByREST_thenCommentsAreSavedInDB() throws Exception {    
-        
+    void givenUser_and_CoffeeSites_whenMoreCommentsToBeSavedByREST_thenCommentsAreSavedInDB() throws Exception {
         // Get current numberOf Comments for CoffeeSite1 and CoffeeSite2
         int origNumOfCommentsSite1 = commentsService.getNumberOfCommentsForSiteId(cs1.getId());
         int origNumOfCommentsSite2 = commentsService.getNumberOfCommentsForSiteId(cs2.getId());
@@ -178,6 +178,45 @@ class CommentsRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
         assertEquals(origNumOfCommentsSite1 + 1, commentsService.getNumberOfCommentsForSiteId(cs1.getId()), "Number of comments not as expected for CoffeeSite 1");
         assertEquals(origNumOfCommentsSite2 + 1, commentsService.getNumberOfCommentsForSiteId(cs2.getId()), "Number of comments not as expected for CoffeeSite 2");
     }
-    
- 
+
+    @Test
+    void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
+        // Create and save some normal Users - START -
+        User john = new User();
+        john.setUserName("kozel");
+        john.setEmail("kozel@zahradnik.com");
+        john.setPassword("zahradnik");
+        john.setCreatedOn(LocalDateTime.now());
+//        userService.save(johnDto);
+        userRepo.saveAndFlush(john);
+
+        User mary = new User();
+        mary.setUserName("mary");
+        mary.setEmail("mary@gun.com");
+        mary.setPassword("blood");
+        mary.setCreatedOn(LocalDateTime.now());
+//        userService.save(maryDto);
+        userRepo.saveAndFlush(mary);
+
+        User dick = new User();
+        dick.setUserName("dick");
+        dick.setEmail("dick@feynman.com");
+        dick.setPassword("qed");
+        dick.setCreatedOn(LocalDateTime.now());
+//        userService.save(dickDto);
+        userRepo.saveAndFlush(dick);
+        // Create and save some normal Users - END -
+
+        // When login ADMIN user
+        String accessToken = loginUserAndGetAccessToken(mockMvc, signUpAndLoginRESTuser);
+
+        // Then request all users will be returned
+        mockMvc.perform(get("/rest/secured/user/all")
+                        .header("Authorization", "Bearer " + accessToken)
+                        .accept("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(4)));
+
+    }
+
 }

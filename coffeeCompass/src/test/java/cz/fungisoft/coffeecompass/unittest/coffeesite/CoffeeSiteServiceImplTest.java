@@ -3,7 +3,7 @@ package cz.fungisoft.coffeecompass.unittest.coffeesite;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -191,7 +191,7 @@ class CoffeeSiteServiceImplTest {
         String emailAddr = "kava@tchibo.de";
         origUser.setEmail(emailAddr);
         origUser.setPassword("kofein");
-        origUser.setCreatedOn(new Timestamp(new Date().getTime()));
+        origUser.setCreatedOn(LocalDateTime.now());
           
         Set<UserProfile> userProfiles = new HashSet<UserProfile>();
         userProfiles.add(userProfUser);
@@ -215,7 +215,7 @@ class CoffeeSiteServiceImplTest {
                         .setStatusSitu(siteStatE)
                         .build();
 
-        coffeeS.setCreatedOn(new Timestamp(new Date().getTime()));            
+        coffeeS.setCreatedOn(LocalDateTime.now());
         
         coffeeS.setMesto(mesto);
         coffeeS.setUliceCP(ulice);

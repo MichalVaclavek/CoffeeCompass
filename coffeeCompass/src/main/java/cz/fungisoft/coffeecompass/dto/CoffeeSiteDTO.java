@@ -1,6 +1,6 @@
 package cz.fungisoft.coffeecompass.dto;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import javax.validation.constraints.DecimalMax;
@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteType;
 import cz.fungisoft.coffeecompass.entity.CoffeeSort;
@@ -43,26 +43,30 @@ public class CoffeeSiteDTO {
     }
     
     @JsonFormat(pattern = "dd. MM. yyyy HH:mm", timezone="Europe/Prague")
-    private Date createdOn;
+    private LocalDateTime createdOn;
     
     private Set<CoffeeSort> coffeeSorts;
 
     private String originalUserName;
     private String lastEditUserName;
-    
+
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private CoffeeSiteType typPodniku;
-    
+
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private CoffeeSiteStatus statusZarizeni;
     
     // status zaznamu je potreba prenaset, protoze uzivatele budou moci tento status u "svych" CoffeeSite menit.
     private CoffeeSiteRecordStatusDTO recordStatus;
-    
+
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Company dodavatelPodnik;
     
     private Set<CupType> cupTypes;
     
-    private AverageStarsForSiteDTO averageStarsWithNumOfHodnoceni; 
-    
+    private AverageStarsForSiteDTO averageStarsWithNumOfHodnoceni;
+
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private PriceRange cena;
     
     @NotNull
@@ -130,6 +134,7 @@ public class CoffeeSiteDTO {
     @DecimalMin(value="0")
     private int numOfCoffeeAutomatyVedleSebe = 0;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private SiteLocationType typLokality;
     
     private Set<OtherOffer> otherOffers;

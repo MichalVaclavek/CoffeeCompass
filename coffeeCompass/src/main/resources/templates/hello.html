@@ -3,12 +3,12 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
     <title>Hello Coffee Compass!</title>
-    <div th:replace="fragments/header :: header-css"/>
+    <div th:replace="~{fragments/header :: header-css}"/>
 </head>
 <body>
-	<div th:replace="fragments/header :: header"/>
+    <div th:insert="~{fragments/header :: header}"/>
 	
-    <h1 th:inline="text">Ahoj uživateli [[${#httpServletRequest.remoteUser}]]!</h1>
+        <h1 th:inline="text">Ahoj uživateli [[${#httpServletRequest.remoteUser}]]!</h1>
     
     <div th:replace="fragments/footer :: footer"/>
 </body>

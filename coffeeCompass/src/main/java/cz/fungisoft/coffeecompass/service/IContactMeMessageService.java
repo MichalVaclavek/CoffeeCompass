@@ -1,6 +1,6 @@
 package cz.fungisoft.coffeecompass.service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import cz.fungisoft.coffeecompass.dto.ContactMeMessageDTO;
@@ -19,7 +19,7 @@ public interface IContactMeMessageService {
      * @param fromDate
      * @return
      */
-    List<ContactMeMessage> getAllFromDate(Date fromDate);
+    List<ContactMeMessage> getAllFromDate(LocalDateTime fromDate);
     
     List<ContactMeMessage> getAll();
 }

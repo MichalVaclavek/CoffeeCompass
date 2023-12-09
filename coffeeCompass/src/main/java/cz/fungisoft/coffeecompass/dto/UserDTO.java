@@ -1,6 +1,6 @@
 package cz.fungisoft.coffeecompass.dto;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import javax.validation.constraints.Size;
@@ -61,8 +61,8 @@ public class UserDTO {
     
     private String authProvider;
     
-    @JsonFormat(pattern = "dd.MM. yyyy HH:mm")
-    private Timestamp createdOn;
+    @JsonFormat(pattern = "dd.MM. yyyy HH:mm", timezone="Europe/Prague")
+    private LocalDateTime createdOn;
     
     private Integer createdSites;
     private Integer updatedSites;

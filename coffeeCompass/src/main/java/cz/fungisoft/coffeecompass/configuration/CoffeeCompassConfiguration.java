@@ -15,6 +15,7 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import cz.fungisoft.coffeecompass.exceptions.GeneralErrorAttributes;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 
 /**
  * Místo pro defaultní Configuration Beans Springu.
@@ -80,5 +81,12 @@ public class CoffeeCompassConfiguration implements WebMvcConfigurer {
     public ErrorAttributes errorAttributes() {
         return new GeneralErrorAttributes();
     }
+
+//    @Bean
+//    public SpringTemplateEngine springTemplateEngine() {
+//        SpringTemplateEngine engine = new SpringTemplateEngine();
+//        engine.addDialect(new LayoutDialect());
+//        return engine;
+//    }
     
 }

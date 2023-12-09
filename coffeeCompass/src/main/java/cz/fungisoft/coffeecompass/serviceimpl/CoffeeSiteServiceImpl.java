@@ -1,6 +1,6 @@
 package cz.fungisoft.coffeecompass.serviceimpl;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -317,7 +317,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
                 coffeeSite.setOriginalUser(user);
                 user.setCreatedSites(user.getCreatedSites() + 1);
                 if (coffeeSite.getCreatedOn() == null) {
-                    coffeeSite.setCreatedOn(new Timestamp(new Date().getTime()));
+                    coffeeSite.setCreatedOn(LocalDateTime.now());
                 }
                 userService.saveUser(user);
             }
@@ -412,7 +412,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         CoffeeSite entityFromDB = coffeeSiteRepo.findById(coffeeSite.getId()).orElse(null);
         
         if (entityFromDB != null) {
-            entityFromDB.setUpdatedOn(new Timestamp(new Date().getTime()));
+            entityFromDB.setUpdatedOn(LocalDateTime.now());
             userService.getCurrentLoggedInUser()
                        .ifPresent(user -> {
                             user.setUpdatedSites(user.getUpdatedSites() + 1);

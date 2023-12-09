@@ -2,7 +2,7 @@ package cz.fungisoft.coffeecompass.entity;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -48,7 +48,7 @@ public class Image implements Serializable {
 	private Long coffeeSiteID = 0L;
 	
 	@Column(name = "saved_on", nullable = false)
-	private Timestamp savedOn;
+	private LocalDateTime savedOn;
 		
 	@NotEmpty
 	@Column(name="file_name", nullable=false)

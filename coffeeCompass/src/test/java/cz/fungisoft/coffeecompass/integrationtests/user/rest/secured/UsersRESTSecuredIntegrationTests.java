@@ -7,6 +7,8 @@ import cz.fungisoft.coffeecompass.integrationtests.IntegrationTestBaseConfig;
 import cz.fungisoft.coffeecompass.mappers.CoffeeSiteMapperImpl;
 import cz.fungisoft.coffeecompass.mappers.UserMapper;
 import cz.fungisoft.coffeecompass.mappers.UserMapperImpl;
+import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
+import cz.fungisoft.coffeecompass.repository.UsersRepository;
 import cz.fungisoft.coffeecompass.service.user.UserService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -20,8 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.sql.Timestamp;
-import java.util.*;
+import java.time.LocalDateTime;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -58,14 +59,17 @@ class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
     private MockMvc mockMvc;
     
     @Autowired
-    public UserService userService;
-    
+    private UserService userService;
+
+//    @Autowired
+//    private UsersRepository userRepo; // must be used repository to save User, who created CoffeeSite, immediately
+
     @Autowired
     public UserMapper userMapper;
     
     private static String deviceID = "4545454545";
     
-    private User admin = new User();
+    private User admin;
     private SignUpAndLoginRESTDto signUpAndLoginRESTDtoAdmin;
     
 
@@ -80,15 +84,18 @@ class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
         super.setUp();
         
         // ADMIN user profile returned, when requesting UserDetails
+        admin = new User();
         admin.setUserName("admin");
         admin.setPassword("adminpassword");
         admin.setEmail("admin@boss.com");
         admin.setId(1L);
-        admin.setCreatedOn(new Timestamp(new Date().getTime()));
+        admin.setCreatedOn(LocalDateTime.now());
         admin.setUserProfiles(userProfilesADMIN);
         
         UserDTO adminDto = userMapper.usertoUserDTO(admin);
         userService.save(adminDto);
+
+//        userRepo.saveAndFlush(admin);
        
         // Testovaci objekt slouzici pro zaregistrovani noveho User uctu
         signUpAndLoginRESTDtoAdmin = new SignUpAndLoginRESTDto();
@@ -105,29 +112,35 @@ class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
      * @throws Exception
      */
     @Test
-    void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {    
-        
+    void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
+
         // Create and save some normal Users - START -
         User john = new User();
         john.setUserName("john");
         john.setEmail("john@vonneuman.com");
         john.setPassword("computer");
+        john.setCreatedOn(LocalDateTime.now());
         UserDTO johnDto = userMapper.usertoUserDTO(john);
         userService.save(johnDto);
+//        userRepo.saveAndFlush(john);
         
         User mary = new User();
         mary.setUserName("mary");
         mary.setEmail("mary@gun.com");
         mary.setPassword("blood");
+        mary.setCreatedOn(LocalDateTime.now());
         UserDTO maryDto = userMapper.usertoUserDTO(mary);
         userService.save(maryDto);
+//        userRepo.saveAndFlush(mary);
         
         User dick = new User();        
         dick.setUserName("dick");
         dick.setEmail("dick@feynman.com");
         dick.setPassword("qed");
+        dick.setCreatedOn(LocalDateTime.now());
         UserDTO dickDto = userMapper.usertoUserDTO(dick);
         userService.save(dickDto);
+//        userRepo.saveAndFlush(dick);
         // Create and save some normal Users - END -
         
         // When login ADMIN user

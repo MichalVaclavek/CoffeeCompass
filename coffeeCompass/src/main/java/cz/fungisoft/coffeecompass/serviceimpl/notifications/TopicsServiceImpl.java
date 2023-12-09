@@ -1,9 +1,6 @@
 package cz.fungisoft.coffeecompass.serviceimpl.notifications;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -102,15 +99,10 @@ public class TopicsServiceImpl implements TopicsForPushNotificationsService {
      * Returns all Tokens subscribed for the mainTopic, subTopic combination
      */
     @Override
-    public List<DeviceFirebaseToken> getTokensSubscribed(int topicId) {
-        List<DeviceFirebaseToken> result = new ArrayList<>();
-        try {
-            FirebaseTopic topic = firebaseTopicRepository.getOne(topicId);
-            result = new ArrayList<>(topic.getTokens());
-        } catch (Exception ex) {
-            log.error("DeviceFirebaseToken not found in DB for id {}", topicId);
-        }
-        return result;
+    public Set<DeviceFirebaseToken> getTokensSubscribed(int topicId) {
+        return firebaseTopicRepository.findById(topicId)
+                                      .map(FirebaseTopic::getTokens)
+                                      .orElse(Collections.emptySet());
     }
     
     /* ****** Retrieving User's tokens Topics ************* */
@@ -118,7 +110,7 @@ public class TopicsServiceImpl implements TopicsForPushNotificationsService {
     @Override
     public List<FirebaseTopic> getTopicsForUser(User user) {
         List<DeviceFirebaseToken> userTokens = firebaseDeviceTokenRepository.getAllTokensForUser(user.getId());
-        return userTokens.stream().flatMap(token -> token.getTopics().stream()).collect(Collectors.toList());
+        return userTokens.stream().flatMap(token -> token.getTopics().stream()).toList();
     }
     
     @Override
@@ -127,7 +119,7 @@ public class TopicsServiceImpl implements TopicsForPushNotificationsService {
         return userTokens.stream()
                          .flatMap(token -> token.getTopics().stream())
                          .map(firebaseTopic -> firebaseTopic.getMainTopic() + "_" + firebaseTopic.getSubTopic())
-                         .collect(Collectors.toList());
+                         .toList();
     }
     
     @Override
@@ -136,7 +128,7 @@ public class TopicsServiceImpl implements TopicsForPushNotificationsService {
         return userTokens.stream()
                          .flatMap(token -> token.getTopics().stream())
                          .map(FirebaseTopic::getId)
-                         .collect(Collectors.toList());
+                         .toList();
     }
 
     /* ****** Retrieving One Token Topics ************* */
@@ -156,7 +148,7 @@ public class TopicsServiceImpl implements TopicsForPushNotificationsService {
                                      .ifPresent(token -> result.addAll(token.getTopics()
                                                                             .stream()
                                                                             .map(firebaseTopic -> firebaseTopic.getMainTopic() + "_" + firebaseTopic.getSubTopic())
-                                                                            .collect(Collectors.toList())
+                                                                            .toList()
                                                                       )
                                      );
        return result;

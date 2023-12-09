@@ -3,7 +3,7 @@
 
 <head>
     <title th:text="#{label.emailerror.title}">bad user</title>
-    <div th:replace="fragments/header :: header-css"/>
+    <div th:replace="~{fragments/header :: header-css}"/>
 </head>
 
 	<body>
@@ -14,8 +14,8 @@
 		  signup</a>
 		  -->
 		  
-		<!-- Menu header -->
-		<div th:replace="fragments/header :: header"/>
+	<!-- Menu header -->
+	<div th:insert="~{fragments/header :: header}"/>
 		  
 		  <!-- Error with e-mail when sending token -->
 		  <div th:if="${emailError}"

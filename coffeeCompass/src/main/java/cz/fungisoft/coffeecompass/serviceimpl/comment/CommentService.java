@@ -4,6 +4,7 @@
 package cz.fungisoft.coffeecompass.serviceimpl.comment;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -90,7 +91,7 @@ public class CommentService implements ICommentService {
         }
         
         Comment comment = new Comment();
-        comment.setCreated(new Timestamp(new Date().getTime()));
+        comment.setCreated(LocalDateTime.now());
         comment.setText(commentText);
         comment.setUser(user);
         comment.setCoffeeSite(coffeeSite);
@@ -133,7 +134,7 @@ public class CommentService implements ICommentService {
                 if (comment.get().getUser().getId() == updatedComment.getUserId()
                         && comment.get().getCoffeeSite().getId() == updatedComment.getCoffeeSiteID()) {
                     comment.get().setText(updatedComment.getText());
-                    comment.get().setCreated(new Timestamp(new Date().getTime()));
+                    comment.get().setCreated(LocalDateTime.now());
                     log.info("Comment id {} updated from User id {} for CoffeeSite id {}", updatedComment.getId(),  updatedComment.getUserId(), updatedComment.getCoffeeSiteID());
                     return commentsRepo.save(comment.get());
                 }

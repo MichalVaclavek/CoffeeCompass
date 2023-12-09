@@ -30,7 +30,7 @@ import static org.mockito.Mockito.*;
  *
  */
 @ExtendWith(SpringExtension.class)
-public class UserRESTSecuredControllerTests {
+class UserRESTSecuredControllerTests {
 
     @MockBean //provided by Spring Context
     private UserService userService;
@@ -55,7 +55,7 @@ public class UserRESTSecuredControllerTests {
      * @throws Exception
      */
     @Test
-    public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
+    void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
         
         UserDTO john = new UserDTO();
         john.setUserName("john");

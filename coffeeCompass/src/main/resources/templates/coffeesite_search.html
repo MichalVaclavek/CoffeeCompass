@@ -10,8 +10,8 @@
 		
 		  gtag('config', 'UA-130556148-1');
 	  </script>
-      
-      <div th:replace="fragments/header :: header-css"/>
+
+	<div th:replace="~{fragments/header :: header-css}"/>
       
 	  <script type="text/javascript" src="https://api.mapy.cz/loader.js"></script>
 	  <script type="text/javascript">Loader.load()</script> <!-- loads mapy.cz API	 -->
@@ -19,7 +19,7 @@
 </head>
 
 <body>
-	<div th:replace="fragments/header :: header"/>
+<div th:insert="~{fragments/header :: header}"/>
 	
 	
 	<div class="w3-light-grey w3-margin-bottom w3-center">

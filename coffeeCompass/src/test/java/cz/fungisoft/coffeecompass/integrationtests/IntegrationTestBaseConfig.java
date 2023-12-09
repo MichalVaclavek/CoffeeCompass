@@ -4,12 +4,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JacksonJsonParser;
@@ -84,7 +85,7 @@ import cz.fungisoft.coffeecompass.testutils.JsonUtil;
 public class IntegrationTestBaseConfig {
 
     @Autowired
-    private UserProfileRepository userProfileRepo;
+    protected UserProfileRepository userProfileRepo;
     
     // USER profile
     private UserProfile userProfUser;
@@ -153,14 +154,14 @@ public class IntegrationTestBaseConfig {
     @BeforeEach
     public void setUp() {
         
-        userProfUser = this.userProfileRepo.searchByType("USER");
-        userProfADMIN = this.userProfileRepo.searchByType("ADMIN");
-        userProfDBA = this.userProfileRepo.searchByType("DBA");
+        userProfUser = userProfileRepo.searchByType("USER");
+        userProfADMIN = userProfileRepo.searchByType("ADMIN");
+        userProfDBA = userProfileRepo.searchByType("DBA");
         
-        ACTIVE = this.csRecordStatusRepo.searchByName("ACTIVE");
-        INACTIVE = this.csRecordStatusRepo.searchByName("INACTIVE");
-        CANCELED = this.csRecordStatusRepo.searchByName("CANCELED");
-        CREATED = this.csRecordStatusRepo.searchByName("CREATED");
+        ACTIVE = csRecordStatusRepo.searchByName("ACTIVE");
+        INACTIVE = csRecordStatusRepo.searchByName("INACTIVE");
+        CANCELED = csRecordStatusRepo.searchByName("CANCELED");
+        CREATED = csRecordStatusRepo.searchByName("CREATED");
         
         userProfilesUser.add(userProfUser);
         userProfilesADMIN.add(userProfADMIN);
@@ -168,6 +169,11 @@ public class IntegrationTestBaseConfig {
         
         comp.setNameOfCompany("Kávička s.r.o");
         companyRepo.save(comp);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        companyRepo.deleteAll();
     }
     
     /**
@@ -234,7 +240,7 @@ public class IntegrationTestBaseConfig {
         coffeeS.setTypLokality(nadr);
         
         coffeeS.setRecordStatus(recordStatus);
-        coffeeS.setCreatedOn(new Timestamp(new Date().getTime()));            
+        coffeeS.setCreatedOn(LocalDateTime.now());
         
         coffeeS.setMesto("Tišnov");
         coffeeS.setUliceCP("Nádražní");

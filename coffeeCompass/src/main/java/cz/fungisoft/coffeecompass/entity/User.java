@@ -1,7 +1,7 @@
 package cz.fungisoft.coffeecompass.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -73,10 +73,10 @@ public class User implements Serializable {
  
     @NotNull
     @Column(name="created_on")
-    private Timestamp createdOn;
+    private LocalDateTime createdOn;
        
     @Column(name="updated_on")
-    private Timestamp updatedOn;
+    private LocalDateTime updatedOn;
        
     @Column(name="created_sites")
     private Integer createdSites;
@@ -199,19 +199,19 @@ public class User implements Serializable {
                 + ", email=" + email + "]";
     }
     
-    public Timestamp getCreatedOn() {
+    public LocalDateTime getCreatedOn() {
         return createdOn;
     }
 
-    public void setCreatedOn(Timestamp createdOn) {
+    public void setCreatedOn(LocalDateTime createdOn) {
         this.createdOn = createdOn;
     }
   
-    public Timestamp getUpdatedOn() {
+    public LocalDateTime getUpdatedOn() {
         return updatedOn;
     }
 
-    public void setUpdatedOn(Timestamp updatedOn) {
+    public void setUpdatedOn(LocalDateTime updatedOn) {
         this.updatedOn = updatedOn;
     }
     

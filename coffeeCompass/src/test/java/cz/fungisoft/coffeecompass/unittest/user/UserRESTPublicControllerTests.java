@@ -37,7 +37,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.google.common.collect.ImmutableMap;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -54,7 +54,7 @@ import static org.mockito.Mockito.*;
  *
  */
 @ExtendWith(SpringExtension.class)
-public class UserRESTPublicControllerTests {
+class UserRESTPublicControllerTests {
 
     @MockBean
     private CustomRESTUserAuthenticationService authenticationService;
@@ -161,7 +161,7 @@ public class UserRESTPublicControllerTests {
         admin.setPassword("adminpassword");
         admin.setEmail("admin@boss.com");
         admin.setId(1L);
-        admin.setCreatedOn(new Timestamp(new Date().getTime()));
+        admin.setCreatedOn(LocalDateTime.now());
         admin.setUserProfiles(userProfilesADMIN);
        
         // Testovaci objekt slouzici pro zaregistrovani noveho User uctu typu ADMIN
@@ -190,7 +190,7 @@ public class UserRESTPublicControllerTests {
      * @throws Exception
      */
     @Test
-    public void whenPostUser_thenCreateUser() throws Exception {
+    void whenPostUser_thenCreateUser() throws Exception {
         
         // given
         User john = new User();
@@ -199,7 +199,7 @@ public class UserRESTPublicControllerTests {
         john.setEmail("john@vonneuman4.com");
         john.setId(1L);
         
-        john.setCreatedOn(new Timestamp(new Date().getTime()));
+        john.setCreatedOn(LocalDateTime.now());
         john.setUserProfiles(userProfiles);
 
         // Testovaci objekt slouzici pro zaregistrovani noveho User uctu

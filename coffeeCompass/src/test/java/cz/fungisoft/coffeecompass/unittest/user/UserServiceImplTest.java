@@ -116,7 +116,7 @@ public class UserServiceImplTest {
     }
     
     @Test
-    public void whenValidName_thenUserShouldBeFound() {
+    void whenValidName_thenUserShouldBeFound() {
 
         String passwd = "gravity";
         Optional<User> found = userService.findByUserName(userName);

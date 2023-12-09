@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -102,13 +102,13 @@ public class CoffeeSite {
 
     @NotNull
     @Column(name="created_on", nullable = false)
-    private Timestamp createdOn;
+    private LocalDateTime createdOn;
     
     @Column(name="updated_on")
-    private Timestamp updatedOn;
+    private LocalDateTime updatedOn;
     
     @Column(name="canceled_on")
-    private Timestamp canceledOn;
+    private LocalDateTime canceledOn;
     
     @Column(name = "poloha_gps_delka")
     private double zemDelka;

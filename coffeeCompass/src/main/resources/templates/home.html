@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
 	<!-- Global site tag (gtag.js) - Google Analytics -->
@@ -14,12 +15,12 @@
 	
     <title>Coffee Compass</title>
     
-    <div th:replace="fragments/header :: header-css"/>
+    <div th:replace="~{fragments/header :: header-css}"/>
 </head>
 
 <body>
 
-	 <div th:replace="fragments/header :: header"/>
+<div th:insert="~{fragments/header :: header}"/>
 	
      <div class="w3-light-grey w3-margin-bottom w3-center">
          <h2>Coffee compass</h2>
@@ -131,7 +132,7 @@
 			
 			<div class="w3-row-padding">
 			
-				<div class="w3-third" th:classappend="${#authorization.expression('isAuthenticated()')} ? 'w3-half'">
+				<div class="w3-third" th:classappend="${(authorization != null) AND authorization.expression('isAuthenticated()')} ? 'w3-half'">
 					<div class="w3-container w3-padding-16 w3-sand w3-card-2 w3-round">
 					
 						<div class="w3-center" >
@@ -143,7 +144,7 @@
 		        	</div>	
 	        	</div>
 	        	
-	        	<div class="w3-third" th:classappend="${#authorization.expression('isAuthenticated()')} ? 'w3-half'">
+	        	<div class="w3-third" th:classappend="${(authorization != null) AND authorization.expression('isAuthenticated()')} ? 'w3-half'">
 					<div class="w3-container w3-padding-16 w3-sand w3-card-2 w3-round">
 		        	
 		        		<div class="w3-center">
@@ -155,7 +156,7 @@
 		        	</div>
 	        	</div>
 	        	
-	        	<div sec:authorize="NOT isAuthenticated()" class="w3-third">
+	        	<div class="w3-third" sec:authorize="NOT isAuthenticated()">
 					<div class="w3-container w3-padding-16 w3-sand w3-card-2 w3-round">
 	
 		        		<div class="w3-center" >

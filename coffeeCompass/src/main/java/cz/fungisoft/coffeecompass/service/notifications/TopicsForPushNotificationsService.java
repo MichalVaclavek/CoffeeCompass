@@ -2,6 +2,7 @@ package cz.fungisoft.coffeecompass.service.notifications;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import cz.fungisoft.coffeecompass.entity.DeviceFirebaseToken;
 import cz.fungisoft.coffeecompass.entity.FirebaseTopic;
@@ -23,7 +24,7 @@ public interface TopicsForPushNotificationsService {
     
     List<DeviceFirebaseToken> getTokensSubscribed(String mainTopic, String subTopic);
     
-    List<DeviceFirebaseToken> getTokensSubscribed(int topicId);
+    Set<DeviceFirebaseToken> getTokensSubscribed(int topicId);
     
     /**
      * Retrieval of the FirebaseTopics assigned to all tokens of one user

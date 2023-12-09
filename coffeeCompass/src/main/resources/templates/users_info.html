@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-      <div th:replace="fragments/header :: header-css"/>
+      <div th:replace="~{fragments/header :: header-css}"/>
 </head>
 
 <body>
 
-	<div th:replace="fragments/header :: header"/>
+<div th:insert="~{fragments/header :: header}"/>
 	
 	<div class="w3-light-grey w3-margin-bottom w3-center">
        <h2 th:text="#{app.user-details}" class="w3-margin">Details</h2>
@@ -39,7 +41,7 @@
 		  <td th:text="${user.userProfiles}">Profiles</td>
 		  <td th:text="${user.enabled}">Profiles</td>
 		  <td th:text="${user.banned}">Profiles</td>
-		  <td th:text="${#dates.format(user.createdOn, 'dd. MM. yyyy , HH:mm')}"></td> 
+		  <td th:text="${#temporals.format(user.createdOn, 'dd. MM. yyyy , HH:mm')}"></td>
 		  <td th:text="${user.createdSites}">NumOfCreatedSites</td>		
 		  
 		  <td sec:authorize="hasRole('ROLE_ADMIN')">

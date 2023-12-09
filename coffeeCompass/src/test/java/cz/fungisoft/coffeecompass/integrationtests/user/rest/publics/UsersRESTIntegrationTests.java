@@ -18,7 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -64,7 +64,7 @@ class UsersRESTIntegrationTests extends IntegrationTestBaseConfig {
         admin.setPassword("adminpassword");
         admin.setEmail("admin@boss.com");
         admin.setId(1L);
-        admin.setCreatedOn(new Timestamp(new Date().getTime()));
+        admin.setCreatedOn(LocalDateTime.now());
         admin.setUserProfiles(userProfilesADMIN);
        
         // Testovaci objekt slouzici pro zaregistrovani noveho User uctu
@@ -90,7 +90,7 @@ class UsersRESTIntegrationTests extends IntegrationTestBaseConfig {
         john.setEmail("john@vonneuman4.com");
         john.setId(1L);
         
-        john.setCreatedOn(new Timestamp(new Date().getTime()));
+        john.setCreatedOn(LocalDateTime.now());
         john.setUserProfiles(userProfilesUser);
 
         // Testovaci objekt slouzici pro zaregistrovani noveho User uctu
@@ -108,7 +108,6 @@ class UsersRESTIntegrationTests extends IntegrationTestBaseConfig {
                .andExpect(jsonPath("$.accessToken", Matchers.isA(String.class)))
                .andExpect(jsonPath("$.accessToken").isNotEmpty())
                .andExpect(jsonPath("$.refreshToken", Matchers.isA(String.class)))
-
-                .andExpect(jsonPath("$.refreshToken").isNotEmpty());
+               .andExpect(jsonPath("$.refreshToken").isNotEmpty());
     }
 }

@@ -35,9 +35,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.google.common.collect.ImmutableMap;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -105,9 +104,7 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
     private static final User admin = new User();
     private SignUpAndLoginRESTDto signUpAndLoginRESTDtoAdmin;
 
-//    private static Locale csLocale = new Locale("cs");
-    
-    
+
     @BeforeAll
     public static void setUpClass() {
         
@@ -130,7 +127,7 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
         admin.setPassword("adminpassword");
         admin.setEmail("admin@boss.com");
         admin.setId(1L);
-        admin.setCreatedOn(new Timestamp(new Date().getTime()));
+        admin.setCreatedOn(LocalDateTime.now());
         admin.setUserProfiles(userProfilesADMIN);
     }
     
@@ -167,7 +164,7 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
         john.setEmail("john@vonneuman.com");
         john.setId(1L);
         
-        john.setCreatedOn(new Timestamp(new Date().getTime()));
+        john.setCreatedOn(LocalDateTime.now());
         john.setUserProfiles(userProfiles);
 
         // Testovaci objekt slouzici pro zaregistrovani noveho User uctu

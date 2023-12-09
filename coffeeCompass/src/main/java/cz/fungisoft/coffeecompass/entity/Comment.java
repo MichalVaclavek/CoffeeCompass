@@ -1,6 +1,7 @@
 package cz.fungisoft.coffeecompass.entity;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -42,9 +43,8 @@ public class Comment implements Serializable {
 	private String text;
 	
     @NotNull
-    @Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created", nullable = false)
-	private Date created;
+	private LocalDateTime created;
 	
     @NotNull
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)

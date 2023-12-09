@@ -46,7 +46,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -336,7 +336,7 @@ public class CoffeeSiteController {
         
         cs = coffeeSite; // novou instanci CoffeeSite vytvori Spring ? v konstruktoru
         cs.setId(0L); // je potreba zadat ID=0, aby se v Thymeleaf formulari dalo rozlisit, ze jde o novy CoffeeSite a zobrazit spravny Label text aj.
-        cs.setCreatedOn(new Timestamp(new Date().getTime()));
+        cs.setCreatedOn(LocalDateTime.now());
 
         ModelAndView mav = new ModelAndView();
         

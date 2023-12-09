@@ -1,6 +1,6 @@
 package cz.fungisoft.coffeecompass.serviceimpl.user;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -48,7 +48,6 @@ public class UserServiceImpl implements UserService {
    
     private final PasswordEncoder passwordEncoder;
         
-//    private final MapperFacade mapperFacade;
     private final UserMapper userMapper;
     
     private final UserProfileRepository userProfileRepository;
@@ -175,7 +174,7 @@ public class UserServiceImpl implements UserService {
         user.setUserProfiles(userProfiles);
         
         user.setEnabled(true);
-        user.setCreatedOn(new Timestamp(new Date().getTime()));
+        user.setCreatedOn(LocalDateTime.now());
         
         log.info("Saving new REST user name: {}", user.getUserName());
         User newUser = usersRepository.save(user);
@@ -273,7 +272,7 @@ public class UserServiceImpl implements UserService {
             // User name must be updated (saved) after Spring authentication object update, otherwise isLoggedInUserToManageItself(entity) resolves that 
             // another user (ADMIN) is updating this 'user' as user name was already updated in DB.
             entity.setUserName(newUserName);
-            entity.setUpdatedOn(new Timestamp(new Date().getTime()));
+            entity.setUpdatedOn(LocalDateTime.now());
         }
         
         log.info("User name '{}' updated.", entity.getUserName());
@@ -329,7 +328,7 @@ public class UserServiceImpl implements UserService {
             // User name must be updated (saved) after Spring authentication object update, otherwise isLoggedInUserToManageItself(entity) resolves that 
             // another user (ADMIN) is updating this 'user' as user name was already updated in DB.
             entity.setUserName(newUserName);
-            entity.setUpdatedOn(new Timestamp(new Date().getTime()));
+            entity.setUpdatedOn(LocalDateTime.now());
             
             log.info("'REST' User name '{}' updated.", entity.getUserName());
             return userMapper.usertoUserDTO(entity);
@@ -356,13 +355,13 @@ public class UserServiceImpl implements UserService {
         user.setCreatedSites(0);
         user.setDeletedSites(0);    
         
-        Set<UserProfile> userProfiles = new HashSet<UserProfile>();
+        Set<UserProfile> userProfiles = new HashSet<>();
         // Only basic USER role can be assigned to commom new user 
         userProfiles.add(userProfileRepository.searchByType("USER"));
         user.setUserProfiles(userProfiles);
         
         user.setEnabled(true);
-        user.setCreatedOn(new Timestamp(new Date().getTime()));
+        user.setCreatedOn(LocalDateTime.now());
         
         log.info("Saving new user name {}", user.getUserName());
         return usersRepository.save(user);
@@ -398,7 +397,7 @@ public class UserServiceImpl implements UserService {
             userProfiles.add(userProfileRepository.searchByType(config.getRoleToAddWhenUsersEmailIsConfirmed()));
         } 
         user.setUserProfiles(userProfiles);
-        user.setCreatedOn(new Timestamp(new Date().getTime()));
+        user.setCreatedOn(LocalDateTime.now());
         
         log.info("Saving new OAuth2 user name {}", user.getUserName());
         return usersRepository.save(user);
@@ -426,7 +425,7 @@ public class UserServiceImpl implements UserService {
             }
         }
         
-        existingUser.setUpdatedOn(new Timestamp(new Date().getTime()));
+        existingUser.setUpdatedOn(LocalDateTime.now());
         
         log.info("Updating OAuth2 user name {}", existingUser.getUserName());
         return usersRepository.save(existingUser);
@@ -499,7 +498,7 @@ public class UserServiceImpl implements UserService {
             userToClear.setRegisterEmailConfirmed(false);
             userToClear.setEmail("");
             
-            userToClear.setUpdatedOn(new Timestamp(new Date().getTime()));
+            userToClear.setUpdatedOn(LocalDateTime.now());
             
             userToClear.setBanned(true);
             userToClear.setEnabled(false);

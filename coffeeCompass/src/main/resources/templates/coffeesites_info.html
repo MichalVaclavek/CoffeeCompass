@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 	
      <!-- <title th:text="#{app.title}"> Title </title> -->
-     <div th:replace="fragments/header :: header-css"/>
+     <div th:replace="~{fragments/header :: header-css}"/>
 
 </head>
 
 <body>
-	
-	<div th:replace="fragments/header :: header"/>
+
+<div th:insert="~{fragments/header :: header}"/>>
 	
 	<div class="w3-light-grey w3-margin-bottom w3-center">	
    		<h2 th:text="#{app.sites-list}" class="w3-center">Details</h2>
@@ -61,7 +63,7 @@
 	
 				  <td th:text="${site.siteName}">SiteName</td>
 				  <td th:text="${site.statusZarizeni.status}">SiteStatus</td>
-				  <td th:text="${#dates.format(site.createdOn, 'dd. MM. yyyy , HH:mm')}"></td>
+				  <td th:text="${#temporals.format(site.createdOn, 'dd. MM. yyyy , HH:mm')}"></td>
 				   
 				  <td th:text="!${site.typPodniku == null} ? ${site.typPodniku.coffeeSiteType} : ''">TypPodniku</td>
 				  <td><span th:each="offer, iterStat : ${site.otherOffers}" th:text="!${iterStat.last} ? ${offer}+', ' : ${offer}">Other Offer</span></td>
@@ -76,7 +78,7 @@
 				  <td sec:authorize="isAuthenticated()" th:text="${site.recordStatus.status}">Record status</td>			  
 		
 		          <!-- Form to generate GET http request with Modify button -->
-		          <!-- Available only for logged-in user who created the site or for DBA or ADMIN user -->
+		          <!-- Available only for logged-in user who created the site or for ROLE_DBA or ROLE_ADMIN user -->
 		          <td  th:if="${site.canBeModified}">
 		            <form action="#" th:action="@{'/modifySite/' + ${site.id}}" th:method="GET" >
 		              <input type="hidden" name="_method" value="get" />
@@ -85,7 +87,7 @@
 		          </td>
 		          
 		          <!-- Form to generate GET http request with Delete button -->
-		          <!-- Available only for logged-in user who created the site or for DBA or ADMIN user -->
+		          <!-- Available only for logged-in user who created the site or for ROLE_DBA or ROLE_ADMIN user -->
 		          <td  th:if="${site.canBeDeleted}">
 		            <form action="#" th:action="@{'/finalDeleteSite/' + ${site.id}}" th:method="DELETE" >
 		              <input type="hidden" name="_method" value="delete" />

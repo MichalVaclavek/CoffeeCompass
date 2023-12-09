@@ -4,7 +4,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -157,7 +157,7 @@ class CoffeeSiteRepositoryTests {
         String emailAddr = "kava@tchibo.de";
         origUser.setEmail(emailAddr);
         origUser.setPassword("kofein");
-        origUser.setCreatedOn(new Timestamp(new Date().getTime()));
+        origUser.setCreatedOn(LocalDateTime.now());
         
         Set<UserProfile> userProfiles = new HashSet<UserProfile>();
         userProfiles.add(userProfUser);
@@ -188,7 +188,7 @@ class CoffeeSiteRepositoryTests {
 	    newCS.setTypLokality(nadr);
 	    
 	    newCS.setRecordStatus(recordStatus);
-	    newCS.setCreatedOn(new Timestamp(new Date().getTime()));            
+	    newCS.setCreatedOn(LocalDateTime.now());
         
 	    newCS.setMesto("Tišnov");
 	    newCS.setUliceCP("U nádraží");

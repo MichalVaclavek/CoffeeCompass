@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
 <head>
 	<!-- Global site tag (gtag.js) - Google Analytics -->
@@ -12,12 +14,12 @@
 	   gtag('config', 'UA-130556148-1');
 	</script>
 	
-      <div th:replace="fragments/header :: header-css"/>
+      <div th:replace="~{fragments/header :: header-css}"/>
 </head>
 
 <body>
 
-	<div th:replace="fragments/header :: header"/>
+<div th:insert="~{fragments/header :: header}"/>
 	
     <div class="w3-light-grey w3-margin-bottom w3-center">
        <h1 th:text="#{app.site-details}" class="w3-margin">Details label</h1>
@@ -67,7 +69,7 @@
 						    	 
 						    <tr>
 							  <td th:text="#{site.createdon}">CreatedOn</td>
-							  <td class="w3-right-align w3-sand" th:text="${#dates.format(coffeeSite.createdOn, 'dd.MM. yyyy , HH:mm')}" style="font-weight: bold">CreatedOn</td>
+							  <td class="w3-right-align w3-sand" th:text="${#temporals.format(coffeeSite.createdOn, 'dd.MM. yyyy , HH:mm')}" style="font-weight: bold">CreatedOn</td>
 						    </tr>
 						    
 							<tr>
@@ -183,8 +185,8 @@
 	 					<!-- Group of buttons for modification of the CoffeeSite and for changing status of CS -->
 						<div class="w3-container w3-margin-top" th:if="${coffeeSite.canBeModified} OR ${coffeeSite.canBeDeactivated}"> 
 			 
-			 		    <!-- Tlacitko pro Modifikaci situ pro uzivatele, ktery site vytvoril nebo pro DBA a ADMIN -->
-		        		<!-- Available only for logged-in user who created the site or for DBA or ADMIN user -->
+			 		    <!-- Tlacitko pro Modifikaci situ pro uzivatele, ktery site vytvoril nebo pro ROLE_DBA a ROLE_ADMIN -->
+		        		<!-- Available only for logged-in user who created the site or for ROLE_DBA or ROLE_ADMIN user -->
 		        		<div class="w3-row" >
 		         		
 			         		<div class="w3-cell-row w3-half" style="width:50%">	
@@ -224,7 +226,7 @@
 						            </form> 
 						          </div>
 						         
-					         	  <!-- Zmena record statusu na CANCEL. Finalni DELETE muze provest pouze ADMIN -->
+					         	  <!-- Zmena record statusu na CANCEL. Finalni DELETE muze provest pouze ROLE_ADMIN -->
 						          <div class="w3-cell">
 						            <form th:if="${coffeeSite.canBeCanceled} OR ${coffeeSite.canBeDeactivated}" 
 						                  action="#" 
@@ -235,7 +237,7 @@
 				  			            </form>
 						          </div>
 					         
-						          <!-- Form to generate DELETE http request with Delete button. For ADMIN only. -->
+						          <!-- Form to generate DELETE http request with Delete button. For ROLE_ADMIN only. -->
 						          <div class="w3-cell">
 									<form th:if="${coffeeSite.canBeDeleted}" 
 						                  action="#" 
@@ -411,8 +413,8 @@
 		    </div>
 		    
 		    <!-- Comments list  -->
-		    <!--  Every comment has button Delete in case of ADMIN user is logged-in or USER who created the comment -->
-		    <!--  Every comment has button Update in case of ADMIN user is logged-in or USER who created the comment -->
+		    <!--  Every comment has button Delete in case of ROLE_ADMIN user is logged-in or ROLE_USER who created the comment -->
+		    <!--  Every comment has button Update in case of ROLE_ADMIN user is logged-in or ROLE_USER who created the comment -->
 		    <div class="w3-container w3-margin-top"> 
 				<b><h3 th:text="#{site.listOfComments}" class="w3-border-bottom w3-bottombar">Comments: </h3></b>
 				<div class="w3-margin-top w3-small" style="font-style: italic" th:if="${#lists.isEmpty(comments)}" th:text="#{site.noComments}"></div>
@@ -422,7 +424,7 @@
 					
 						<div class="w3-right"> <!--  to move user and date to the right side -->
 							<span th:text="${comment.userName}" style="font-weight: bold; font-style: italic" class="w3-small">User name</span> - 
-							<span th:text="${#dates.format(comment.created, 'dd.MM. yyyy, HH:mm')}" class="w3-small" style="font-style: italic">Date of comment</span> <!-- style="font-weight: bold" -->
+							<span th:text="${#temporals.format(comment.created, 'dd.MM. yyyy, HH:mm')}" class="w3-small" style="font-style: italic">Date of comment</span> <!-- style="font-weight: bold" -->
 						</div>
 						
 						<div class="w3-cell-row">

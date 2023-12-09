@@ -4,7 +4,7 @@
 package cz.fungisoft.coffeecompass.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,7 +36,7 @@ public class ContactMeMessage implements Serializable {
 	  
 	@NotNull
 	@Column(name = "created_at") 
-	private Timestamp createdTime;
+	private LocalDateTime createdTime;
 	
     @Column(name="author_email", length = 60)
     private String email;
