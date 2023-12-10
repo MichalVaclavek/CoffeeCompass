@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.integrationtests.user.rest.secured;
 import cz.fungisoft.coffeecompass.controller.models.StarAndCommentForSiteModel;
 import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
+import cz.fungisoft.coffeecompass.entity.Company;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.integrationtests.IntegrationTestBaseConfig;
 import cz.fungisoft.coffeecompass.repository.UsersRepository;
@@ -89,6 +90,7 @@ class CommentsRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
     
     private final String USER_PASSWORD = "computer";
 
+
     /**
      * Creates User object withe USER privileges/profile and it's User registering DTO object
      * to be used later in test as input.<br>
@@ -98,7 +100,7 @@ class CommentsRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
     @Override
     public void setUp() {
         super.setUp();
-        
+
         // Create and save some normal User
         testUser = new User();
         testUser.setUserName("john");
@@ -108,7 +110,6 @@ class CommentsRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
         testUser.setCreatedOn(LocalDateTime.now());
         
         userRepo.saveAndFlush(testUser);
-        
        
         // Testovaci objekt slouzici pro login User uctu
         signUpAndLoginRESTuser = new SignUpAndLoginRESTDto();
@@ -172,51 +173,9 @@ class CommentsRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
                 .contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(starsAndComments)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"));
-        
-        
+
         // Validates that there is one more Comment in DB for for CoffeeSite1 and CoffeeSite2
         assertEquals(origNumOfCommentsSite1 + 1, commentsService.getNumberOfCommentsForSiteId(cs1.getId()), "Number of comments not as expected for CoffeeSite 1");
         assertEquals(origNumOfCommentsSite2 + 1, commentsService.getNumberOfCommentsForSiteId(cs2.getId()), "Number of comments not as expected for CoffeeSite 2");
     }
-
-    @Test
-    void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
-        // Create and save some normal Users - START -
-        User john = new User();
-        john.setUserName("kozel");
-        john.setEmail("kozel@zahradnik.com");
-        john.setPassword("zahradnik");
-        john.setCreatedOn(LocalDateTime.now());
-//        userService.save(johnDto);
-        userRepo.saveAndFlush(john);
-
-        User mary = new User();
-        mary.setUserName("mary");
-        mary.setEmail("mary@gun.com");
-        mary.setPassword("blood");
-        mary.setCreatedOn(LocalDateTime.now());
-//        userService.save(maryDto);
-        userRepo.saveAndFlush(mary);
-
-        User dick = new User();
-        dick.setUserName("dick");
-        dick.setEmail("dick@feynman.com");
-        dick.setPassword("qed");
-        dick.setCreatedOn(LocalDateTime.now());
-//        userService.save(dickDto);
-        userRepo.saveAndFlush(dick);
-        // Create and save some normal Users - END -
-
-        // When login ADMIN user
-        String accessToken = loginUserAndGetAccessToken(mockMvc, signUpAndLoginRESTuser);
-
-        // Then request all users will be returned
-        mockMvc.perform(get("/rest/secured/user/all")
-                        .header("Authorization", "Bearer " + accessToken)
-                        .accept("application/json"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(4)));
-
-    }
-
 }

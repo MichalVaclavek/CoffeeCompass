@@ -1381,17 +1381,17 @@ INSERT INTO coffeecompass.typ_podniku(
 -- User profile/role
 INSERT INTO coffeecompass.user_profile(
 	id, type)
-	VALUES (1, 'USER');
+	VALUES (1, 'ROLE_USER');
 
 INSERT INTO coffeecompass.user_profile(
 	id, type)
-	VALUES (2, 'ADMIN');
+	VALUES (2, 'ROLE_ADMIN');
 	
 INSERT INTO coffeecompass.user_profile(
 	id, type)
-	VALUES (3, 'DBA');
+	VALUES (3, 'ROLE_DBA');
 
 INSERT INTO coffeecompass.user_profile(
 	id, type)
-	VALUES (4, 'TEST');
+	VALUES (4, 'ROLE_TEST');
 

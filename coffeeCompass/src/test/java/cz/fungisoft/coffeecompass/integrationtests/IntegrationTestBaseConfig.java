@@ -86,17 +86,11 @@ public class IntegrationTestBaseConfig {
 
     @Autowired
     protected UserProfileRepository userProfileRepo;
-    
-    // USER profile
-    private UserProfile userProfUser;
+
     protected static Set<UserProfile> userProfilesUser = new HashSet<>();
-    
-    // ADMIN profile
-    private UserProfile userProfADMIN;
+
     protected static Set<UserProfile> userProfilesADMIN = new HashSet<>();
-    
-    // DBA profile
-    private UserProfile userProfDBA;
+
     protected static Set<UserProfile> userProfilesDBA = new HashSet<>();
     
     @Autowired
@@ -153,10 +147,12 @@ public class IntegrationTestBaseConfig {
      */
     @BeforeEach
     public void setUp() {
-        
-        userProfUser = userProfileRepo.searchByType("USER");
-        userProfADMIN = userProfileRepo.searchByType("ADMIN");
-        userProfDBA = userProfileRepo.searchByType("DBA");
+        // USER profile
+        UserProfile userProfUser = userProfileRepo.searchByType("ROLE_USER");
+        // ADMIN profile
+        UserProfile userProfADMIN = userProfileRepo.searchByType("ROLE_ADMIN");
+        // DBA profile
+        UserProfile userProfDBA = userProfileRepo.searchByType("ROLE_DBA");
         
         ACTIVE = csRecordStatusRepo.searchByName("ACTIVE");
         INACTIVE = csRecordStatusRepo.searchByName("INACTIVE");
@@ -166,16 +162,11 @@ public class IntegrationTestBaseConfig {
         userProfilesUser.add(userProfUser);
         userProfilesADMIN.add(userProfADMIN);
         userProfilesDBA.add(userProfDBA);
-        
         comp.setNameOfCompany("Kávička s.r.o");
         companyRepo.save(comp);
     }
 
-    @AfterEach
-    public void tearDown() {
-        companyRepo.deleteAll();
-    }
-    
+
     /**
      * Creates CoffeeSite with all CoffeeSites's attributes, which are also saved in DB,
      * are loaded from DB.<br>
@@ -186,7 +177,6 @@ public class IntegrationTestBaseConfig {
      * @return
      */
     protected CoffeeSite getCoffeeSiteBasedOnDB(String siteName, String coffeeSiteType) {
-        
         Set<CoffeeSort> csorts = new HashSet<>();
         Set<CupType> cups = new HashSet<>();
         
@@ -284,7 +274,7 @@ public class IntegrationTestBaseConfig {
                 "spring.jpa.hibernate.ddl-auto=none",
                 "spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect",
                 "spring.jpa.show-sql=true",
-//                "spring.datasource.hikari.maximum-pool-size=10",
+                "spring.datasource.hikari.maximum-pool-size=10",
                 "spring.jpa.properties.hibernate.format_sql=true",
                 "spring.datasource.initialization-mode=always"
             ).applyTo(configurableApplicationContext.getEnvironment());
@@ -300,7 +290,6 @@ public class IntegrationTestBaseConfig {
      * @throws Exception
      */
     protected String loginUserAndGetAccessToken(MockMvc mockMvc, SignUpAndLoginRESTDto userDto) throws Exception {
-        
         ResultActions result = mockMvc.perform(post("/rest/public/user/login").contentType(MediaType.APPLICATION_JSON)
                    .contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(userDto)))
                    .andExpect(status().isOk())

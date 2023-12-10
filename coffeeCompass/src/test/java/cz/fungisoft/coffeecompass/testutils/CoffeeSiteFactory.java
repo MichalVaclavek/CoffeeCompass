@@ -33,8 +33,7 @@ import cz.fungisoft.coffeecompass.entity.NextToMachineType.NextToMachineTypeEnum
  *
  */
 @Configuration
-public class CoffeeSiteFactory
-{      
+public class CoffeeSiteFactory {
     /**
      * Creates and returns new CoffeeSite instance with some default attribute values.
      * 
@@ -54,13 +53,12 @@ public class CoffeeSiteFactory
         User origUser = new User();
         CoffeeSiteStatus siteStatus = new CoffeeSiteStatus();
         CoffeeSiteType siteType = new CoffeeSiteType();
+        siteType.setCoffeeSiteType(coffeeSiteType);
         CoffeeSiteRecordStatus recordStatus = new CoffeeSiteRecordStatus();
         
         PriceRange pr = new PriceRange();
         pr.setPriceRange("15 - 25 Kč");
-        
-        //siteType.setCoffeeSiteType(coffeeSiteType);
-          
+
         CoffeeSort cs = new CoffeeSort();
         cs.setCoffeeSort("Instantní");       
         csorts.add(cs);        
@@ -104,7 +102,7 @@ public class CoffeeSiteFactory
         origUser.setPassword("kofein");
         origUser.setCreatedOn(LocalDateTime.now());
           
-        Set<UserProfile> userProfiles = new HashSet<UserProfile>();
+        Set<UserProfile> userProfiles = new HashSet<>();
         userProfiles.add(userProfUser);
         origUser.setUserProfiles(userProfiles);   
           
@@ -113,6 +111,7 @@ public class CoffeeSiteFactory
         CoffeeSite coffeeS = new CoffeeSite();        
         
         coffeeS.setSiteName(siteName);
+        coffeeS.setTypPodniku(siteType);
         coffeeS.setStatusZarizeni(siteStatus);
         coffeeS.setCena(pr);
         coffeeS.setCoffeeSorts(csorts);

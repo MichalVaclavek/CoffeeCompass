@@ -1020,7 +1020,6 @@ COMMENT ON TABLE coffeecompass.subscription_token_to_topic
 
 
 
-
 -- -----------------------------------------------------
 -- FUNCTIONS
 -- -----------------------------------------------------

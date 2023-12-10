@@ -76,8 +76,8 @@ class UserRESTSecuredControllerTests {
         ResponseEntity<List<UserDTO>> response = usersControllerSecuredREST.listAllUsers();
         
         verify(userService, VerificationModeFactory.times(1)).findAllUsers();
-        assertThat(response.getBody().size()).isEqualTo(allUsers.size());
-        assertThat(response.getBody().get(0).getUserName()).isEqualTo("dick");
+        assertThat(response.getBody()).hasSameSizeAs(allUsers);
+        assertThat(Objects.requireNonNull(response.getBody()).get(0).getUserName()).isEqualTo("dick");
     }
     
 }

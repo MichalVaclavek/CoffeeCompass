@@ -62,7 +62,10 @@ class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
     private UserService userService;
 
 //    @Autowired
-//    private UsersRepository userRepo; // must be used repository to save User, who created CoffeeSite, immediately
+//    private UsersRepository userRepo;
+
+    @Autowired
+    private UserProfileRepository userProfileRepo;
 
     @Autowired
     public UserMapper userMapper;
@@ -95,8 +98,6 @@ class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
         UserDTO adminDto = userMapper.usertoUserDTO(admin);
         userService.save(adminDto);
 
-//        userRepo.saveAndFlush(admin);
-       
         // Testovaci objekt slouzici pro zaregistrovani noveho User uctu
         signUpAndLoginRESTDtoAdmin = new SignUpAndLoginRESTDto();
         signUpAndLoginRESTDtoAdmin.setUserName(admin.getUserName());
@@ -113,7 +114,6 @@ class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
      */
     @Test
     void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
-
         // Create and save some normal Users - START -
         User john = new User();
         john.setUserName("john");
@@ -122,8 +122,7 @@ class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
         john.setCreatedOn(LocalDateTime.now());
         UserDTO johnDto = userMapper.usertoUserDTO(john);
         userService.save(johnDto);
-//        userRepo.saveAndFlush(john);
-        
+
         User mary = new User();
         mary.setUserName("mary");
         mary.setEmail("mary@gun.com");
@@ -131,8 +130,7 @@ class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
         mary.setCreatedOn(LocalDateTime.now());
         UserDTO maryDto = userMapper.usertoUserDTO(mary);
         userService.save(maryDto);
-//        userRepo.saveAndFlush(mary);
-        
+
         User dick = new User();        
         dick.setUserName("dick");
         dick.setEmail("dick@feynman.com");
@@ -140,7 +138,6 @@ class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
         dick.setCreatedOn(LocalDateTime.now());
         UserDTO dickDto = userMapper.usertoUserDTO(dick);
         userService.save(dickDto);
-//        userRepo.saveAndFlush(dick);
         // Create and save some normal Users - END -
         
         // When login ADMIN user
@@ -152,6 +149,5 @@ class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
                .accept("application/json"))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$", hasSize(4)));
-        
     }
 }

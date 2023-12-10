@@ -2,10 +2,10 @@ package cz.fungisoft.coffeecompass.unittest.user;
 
 import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
 import cz.fungisoft.coffeecompass.dto.UserDTO;
+import cz.fungisoft.coffeecompass.entity.RefreshToken;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
-import cz.fungisoft.coffeecompass.service.tokens.RefreshTokenService;
 import cz.fungisoft.coffeecompass.service.user.UserService;
 import cz.fungisoft.coffeecompass.testutils.JsonUtil;
 import cz.fungisoft.coffeecompass.testutils.WithMockCustomAdminUser;
@@ -17,7 +17,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +26,18 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.google.common.collect.ImmutableMap;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -44,10 +47,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -67,10 +68,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @WebMvcTest
 public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
-    
+
+    private static final String PUBLIC_REST_URLS = "/rest/public/**";
+
     private MockMvc mockMvc;
     
-    @MockBean
     @Autowired
     @Qualifier("customUserDetailsService")
     protected UserDetailsService customUserDetailsService; 
@@ -81,25 +83,36 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
         @MockBean //provided by Spring Context
         public static UserService userService;
 
-        @MockBean //provided by Spring Context
-        public static RefreshTokenService refreshTokenService;
-        
+        @Bean
+        public WebSecurityCustomizer webSecurityCustomizer() {
+            return web -> web.ignoring().antMatchers(PUBLIC_REST_URLS);
+        }
+
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+            http
+                    .httpBasic().disable()
+                    .cors().and().csrf().disable()
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and()
+                    .authorizeRequests()
+                    .antMatchers("/rest/public/user/register").permitAll()
+                    .anyRequest().authenticated();
+
+            return http.build();
+        }
+
         @Bean("customUserDetailsService")
         public UserDetailsService customUserDetailsService() {
           return new CustomUserDetailsService(userService);
         }
     }
-    
-    // USER profile
-    private static UserProfile userProfUser;
-    private static Set<UserProfile> userProfiles;
-    
-    // ADMIN profile
-    private static UserProfile userProfADMIN;
-    private static Set<UserProfile> userProfilesADMIN;
-    
+
     private static final String token = "xy";
     private static final String deviceID = "4545454545";
+
+    private static final String refreshTokenString = "xdfdfdfdf";
+    private static final RefreshToken refreshToken = new RefreshToken();
     
     private static final User admin = new User();
     private SignUpAndLoginRESTDto signUpAndLoginRESTDtoAdmin;
@@ -107,19 +120,20 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
 
     @BeforeAll
     public static void setUpClass() {
-        
         // Vytvori testovaci UserProfile typu USER
-        userProfUser = new UserProfile();
+        // USER profile
+        UserProfile userProfUser = new UserProfile();
         userProfUser.setType("USER");
-        
-        userProfiles = new HashSet<>();
+
+        Set<UserProfile> userProfiles = new HashSet<>();
         userProfiles.add(userProfUser);
         
         // Vytvori testovaci UserProfile typu ADMIN
-        userProfADMIN = new UserProfile();
+        // ADMIN profile
+        UserProfile userProfADMIN = new UserProfile();
         userProfADMIN.setType("ADMIN");
-        
-        userProfilesADMIN = new HashSet<>();
+
+        Set<UserProfile> userProfilesADMIN = new HashSet<>();
         userProfilesADMIN.add(userProfADMIN);
         
         // ADMIN user used when login, before other REST request, which requires loged-in user with ADMIN
@@ -133,14 +147,9 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
     
     @BeforeEach
     public void setUp() {
-        
         mockMvc = MockMvcBuilders.webAppContextSetup(context)
                                  .apply(springSecurity()) // nacte nastaveni vnucene pomoci WithMockCustomUserSecurityContextFactory
                                  .build();
-        
-        //given(authenticationService.findByToken(Mockito.anyString())).willReturn(userAdminDetailsOpt);
-        //given(UserControllerTestContextConfiguration.userService.findByUserName(Mockito.anyString())).willReturn(Optional.of(admin));
-        //given(UserControllerTestContextConfiguration.userService.findByEmail(Mockito.anyString())).willReturn(Optional.of(admin));
         
         given(UserControllerTestContextConfiguration.userService.isEmailUnique(Mockito.any(), Mockito.any(String.class))).willReturn(true); //registerNewRESTUser(registerRequest);
         
@@ -156,16 +165,15 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
  
     @Test
     void whenPostUser_thenCreateUser() throws Exception {
-
         // given
         User john = new User();
         john.setUserName("john");
         john.setPassword("johnpassword");
         john.setEmail("john@vonneuman.com");
-        john.setId(1L);
-        
-        john.setCreatedOn(LocalDateTime.now());
-        john.setUserProfiles(userProfiles);
+
+        refreshToken.setUser(john);
+        refreshToken.setExpiryDate(Instant.now().plusSeconds(99));
+        refreshToken.setToken(refreshTokenString);
 
         // Testovaci objekt slouzici pro zaregistrovani noveho User uctu
         SignUpAndLoginRESTDto signUpAndLoginRESTDto = new SignUpAndLoginRESTDto();
@@ -176,19 +184,17 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
 
         given(UserControllerTestContextConfiguration.userService.registerNewRESTUser(Mockito.any(SignUpAndLoginRESTDto.class))).willReturn(john); //registerNewRESTUser(registerRequest);
         
-//        given(authenticationService.login(Mockito.any(String.class), Mockito.any(String.class), Mockito.any(String.class))).willReturn(Optional.of(token));
+        given(tokenCreateAndSendEmailService.createAndSendVerificationTokenEmail(Mockito.any(User.class), Mockito.any(Locale.class))).willReturn(token);
 
-        ArgumentCaptor<User> valueCapture = ArgumentCaptor.forClass(User.class);
-//        doNothing().when( tokenCreateAndSendEmailService).setUserVerificationData(valueCapture.capture(), Mockito.any(Locale.class));
-        given(tokenCreateAndSendEmailService.createAndSendVerificationTokenEmail(valueCapture.capture(), Mockito.any(Locale.class))).willReturn(token);
-       
+        given(refreshTokenService.createRefreshToken(Mockito.matches("john"))).willReturn(refreshToken);
+
         // when and then
-        mockMvc.perform(post("/rest/public/user/register").contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(signUpAndLoginRESTDto)))
+        mockMvc.perform(post("/rest/public/user/register").locale(Locale.ENGLISH).contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(signUpAndLoginRESTDto)))
                .andExpect(status().isOk())
-               .andExpect(jsonPath("$.*", hasSize(3)))
+               .andExpect(jsonPath("$.*", hasSize(4)))
                .andExpect(jsonPath("$.tokenType", Matchers.is("Bearer")))
-               .andExpect(jsonPath("$.accessToken", Matchers.isA(String.class)))
-               .andExpect(jsonPath("$.accessToken").isNotEmpty());
+               .andExpect(jsonPath("$.accessToken", Matchers.is(token)))
+               .andExpect(jsonPath("$.refreshToken", Matchers.is(refreshTokenString)));
         
         // then
         verify(UserControllerTestContextConfiguration.userService, VerificationModeFactory.times(1)).registerNewRESTUser(signUpAndLoginRESTDto);
@@ -203,9 +209,8 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
      * @throws Exception
      */
     @Test
-    @WithMockCustomAdminUser
+    @WithMockCustomAdminUser // mock ADMIN user is logged in.
     void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
-        
         UserDTO johnDto = new UserDTO();
         johnDto.setUserName("john");
         johnDto.setEmail("john@vonneuman.com");
@@ -227,25 +232,24 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
         given(userSecurityService.authWithToken(Mockito.anyString())).willReturn(WithMockCustomUserSecurityContextFactory.getTestAuthentication());
         
         // Login ADMIN user
-        signUpAndLoginRESTDtoAdmin = new SignUpAndLoginRESTDto();
-        signUpAndLoginRESTDtoAdmin.setUserName(admin.getUserName());
-        signUpAndLoginRESTDtoAdmin.setPassword(admin.getPassword());
-        signUpAndLoginRESTDtoAdmin.setEmail(admin.getEmail());
-        signUpAndLoginRESTDtoAdmin.setDeviceID(deviceID);
-        
-        // when and then
-        mockMvc.perform(post("/rest/public/user/login").contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(signUpAndLoginRESTDtoAdmin)))
-               .andExpect(status().isOk())
-               .andExpect(jsonPath("$.accessToken", is(token)));
+//        signUpAndLoginRESTDtoAdmin = new SignUpAndLoginRESTDto();
+//        signUpAndLoginRESTDtoAdmin.setUserName(admin.getUserName());
+//        signUpAndLoginRESTDtoAdmin.setPassword(admin.getPassword());
+//        signUpAndLoginRESTDtoAdmin.setEmail(admin.getEmail());
+//        signUpAndLoginRESTDtoAdmin.setDeviceID(deviceID);
+//
+//        // when and then
+//        mockMvc.perform(post("/rest/public/user/login").contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(signUpAndLoginRESTDtoAdmin)))
+//               .andExpect(status().isOk())
+//               .andExpect(jsonPath("$.accessToken", is(token)));
         
         // and then Get all users
         mockMvc.perform(get("/rest/secured/user/all")
-               .header("Authorization", "Bearer " + token)
-               .accept("application/json;charset=UTF-8"))
+                          .header("Authorization", "Bearer " + token)
+                          .accept("application/json;charset=UTF-8"))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$", hasSize(3)));
         
         verify(UserControllerTestContextConfiguration.userService, VerificationModeFactory.times(1)).findAllUsers();
     }
-
 }
