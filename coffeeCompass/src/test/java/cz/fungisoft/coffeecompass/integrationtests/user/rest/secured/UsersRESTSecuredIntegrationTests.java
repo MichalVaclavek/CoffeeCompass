@@ -1,24 +1,20 @@
 package cz.fungisoft.coffeecompass.integrationtests.user.rest.secured;
 
 import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
-import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.integrationtests.IntegrationTestBaseConfig;
-import cz.fungisoft.coffeecompass.mappers.CoffeeSiteMapperImpl;
-import cz.fungisoft.coffeecompass.mappers.UserMapper;
-import cz.fungisoft.coffeecompass.mappers.UserMapperImpl;
-import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
 import cz.fungisoft.coffeecompass.repository.UsersRepository;
 import cz.fungisoft.coffeecompass.service.user.UserService;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -47,33 +43,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {
-        UserMapperImpl.class
-})
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles({"dev"})
+@ExtendWith(SpringExtension.class)
+@Slf4j
 class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
-    
+
     @Autowired
     private MockMvc mockMvc;
-    
-    @Autowired
-    private UserService userService;
-
-//    @Autowired
-//    private UsersRepository userRepo;
 
     @Autowired
-    private UserProfileRepository userProfileRepo;
+    public UserService userService;
 
     @Autowired
-    public UserMapper userMapper;
-    
-    private static String deviceID = "4545454545";
-    
-    private User admin;
-    private SignUpAndLoginRESTDto signUpAndLoginRESTDtoAdmin;
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UsersRepository userRepo; // must be used repository to save User with encrypted password
+
+    private final User admin = new User();
+
+    private static final String ADMIN_PASSWORD = "adminpassword";
     
 
     /**
@@ -86,24 +77,14 @@ class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
     public void setUp() {
         super.setUp();
         
-        // ADMIN user profile returned, when requesting UserDetails
-        admin = new User();
+        // Save ADMIN user first
         admin.setUserName("admin");
-        admin.setPassword("adminpassword");
+        admin.setPassword(passwordEncoder.encode(ADMIN_PASSWORD));
         admin.setEmail("admin@boss.com");
         admin.setId(1L);
         admin.setCreatedOn(LocalDateTime.now());
         admin.setUserProfiles(userProfilesADMIN);
-        
-        UserDTO adminDto = userMapper.usertoUserDTO(admin);
-        userService.save(adminDto);
-
-        // Testovaci objekt slouzici pro zaregistrovani noveho User uctu
-        signUpAndLoginRESTDtoAdmin = new SignUpAndLoginRESTDto();
-        signUpAndLoginRESTDtoAdmin.setUserName(admin.getUserName());
-        signUpAndLoginRESTDtoAdmin.setPassword(admin.getPassword());
-        signUpAndLoginRESTDtoAdmin.setEmail(admin.getEmail());
-        signUpAndLoginRESTDtoAdmin.setDeviceID(deviceID);
+        userRepo.saveAndFlush(admin);
     }
  
     /**
@@ -114,39 +95,44 @@ class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
      */
     @Test
     void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
-        // Create and save some normal Users - START -
+        // When login ADMIN user
+        SignUpAndLoginRESTDto signUpAndLoginRESTuser = new SignUpAndLoginRESTDto();
+        signUpAndLoginRESTuser.setUserName(admin.getUserName());
+        signUpAndLoginRESTuser.setPassword(ADMIN_PASSWORD); // real passwd.
+        signUpAndLoginRESTuser.setEmail(admin.getEmail());
+        String deviceID = "4545454545";
+        signUpAndLoginRESTuser.setDeviceID(deviceID);
+
+        String accessToken = loginUserAndGetAccessToken(mockMvc, signUpAndLoginRESTuser);
+
+        // Create and save some normal Users - START
         User john = new User();
         john.setUserName("john");
         john.setEmail("john@vonneuman.com");
         john.setPassword("computer");
         john.setCreatedOn(LocalDateTime.now());
-        UserDTO johnDto = userMapper.usertoUserDTO(john);
-        userService.save(johnDto);
+        userRepo.saveAndFlush(john);
 
         User mary = new User();
         mary.setUserName("mary");
         mary.setEmail("mary@gun.com");
         mary.setPassword("blood");
         mary.setCreatedOn(LocalDateTime.now());
-        UserDTO maryDto = userMapper.usertoUserDTO(mary);
-        userService.save(maryDto);
+        userRepo.saveAndFlush(mary);
 
         User dick = new User();        
         dick.setUserName("dick");
         dick.setEmail("dick@feynman.com");
         dick.setPassword("qed");
         dick.setCreatedOn(LocalDateTime.now());
-        UserDTO dickDto = userMapper.usertoUserDTO(dick);
-        userService.save(dickDto);
+        userRepo.saveAndFlush(dick);
         // Create and save some normal Users - END -
-        
-        // When login ADMIN user
-        String accessToken = loginUserAndGetAccessToken(mockMvc, signUpAndLoginRESTDtoAdmin);
         
         // Then request all users will be returned
         mockMvc.perform(get("/rest/secured/user/all")
                .header("Authorization", "Bearer " + accessToken)
                .accept("application/json"))
+               .andDo((result) -> log.info(result.getResponse().getContentAsString()))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$", hasSize(4)));
     }

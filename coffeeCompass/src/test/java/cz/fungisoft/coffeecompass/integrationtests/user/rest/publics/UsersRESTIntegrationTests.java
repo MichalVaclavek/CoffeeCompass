@@ -19,7 +19,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
-import java.util.*;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -48,11 +47,9 @@ class UsersRESTIntegrationTests extends IntegrationTestBaseConfig {
     
     private static final String deviceID = "4545454545";
     
-    private User admin = new User();
-    private SignUpAndLoginRESTDto signUpAndLoginRESTDtoAdmin;
-    
-   
-    
+    private final User admin = new User();
+
+
     @BeforeEach
     @Override
     public void setUp() {
@@ -66,13 +63,6 @@ class UsersRESTIntegrationTests extends IntegrationTestBaseConfig {
         admin.setId(1L);
         admin.setCreatedOn(LocalDateTime.now());
         admin.setUserProfiles(userProfilesADMIN);
-       
-        // Testovaci objekt slouzici pro zaregistrovani noveho User uctu
-        signUpAndLoginRESTDtoAdmin = new SignUpAndLoginRESTDto();
-        signUpAndLoginRESTDtoAdmin.setUserName(admin.getUserName());
-        signUpAndLoginRESTDtoAdmin.setPassword(admin.getPassword());
-        signUpAndLoginRESTDtoAdmin.setEmail(admin.getEmail());
-        signUpAndLoginRESTDtoAdmin.setDeviceID(deviceID);
     }
  
     /**

@@ -130,13 +130,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-			<exclusions>
-			  <exclusion>
-			  	 <!-- Exclusion of some already integrated junit5 package - junit-vintage-engine is in SpringBoot 2.3.4 -->
-			     <groupId>org.junit.vintage</groupId> 
-			     <artifactId>junit-vintage-engine</artifactId>
-			  </exclusion>
-			</exclusions>
+<!--			<exclusions>-->
+<!--			  <exclusion>-->
+<!--			  	 &lt;!&ndash; Exclusion of some already integrated junit5 package - junit-vintage-engine is in SpringBoot 2.3.4 &ndash;&gt;-->
+<!--			     <groupId>org.junit.vintage</groupId> -->
+<!--			     <artifactId>junit-vintage-engine</artifactId>-->
+<!--			  </exclusion>-->
+<!--			</exclusions>-->
 		</dependency>
 		
 		<!-- Pro testovani prace s DB, vyuziva Spring-boot-starter-test pomoci @DataJpaTest pro vytvoreni TestEntityManager. -->

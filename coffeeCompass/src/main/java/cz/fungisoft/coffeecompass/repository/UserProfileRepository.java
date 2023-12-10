@@ -7,6 +7,6 @@ import cz.fungisoft.coffeecompass.entity.UserProfile;
 
 public interface UserProfileRepository extends JpaRepository<UserProfile, Integer> {
 
-    @Query("select up from UserProfile up where type=?1")
+    @Query("SELECT up FROM UserProfile up WHERE type=?1")
     UserProfile searchByType(String type);
 }

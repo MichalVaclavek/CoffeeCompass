@@ -94,40 +94,40 @@ public class IntegrationTestBaseConfig {
     protected static Set<UserProfile> userProfilesDBA = new HashSet<>();
     
     @Autowired
-    private SiteLocationTypeRepository locationTypeRepo;
+    protected SiteLocationTypeRepository locationTypeRepo;
     
     @Autowired
-    private  CupTypeRepository cupTypeRepo;
+    protected  CupTypeRepository cupTypeRepo;
     
     @Autowired
-    private OfferRepository otherOfferRepo;
+    protected OfferRepository otherOfferRepo;
     
     @Autowired
-    private NextToMachineTypeRepository ntmTypeRepo;
+    protected NextToMachineTypeRepository ntmTypeRepo;
     
     @Autowired
-    private CompanyRepository companyRepo;
+    protected CompanyRepository companyRepo;
     
     @Autowired
-    private CoffeeSortRepository coffeeSortRepo;
+    protected CoffeeSortRepository coffeeSortRepo;
     
     @Autowired
-    private CoffeeSiteStatusRepository coffeeSiteStatusRepo;
+    protected CoffeeSiteStatusRepository coffeeSiteStatusRepo;
     
     @Autowired
-    private StarsForCoffeeSiteAndUserRepository starsForCoffeeSiteAndUserRepo;
+    protected StarsForCoffeeSiteAndUserRepository starsForCoffeeSiteAndUserRepo;
     
     @Autowired
-    private StarsQualityDescriptionRepository starsQualityDescriptionRepo;
+    protected StarsQualityDescriptionRepository starsQualityDescriptionRepo;
     
     @Autowired
-    private CoffeeSiteRecordStatusRepository csRecordStatusRepo;
+    protected CoffeeSiteRecordStatusRepository csRecordStatusRepo;
     
     @Autowired
-    private CoffeeSiteTypeRepository csTypeRepo;
+    protected CoffeeSiteTypeRepository csTypeRepo;
     
     @Autowired
-    private PriceRangeRepository priceRangeRepo;
+    protected PriceRangeRepository priceRangeRepo;
     
     
     protected CoffeeSiteRecordStatus ACTIVE;
@@ -162,6 +162,7 @@ public class IntegrationTestBaseConfig {
         userProfilesUser.add(userProfUser);
         userProfilesADMIN.add(userProfADMIN);
         userProfilesDBA.add(userProfDBA);
+
         comp.setNameOfCompany("Kávička s.r.o");
         companyRepo.save(comp);
     }

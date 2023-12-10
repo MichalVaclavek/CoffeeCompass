@@ -3,7 +3,6 @@ package cz.fungisoft.coffeecompass.integrationtests.user.rest.secured;
 import cz.fungisoft.coffeecompass.controller.models.StarAndCommentForSiteModel;
 import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
-import cz.fungisoft.coffeecompass.entity.Company;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.integrationtests.IntegrationTestBaseConfig;
 import cz.fungisoft.coffeecompass.repository.UsersRepository;
@@ -21,14 +20,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -62,10 +58,10 @@ class CommentsRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
     
     @Autowired
     public UserService userService;
-    
+
     @Autowired
     private PasswordEncoder passwordEncoder;
-    
+
     @Autowired
     private UsersRepository userRepo; // must be used repository to save User, who created CoffeeSite, immediately
 

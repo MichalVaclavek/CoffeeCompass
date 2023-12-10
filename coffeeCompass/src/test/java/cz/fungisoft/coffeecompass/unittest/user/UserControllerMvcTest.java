@@ -231,18 +231,7 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
         // userSecurityService
         given(userSecurityService.authWithToken(Mockito.anyString())).willReturn(WithMockCustomUserSecurityContextFactory.getTestAuthentication());
         
-        // Login ADMIN user
-//        signUpAndLoginRESTDtoAdmin = new SignUpAndLoginRESTDto();
-//        signUpAndLoginRESTDtoAdmin.setUserName(admin.getUserName());
-//        signUpAndLoginRESTDtoAdmin.setPassword(admin.getPassword());
-//        signUpAndLoginRESTDtoAdmin.setEmail(admin.getEmail());
-//        signUpAndLoginRESTDtoAdmin.setDeviceID(deviceID);
-//
-//        // when and then
-//        mockMvc.perform(post("/rest/public/user/login").contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(signUpAndLoginRESTDtoAdmin)))
-//               .andExpect(status().isOk())
-//               .andExpect(jsonPath("$.accessToken", is(token)));
-        
+
         // and then Get all users
         mockMvc.perform(get("/rest/secured/user/all")
                           .header("Authorization", "Bearer " + token)
