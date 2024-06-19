@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import cz.fungisoft.coffeecompass.entity.User;
 import org.springframework.data.jpa.repository.QueryHints;
 
-import javax.persistence.QueryHint;
+import jakarta.persistence.QueryHint;
 
 /**
  * JpaRepository<User, Long> - Long znamena ze primarni klic pro User je typu Long

@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.transaction.Transactional;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
@@ -39,9 +39,9 @@ public class UsersRepositoryCustomImpl implements UsersRepositoryCustom {
 
        List<Object[]> results = users.getResultList();
       
-       return results.stream().filter(record -> !((String)record[0]).isEmpty())
-                     .map(record -> new DBReturnPair((String)record[0], (BigInteger)record[1]))
-                     .collect(Collectors.toList());
+       return results.stream().filter(rec -> !((String)rec[0]).isEmpty())
+                     .map(rec -> new DBReturnPair((String)rec[0], (Long)rec[1]))
+                     .toList();
 
     }
 }

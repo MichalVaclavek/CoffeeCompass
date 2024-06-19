@@ -2,7 +2,7 @@ package cz.fungisoft.coffeecompass.entity;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.Instant;
 
 @Entity

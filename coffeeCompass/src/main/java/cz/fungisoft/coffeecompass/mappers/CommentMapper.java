@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 public interface CommentMapper {
 
     @Mapping(source = "user.userName", target = "userName")
-    @Mapping(source ="coffeeSite.id", target = "coffeeSiteID")
+    @Mapping(source ="coffeeSite.id", target = "coffeeSiteId")
     @Mapping(source ="user.id", target = "userId")
     CommentDTO commentToCommentDTO(Comment comment);
 }

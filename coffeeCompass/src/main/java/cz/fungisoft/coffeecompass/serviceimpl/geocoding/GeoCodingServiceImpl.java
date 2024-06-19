@@ -2,8 +2,8 @@ package cz.fungisoft.coffeecompass.serviceimpl.geocoding;
 
 import java.io.IOException;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import com.google.maps.model.LatLng;
 import com.google.maps.model.LocationType;
 
 import cz.fungisoft.coffeecompass.service.geocoding.GeoCodingService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service using googles's Geocoding API to retrive information about towns
@@ -29,7 +29,7 @@ import lombok.extern.log4j.Log4j2;
  * @author Michal Vaclavek
  */
 @Service
-@Log4j2
+@Slf4j
 public class GeoCodingServiceImpl implements GeoCodingService {
 
     private static GeoApiContext geoApiContext;

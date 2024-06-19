@@ -17,13 +17,13 @@
 	<div id="inputForm" class="w3-margin-top w3-card-4 w3-display-topmiddle">
 
       <form th:object="${coffeeSite}" action="#" th:action="@{/createModifySite}" method="post" class="w3-container w3-round-large w3-light-gray">
-        <input th:type="hidden" name="id" th:field="${coffeeSite.id}" />
+        <input th:type="hidden" name="id" th:field="${coffeeSite.externalId}" />
         <input th:type="hidden" name="originalUserName" th:field="${coffeeSite.originalUserName}" />
         <input th:type="hidden" name="recordStatus" th:field="${coffeeSite.recordStatus.status}" />
         
         <div class="w3-light-grey w3-margin-bottom w3-center">
-     	   <h2  th:if="${coffeeSite.id} != 0" th:text="#{site.modify-site.label}" class="w3-center">Modify</h2>
-     	   <h2  th:if="${coffeeSite.id} == 0" th:text="#{site.create-new-site.label}" class="w3-center">Create label</h2>
+     	   <h2  th:if="${coffeeSite.externalId != null}" th:text="#{site.modify-site.label}" class="w3-center">Modify</h2>
+     	   <h2  th:if="${coffeeSite.externalId == null}" th:text="#{site.create-new-site.label}" class="w3-center">Create label</h2>
      	</div>
      	
      	<div th:if="${param.success}" class="w3-gray w3-display-container w3-round w3-panel">
@@ -32,7 +32,8 @@
 	  		   <p th:text="#{app.site.modified.success}" class="w3-container" >
 	  		   </p>
 	    </div>
-     
+
+
         <div class="w3-container w3-border">
           
            <div class="w3-margin-top">
@@ -291,12 +292,12 @@
     
     	  <div class="w3-bar w3-margin-top">
 	          <div class="w3-bar-item">
-	             <button type="submit" name="save" th:text="(${coffeeSite.id} == 0) ? #{site.button.create} : #{site.button.update}" class="w3-button w3-blue w3-round">Save/Modify Coffee site</button>    
+	             <button type="submit" name="save" th:text="(${coffeeSite.externalId} == 0) ? #{site.button.create} : #{site.button.update}" class="w3-button w3-blue w3-round">Save/Modify Coffee site</button>    
 	          </div>
 	          
 	          <div class="w3-bar-item">
-	          	 <a  th:if="${coffeeSite.id} != 0" th:href="@{'/showSite/' + ${coffeeSite.id}}" th:text="#{site.edit.cancel}" class="w3-button">Cancel update site</a>
-	          	 <a  th:if="${coffeeSite.id} == 0" th:href="@{'/home'}" th:text="#{site.edit.cancel}" class="w3-button">Cancel creation of the site</a>
+	          	 <a  th:if="${coffeeSite.externalId != null}" th:href="@{'/showSite/' + ${coffeeSite.externalId}}" th:text="#{site.edit.cancel}" class="w3-button">Cancel update site</a>
+	          	 <a  th:if="${coffeeSite.externalId == null}" th:href="@{'/home'}" th:text="#{site.edit.cancel}" class="w3-button">Cancel creation of the site</a>
 		      </div>
 		      
 		      <div class="w3-bar-item w3-text-gray w3-margin-top w3-right">

@@ -2,9 +2,11 @@ package cz.fungisoft.coffeecompass.serviceimpl;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import cz.fungisoft.coffeecompass.mappers.CoffeeSiteMapper;
+import cz.fungisoft.coffeecompass.serviceimpl.images.ImagesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
@@ -44,7 +46,7 @@ import cz.fungisoft.coffeecompass.service.CompanyService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
 import cz.fungisoft.coffeecompass.service.user.UserService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Implementace CoffeeSiteService. Implementuje vsechny metody, ktere pracuji s CoffeeSite objekty, tj.
@@ -55,7 +57,7 @@ import lombok.extern.log4j.Log4j2;
  */
 @Service("coffeeSiteService")
 @Transactional
-@Log4j2
+@Slf4j
 public class CoffeeSiteServiceImpl implements CoffeeSiteService {
 
     private static final String ERROR_SAVING_SITES = "Error saving list of CoffeeSites.";
@@ -97,6 +99,9 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     private ConfigProperties config;
 
     private User loggedInUser;
+
+    @Autowired
+    private ImagesService imagesService;
     
     
     @Autowired
@@ -141,7 +146,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     }
     
     private CoffeeSiteDTO evaluateAverageStars(CoffeeSiteDTO site) {
-        site.setAverageStarsWithNumOfHodnoceni(starsForCoffeeSiteService.getStarsAndNumOfHodnoceniForSite(site.getId()));
+        site.setAverageStarsWithNumOfHodnoceni(starsForCoffeeSiteService.getStarsAndNumOfHodnoceniForSite(UUID.fromString(site.getExternalId())));
         return site;
     }
     
@@ -152,7 +157,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * @return
      */
     private List<CoffeeSiteDTO> modifyToTransfer(List<CoffeeSite> sites) {
-        return sites.stream().map(this::mapOneToTransfer).collect(Collectors.toList());
+        return sites.stream().map(this::mapOneToTransfer).toList();
     }
     
     @Override
@@ -278,9 +283,13 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     public Optional<CoffeeSiteDTO> findOneToTransfer(Long id) {
         return findOneById(id).map(this::mapOneToTransfer);
     }
+
+    @Override
+    public Optional<CoffeeSiteDTO> findOneToTransfer(String externalId) {
+        return findOneByExternalId(externalId).map(this::mapOneToTransfer);
+    }
     
-    
-    private CoffeeSiteDTO mapOneToTransfer(CoffeeSite site) {
+    public CoffeeSiteDTO mapOneToTransfer(CoffeeSite site) {
         CoffeeSiteDTO siteDto = null;
         if (site != null) {
             siteDto = coffeeSiteMapper.coffeeSiteToCoffeeSiteDTO(site);
@@ -300,6 +309,19 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         return site;
     }
 
+    @Override
+    public Optional<CoffeeSite> findOneByExternalId(String externalId) {
+        Optional<CoffeeSite> site = coffeeSiteRepo.findByExternalId(UUID.fromString(externalId));
+        log.info("Coffee site with id {} retrieved.", externalId);
+        return site;
+    }
+
+    @Override
+    public CoffeeSite save(CoffeeSiteDTO cs) {
+        CoffeeSite csToSave = coffeeSiteMapper.coffeeSiteDtoToCoffeeSite(cs);
+        return save(csToSave);
+    }
+
     /**
      * Metoda pro provedeni akci pred ulozenim CoffeeSitu a zavolani metody save() z Repository.
      * Tato metoda by mela byt volatelna pouze prihlasenym uzivatelem.
@@ -308,10 +330,11 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      */
     @Override
     public CoffeeSite save(CoffeeSite coffeeSite) {
-        Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
+        Optional<User> currentLoggedInUser = userService.getCurrentLoggedInUser();
         
-        loggedInUser.ifPresent(user -> {
-            if (coffeeSite.getId() == 0) { // Zcela novy CoffeeSite
+        currentLoggedInUser.ifPresent(user -> {
+            if (coffeeSite.getId() == null) { // Zcela novy CoffeeSite
+                coffeeSite.setExternalId(UUID.randomUUID());
                 CoffeeSiteRecordStatus coffeeSiteRecordStatus = csRecordStatusService.findCSRecordStatus(CoffeeSiteRecordStatusEnum.CREATED);
                 coffeeSite.setRecordStatus(coffeeSiteRecordStatus);
                 coffeeSite.setOriginalUser(user);
@@ -338,13 +361,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         
         return savedCoffeeSite;
     }
-    
-    @Override
-    public CoffeeSite save(CoffeeSiteDTO cs) {
-        CoffeeSite csToSave = coffeeSiteMapper.coffeeSiteDtoToCoffeeSite(cs);
-        return save(csToSave);
-    }
-    
+
     /**
      * Ulozeni seznamu novych CoffeeSites
      */
@@ -366,7 +383,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     public boolean saveOrUpdate(List<CoffeeSiteDTO> coffeeSites) {
         try {
             coffeeSites.forEach(cs -> {
-                if (cs.getId() == 0) {
+                if (cs.getExternalId().isEmpty()) {
                     this.save(cs);
                 } else {
                     this.updateSite(cs);
@@ -391,7 +408,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         List<CoffeeSiteDTO> retVal = new ArrayList<>();
         try {
             coffeeSites.forEach(cs ->
-                retVal.add((cs.getId() == 0) ? mapOneToTransfer(save(cs))
+                retVal.add(cs.getExternalId().isEmpty() ? mapOneToTransfer(save(cs))
                                              : mapOneToTransfer(updateSite(cs)))
             );
             return retVal;
@@ -409,7 +426,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * @param coffeeSite
      */
     public CoffeeSite updateSite(CoffeeSiteDTO coffeeSite) {
-        CoffeeSite entityFromDB = coffeeSiteRepo.findById(coffeeSite.getId()).orElse(null);
+        CoffeeSite entityFromDB = coffeeSiteRepo.findByExternalId(UUID.fromString(coffeeSite.getExternalId())).orElse(null);
         
         if (entityFromDB != null) {
             entityFromDB.setUpdatedOn(LocalDateTime.now());
@@ -496,6 +513,12 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         coffeeSiteRepo.deleteById(id);
         log.info("CoffeeSite id {} deleted from DB.", id);
     }
+
+    @Override
+    public void delete(String externalId) {
+        coffeeSiteRepo.deleteByExternalId(UUID.fromString(externalId));
+        log.info("CoffeeSite external id {} deleted from DB.", externalId);
+    }
     
     @Override
     public double getDistance(double zemDelka1, double zemSirka1, double zemDelka2, double zemSirka2) {
@@ -524,7 +547,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         // if it is current modified site, then the location is considered to be available.
         // Means only move of the CoffeeSite to correct new position with no other neighbors
         if (numOfSites == 1 && siteId > 0) {
-            return !findOneById(siteId).isPresent();
+            return findOneById(siteId).isEmpty();
         }
             
         return numOfSites > 0;
@@ -544,7 +567,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         // if it is current modified site, then the location is considered to be available.
         // Means only move of the CoffeeSite to correct new position with no other ACTIVE neighbors
         if (numOfSites == 1 && siteId > 0) { //TODO - check if this situation may ocure?
-            return !findOneById(siteId).filter(neighborSite -> neighborSite.getRecordStatus().getRecordStatus() == CoffeeSiteRecordStatusEnum.ACTIVE).isPresent();
+            return findOneById(siteId).filter(neighborSite -> neighborSite.getRecordStatus().getRecordStatus() == CoffeeSiteRecordStatusEnum.ACTIVE).isEmpty();
         }
             
         return numOfSites > 0;
@@ -606,7 +629,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         return countDistancesAndSortByDist(modifyToTransfer(coffeeSites), zemSirka, zemDelka);
     }
 
-
     
     /**
      * TODO - NOT working with CoffeeSite status is null and CoffeeSort is not null. Error in Repository.
@@ -614,20 +636,18 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * @param zemSirka
      * @param zemDelka
      * @param rangeMeters
-     * @param cfSortStr - muze byt prazde nebo null
      * @param siteStatus - muze byt prazde nebo null
      * @param cityName - muze byt prazde nebo null
      */
     @Override
     public List<CoffeeSiteDTO> findAllWithinCircleAndCityWithCSStatusAndCoffeeSort(double zemSirka, double zemDelka, long rangeMeters,
-                                                                                   String cfSortStr, String siteStatus, String cityName) {
-        
+                                                                                   String siteStatus, String cityName) {
         CoffeeSiteRecordStatus csRS = csRecordStatusRepo.searchByName(CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum.ACTIVE.toString());
-        CoffeeSort cfSort = coffeeSortRepo.searchByName(cfSortStr);
-        CoffeeSiteStatus csStatus =  coffeeSiteStatusRepo.searchByName(siteStatus);
+        CoffeeSiteStatus csStatus =  siteStatus != null ? coffeeSiteStatusRepo.searchByName(siteStatus)
+                                                        : coffeeSiteStatusRepo.searchByName(CoffeeSiteStatus.CoffeeSiteStatusEnum.INSERVICE.getSiteStatus());
         
         List<CoffeeSite> coffeeSites;
-        coffeeSites = coffeeSiteRepo.findSitesWithSortAndSiteStatusAndRangeAndCity(zemSirka, zemDelka, rangeMeters, cfSort, csStatus, csRS, cityName);
+        coffeeSites = coffeeSiteRepo.findSitesWithSortAndSiteStatusAndRangeAndCity(zemSirka, zemDelka, rangeMeters, csStatus, csRS, cityName);
         
         log.info("Coffee sites within circle (Latit.: {} , Long.: {}, range: {}) and city {} retrieved: {}", zemSirka, zemDelka, rangeMeters, cityName, coffeeSites.size());
         return countDistancesAndSortByDist(modifyToTransfer(coffeeSites), zemSirka, zemDelka);
@@ -825,13 +845,11 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         if (CoffeeSiteRecordStatusEnum.ACTIVE.toString().equals(cs.getRecordStatus().getStatus()))
             return true;
         else {
-            
             if (!CoffeeSiteRecordStatusEnum.CANCELED.toString().equals(cs.getRecordStatus().getStatus())) {
                 // not ACTIVE site and not CANCELED, logged-in user
                 // Logged-in user can see only ACTIVE Sites or only the sites he/she created
                 return loggedInUser != null && siteUserMatch(cs);
-                
-            } else { // is CANCELED, only DBA and ADMIN can see the site 
+            } else { // is CANCELED, only DBA and ADMIN can see the site
                  return (loggedInUser != null) && userService.hasADMINorDBARole(loggedInUser);
               }
         }     
@@ -841,15 +859,21 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * Based on ImageStorageService evaluates if the CoffeeSite with siteId
      * has saved Image.
      * 
-     * @return URL of the CoffeeSite's image if available, otherwise empty String
+     * @return URL of the CoffeeSite's image if available
      */
     @Override
     public String getMainImageURL(CoffeeSiteDTO cs) {
-        ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequest();
-        UriComponentsBuilder extBuilder = builder.replacePath(imageService.getBaseImageURLPath()).replaceQuery("");
-        String imageURI = extBuilder.build().toUriString() + cs.getId();
-        return (imageService.isImageAvailableForSiteId(cs.getId())) ? imageURI : "";
+        return imagesService.getBasicObjectImageUrl(cs.getExternalId())
+                            .orElseGet(() -> getLocalCoffeeSiteImageUrl(cs));
     }
+
+    private String getLocalCoffeeSiteImageUrl(CoffeeSiteDTO cs) {
+        ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequest();
+        UriComponentsBuilder extBuilder = builder.scheme("https").replacePath(imageService.getBaseImageURLPath()).replaceQuery("").port("8443");
+        String imageURI = extBuilder.build().toUriString() + cs.getExternalId();
+        return imageService.isImageAvailableForSiteId(cs.getExternalId()) ? imageURI : "";
+    }
+
 
     /**
      * Checks if the coffe site name is already used or not
@@ -907,7 +931,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     
     @Override
     public Page<CoffeeSiteDTO> getPageOfCoffeeSitesFromList(Pageable pageable, List<CoffeeSiteDTO> coffeeSitesList) {
-        
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;

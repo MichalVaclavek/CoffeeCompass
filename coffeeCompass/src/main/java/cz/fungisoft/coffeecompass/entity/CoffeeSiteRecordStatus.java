@@ -2,8 +2,8 @@ package cz.fungisoft.coffeecompass.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import lombok.Data;
 import org.hibernate.annotations.Cache;
@@ -17,7 +17,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  */
 @Data
 @Entity
-@javax.persistence.Cacheable
+@jakarta.persistence.Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="status_coffee_site_zaznamu", schema="coffeecompass")
 public class CoffeeSiteRecordStatus {

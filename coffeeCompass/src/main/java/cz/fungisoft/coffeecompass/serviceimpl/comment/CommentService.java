@@ -3,16 +3,15 @@
  */
 package cz.fungisoft.coffeecompass.serviceimpl.comment;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import cz.fungisoft.coffeecompass.exceptions.UserNotFoundException;
 import cz.fungisoft.coffeecompass.mappers.CommentMapper;
-import cz.fungisoft.coffeecompass.mappers.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +29,7 @@ import cz.fungisoft.coffeecompass.repository.CommentsPageableRepository;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.service.comment.ICommentService;
 import cz.fungisoft.coffeecompass.service.user.UserService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -40,7 +39,7 @@ import lombok.extern.log4j.Log4j2;
  */
 @Service("commentService")
 @Transactional
-@Log4j2
+@Slf4j
 public class CommentService implements ICommentService {
 
     @Autowired
@@ -120,28 +119,28 @@ public class CommentService implements ICommentService {
     @Override
     public Comment updateComment(CommentDTO updatedComment) {
         
-        if (updatedComment != null && updatedComment.getCoffeeSiteID() > 0 && updatedComment.getUserId() > 0) {
+        if (updatedComment != null && updatedComment.getCoffeeSiteId() > 0 && updatedComment.getUserId() > 0) {
             
             Optional<Comment> comment = commentsRepo.findById(updatedComment.getId());
             
             if (comment.isPresent()) {
                 if (updatedComment.getText().isEmpty()) { // empty text of Comment means delete Comment
                     commentsRepo.deleteById(updatedComment.getId());
-                    log.info("Comment update. Comment id {} deleted, because of empty comment text. User id {}, CoffeeSite id {}", updatedComment.getId(),  updatedComment.getUserId(), updatedComment.getCoffeeSiteID());
+                    log.info("Comment update. Comment id {} deleted, because of empty comment text. User id {}, CoffeeSite id {}", updatedComment.getId(),  updatedComment.getUserId(), updatedComment.getCoffeeSiteId());
                     return null;
                 }
                 
                 if (comment.get().getUser().getId() == updatedComment.getUserId()
-                        && comment.get().getCoffeeSite().getId() == updatedComment.getCoffeeSiteID()) {
+                        && comment.get().getCoffeeSite().getId() == updatedComment.getCoffeeSiteId()) {
                     comment.get().setText(updatedComment.getText());
                     comment.get().setCreated(LocalDateTime.now());
-                    log.info("Comment id {} updated from User id {} for CoffeeSite id {}", updatedComment.getId(),  updatedComment.getUserId(), updatedComment.getCoffeeSiteID());
+                    log.info("Comment id {} updated from User id {} for CoffeeSite id {}", updatedComment.getId(),  updatedComment.getUserId(), updatedComment.getCoffeeSiteId());
                     return commentsRepo.save(comment.get());
                 }
             }
         } // if any input data are wrong, log it
         if (updatedComment != null) {
-            log.warn("Comment id {} update failed. User id {} for CoffeeSite id {}", updatedComment.getId(),  updatedComment.getUserId(), updatedComment.getCoffeeSiteID());
+            log.warn("Comment id {} update failed. User id {} for CoffeeSite id {}", updatedComment.getId(),  updatedComment.getUserId(), updatedComment.getCoffeeSiteId());
         }
         return null;
     }
@@ -162,6 +161,12 @@ public class CommentService implements ICommentService {
 	@Override
     public List<CommentDTO> getAllCommentsForSiteId(Long coffeeSiteID) {
 	    return modifyToTransfer(commentsRepo.getAllCommentsForSite(coffeeSiteID));
+    }
+
+    public List<CommentDTO> getAllCommentsForSiteId(String siteExtId) {
+        return coffeeSiteRepo.findByExternalId(UUID.fromString(siteExtId))
+                             .map(cs -> getAllCommentsForSiteId(cs.getId()))
+                             .orElse(Collections.emptyList());
     }
 	
 	@Override
@@ -211,7 +216,7 @@ public class CommentService implements ICommentService {
         CommentDTO commentToTransfer = commentMapper.commentToCommentDTO(comment);
         
         commentToTransfer.setCanBeDeleted(isDeletable(commentToTransfer));
-        commentToTransfer.setStarsFromUser(starsForCoffeeSiteAndUserService.getStarsForCoffeeSiteAndUser(commentToTransfer.getCoffeeSiteID(), commentToTransfer.getUserId()));
+        commentToTransfer.setStarsFromUser(starsForCoffeeSiteAndUserService.getStarsForCoffeeSiteAndUser(commentToTransfer.getCoffeeSiteId(), commentToTransfer.getUserId()));
         
         return commentToTransfer;
     }

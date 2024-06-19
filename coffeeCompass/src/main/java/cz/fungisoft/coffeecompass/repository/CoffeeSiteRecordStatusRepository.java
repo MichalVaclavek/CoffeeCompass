@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
 import org.springframework.data.jpa.repository.QueryHints;
 
-import javax.persistence.QueryHint;
+import jakarta.persistence.QueryHint;
 
 public interface CoffeeSiteRecordStatusRepository extends JpaRepository<CoffeeSiteRecordStatus, Integer> {
 

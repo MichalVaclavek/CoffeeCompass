@@ -36,7 +36,7 @@ public class BasicController {
     
     private final ClientRegistrationRepository clientRegistrationRepository;
     
-    private static final String oAuth2AuthorizationRequestBaseUri = "/oauth2/authorize";
+    private static final String OAUTH2_AUTHORIZATION_REQUEST_BASE_URI = "/oauth2/authorize";
     private final Map<String, String> oauth2AuthenticationUrls = new HashMap<>();
     
     
@@ -51,7 +51,7 @@ public class BasicController {
     }
 
 
-    @GetMapping(value= {"/home", "/"})
+    @GetMapping(value= {"/home", "/home/", "/"})
     public ModelAndView home() {
         // Gets and shows statistical info
         ModelAndView mav = new ModelAndView("home");
@@ -72,7 +72,6 @@ public class BasicController {
 
     @GetMapping("/login")
     public String login(Model model) {
-        
         // Enter Social login links/buttons to login page/form
         Iterable<ClientRegistration> clientRegistrations = null;
         ResolvableType type = ResolvableType.forInstance(clientRegistrationRepository).as(Iterable.class);
@@ -81,10 +80,10 @@ public class BasicController {
         }
    
         clientRegistrations.forEach(registration ->  oauth2AuthenticationUrls.put(registration.getClientName().toLowerCase(), 
-                                    oAuth2AuthorizationRequestBaseUri + "/" + registration.getRegistrationId()));
+                                    OAUTH2_AUTHORIZATION_REQUEST_BASE_URI + "/" + registration.getRegistrationId()));
         
-        model.addAttribute("oAuth2RegUrlGoogle", oauth2AuthenticationUrls.get(AuthProviders.GOOGLE.toString()));
-        model.addAttribute("oAuth2RegUrlFacebook", oauth2AuthenticationUrls.get(AuthProviders.FACEBOOK.toString()));
+        model.addAttribute("oAuth2RegUrlGoogle", oauth2AuthenticationUrls.get(AuthProviders.GOOGLE.toString().toLowerCase()));
+        model.addAttribute("oAuth2RegUrlFacebook", oauth2AuthenticationUrls.get(AuthProviders.FACEBOOK.toString().toLowerCase()));
         
         return "login";
     }

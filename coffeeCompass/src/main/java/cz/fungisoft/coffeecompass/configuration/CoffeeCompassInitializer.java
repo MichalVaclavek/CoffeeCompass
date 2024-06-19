@@ -1,6 +1,6 @@
 package cz.fungisoft.coffeecompass.configuration;
 
-import javax.servlet.Filter;
+import jakarta.servlet.Filter;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 

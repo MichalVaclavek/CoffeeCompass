@@ -1,6 +1,7 @@
 package cz.fungisoft.coffeecompass.serviceimpl.image;
 
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
+import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.serviceimpl.CoffeeSiteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import cz.fungisoft.coffeecompass.repository.ImageRepository;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.image.ImageResizeAndRotateService;
 import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,12 +22,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Base64;
-import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.transaction.Transactional;
-import javax.validation.ValidationException;
+import jakarta.transaction.Transactional;
+import jakarta.validation.ValidationException;
 
 /**
  * Sluzba pro praci s objekty Image, obrazek CoffeeSitu. Ukladani, mazani, konverze na Base64String apod.
@@ -35,7 +35,7 @@ import javax.validation.ValidationException;
  *
  */
 @Service("imageFileStorageService")
-@Log4j2
+@Slf4j
 public class ImageStorageServiceImpl implements ImageStorageService {
 
     private final ImageRepository imageRepo;
@@ -216,17 +216,6 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     }
     
     @Override
-    public Image getImageById(Integer imageID) {
-        return imageRepo.findById(imageID).get();
-    }
-   
-    @Override
-    public String getImageAsBase64(Integer imageID) {
-        Image imFromDB = getImageById(imageID);
-        return convertImageToBase64(imFromDB);
-    }
-    
-    @Override
     public String getImageAsBase64ForSiteId(Long siteID) {
         return convertImageToBase64(imageRepo.getImageForSite(siteID));
     }
@@ -236,6 +225,11 @@ public class ImageStorageServiceImpl implements ImageStorageService {
         Image image = getImageForSiteId(siteId);
         return (image != null) ? image.getImageBytes() : null;
     }
+
+    @Override
+    public Optional<byte[]> getImageAsBytesForSiteExternalId(String siteExternalId) {
+        return coffeeSiteService.findOneByExternalId(siteExternalId).map(CoffeeSite::getId).map(this::getImageAsBytesForSiteId);
+    }
     
     /**
      * Conversion of the Image bytes into "standard" Base64 String used in web browsers
@@ -244,12 +238,11 @@ public class ImageStorageServiceImpl implements ImageStorageService {
      * @return
      */
     private String convertImageToBase64(Image image) {
-        
         StringBuilder imageString = new StringBuilder();
         
         if (image != null) {
             imageString.append("data:image/png;base64,");
-            imageString.append(Base64.getEncoder().encodeToString(image.getImageBytes())); //bytes are image byte[] coming from DB 
+            imageString.append(Base64.getEncoder().encodeToString(image.getImageBytes())); //bytes are image byte[] coming from DB
         }
         return imageString.toString();
     }
@@ -289,7 +282,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     public Image getImageForSiteId(Long siteId) {
         return imageRepo.getImageForSite(siteId);
     }
-    
+
     @Transactional
     @Override
     public Integer getImageIdForSiteId(Long siteID) {
@@ -300,7 +293,14 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     public boolean isImageAvailableForSiteId(Long siteId) {
         return imageRepo.getNumOfImagesForSiteId(siteId) > 0;
     }
-    
+
+    @Override
+    public boolean isImageAvailableForSiteId(String coffeeSiteExtId) {
+        return coffeeSiteService.findOneByExternalId(coffeeSiteExtId)
+                                .map(CoffeeSite::getId)
+                                .map(this::isImageAvailableForSiteId).orElse(false);
+    }
+
     @Override
     public String getBaseImageURLPath() {
         return baseImageURLPath;

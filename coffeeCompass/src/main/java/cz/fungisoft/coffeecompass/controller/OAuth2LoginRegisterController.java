@@ -18,7 +18,7 @@ import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.exceptions.BadAuthorizationRequestException;
 import cz.fungisoft.coffeecompass.security.JwtTokenProviderService;
 import cz.fungisoft.coffeecompass.service.user.UserService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 
@@ -33,7 +33,7 @@ import lombok.extern.log4j.Log4j2;
  */
 @RequestMapping("/oauth2")
 @Controller
-@Log4j2
+@Slf4j
 public class OAuth2LoginRegisterController {
 
     private final UserService userService;
@@ -120,9 +120,7 @@ public class OAuth2LoginRegisterController {
         try {
             encodedErorrMessage = messages.getMessage(oAuth2ErrorMessageCode, new Object[] {oAuth2ErrorMessageParameter}, local);
         } catch (NoSuchMessageException ex) {
-            if (encodedErorrMessage.isEmpty()) {
-                encodedErorrMessage = oAuth2ErrorMessage;
-            }
+            encodedErorrMessage = oAuth2ErrorMessage;
         }
        
         attr.addFlashAttribute("oAuth2ErrorMessage", encodedErorrMessage);

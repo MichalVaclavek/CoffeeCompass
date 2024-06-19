@@ -9,7 +9,7 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
 import cz.fungisoft.coffeecompass.entity.User;
 
-import javax.persistence.QueryHint;
+import jakarta.persistence.QueryHint;
 
 /**
  * Interface to get Lists of found CoffeeSite in Pageable format. Extends Spring interface PagingAndSortingRepository.<br>

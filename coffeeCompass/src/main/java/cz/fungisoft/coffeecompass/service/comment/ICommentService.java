@@ -48,7 +48,10 @@ public interface ICommentService {
 	 * @param siteId id of the CoffeeSite for which the comments are required.
 	 * @return all Comments for given CoffeeSite id
 	 */
+
 	List<CommentDTO> getAllCommentsForSiteId(Long siteId);
+
+	List<CommentDTO> getAllCommentsForSiteId(String siteExtId);
 	
 	Page<CommentDTO> findAllCommentsForSitePaginated(CoffeeSite coffeeSite, Pageable pageable);
 	
@@ -84,15 +87,15 @@ public interface ICommentService {
 	 * @param comment {@link Comment} object to be deleted from repository/DB.
 	 * @retutn id of the CoffeeSite the deleted Comment belongs to.
 	 */
-	@PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_DBA')")
+	@PreAuthorize("hasRole('ADMIN') OR hasRole('DBA')")
 	Long deleteComment(Comment comment);
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_DBA')")
+	@PreAuthorize("hasRole('ADMIN') OR hasRole('DBA')")
 	Long deleteCommentById(Integer commentId);
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_DBA')")
+	@PreAuthorize("hasRole('ADMIN') OR hasRole('DBA')")
 	void deleteAllCommentsFromUser(Long userID);
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_DBA')")
+	@PreAuthorize("hasRole('ADMIN') OR hasRole('DBA')")
 	void deleteAllCommentsForSite(Long coffeeSiteID);
 }

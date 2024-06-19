@@ -387,8 +387,9 @@ ALTER TABLE coffeecompass.typ_podniku
 -- DROP TABLE IF EXISTS coffeecompass.coffee_site;
 
 CREATE TABLE IF NOT EXISTS coffeecompass.coffee_site (
-  id serial NOT NULL,
-  created_on timestamp(0) without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    id serial NOT NULL,
+    ext_id character varying(128) COLLATE pg_catalog."default" DEFAULT NULL::character varying,
+    created_on timestamp(0) without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_on timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
     canceled_on timestamp(0) without time zone,
     status_zaznamu_id bigint NOT NULL DEFAULT '4'::bigint,
@@ -408,6 +409,7 @@ CREATE TABLE IF NOT EXISTS coffeecompass.coffee_site (
     casova_pristupnost_hodiny character varying(50) COLLATE pg_catalog."default" DEFAULT NULL::character varying,
     komentar_autora character varying(240) COLLATE pg_catalog."default" DEFAULT NULL::character varying,
     pocet_kavovych_automatu_vedle_sebe integer,
+    number_of_images integer DEFAULT 0,
     typ_lokality_id bigint,
     site_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
     create_activate_notification_sent boolean DEFAULT true,

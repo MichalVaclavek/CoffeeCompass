@@ -18,7 +18,7 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.service.geocoding.GeoCodingService;
 import cz.fungisoft.coffeecompass.service.notifications.FirebaseNotificationService;
 import cz.fungisoft.coffeecompass.service.notifications.TopicsForPushNotificationsService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Listens for new activated CoffeeSites events and sends push notifications via Firebase<br>
@@ -27,7 +27,7 @@ import lombok.extern.log4j.Log4j2;
  * @author Michal Vaclavek
  *
  */
-@Log4j2
+@Slf4j
 @Component
 public class NewCoffeeSiteEventListener implements ApplicationListener<OnNewCoffeeSiteEvent> {
     

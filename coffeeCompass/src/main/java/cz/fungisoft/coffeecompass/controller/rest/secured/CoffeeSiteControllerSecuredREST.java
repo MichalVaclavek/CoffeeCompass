@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import cz.fungisoft.coffeecompass.validators.ListInputSize;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -49,7 +49,8 @@ import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 @Tag(name = "CoffeeSiteCRUD", description = "Coffee site REST CRUD operations")
 @RestController
 @Validated
-@RequestMapping("/rest/secured/site")
+//@RequestMapping("/rest/secured/site")
+@RequestMapping("${site.coffeesites.baseurlpath.rest}" + "/secured/site")
 public class CoffeeSiteControllerSecuredREST  {
 
     private static final Logger log = LoggerFactory.getLogger(CoffeeSiteControllerSecuredREST.class);
@@ -159,9 +160,9 @@ public class CoffeeSiteControllerSecuredREST  {
     
 
     @PutMapping("/update/{id}") // Mapovani http PUT na DB operaci UPDATE tj. zmena zaznamu c. id polozkou coffeeSite, napr. http://localhost:8080/rest/secured/site/update/2
-    public ResponseEntity<CoffeeSiteDTO> updateRest(@PathVariable Long id, @Valid @RequestBody CoffeeSiteDTO coffeeSite,  Locale locale) {
+    public ResponseEntity<CoffeeSiteDTO> updateCoffeeSite(@PathVariable Long id, @Valid @RequestBody CoffeeSiteDTO coffeeSite, Locale locale) {
         
-        coffeeSite.setId(id);
+//        coffeeSite.setId(id);
         
         CoffeeSite cs = coffeeSiteService.updateSite(coffeeSite);
         if (cs != null) {
@@ -170,7 +171,21 @@ public class CoffeeSiteControllerSecuredREST  {
                                                                   .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
             
         } else {
-            log.error("Coffee site update failed. Coffee site id {}", coffeeSite.getId());
+            log.error("Coffee site update failed. Coffee site id {}", id);
+            throw new BadRESTRequestException(messages.getMessage("coffeesite.update.rest.error", null, locale));
+        }
+    }
+
+    @PutMapping("/update/{externalId}") // Mapovani http PUT na DB operaci UPDATE tj. zmena zaznamu c. id polozkou coffeeSite, napr. http://localhost:8080/rest/secured/site/update/2
+    public ResponseEntity<CoffeeSiteDTO> updateCoffeeSite(@PathVariable String externalId, @Valid @RequestBody CoffeeSiteDTO coffeeSite, Locale locale) {
+        CoffeeSite cs = coffeeSiteService.updateSite(coffeeSite);
+        if (cs != null) {
+            log.info("Coffee site update successful.");
+            return coffeeSiteService.findOneToTransfer(cs.getId()).map(csDTO ->  new ResponseEntity<>(csDTO, HttpStatus.CREATED))
+                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
+        } else {
+            log.error("Coffee site update failed. Coffee site external-id {}", externalId);
             throw new BadRESTRequestException(messages.getMessage("coffeesite.update.rest.error", null, locale));
         }
     }

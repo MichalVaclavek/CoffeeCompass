@@ -14,11 +14,11 @@ import cz.fungisoft.coffeecompass.entity.ContactMeMessage;
 import cz.fungisoft.coffeecompass.repository.ContactMeMessageRepository;
 import cz.fungisoft.coffeecompass.service.IContactMeMessageService;
 import cz.fungisoft.coffeecompass.service.email.ISendEmailService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 @Service("contactMeMessageService")
 @Transactional
-@Log4j2
+@Slf4j
 public class ContactMeMessageServiceImpl implements IContactMeMessageService {
 
     private final ContactMeMessageRepository contactMeMessageRepo;

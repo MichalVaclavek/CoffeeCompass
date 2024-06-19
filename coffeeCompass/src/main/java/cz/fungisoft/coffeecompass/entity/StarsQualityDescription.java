@@ -5,11 +5,11 @@ package cz.fungisoft.coffeecompass.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 import lombok.Data;
 import org.hibernate.annotations.Cache;
@@ -23,7 +23,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  */
 @Data
 @Entity
-@javax.persistence.Cacheable
+@jakarta.persistence.Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="stars_hodnoceni_kvality", schema="coffeecompass")
 public class StarsQualityDescription {

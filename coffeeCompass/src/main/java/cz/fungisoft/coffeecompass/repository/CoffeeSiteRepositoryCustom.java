@@ -66,7 +66,6 @@ public interface CoffeeSiteRepositoryCustom {
 
     /**
      * Varianta zakladniho dotazu, kdy se k zakladnim vyhledavacim parametrum, jako je poloha, pridava jeste vyhledavani podle:
-     *  {@link CoffeeSort},
      *  {@link CoffeeSiteStatus},
      *  {@link CoffeeSiteRecordStatus}.<br>
      * Vyuzito pro vyhledavani v mape, kdy uzivatel zada vyhledavani podle mesta. Z mapy.cz API se ziskaji souradnice tohoto mesta
@@ -75,7 +74,6 @@ public interface CoffeeSiteRepositoryCustom {
      * @param sirka
      * @param delka
      * @param rangeMeters
-     * @param sort
      * @param siteStatus
      * @param csRecordStatus
      * @param cityName
@@ -83,7 +81,6 @@ public interface CoffeeSiteRepositoryCustom {
      * @return
      */
     List<CoffeeSite> findSitesWithSortAndSiteStatusAndRangeAndCity(double sirka, double delka, long rangeMeters,
-                                                                          CoffeeSort sort,
                                                                           CoffeeSiteStatus siteStatus,
                                                                           CoffeeSiteRecordStatus csRecordStatus,
                                                                           String cityName);

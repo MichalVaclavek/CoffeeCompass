@@ -8,11 +8,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 import cz.fungisoft.coffeecompass.configuration.JwtAndOAuth2Properties;
 import cz.fungisoft.coffeecompass.exceptions.BadAuthorizationRequestException;
 import cz.fungisoft.coffeecompass.security.JwtTokenProviderService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
@@ -35,7 +35,7 @@ import java.util.Optional;
  * @author Michal Václavek
  */
 @Component
-@Log4j2
+@Slf4j
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtTokenProviderService jwtTokenProviderService;

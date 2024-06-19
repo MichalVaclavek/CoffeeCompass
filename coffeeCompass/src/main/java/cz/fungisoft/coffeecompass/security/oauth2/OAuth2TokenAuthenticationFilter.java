@@ -10,12 +10,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
 import cz.fungisoft.coffeecompass.security.JwtTokenProviderService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -27,7 +27,7 @@ import java.io.IOException;
  * @author https://www.callicoder.com/spring-boot-security-oauth2-social-login-part-2/
  *
  */
-@Log4j2
+@Slf4j
 public class OAuth2TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProviderService jwtTokenProviderService;
@@ -44,7 +44,6 @@ public class OAuth2TokenAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        
         try {
             String jwt = getJwtFromRequest(request);
 

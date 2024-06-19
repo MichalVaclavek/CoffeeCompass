@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
       <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -123,29 +122,29 @@
 				          
 			            <div class="w3-cell-row w3-margin-top">
 			                      
-				           <div class="w3-cell">
-					       		<div class="w3-margin-top">
-						        	<label for="CoffeeSort" th:text="#{sitesearch.coffeeSort}">Coffee sorts</label>
-						        	<input id="selectSortCheckBox"
-						                	   type="checkbox"
-						                       th:checked="*{sortSelected}"
-						                       th:field="*{sortSelected}"
-						                       class="w3-check"/>
-					            </div>
-					                       
-					            <div>
-					              	<!-- <select id="selectSort"  style="visibility:hidden; width:50%" th:field="*{coffeeSort}" disabled class="w3-select"> -->
-					               	<select id="selectSort"
-					               			style="display:none;"
-					               			th:field="*{coffeeSort}"
-					               			class="w3-select">
-					            		<option th:each="coffeeSort : ${allCoffeeSorts}" 
-					               	    		th:value="${coffeeSort}"
-					                   			th:text="${coffeeSort}">Site status</option>
-					               	</select>
-					            </div>
-				             
-				          </div>
+<!--				           <div class="w3-cell">-->
+<!--					       		<div class="w3-margin-top">-->
+<!--						        	<label for="CoffeeSort" th:text="#{sitesearch.coffeeSort}">Coffee sorts</label>-->
+<!--						        	<input id="selectSortCheckBox"-->
+<!--						                	   type="checkbox"-->
+<!--						                       th:checked="*{sortSelected}"-->
+<!--						                       th:field="*{sortSelected}"-->
+<!--						                       class="w3-check"/>-->
+<!--					            </div>-->
+<!--					                       -->
+<!--					            <div>-->
+<!--					              	&lt;!&ndash; <select id="selectSort"  style="visibility:hidden; width:50%" th:field="*{coffeeSort}" disabled class="w3-select"> &ndash;&gt;-->
+<!--					               	<select id="selectSort"-->
+<!--					               			style="display:none;"-->
+<!--					               			th:field="*{coffeeSort}"-->
+<!--					               			class="w3-select">-->
+<!--					            		<option th:each="coffeeSort : ${allCoffeeSorts}" -->
+<!--					               	    		th:value="${coffeeSort}"-->
+<!--					                   			th:text="${coffeeSort}">Site status</option>-->
+<!--					               	</select>-->
+<!--					            </div>-->
+<!--				          </div>-->
+
 				       </div>
 			        
 			    	</form>
@@ -247,25 +246,25 @@
     </script>
     
      <!-- Script to handle visibility of Options for coffee sort selection --> 
-     <script type="text/javascript">
-        var selectSortCheckBox = document.getElementById("selectSortCheckBox");
-     
-        selectSortCheckBox.addEventListener("click", function(e) {        	
-       	   changeVisibility(document.getElementById("selectSort"));
-        });
-     
-     	var changeVisibility = function(node) {
-     		/* node.disabled = !node.disabled; */
-     		if ( node.style.display == "none" ) {
-     			node.style.display = "block";
-     		} else {
-     			node.style.display = "none";
-     		}
-     	}
-     </script>
+<!--     <script type="text/javascript">-->
+<!--        var selectSortCheckBox = document.getElementById("selectSortCheckBox");-->
+<!--     -->
+<!--        selectSortCheckBox.addEventListener("click", function(e) {        	-->
+<!--       	   changeVisibility(document.getElementById("selectSort"));-->
+<!--        });-->
+<!--     -->
+<!--     	var changeVisibility = function(node) {-->
+<!--     		/* node.disabled = !node.disabled; */-->
+<!--     		if ( node.style.display == "none" ) {-->
+<!--     			node.style.display = "block";-->
+<!--     		} else {-->
+<!--     			node.style.display = "none";-->
+<!--     		}-->
+<!--     	}-->
+<!--     </script>-->
      
      <!-- Script to show map and markers of found CoffeeSites. Introduces all map related functions used later --> 
-     <script type="text/javascript" src="/js/search_maps_support.js"></script> 
+     <script type="text/javascript" src="/js/search_maps_support_new.js"></script>
      
      <script type="text/javascript">
      	var latInput = document.getElementById("lat1");

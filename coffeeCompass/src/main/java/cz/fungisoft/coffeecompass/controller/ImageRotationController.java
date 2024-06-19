@@ -1,66 +1,46 @@
 package cz.fungisoft.coffeecompass.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import cz.fungisoft.coffeecompass.serviceimpl.images.ImagesService;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import cz.fungisoft.coffeecompass.entity.Image;
-import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.image.ImageResizeAndRotateService;
 import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
 
 @Controller
 public class ImageRotationController {
+
+    private static final String REDIRECT_SHOW_SITE_VIEW = "redirect:/showSite/";
+
+    private final ImagesService imagesService;
+
     
-    private final ImageStorageService imageStorageService;
-    
-    private final ImageResizeAndRotateService imageRotateService;
-    
-    @Autowired
-    public ImageRotationController(ImageStorageService imageStorageService,
-                                   ImageResizeAndRotateService imageRotateService,
-                                   CoffeeSiteService cofeeSiteService) {
+    public ImageRotationController(ImagesService imagesService) {
         super();
-        this.imageStorageService = imageStorageService;
-        this.imageRotateService = imageRotateService;
+        this.imagesService = imagesService;
     }
 
     /**
      * 
-     * @param siteID
      * @return
      */
-    @PutMapping("/rotateImageLeft/") // http://localhost:8080/rotateImageLeft/?siteID=1
-    public String rotateLeftAndSave(@RequestParam Long siteID) {
-        Image siteImage = imageStorageService.getImageForSiteId(siteID);
-
-        if (siteImage != null) {
-            // Rotate
-            Image rotatedImage = imageRotateService.rotate90DegreeLeft(siteImage);
-            // Save new, rotated
-            imageStorageService.saveImageToDB(rotatedImage);
-        }
-
-        return "redirect:/showSite/" + siteID;
+    @PutMapping({"/rotateImageLeft/{siteExternalId}", "/rotateImageLeft/{siteExternalId}/selectedImageExtId/{selectedImageExtId}" }) // http://localhost:8080/rotateImageLeft/Ddfdf55/selectedImageExtId/xz&imageExternalId=as
+    public String rotateLeft(@PathVariable(name = "siteExternalId") String siteExternalId,
+                             @PathVariable(required = false) String selectedImageExtId) {
+        imagesService.rotateImageLeft(selectedImageExtId);
+        return REDIRECT_SHOW_SITE_VIEW + siteExternalId + "/selectedImageExtId/" + selectedImageExtId;
     }
-    
+
     /**
-     * 
-     * @param siteID
+     *
      * @return
      */
-    @PutMapping("/rotateImageRight/") // http://localhost:8080/rotateImageRight/?siteID=2
-    public String rotateRightAndSave(@RequestParam Long siteID) {
-        Image siteImage = imageStorageService.getImageForSiteId(siteID);
-        
-        if (siteImage != null) {
-            // Rotate
-            Image rotatedImage = imageRotateService.rotate90DegreeRight(siteImage);
-            // Save new, rotated
-            imageStorageService.saveImageToDB(rotatedImage);
-        }
-
-        return "redirect:/showSite/" + siteID;
+    @PutMapping( {"/rotateImageRight/{siteExternalId}", "/rotateImageRight/{siteExternalId}/selectedImageExtId/{selectedImageExtId}" }) // http://localhost:8080/rotateImageRight/siteExternalId=xz&imageExternalId=as
+    public String rotateRight(@PathVariable(name = "siteExternalId") String siteExternalId,
+                              @PathVariable(required = false) String selectedImageExtId) {
+        imagesService.rotateImageRight(selectedImageExtId);
+        return REDIRECT_SHOW_SITE_VIEW + siteExternalId + "/selectedImageExtId/" + selectedImageExtId;
     }
 }

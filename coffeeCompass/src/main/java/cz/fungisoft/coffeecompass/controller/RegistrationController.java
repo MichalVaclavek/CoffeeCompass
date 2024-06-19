@@ -3,7 +3,7 @@ package cz.fungisoft.coffeecompass.controller;
 import java.util.Locale;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,12 +39,8 @@ public class RegistrationController {
     private final ValidateTokenService validateTokenService;
     
     private final UserSecurityService userSecurityService;
-    
-    /**
-     * 
-     * @param userService
-     * @param verificationTokenService
-     */
+
+
     public RegistrationController(UserService userService,
                                   TokenCreateAndSendEmailService verificationTokenService,
                                   ValidateTokenService validateTokenService,

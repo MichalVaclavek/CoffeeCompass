@@ -21,7 +21,8 @@ import cz.fungisoft.coffeecompass.service.weather.WeatherApiService;
  */
 @Tag(name = "Coffee site Weather", description = "Get info about current weather on coffee site's location")
 @RestController
-@RequestMapping("/rest/weather") 
+//@RequestMapping("/rest/weather")
+@RequestMapping("${site.coffeesites.baseurlpath.rest}" + "/weather")
 public class WeatherControllerREST {
     
     private final WeatherApiService weatherService;
@@ -30,7 +31,6 @@ public class WeatherControllerREST {
         super();
         this.weatherService = weatherService;
     }
-    
     
     @GetMapping("/site/{id}")
     @ResponseStatus(HttpStatus.OK)

@@ -59,7 +59,7 @@
 	        <thead>        
 	        <tbody>
 		        <tr th:each="site : ${coffeeSitePage.content}" style="cursor: pointer"
-		        	th:onclick="'javascript:rowClicked(\'' + ${site.id} + '\');'"> <!-- Reference na /showSite/{site.id} viz nize -->
+		        	th:onclick="rowClicked([[${site.externalId}]]);"> <!-- Reference na /showSite/{site.externalId} viz nize -->
 	
 				  <td th:text="${site.siteName}">SiteName</td>
 				  <td th:text="${site.statusZarizeni.status}">SiteStatus</td>
@@ -80,7 +80,7 @@
 		          <!-- Form to generate GET http request with Modify button -->
 		          <!-- Available only for logged-in user who created the site or for ROLE_DBA or ROLE_ADMIN user -->
 		          <td  th:if="${site.canBeModified}">
-		            <form action="#" th:action="@{'/modifySite/' + ${site.id}}" th:method="GET" >
+		            <form action="#" th:action="@{'/modifySite/' + ${site.externalId}}" th:method="GET" >
 		              <input type="hidden" name="_method" value="get" />
 		              <button type="submit" id="submitButton" th:text="#{site.modify}" class="w3-btn w3-blue w3-round w3-small">X</button>
 		            </form>
@@ -89,7 +89,7 @@
 		          <!-- Form to generate GET http request with Delete button -->
 		          <!-- Available only for logged-in user who created the site or for ROLE_DBA or ROLE_ADMIN user -->
 		          <td  th:if="${site.canBeDeleted}">
-		            <form action="#" th:action="@{'/finalDeleteSite/' + ${site.id}}" th:method="DELETE" >
+		            <form action="#" th:action="@{'/finalDeleteSite/' + ${site.externalId}}" th:method="DELETE" >
 		              <input type="hidden" name="_method" value="delete" />
 		              <button type="submit" id="submitButton" th:text="#{site.delete}" class="w3-btn w3-red w3-round w3-small">X</button>
 		            </form>
@@ -116,14 +116,14 @@
 	</div>
 	
 	
-	<!-- Reference to /showSite/{site.id} after table row click --> 
+	<!-- Reference to /showSite/{site.externalId} after table row click --> 
 	<script>
        function rowClicked(value) {
           location.href = "/showSite/" + value;
        }
     </script>
     
-	<!-- <div th:replace="fragments/footer :: footer"/>  --> 
+	<!-- <div th:replace="~{fragments/footer :: footer}"/>  -->
 	
   </body>
   

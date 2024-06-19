@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import cz.fungisoft.coffeecompass.entity.CoffeeSort;
 import org.springframework.data.jpa.repository.QueryHints;
 
-import javax.persistence.QueryHint;
+import jakarta.persistence.QueryHint;
 
 /**
  * @author Michal Vaclavek

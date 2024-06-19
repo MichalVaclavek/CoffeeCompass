@@ -11,7 +11,6 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import cz.fungisoft.coffeecompass.controller.models.AuthProviders;
 import cz.fungisoft.coffeecompass.entity.User;
@@ -58,7 +57,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
     
     /**
-     * Creates new user or updates current user, which is successfuly logged-in within 'social' OAuth2 provider.
+     * Creates new user or updates current user, which is successfully logged-in within 'social' OAuth2 provider.
      * 
      * @param oAuth2UserRequest
      * @param oAuth2User
@@ -67,7 +66,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
         
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(oAuth2UserRequest.getClientRegistration().getRegistrationId(), oAuth2User.getAttributes());
-        if (StringUtils.isEmpty(oAuth2UserInfo.getEmail())) {
+        if (oAuth2UserInfo.getEmail().isEmpty()) {
             OAuth2AuthenticationProcessingException ex = new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider " + oAuth2UserRequest.getClientRegistration().getRegistrationId());
             ex.setLocalizedMessageCode("oauth2.emailnotreturned.message");
             ex.setProviderName(oAuth2UserRequest.getClientRegistration().getRegistrationId());

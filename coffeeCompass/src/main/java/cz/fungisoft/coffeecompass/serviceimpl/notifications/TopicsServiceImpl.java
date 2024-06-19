@@ -3,8 +3,8 @@ package cz.fungisoft.coffeecompass.serviceimpl.notifications;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
-
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +15,6 @@ import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.repository.FirebaseDeviceTokenRepository;
 import cz.fungisoft.coffeecompass.repository.FirebaseTopicRepository;
 import cz.fungisoft.coffeecompass.service.notifications.TopicsForPushNotificationsService;
-import lombok.extern.log4j.Log4j2;
 
 /**
  * Saves/deletes Topics for push notifications. Can retrieve Topics according token and/or user's tokens.
@@ -25,7 +24,7 @@ import lombok.extern.log4j.Log4j2;
  */
 @Service
 @Transactional
-@Log4j2
+@Slf4j
 public class TopicsServiceImpl implements TopicsForPushNotificationsService {
 
     private final FirebaseTopicRepository firebaseTopicRepository;

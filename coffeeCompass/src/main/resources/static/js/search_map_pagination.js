@@ -72,7 +72,7 @@ insertTableRow = function(site) {
 	// Insert a row in the table at the last row
 	var newRow   = tableBodyRef.insertRow();
 	newRow.setAttribute("style", "cursor: pointer;");
-	newRow.onclick = function() {rowClicked(site.id)};
+	newRow.onclick = function() {rowClicked(site.externalId)};
 	
 	insertTableRowCell(newRow, site.averageStarsWithNumOfHodnoceni.common);
 	insertTableRowCell(newRow, site.distFromSearchPoint);
@@ -107,7 +107,7 @@ createStringFromList = function(listOfValues, property) {
 }
 
 
-/* Main function - inserts all items of foundSitesinto body table tableBodyReference  */
+/* Main function - inserts all items of foundSites into body table tableBodyReference  */
 /* and shows page n. 1 of the foundSites in the table */
 insertSitesToTable = function(foundSites, tableBodyReferenceLoc)
 {

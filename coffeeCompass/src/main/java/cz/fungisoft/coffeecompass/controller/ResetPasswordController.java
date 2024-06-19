@@ -3,8 +3,8 @@ package cz.fungisoft.coffeecompass.controller;
 import java.util.Locale;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 import org.springframework.context.MessageSource;
 import org.springframework.mail.MailException;
@@ -28,7 +28,7 @@ import cz.fungisoft.coffeecompass.service.tokens.TokenCreateAndSendEmailService;
 import cz.fungisoft.coffeecompass.service.tokens.ValidateTokenService;
 import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.user.UserService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Controller to handle URLs for forgot password procedure.<br>
@@ -41,7 +41,7 @@ import lombok.extern.log4j.Log4j2;
  *
  */
 @Controller
-@Log4j2
+@Slf4j
 public class ResetPasswordController {
 
     private static final String FORGOT_PASSWD_VIEW = "forgotPassword";

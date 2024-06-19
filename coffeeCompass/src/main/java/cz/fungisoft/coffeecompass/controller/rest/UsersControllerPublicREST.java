@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
@@ -35,7 +35,8 @@ import cz.fungisoft.coffeecompass.service.user.UserService;
 
 @Tag(name = "Users", description = "User management")
 @RestController
-@RequestMapping("/rest/public/user")
+//@RequestMapping("/rest/public/user")
+@RequestMapping("${site.coffeesites.baseurlpath.rest}" + "/public/user")
 public class UsersControllerPublicREST {
 
     @NonNull
@@ -102,7 +103,6 @@ public class UsersControllerPublicREST {
     
     @PostMapping("/login")
     public ResponseEntity<AuthRESTResponse> login(@Valid @RequestBody SignUpAndLoginRESTDto loginRequest, Locale locale) {
-        
         String token = authentication.login(loginRequest.getUserName(), loginRequest.getPassword(), loginRequest.getDeviceID())
                                      .orElseThrow(() -> new BadAuthorizationRESTRequestException(messages.getMessage("error.user.login.failed", null, locale)));
         

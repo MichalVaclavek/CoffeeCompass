@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -34,7 +34,7 @@ import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
  *
  */
 @Service("userSecurityService")
-@Log4j2
+@Slf4j
 public class UserSecurityServiceImpl implements UserSecurityService {
 
     private final IAuthenticationFacade authenticationFacade;

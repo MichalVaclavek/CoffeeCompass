@@ -4,7 +4,7 @@ package cz.fungisoft.coffeecompass.controller.rest.secured;
 import java.util.List;
 import java.util.Optional;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
@@ -41,8 +41,9 @@ import cz.fungisoft.coffeecompass.service.user.UserService;
  *
  */
 @Tag(name = "UserSecured", description = "Users administration")
-@RequestMapping("/rest/secured/user")
 @RestController
+//@RequestMapping("/rest/secured/user")
+@RequestMapping("${site.coffeesites.baseurlpath.rest}" + "/secured/user")
 public class UserControllerSecuredREST {
 
     private static final Logger logger = LoggerFactory.getLogger(UserControllerSecuredREST.class); 

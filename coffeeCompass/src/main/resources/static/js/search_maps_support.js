@@ -130,8 +130,8 @@ map.insertSites = function(foundSites)
 			var c = SMap.Coords.fromWGS84(site.zemDelka, site.zemSirka); /* Souřadnice značky, z textového formátu souřadnic */
 
 		    // prirazeni id jednotlivemu markeru - vlastni id, jinak se generuje nahodne
-			var znacka = new SMap.Marker(c, site.id, getNormalMarkerImage(site));
-            var znackaSelected = new SMap.Marker(c, site.id, getSelectedMarkerImage(site));
+			var znacka = new SMap.Marker(c, site.externalId, getNormalMarkerImage(site));
+            var znackaSelected = new SMap.Marker(c, site.externalId, getSelectedMarkerImage(site));
 
 			createMarkerCards(site);
 
@@ -204,7 +204,7 @@ createMarkerCards = function(site) {
 
     // Inserts link to CoffeeSite details page
     var footerText = "<a href='" + base_url + "/showSite/";
-    footerText += site.id + "'>Další detaily ...</a>";
+    footerText += site.externalId + "'>Další detaily ...</a>";
 
     card.getFooter().innerHTML = footerText;
 

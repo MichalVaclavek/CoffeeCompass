@@ -3,11 +3,6 @@ package cz.fungisoft.coffeecompass.dto;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -20,6 +15,10 @@ import cz.fungisoft.coffeecompass.entity.NextToMachineType;
 import cz.fungisoft.coffeecompass.entity.OtherOffer;
 import cz.fungisoft.coffeecompass.entity.PriceRange;
 import cz.fungisoft.coffeecompass.entity.SiteLocationType;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 /**
@@ -31,7 +30,7 @@ import lombok.Data;
 @Data
 public class CoffeeSiteDTO {
 
-    private Long id;
+    private String externalId; // default empty, not saved in DB
 
     @Size(min=3, max=50)
     private String siteName;
@@ -71,7 +70,7 @@ public class CoffeeSiteDTO {
     
     @NotNull
     @DecimalMax(value="180.0")
-    @DecimalMin(value="-180.0") 
+    @DecimalMin(value="-180.0")
     private Double zemDelka;
 
     @NotNull

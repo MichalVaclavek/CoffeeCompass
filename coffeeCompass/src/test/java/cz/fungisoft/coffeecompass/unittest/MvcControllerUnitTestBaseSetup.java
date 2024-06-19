@@ -6,21 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
-import org.springframework.security.web.csrf.CsrfFilter;
-import org.springframework.security.web.util.matcher.AndRequestMatcher;
-import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.web.context.WebApplicationContext;
 
 import cz.fungisoft.coffeecompass.security.JwtTokenProviderService;
@@ -36,11 +24,6 @@ import cz.fungisoft.coffeecompass.service.user.UserProfileService;
 import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.weather.WeatherApiService;
 import cz.fungisoft.coffeecompass.serviceimpl.user.CustomOAuth2UserService;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
 
 /**
  * Basic setup for all Unit tests for testing Mvc Controllers, i.e. using mvcMock
@@ -157,5 +140,4 @@ public abstract class MvcControllerUnitTestBaseSetup {
 
     @MockBean
     protected DataDownloadSizeService dataDownloadSizeService;
-
 }

@@ -39,7 +39,8 @@ import cz.fungisoft.coffeecompass.service.comment.ICommentService;
  */
 @Tag(name = "Stars and comments", description = "Stars rating and comments of the coffee site")
 @RestController 
-@RequestMapping("/rest/public/starsAndComments")
+//@RequestMapping("/rest/public/starsAndComments")
+@RequestMapping("${site.coffeesites.baseurlpath.rest}" + "/public/starsAndComments")
 public class CSStarsCommentsControllerPublicREST {
 
     private final ICommentService commentsService;

@@ -39,8 +39,8 @@ import cz.fungisoft.coffeecompass.service.SiteLocationTypeService;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
 //import io.swagger.annotations.Api;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 /**
  * Třída/kontroler, který lze použit v případě využití REST rozhraní<br>
@@ -53,7 +53,8 @@ import javax.validation.constraints.Min;
  */
 @Tag(name = "CoffeeSite", description = "Coffee site operations")
 @RestController 
-@RequestMapping("/rest/site") 
+//@RequestMapping("/rest/site")
+@RequestMapping("${site.coffeesites.baseurlpath.rest}" + "/site")
 public class CoffeeSiteControllerPublicREST {
     
     private static final Logger log = LoggerFactory.getLogger(CoffeeSiteControllerPublicREST.class);

@@ -9,6 +9,7 @@ import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
 import cz.fungisoft.coffeecompass.entity.User;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Serisni vrstva pro ziskavani udaju u prumernem hodnoceni urciteho CoffeeSite nebo<br>
@@ -19,23 +20,14 @@ import java.util.Optional;
  */
 public interface IStarsForCoffeeSiteAndUserService {
 
-    /**
-     * Hodnoceni jednoho uzivatele pro jeden CoffeeSite.
-     * 
-     * @param coffeeSite
-     * @param user
-     * @return
-     */
-    Integer getStarsForCoffeeSiteAndUser(CoffeeSite coffeeSite, User user);
     Integer getStarsForCoffeeSiteAndUser(Long coffeeSiteId, Long userId);
     
     String getStarsForCoffeeSiteAndUser(CoffeeSiteDTO coffeeSite, User user);
-    Optional<String> getStarsStringForCoffeeSiteAndLoggedInUser(CoffeeSiteDTO coffeeSite);
-    StarsQualityDescription getStarsForCoffeeSiteAndLoggedInUser(CoffeeSiteDTO coffeeSite);
+    StarsQualityDescription getStarsForCoffeeSiteAndLoggedInUser(CoffeeSite coffeeSite);
     
-    void saveStarsForCoffeeSiteAndLoggedInUser(Long coffeeSiteID, Integer stars);
+    void saveStarsForCoffeeSiteAndLoggedInUser(String coffeeSiteExtId, Integer stars);
     void saveStarsForCoffeeSiteAndUser(CoffeeSite coffeeSite, User user, int stars);
-    StarsForCoffeeSiteAndUser updateStarsForCoffeeSiteAndUser(Long coffeeSiteID, Long userId, int stars);
+    StarsForCoffeeSiteAndUser updateStarsForCoffeeSiteAndUser(String coffeeSiteExtId, Long userId, int stars);
     
     /**
      * Updates stars rating for CoffeeSite included in CommentsDTO object
@@ -47,8 +39,7 @@ public interface IStarsForCoffeeSiteAndUserService {
     
     void cancelStarsForCoffeeSite(CoffeeSite coffeeSite, User user);
     
-    double avgStarsForSite(Long coffeeSiteID);
-    double avgStarsForUser(Long userID);
-    
-    AverageStarsForSiteDTO getStarsAndNumOfHodnoceniForSite(Long coffeeSiteID);
+    double avgStarsForSite(UUID coffeeSiteExtId);
+
+    AverageStarsForSiteDTO getStarsAndNumOfHodnoceniForSite(UUID coffeeSiteExtId);
 }

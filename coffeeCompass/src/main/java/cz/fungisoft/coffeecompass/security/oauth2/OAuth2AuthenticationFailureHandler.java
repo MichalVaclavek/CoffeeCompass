@@ -8,12 +8,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 import cz.fungisoft.coffeecompass.configuration.JwtAndOAuth2Properties;
 import cz.fungisoft.coffeecompass.exceptions.OAuth2AuthenticationProcessingException;
 import cz.fungisoft.coffeecompass.utils.CookieUtils;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static cz.fungisoft.coffeecompass.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
@@ -27,7 +27,7 @@ import static cz.fungisoft.coffeecompass.security.oauth2.HttpCookieOAuth2Authori
  * @author Michal Vaclavek
  */
 @Component
-@Log4j2
+@Slf4j
 public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
@@ -56,9 +56,8 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
               .orElse((ouat2Properties.getOauth2().getDefaultErrorLoginRedirectURI())); 
           
         
-        if (exception instanceof OAuth2AuthenticationProcessingException) {
-            OAuth2AuthenticationProcessingException oAuth2Exception = (OAuth2AuthenticationProcessingException) exception;
-            redirectErrorUri = UriComponentsBuilder.fromUriString(redirectErrorUri) 
+        if (exception instanceof OAuth2AuthenticationProcessingException oAuth2Exception) {
+            redirectErrorUri = UriComponentsBuilder.fromUriString(redirectErrorUri)
                                                    .queryParam("oAuth2ErrorMessageCode", oAuth2Exception.getLocalizedMessageCode())
                                                    .queryParam("oAuth2ErrorMessageParameter", oAuth2Exception.getProviderName())
                                                    .build().toUriString();

@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
 import org.springframework.data.jpa.repository.QueryHints;
 
-import javax.persistence.QueryHint;
+import jakarta.persistence.QueryHint;
 
 public interface StarsQualityDescriptionRepository extends JpaRepository<StarsQualityDescription, Integer> {
 

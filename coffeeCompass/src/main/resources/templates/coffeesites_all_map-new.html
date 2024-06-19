@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+	  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-130556148-1"></script>
+	  <script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+		
+		  gtag('config', 'UA-130556148-1');
+	  </script>
+      
+      <div th:replace="~{fragments/header :: header-css}"/>
+
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+
+</head>
+
+<body>
+<div th:insert="~{fragments/header :: header}"/>
+	
+	<div class="w3-light-grey w3-margin-bottom w3-center">
+		<h2 th:text="#{site.show-all-map}" class="w3-container">All coffee sites</h2>
+	</div>
+	
+	    <div class="w3-row"> <!-- Main container for complete page layout  -->
+
+        <div class="w3-half w3-container"> <!-- Element to insert script for map -->
+            <!-- Element to show map - class="w3-display-topright" -->
+            <div id="map" class="w3-round w3-card-4" style="height: 600px; width: 100%;"></div> <!-- "height: 600px; width: 800px;" -->
+        </div>
+
+        <div class="w3-half w3-container">
+
+            <!--		Small version of site detail table to show data about site selected on map -->
+            <table class="w3-table w3-bordered w3-margin-right" style="border:2px solid brown;">
+                <tr>
+                    <td th:text="#{site.siteName}" class="w3-brown"></td>
+                    <td class="w3-right-align w3-brown w3-text-amber" style="font-weight: bold" id="siteName"></td>
+                </tr>
+
+                <tr>
+                    <td th:text="#{site.type}"></td>
+                    <td class="w3-right-align w3-sand" id="coffeeSiteType" style="font-weight: bold"></td>
+                </tr>
+
+                <tr>
+                    <td th:text="#{site.locationtype}"></td>
+                    <td class="w3-right-align w3-sand" id="locationType" style="font-weight: bold"></td>
+                </tr>
+
+                <tr>
+                    <td th:text="#{site.pricerange}"></td>
+                    <td class="w3-right-align w3-sand" id="priceRange" style="font-weight: bold"></td>
+                </tr>
+
+                <tr>
+                    <td th:text="#{site.openingDaysHours}"></td>
+                    <td class="w3-right-align w3-sand" id="pristupnostDnyHod" style="font-weight: bold"></td>
+                </tr>
+
+                <tr>
+                    <td th:text="#{site.city}"></td>
+                    <td class="w3-right-align w3-sand" id="mesto" style="font-weight: bold"></td>
+                </tr>
+
+                <tr>
+                    <td th:text="#{site.street}"></td>
+                    <td class="w3-right-align w3-sand" id="uliceCP" style="font-weight: bold"></td>
+                </tr>
+
+                <tr>
+                    <td th:text="#{site.stars}"></td>
+                    <td class="w3-right-align w3-sand">
+                        <span id="avgStars" style="font-weight: bold"></span>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Element for displaying list of all images of this CoffeeSite -->
+            <div class="w3-container w3-margin-top w3-margin-bottom">
+                <div class="w3-cell-row w3-panel w3-border w3-light-grey w3-round"
+                     id="imagesList">
+                    <span th:each="imageUrl : ${imageUrls}" class="w3-cell-middle">
+                        <img th:src="${imageUrl}" class="w3-round" style="width: 64px"/>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Picture of the CoffeeSite, if available -->
+            <div style="width:60%" class="w3-margin-top">
+                <img id="selectedImage" src="" alt="" class="w3-image w3-round"/>
+            </div>
+
+<!--            &lt;!&ndash; Picture of the CoffeeSite, if available &ndash;&gt;-->
+<!--            <div th:if="${selectedImageUrl != ''}" style="width:60%">-->
+<!--                &lt;!&ndash; CoffeeSite's selectedImage URL &ndash;&gt;-->
+<!--                <img id="selectedImage" th:src="${selectedImageUrl}" class="w3-image w3-round"/>-->
+<!--            </div>-->
+
+            <div th:if="${selectedImageUrl == ''}" th:text="#{site.noImage}"
+                 class="w3-small w3-display-middle" style="font-style: italic;">
+                No image available message.
+            </div>
+
+        </div>
+
+    </div> <!-- <div class="w3-container w3-row"> -->
+
+     <!-- Script to show map and markers of all CoffeeSites. Introduces all map related functions used later -->
+     <script type="text/javascript" src="/js/all_sites_map_support-new.js"></script>
+     
+     <script th:inline="javascript">
+	     map.create();
+	     /*<![CDATA[*/
+	     map.insertSites(/*[[${allSites}]]*/);
+	     /*]]>*/
+     </script>
+
+
+</body>
+</html>

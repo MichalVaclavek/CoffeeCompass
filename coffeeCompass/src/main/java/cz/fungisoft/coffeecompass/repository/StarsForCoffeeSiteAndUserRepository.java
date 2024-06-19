@@ -6,7 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import cz.fungisoft.coffeecompass.entity.StarsForCoffeeSiteAndUser;
 import org.springframework.data.jpa.repository.QueryHints;
 
-import javax.persistence.QueryHint;
+import jakarta.persistence.QueryHint;
+
+import java.util.UUID;
 
 /**
  * Interface s metodami pro cteni z DB repository pro objekty typu StarsForCoffeeSiteAndUser.
@@ -15,14 +17,23 @@ import javax.persistence.QueryHint;
  */
 public interface StarsForCoffeeSiteAndUserRepository extends JpaRepository<StarsForCoffeeSiteAndUser, Integer> {
 
+    @Query("select stcsu from StarsForCoffeeSiteAndUser stcsu where coffeeSite.externalId=?1 and user.id=?2")
+    StarsForCoffeeSiteAndUser getOneStarEvalForSiteAndUser(UUID coffeeSiteExtId, Long userID);
+
     @Query("select stcsu from StarsForCoffeeSiteAndUser stcsu where coffeeSite.id=?1 and user.id=?2")
-    StarsForCoffeeSiteAndUser getOneStarEvalForSiteAndUser(Long coffeeSiteID, Long userID);
+    StarsForCoffeeSiteAndUser getOneStarEvalForSiteAndUser(Long coffeeSiteId, Long userID);
 
     @Query("select avg(stars.numOfStars) from StarsForCoffeeSiteAndUser stcsu where coffeeSite.id=?1")
     double averageStarsForSiteID(Long coffeeSiteID);
 
+    @Query("select avg(stars.numOfStars) from StarsForCoffeeSiteAndUser stcsu where coffeeSite.externalId=?1")
+    double averageStarsForSiteID(UUID coffeeSiteExtId);
+
     @Query("select count(*) from StarsForCoffeeSiteAndUser stcsu where coffeeSite.id=?1")
     int getNumOfHodnoceniForSite(Long coffeeSiteID);
+
+    @Query("select count(*) from StarsForCoffeeSiteAndUser stcsu where coffeeSite.externalId=?1")
+    int getNumOfHodnoceniForSite(UUID coffeeSiteExtId);
     
     /**
      * Gets average stars evaluation for one USer for all CoffeeSites the user evaluated.

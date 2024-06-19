@@ -25,7 +25,7 @@ import com.google.gson.GsonBuilder;
 
 import cz.fungisoft.coffeecompass.controller.models.rest.PushNotificationRequest;
 import cz.fungisoft.coffeecompass.service.notifications.FirebaseNotificationService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Class/Service to immediate sending of messages/notifications over Firebase to given Topics for 
@@ -39,7 +39,7 @@ import lombok.extern.log4j.Log4j2;
  * @author Michal V.
  *
  */
-@Log4j2
+@Slf4j
 @Service
 public class FirebaseServiceImpl implements FirebaseNotificationService {
     

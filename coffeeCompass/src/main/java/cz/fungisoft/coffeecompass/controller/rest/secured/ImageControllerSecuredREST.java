@@ -25,8 +25,10 @@ import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
 */
 @Tag(name = "CoffeeSiteImage", description = "Coffee site image REST operations")
 @RestController 
-@RequestMapping("/rest/secured/image")
-public class ImageControllerSecuredREST {
+//@RequestMapping("/rest/secured/image")
+@RequestMapping("${site.coffeesites.baseurlpath.rest}" + "/secured/image")
+public class
+ImageControllerSecuredREST {
 
     private static final Logger log = LoggerFactory.getLogger(ImageControllerSecuredREST.class);
     

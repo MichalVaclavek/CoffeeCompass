@@ -12,7 +12,7 @@ import cz.fungisoft.coffeecompass.entity.StatisticsToShow.DBReturnPair;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
 import cz.fungisoft.coffeecompass.repository.UsersRepository;
 import cz.fungisoft.coffeecompass.service.StatisticsInfoService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Implements service to obtain needed statistical adn diagnostic info.
@@ -23,7 +23,7 @@ import lombok.extern.log4j.Log4j2;
  */
 @Service("statisticsInfoService")
 @Transactional
-@Log4j2
+@Slf4j
 public class StatisticsInfoServiceImpl implements StatisticsInfoService {
 
     private final CoffeeSiteRepository csRepo;

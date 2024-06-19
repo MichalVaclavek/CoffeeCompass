@@ -3,8 +3,9 @@
  */
 package cz.fungisoft.coffeecompass.controller.rest;
 
+import cz.fungisoft.coffeecompass.serviceimpl.images.ImagesService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,15 +27,19 @@ import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
  */
 @Tag(name = "Images", description = "Images of the coffee sites")
 @RestController
-@RequestMapping("/rest/image")
+@RequiredArgsConstructor
+//@RequestMapping("/rest/image")
+@RequestMapping("${site.coffeesites.baseurlpath.rest}" + "/image")
 public class ImageControllerPublicREST  {
 
     private final ImageStorageService imageStorageService;
 
-    @Autowired
-    public ImageControllerPublicREST(ImageStorageService storageService) {
-        this.imageStorageService = storageService;
-    }
+    private final ImagesService imagesService;
+
+//    @Autowired
+//    public ImageControllerPublicREST(ImageStorageService storageService) {
+//        this.imageStorageService = storageService;
+//    }
 
     
     /**
@@ -57,24 +62,20 @@ public class ImageControllerPublicREST  {
     /**
      * Returns image as byte array of the CoffeeSite of id=siteId
      * 
-     * @param siteId
+     * @param siteExternalId
      * @return
      */
-    @GetMapping("/bytes/{siteId}") // napr. http://coffeecompass.cz/rest/image/bytes/26
-    public ResponseEntity<byte[]> getImageAsBytesBySiteId(@PathVariable Long siteId) {
+    @GetMapping("/bytes/{siteExternalId}") // napr. http://coffeecompass.cz/rest/image/bytes/26
+    public ResponseEntity<byte[]> getImageAsBytesBySiteId(@PathVariable String siteExternalId) {
         
-        byte[] pic = imageStorageService.getImageAsBytesForSiteId(siteId);
+        byte[] pic = imageStorageService.getImageAsBytesForSiteExternalId(siteExternalId).orElse(new byte[0]);
         
         HttpHeaders headers = new HttpHeaders();
 
         headers.setCacheControl(CacheControl.noCache().getHeaderValue());
         headers.setContentType(MediaType.IMAGE_JPEG);
-        if (pic != null)
-            headers.setContentLength(pic.length);
-        
-        if (pic == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        headers.setContentLength(pic.length);
+
         return new ResponseEntity<>(pic, headers, HttpStatus.OK);
     }
 }

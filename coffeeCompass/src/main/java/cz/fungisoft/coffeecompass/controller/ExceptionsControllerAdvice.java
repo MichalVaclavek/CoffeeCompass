@@ -5,8 +5,8 @@ import org.springframework.web.multipart.MultipartException;
 
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolationException;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolationException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

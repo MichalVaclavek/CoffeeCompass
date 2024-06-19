@@ -1,8 +1,8 @@
 package cz.fungisoft.coffeecompass.service.weather;
 
 import cz.fungisoft.coffeecompass.domain.weather.WeatherData;
-import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.dto.WeatherDTO;
+import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 
 import java.util.Optional;
 
@@ -38,7 +38,7 @@ public interface WeatherApiService {
      * @param coffeeSite who's geo coordinations are used as input data for obtaining current weather info from openweathermap.com
      * @return
      */
-    Optional<WeatherDTO> getWeatherDTO(CoffeeSiteDTO coffeeSite);
+    Optional<WeatherDTO> getWeatherDTO(CoffeeSite coffeeSite);
     
     /**
      * Gets weather information for given CoffeeSite's geo coordinations, language 'cz' and 'metric' units  i.e. Celsius degree,

@@ -1,6 +1,6 @@
 package cz.fungisoft.coffeecompass.controller.models;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 
 import cz.fungisoft.coffeecompass.validators.ValidEmail;
 

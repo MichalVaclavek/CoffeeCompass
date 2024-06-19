@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -26,7 +26,8 @@ import java.util.concurrent.ExecutionException;
  */
 @Tag(name = "PushNotifications", description = "Push notifications about new coffee sites")
 @RestController
-@RequestMapping("/rest/firebase")
+//@RequestMapping("/rest/firebase")
+@RequestMapping("${site.coffeesites.baseurlpath.rest}" + "/firebase")
 public class PushNotificationController {
     
     private static final Logger log = LoggerFactory.getLogger(PushNotificationController.class);

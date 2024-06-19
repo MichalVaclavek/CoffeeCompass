@@ -2,7 +2,7 @@ package cz.fungisoft.coffeecompass.serviceimpl.notifications;
 
 import java.io.IOException;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -13,9 +13,9 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 
 import cz.fungisoft.coffeecompass.service.notifications.FirebaseInitializer;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
-@Log4j2
+@Slf4j
 @Service
 public class FirebaseInitializerImpl implements FirebaseInitializer {
 

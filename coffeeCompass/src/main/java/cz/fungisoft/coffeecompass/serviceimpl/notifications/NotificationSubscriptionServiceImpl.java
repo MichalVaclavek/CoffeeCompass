@@ -22,7 +22,7 @@ import cz.fungisoft.coffeecompass.service.notifications.FirebaseNotificationServ
 import cz.fungisoft.coffeecompass.service.notifications.NotificationSubscriptionService;
 import cz.fungisoft.coffeecompass.service.notifications.TopicsForPushNotificationsService;
 import cz.fungisoft.coffeecompass.service.user.UserService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service to crate subscriptions for new CoffeeSites creation (or CoffeeSites deletition ...)
@@ -37,7 +37,7 @@ import lombok.extern.log4j.Log4j2;
  * @author Michal Vaclavek
  *
  */
-@Log4j2
+@Slf4j
 @Transactional
 @Service
 public class NotificationSubscriptionServiceImpl implements NotificationSubscriptionService {

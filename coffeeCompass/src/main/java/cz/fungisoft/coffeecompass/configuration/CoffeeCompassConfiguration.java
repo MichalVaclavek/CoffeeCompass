@@ -2,6 +2,7 @@ package cz.fungisoft.coffeecompass.configuration;
 
 import java.util.Locale;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +16,6 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import cz.fungisoft.coffeecompass.exceptions.GeneralErrorAttributes;
-import org.thymeleaf.spring5.SpringTemplateEngine;
 
 /**
  * Místo pro defaultní Configuration Beans Springu.
@@ -47,8 +47,8 @@ public class CoffeeCompassConfiguration implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry ir) {
         ir.addInterceptor(localeChangeInterceptor());
-    } 
-    
+    }
+
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
@@ -82,11 +82,4 @@ public class CoffeeCompassConfiguration implements WebMvcConfigurer {
         return new GeneralErrorAttributes();
     }
 
-//    @Bean
-//    public SpringTemplateEngine springTemplateEngine() {
-//        SpringTemplateEngine engine = new SpringTemplateEngine();
-//        engine.addDialect(new LayoutDialect());
-//        return engine;
-//    }
-    
 }

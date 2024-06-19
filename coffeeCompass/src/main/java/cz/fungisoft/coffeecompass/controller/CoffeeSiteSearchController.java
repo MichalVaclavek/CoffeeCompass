@@ -8,7 +8,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,7 +30,7 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSort;
 import cz.fungisoft.coffeecompass.pojo.LatLong;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.CoffeeSortService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Obsluha požadavků na stránce pro vyhledavani CoffeeSites a jejich zobrazovani v mape na coffeesites_search.html<br>
@@ -44,10 +44,10 @@ import lombok.extern.log4j.Log4j2;
  * @author Michal Vaclavek
  */
 @Controller
-@Log4j2
+@Slf4j
 public class CoffeeSiteSearchController {
     
-    private static final String SEARCH_HTML_PAGE = "coffeesite_search";
+    private static final String SEARCH_HTML_PAGE = "coffeesite_search_new";
     
     private static final String EMPTY_RESULT_MODEL_KEY = "emptyResult";
     
@@ -135,9 +135,9 @@ public class CoffeeSiteSearchController {
             return mav;
         }
         
-        if (!searchCriteria.getSortSelected()) { // CoffeeSort is not intended to be in filter now
-            searchCriteria.setCoffeeSort("");
-        }
+//        if (!searchCriteria.getSortSelected()) { // CoffeeSort is not intended to be in filter now
+//            searchCriteria.setCoffeeSort("");
+//        }
        
         // City name muze pochazet z mapy.cz a tedy obsahovat i oznaceni okresu a kraje.
         // pro vyhledavani v DB ale staci jen mesto , ktere je v tomto mapy.cz oznaceni pred prvni carkou
@@ -156,7 +156,6 @@ public class CoffeeSiteSearchController {
             foundSites = coffeeSiteService.findAllWithinCircleAndCityWithCSStatusAndCoffeeSort(searchCriteria.getLat1(),
                                                                                                searchCriteria.getLon1(),
                                                                                                searchCriteria.getRange(),
-                                                                                               searchCriteria.getCoffeeSort(),
                                                                                                searchCriteria.getCoffeeSiteStatus(),
                                                                                                currentSearchCity);
         } else {
@@ -177,7 +176,7 @@ public class CoffeeSiteSearchController {
         }
         mav.addObject(FOUND_SITES_MODEL_KEY, foundSites);
         
-        searchCriteria.setSortSelected(false); // set deault value before next searching
+//        searchCriteria.setSortSelected(false); // set deault value before next searching
         searchCriteria.setCityName(currentSearchCity); // set city name used for searching
         
         mav.addObject(SEARCH_CRITERIA_MODEL_KEY, searchCriteria);
@@ -190,14 +189,14 @@ public class CoffeeSiteSearchController {
    /**
     * Processes request to show one CoffeeSite in a map on the 'coffeesite_search.html' page, which then allows further searching.
     * 
-    * @param siteId
+    * @param siteExtId
     * @return
     */
-   @GetMapping("/showSiteInMap/{siteId}") // napr. http://coffeecompass.cz/showSiteInMap/2
-   public ModelAndView  showSiteInMap(@PathVariable Long siteId) {
+   @GetMapping("/showSiteInMap/{siteExtId}") // napr. http://coffeecompass.cz/showSiteInMap/1fd1ea9f-f504-4331-ba91-04348f60948f
+   public ModelAndView  showSiteInMap(@PathVariable String siteExtId) {
        ModelAndView mavRet = new ModelAndView(SEARCH_HTML_PAGE);
        
-       return coffeeSiteService.findOneToTransfer(siteId).map(coffeeSite -> {
+       return coffeeSiteService.findOneToTransfer(siteExtId).map(coffeeSite -> {
            CoffeeSiteSearchCriteriaModel searchCriteria = new CoffeeSiteSearchCriteriaModel();
            List<CoffeeSiteDTO> foundSites = new ArrayList<>();
 

@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import cz.fungisoft.coffeecompass.entity.CupType;
 import org.springframework.data.jpa.repository.QueryHints;
 
-import javax.persistence.QueryHint;
+import jakarta.persistence.QueryHint;
 
 public interface CupTypeRepository extends JpaRepository<CupType, Integer> {
 

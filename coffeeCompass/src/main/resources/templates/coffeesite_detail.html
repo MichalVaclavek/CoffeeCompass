@@ -1,470 +1,634 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	  xmlns:th="http://www.thymeleaf.org"
-	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
 <head>
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-130556148-1"></script>
-	<script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-130556148-1"></script>
+    <script>
 	   window.dataLayer = window.dataLayer || [];
 	   function gtag() { dataLayer.push(arguments); }
 	   gtag('js', new Date());
 	
 	   gtag('config', 'UA-130556148-1');
-	</script>
-	
-      <div th:replace="~{fragments/header :: header-css}"/>
+
+    </script>
+
+    <div th:replace="~{fragments/header :: header-css}"/>
 </head>
 
 <body>
 
 <div th:insert="~{fragments/header :: header}"/>
-	
-    <div class="w3-light-grey w3-margin-bottom w3-center">
-       <h1 th:text="#{app.site-details}" class="w3-margin">Details label</h1>
-  	</div>
-   
-   	<div class="w3-container w3-margin-bottom"> 
-   
-	    <div th:if="${param.createSuccess} OR ${param.modifySuccess}" class="w3-panel w3-pale-blue w3-display-container w3-round">
+
+<div class="w3-light-grey w3-margin-bottom w3-center">
+    <h1 th:text="#{app.site-details}" class="w3-margin">Details label</h1>
+</div>
+
+<div class="w3-container w3-margin-bottom">
+
+    <div th:if="${param.createSuccess} OR ${param.modifySuccess}"
+         class="w3-panel w3-pale-blue w3-display-container w3-round">
 	   		<span onclick="this.parentElement.style.display='none'"
-		  		  class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
-	   		<p th:text="${param.createSuccess} ? #{app.site.created.success} : #{app.site.modified.success}" class="w3-container" >
-	   		</p>
-	    </div>
-	    
-	    <!-- Confirmation messages - used in case coffeeSite was Activated susccessfuly -->
-	   	<div th:if="${param.activationSuccess}" class="w3-pale-blue w3-display-container w3-round w3-panel">
-		    <span onclick="this.parentElement.style.display='none'"
-		  		class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
-		    <p><span th:text="#{site.activated.success}"></span><b><span th:text="${coffeeSite.siteName}"></span></b>
-		    </p>
-		</div>
+                  class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
+        <p th:text="${param.createSuccess} ? #{app.site.created.success} : #{app.site.modified.success}"
+           class="w3-container">
+        </p>
+    </div>
 
-		<!-- Message to indicate failure, when the site cannot be activated due to place is already occupied -->
-		<div th:if="${param.anyOtherSiteActiveOnSamePosition}" class="w3-pale-red w3-display-container w3-round w3-panel">
+    <!-- Confirmation messages - used in case coffeeSite was Activated susccessfuly -->
+    <div th:if="${param.activationSuccess}" class="w3-pale-blue w3-display-container w3-round w3-panel">
 		    <span onclick="this.parentElement.style.display='none'"
-				  class="w3-button w3-pale-red w3-large w3-display-topright">&times;</span>
-			<p><span th:text="#{site.activation.failed.label}"></span>
-			</p>
-		</div>
+                  class="w3-button w3-pale-blue w3-large w3-display-topright">&times;</span>
+        <p><span th:text="#{site.activated.success}"></span><b><span th:text="${coffeeSite.siteName}"></span></b>
+        </p>
+    </div>
 
-	    
-	    <div class="w3-row-padding">
-	    
-	        <!-- DIV containing CoffeeSite detail table and picture section -->
-	    	<div class="w3-padding-16 w3-card-4 w3-round w3-half"  style="min-height: 300px;"> 
-	    			
-	    		<!-- Table with only one row and two columns to divide area for displaing table with Coffee Site detailes nn left half -->
-	    		<!-- and it's picture on the right half -->
-	    		<table class="w3-table">
-	    			<tr>
-	    			<td>							
-					    <table class="w3-table w3-bordered" style="border:2px solid brown;">
-						    <tr>
-							  <td th:text="#{site.siteName}" class="w3-brown">SiteName</td>
-							  <td class="w3-right-align w3-brown w3-text-amber" style="font-weight: bold" th:text="${coffeeSite.siteName}">SiteName</td>
-						    </tr>
-						    	 
-						    <tr>
-							  <td th:text="#{site.createdon}">CreatedOn</td>
-							  <td class="w3-right-align w3-sand" th:text="${#temporals.format(coffeeSite.createdOn, 'dd.MM. yyyy , HH:mm')}" style="font-weight: bold">CreatedOn</td>
-						    </tr>
-						    
-							<tr>
-							   <td th:text="#{site.siteStatus}">Site status</td>
-							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.statusZarizeni.status}" style="font-weight: bold">Site status</td>
-							</tr>
-						    
-							<tr th:if="${coffeeSite.typPodniku != null}">
-							   <td th:text="#{site.type}">TypPodniku</td>
-							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.typPodniku.coffeeSiteType}" style="font-weight: bold">TypPodniku</td>
-							</tr>
-							  
-							<tr th:if="${#lists.size(coffeeSite.coffeeSorts) > 0}">
-							   <td th:text="#{site.coffeeSorts}">CoffeeSorts</td>
-							   <td style="font-weight: bold" class="w3-right-align w3-sand"><span th:each="sort, iterStat : ${coffeeSite.coffeeSorts}" th:text="!${iterStat.last} ? ${sort}+', ' : ${sort}">Coffee Sort</span></td>
-							</tr>
-							  
-							<tr th:if="${#lists.size(coffeeSite.otherOffers) > 0}">
-							   <td th:text="#{site.otherOffers}">Offer</td>	
-							   <td class="w3-right-align w3-sand" style="font-weight: bold"><span th:each="offer, iterStat : ${coffeeSite.otherOffers}" th:text="!${iterStat.last} ? ${offer}+', ' : ${offer}">Other Offer</span></td>
-							</tr>
-							  
-							<tr th:if="${coffeeSite.cena != null}">
-							   <td th:text="#{site.pricerange}">Price range</td>
-							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.cena.priceRange}" style="font-weight: bold">Price range</td>
-							</tr>
-					
-							<tr th:if="${#lists.size(coffeeSite.cupTypes) > 0}">
-							   <td th:text="#{site.cupTypes}">Cup Types</td>
-							   <td class="w3-right-align w3-sand" style="font-weight: bold"><span th:each="cupType, iterStat : ${coffeeSite.cupTypes}" th:text="!${iterStat.last} ? ${cupType}+', ' : ${cupType}">Cup Types</span></td> 
-							 </tr>
-					
-							<tr th:if="${coffeeSite.numOfCoffeeAutomatyVedleSebe} > 0">
-							   <td th:text="#{site.numOfCoffeeMachines}">Number of coffee machines together</td>
-							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.numOfCoffeeAutomatyVedleSebe}" style="font-weight: bold">Number of coffee machines together</td>
-							</tr>
-							  
-							<tr th:if= "${coffeeSite.dodavatelPodnik != null AND coffeeSite.dodavatelPodnik.nameOfCompany != ''}">
-							   <td th:text="#{site.supplier}">Supplier</td>
-							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.dodavatelPodnik.nameOfCompany}" style="font-weight: bold">Supplier</td>
-							</tr>
-							  
-							<tr th:if="${#lists.size(coffeeSite.nextToMachineTypes) > 0}">
-							   <td th:text="#{site.nextToMachineTypes}">Other neighbering machines types</td>
-							   <td class="w3-right-align w3-sand" style="font-weight: bold"><span th:each="ntmType, iterStat : ${coffeeSite.nextToMachineTypes}" th:text="!${iterStat.last} ? ${ntmType}+', ' : ${ntmType}">Other neighbering machines types</span></td>
-							</tr>
-							  
-							<tr th:if= "${coffeeSite.pristupnostDny != ''} AND ${coffeeSite.pristupnostHod != ''}">
-							   <td th:text="#{site.openingDaysHours}">Opening days/hours</td>
-							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.pristupnostDny} + ', ' + ${coffeeSite.pristupnostHod}" style="font-weight: bold">Opening days/hours</td>
-							</tr>
-							  
-							<tr th:if="${coffeeSite.typLokality != null}">
-							   <td th:text="#{site.locationtype}">Location type</td>
-							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.typLokality.locationType}" style="font-weight: bold">Location type</td>
-							</tr>
-							  
-							<tr th:if= "${coffeeSite.mesto != ''}">
-							   <td th:text="#{site.city}">City</td>		  		
-							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.mesto}" style="font-weight: bold">City</td>
-							</tr>
-							  
-							<tr th:if= "${coffeeSite.uliceCP != ''}">	  
-							   <td th:text="#{site.street}">Street</td>
-							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.uliceCP}" style="font-weight: bold">Street</td>
-							</tr>
-							
-							<tr>
-							   <td th:text="#{site.location}">Poloha</td>	
-							   <td class="w3-left-align w3-sand" style="font-weight: bold">
-							   		<div >
-							   			<div class="w3-cell w3-container"
-							   			     th:classappend="${param.anyOtherSiteActiveOnSamePosition} AND ${coffeeSite.canBeModified} ? 'has-error' : ''"> <!-- isAnyOtherSiteActiveOnSamePosition -->
-							   				<p th:text="#{site.longitude.short}+' '+${coffeeSite.zemDelka}"></p>
-							   				<p th:text="#{site.latitude.short}+' '+${coffeeSite.zemSirka}"></p>
-							   			</div>
-							   			<div class="w3-cell w3-cell-middle w3-container w3-border-left">
-							   				<form  action="#"
-								             	   th:action="@{'/showSiteInMap/' + ${coffeeSite.id}}"
-								             	   th:method="GET" >
-									             <input type="hidden" name="_method" value="get" />
-									             <button type="submit" id="submitButton" th:text="#{site.show.map}" class="w3-btn w3-light-blue w3-border w3-round">Mapa</button>
-									         </form>
-							   			</div>
-							   		</div>
-							   </td>
-							</tr>
-							  
-							<tr>
-							   <td th:text="#{site.user}">Original user name</td>
-							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.originalUserName}" style="font-weight: bold">Original user name</td>
-							</tr>
-							  
-							<tr>
-							   <td th:text="#{site.stars}">Stars</td>			  
-							   <td class="w3-right-align w3-sand">
-							      <span th:text="${coffeeSite.averageStarsWithNumOfHodnoceni.avgStars}" style="font-weight: bold"></span>
-							      <span th:if="${coffeeSite.averageStarsWithNumOfHodnoceni.numOfHodnoceni} > 0" th:text="' (' + ${coffeeSite.averageStarsWithNumOfHodnoceni.numOfHodnoceni} + ')'"></span>
-							   </td>
-			   				</tr>
-							  
-							<tr>
-							   <td th:text="#{site.initialComment}">Author's comment</td>			  
-							   <td class="w3-right-align w3-sand" th:text="${coffeeSite.initialComment}">Author's comment</td>
-							</tr>
-							  
-							<tr sec:authorize="isAuthenticated()">
-							  <td th:text="#{site.recordStatus}">Record status</td>			  
-							  <td class="w3-right-align w3-sand" th:text="${coffeeSite.recordStatus.status}" style="font-weight: bold">Status of record</td>
-							</tr>
-						</table>
-						
-	 					<!-- Group of buttons for modification of the CoffeeSite and for changing status of CS -->
-						<div class="w3-container w3-margin-top" th:if="${coffeeSite.canBeModified} OR ${coffeeSite.canBeDeactivated}"> 
-			 
-			 		    <!-- Tlacitko pro Modifikaci situ pro uzivatele, ktery site vytvoril nebo pro ROLE_DBA a ROLE_ADMIN -->
-		        		<!-- Available only for logged-in user who created the site or for ROLE_DBA or ROLE_ADMIN user -->
-		        		<div class="w3-row" >
-		         		
-			         		<div class="w3-cell-row w3-half" style="width:50%">	
-			         
-				         		<label th:text="#{site.detail.edit.label}" class="w3-cell">"Edit: "</label>
-						        <div class="w3-cell">
-						             <form th:if="${coffeeSite.canBeModified} OR ${coffeeSite.canBeDeactivated}"
-						             	   action="#"
-						             	   th:action="@{'/modifySite/' + ${coffeeSite.id}}"
-						             	   th:method="GET" >
-							             <input type="hidden" name="_method" value="get" />
-							             <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.modify}" class="w3-btn w3-light-blue w3-border w3-round w3-small">X</button>
-							         </form>
-						         </div>	
-						         
-						 	 	 <!-- Sada tlacitek pro zmenu stavu CoffeeSitu. Tj. Activate/Deactivate/Delete/Cancel -->
-						 	 
-						 	 	  <!-- Zmena record statusu na ACTIVE -->	
-						          <div class="w3-cell">
-						            <form th:if="${coffeeSite.canBeActivated} OR ${coffeeSite.canBeDeactivated} "
-						                  action="#" 
-						                  th:action="@{'/activateSite/' + ${coffeeSite.id}}" 
-						                  th:method="PUT" >
-						               <input type="hidden" name="_method" value="put" />
-						               <button th:disabled="${coffeeSite.canBeDeactivated} OR ${param.anyOtherSiteActiveOnSamePosition}" type="submit" id="submitButton" th:text="#{site.status.activate}" class="w3-btn w3-light-green w3-border w3-round w3-small">X</button>
-						            </form>
-						          </div>
-						         
-						         <!-- Zmena record statusu na INACTIVE -->
-						          <div class="w3-cell">
-						            <form th:if="${coffeeSite.canBeActivated} OR ${coffeeSite.canBeDeactivated}"
-						                  action="#" 
-						                  th:action="@{'/deactivateSite/' + ${coffeeSite.id}}" 
-						                  th:method="PUT">
-						               <input type="hidden" name="_method" value="put" />
-						               <button  th:disabled="${coffeeSite.canBeActivated}" type="submit" id="submitButton" th:text="#{site.status.deactivate}" class="w3-btn w3-amber w3-border w3-round w3-small">X</button>
-						            </form> 
-						          </div>
-						         
-					         	  <!-- Zmena record statusu na CANCEL. Finalni DELETE muze provest pouze ROLE_ADMIN -->
-						          <div class="w3-cell">
-						            <form th:if="${coffeeSite.canBeCanceled} OR ${coffeeSite.canBeDeactivated}" 
-						                  action="#" 
-						                  th:action="@{'/cancelStatusSite/' + ${coffeeSite.id}}" 
-						                  th:method="PUT" > 
-						               <input type="hidden" name="_method" value="put" />
-						               <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit" id="submitButton" th:text="#{site.status.cancel}" class="w3-btn w3-red w3-border w3-round w3-small">X</button>
-				  			            </form>
-						          </div>
-					         
-						          <!-- Form to generate DELETE http request with Delete button. For ROLE_ADMIN only. -->
-						          <div class="w3-cell">
-									<form th:if="${coffeeSite.canBeDeleted}" 
-						                  action="#" 
-						                  th:action="@{'/finalDeleteSite/' + ${coffeeSite.id}}" 
-						                  th:method="DELETE">
-						               <input type="hidden" name="_method" value="delete" />
-						               <button type="submit" id="submitButton" th:text="#{site.delete}" class="w3-btn w3-red w3-border w3-round w3-small">X</button>
-						            </form>
-						          </div>
-						          
-			    			</div> <!-- w3.cell.row -->
-						</div> <!-- w3.row -->
-						
-						<div th:if=${param.anyOtherSiteActiveOnSamePosition}
-						     class="w3-margin-top"> <!-- ${coffeeSite.anyOtherSiteActiveOnSamePosition} -->
+    <!-- Message to indicate failure, when the site cannot be activated due to place is already occupied -->
+    <div th:if="${param.anyOtherSiteActiveOnSamePosition}" class="w3-pale-red w3-display-container w3-round w3-panel">
+		    <span onclick="this.parentElement.style.display='none'"
+                  class="w3-button w3-pale-red w3-large w3-display-topright">&times;</span>
+        <p><span th:text="#{site.activation.failed.label}"></span>
+        </p>
+    </div>
+
+
+    <div class="w3-row-padding">
+
+        <!-- DIV containing CoffeeSite detail table and picture section -->
+        <div class="w3-padding-16 w3-card-4 w3-round w3-half" style="min-height: 300px;">
+
+            <!-- Table with only one row and two columns to divide area for displaying table with Coffee Site details in left half -->
+            <!-- and it's picture on the right half -->
+            <table class="w3-table">
+                <tr>
+                    <td>
+                        <table class="w3-table w3-bordered" style="border:2px solid brown;">
+                            <tr>
+                                <td th:text="#{site.siteName}" class="w3-brown">SiteName</td>
+                                <td class="w3-right-align w3-brown w3-text-amber" style="font-weight: bold"
+                                    th:text="${coffeeSite.siteName}">SiteName
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td th:text="#{site.createdon}">CreatedOn</td>
+                                <td class="w3-right-align w3-sand"
+                                    th:text="${#temporals.format(coffeeSite.createdOn, 'dd.MM. yyyy , HH:mm')}"
+                                    style="font-weight: bold">CreatedOn
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td th:text="#{site.siteStatus}">Site status</td>
+                                <td class="w3-right-align w3-sand" th:text="${coffeeSite.statusZarizeni.status}"
+                                    style="font-weight: bold">Site status
+                                </td>
+                            </tr>
+
+                            <tr th:if="${coffeeSite.typPodniku != null}">
+                                <td th:text="#{site.type}">TypPodniku</td>
+                                <td class="w3-right-align w3-sand" th:text="${coffeeSite.typPodniku.coffeeSiteType}"
+                                    style="font-weight: bold">TypPodniku
+                                </td>
+                            </tr>
+
+                            <tr th:if="${#lists.size(coffeeSite.coffeeSorts) > 0}">
+                                <td th:text="#{site.coffeeSorts}">CoffeeSorts</td>
+                                <td style="font-weight: bold" class="w3-right-align w3-sand"><span
+                                        th:each="sort, iterStat : ${coffeeSite.coffeeSorts}"
+                                        th:text="!${iterStat.last} ? ${sort}+', ' : ${sort}">Coffee Sort</span></td>
+                            </tr>
+
+                            <tr th:if="${#lists.size(coffeeSite.otherOffers) > 0}">
+                                <td th:text="#{site.otherOffers}">Offer</td>
+                                <td class="w3-right-align w3-sand" style="font-weight: bold"><span
+                                        th:each="offer, iterStat : ${coffeeSite.otherOffers}"
+                                        th:text="!${iterStat.last} ? ${offer}+', ' : ${offer}">Other Offer</span></td>
+                            </tr>
+
+                            <tr th:if="${coffeeSite.cena != null}">
+                                <td th:text="#{site.pricerange}">Price range</td>
+                                <td class="w3-right-align w3-sand" th:text="${coffeeSite.cena.priceRange}"
+                                    style="font-weight: bold">Price range
+                                </td>
+                            </tr>
+
+                            <tr th:if="${#lists.size(coffeeSite.cupTypes) > 0}">
+                                <td th:text="#{site.cupTypes}">Cup Types</td>
+                                <td class="w3-right-align w3-sand" style="font-weight: bold"><span
+                                        th:each="cupType, iterStat : ${coffeeSite.cupTypes}"
+                                        th:text="!${iterStat.last} ? ${cupType}+', ' : ${cupType}">Cup Types</span></td>
+                            </tr>
+
+                            <tr th:if="${coffeeSite.numOfCoffeeAutomatyVedleSebe} > 0">
+                                <td th:text="#{site.numOfCoffeeMachines}">Number of coffee machines together</td>
+                                <td class="w3-right-align w3-sand" th:text="${coffeeSite.numOfCoffeeAutomatyVedleSebe}"
+                                    style="font-weight: bold">Number of coffee machines together
+                                </td>
+                            </tr>
+
+                            <tr th:if="${coffeeSite.dodavatelPodnik != null AND coffeeSite.dodavatelPodnik.nameOfCompany != ''}">
+                                <td th:text="#{site.supplier}">Supplier</td>
+                                <td class="w3-right-align w3-sand" th:text="${coffeeSite.dodavatelPodnik.nameOfCompany}"
+                                    style="font-weight: bold">Supplier
+                                </td>
+                            </tr>
+
+                            <tr th:if="${#lists.size(coffeeSite.nextToMachineTypes) > 0}">
+                                <td th:text="#{site.nextToMachineTypes}">Other neighbering machines types</td>
+                                <td class="w3-right-align w3-sand" style="font-weight: bold"><span
+                                        th:each="ntmType, iterStat : ${coffeeSite.nextToMachineTypes}"
+                                        th:text="!${iterStat.last} ? ${ntmType}+', ' : ${ntmType}">Other neighbering machines types</span>
+                                </td>
+                            </tr>
+
+                            <tr th:if="${coffeeSite.pristupnostDny != ''} AND ${coffeeSite.pristupnostHod != ''}">
+                                <td th:text="#{site.openingDaysHours}">Opening days/hours</td>
+                                <td class="w3-right-align w3-sand"
+                                    th:text="${coffeeSite.pristupnostDny} + ', ' + ${coffeeSite.pristupnostHod}"
+                                    style="font-weight: bold">Opening days/hours
+                                </td>
+                            </tr>
+
+                            <tr th:if="${coffeeSite.typLokality != null}">
+                                <td th:text="#{site.locationtype}">Location type</td>
+                                <td class="w3-right-align w3-sand" th:text="${coffeeSite.typLokality.locationType}"
+                                    style="font-weight: bold">Location type
+                                </td>
+                            </tr>
+
+                            <tr th:if="${coffeeSite.mesto != ''}">
+                                <td th:text="#{site.city}">City</td>
+                                <td class="w3-right-align w3-sand" th:text="${coffeeSite.mesto}"
+                                    style="font-weight: bold">City
+                                </td>
+                            </tr>
+
+                            <tr th:if="${coffeeSite.uliceCP != ''}">
+                                <td th:text="#{site.street}">Street</td>
+                                <td class="w3-right-align w3-sand" th:text="${coffeeSite.uliceCP}"
+                                    style="font-weight: bold">Street
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td th:text="#{site.location}">Poloha</td>
+                                <td class="w3-left-align w3-sand" style="font-weight: bold">
+                                    <div>
+                                        <div class="w3-cell w3-container"
+                                             th:classappend="${param.anyOtherSiteActiveOnSamePosition} AND ${coffeeSite.canBeModified} ? 'has-error' : ''">
+                                            <!-- isAnyOtherSiteActiveOnSamePosition -->
+                                            <p th:text="#{site.longitude.short}+' '+${coffeeSite.zemDelka}"></p>
+                                            <p th:text="#{site.latitude.short}+' '+${coffeeSite.zemSirka}"></p>
+                                        </div>
+                                        <div class="w3-cell w3-cell-middle w3-container w3-border-left">
+                                            <form action="#"
+                                                  th:action="@{'/showSiteInMap/' + ${coffeeSite.externalId}}"
+                                                  th:method="GET">
+                                                <input type="hidden" name="_method" value="get"/>
+                                                <button type="submit" id="submitButton" th:text="#{site.show.map}"
+                                                        class="w3-btn w3-light-blue w3-border w3-round">Mapa
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td th:text="#{site.user}">Original user name</td>
+                                <td class="w3-right-align w3-sand" th:text="${coffeeSite.originalUserName}"
+                                    style="font-weight: bold">Original user name
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td th:text="#{site.stars}">Stars</td>
+                                <td class="w3-right-align w3-sand">
+                                    <span th:text="${coffeeSite.averageStarsWithNumOfHodnoceni.avgStars}"
+                                          style="font-weight: bold"></span>
+                                    <span th:if="${coffeeSite.averageStarsWithNumOfHodnoceni.numOfHodnoceni} > 0"
+                                          th:text="' (' + ${coffeeSite.averageStarsWithNumOfHodnoceni.numOfHodnoceni} + ')'"></span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td th:text="#{site.initialComment}">Author's comment</td>
+                                <td class="w3-right-align w3-sand" th:text="${coffeeSite.initialComment}">Author's
+                                    comment
+                                </td>
+                            </tr>
+
+                            <tr sec:authorize="isAuthenticated()">
+                                <td th:text="#{site.recordStatus}">Record status</td>
+                                <td class="w3-right-align w3-sand" th:text="${coffeeSite.recordStatus.status}"
+                                    style="font-weight: bold">Status of record
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Group of buttons for modification of the CoffeeSite and for changing status of CS -->
+                        <div class="w3-container w3-margin-top w3-margin-bottom"
+                             th:if="${coffeeSite.canBeModified} OR ${coffeeSite.canBeDeactivated}">
+                            <div class="w3-row">
+
+                                <div class="w3-cell-row w3-half" style="width:50%">
+
+                                    <!-- Tlacitko pro Modifikaci situ pro uzivatele, ktery site vytvoril nebo pro ROLE_DBA a ROLE_ADMIN -->
+                                    <!-- Available only for logged-in user who created the site or for ROLE_DBA or ROLE_ADMIN user -->
+                                    <label th:text="#{site.detail.edit.label}" class="w3-cell">"Edit: "</label>
+                                    <div class="w3-cell">
+                                        <form id="modifySiteForm"
+                                              th:if="${coffeeSite.canBeModified} OR ${coffeeSite.canBeDeactivated}"
+                                              action="#"
+                                              th:action="@{'/modifySite/' + ${coffeeSite.externalId}}"
+                                              th:method="GET">
+                                            <input type="hidden" name="_method" value="get"/>
+                                            <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit"
+                                                    id="submitButton" th:text="#{site.modify}"
+                                                    class="w3-btn w3-light-blue w3-border w3-round w3-small">X
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <!-- Zmena record statusu na ACTIVE -->
+                                    <div class="w3-cell">
+                                        <form id="activateSiteForm"
+                                              th:if="${coffeeSite.canBeActivated} OR ${coffeeSite.canBeDeactivated} "
+                                              action="#"
+                                              th:action="@{'/activateSite/' + ${coffeeSite.externalId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
+                                              th:method="PUT">
+                                            <input type="hidden" name="_method" value="put"/>
+                                            <button th:disabled="${coffeeSite.canBeDeactivated} OR ${param.anyOtherSiteActiveOnSamePosition}"
+                                                    type="submit" id="submitButton" th:text="#{site.status.activate}"
+                                                    class="w3-btn w3-light-green w3-border w3-round w3-small">X
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <!-- Zmena record statusu na INACTIVE -->
+                                    <div class="w3-cell">
+                                        <form id="deactivateSiteForm"
+                                              th:if="${coffeeSite.canBeActivated} OR ${coffeeSite.canBeDeactivated}"
+                                              action="#"
+                                              th:action="@{'/deactivateSite/' + ${coffeeSite.externalId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
+                                              th:method="PUT">
+                                            <input type="hidden" name="_method" value="put"/>
+                                            <button th:disabled="${coffeeSite.canBeActivated}" type="submit"
+                                                    id="submitButton" th:text="#{site.status.deactivate}"
+                                                    class="w3-btn w3-amber w3-border w3-round w3-small">X
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <!-- Zmena record statusu na CANCEL. Finalni DELETE muze provest pouze ROLE_ADMIN -->
+                                    <div class="w3-cell">
+                                        <form id="cancelStatusSiteForm"
+                                              th:if="${coffeeSite.canBeCanceled} OR ${coffeeSite.canBeDeactivated}"
+                                              action="#"
+                                              th:action="@{'/cancelStatusSite/' + ${coffeeSite.externalId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
+                                              th:method="PUT">
+                                            <input type="hidden" name="_method" value="put"/>
+                                            <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit"
+                                                    id="submitButton" th:text="#{site.status.cancel}"
+                                                    class="w3-btn w3-red w3-border w3-round w3-small">X
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <!-- Form to generate DELETE http request with Delete button. For ROLE_ADMIN only. -->
+                                    <div class="w3-cell">
+                                        <form th:if="${coffeeSite.canBeDeleted}"
+                                              action="#"
+                                              th:action="@{'/finalDeleteSite/' + ${coffeeSite.externalId}}"
+                                              th:method="DELETE">
+                                            <input type="hidden" name="_method" value="delete"/>
+                                            <button type="submit" id="submitButton" th:text="#{site.delete}"
+                                                    class="w3-btn w3-red w3-border w3-round w3-small">X
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                </div> <!-- w3.cell.row -->
+                            </div> <!-- w3.row -->
+
+
+                            <div th:if=${param.anyOtherSiteActiveOnSamePosition}
+                                 class="w3-margin-top">
 						     <span class="w3-text-red"
-						           th:text="#{site.position.occupied.by.otheractivesite.error}">Cannot be activate due to occupied position by another ACTIVE site.</span>
-						</div>
-						
-					</div>
-				</td>	<!-- End of Coffee site detailes table -->
-				
-				<!-- Start of Coffee site picture half -->
-				<!-- Element with Forms to Update and Delete and Rotate image of the CoffeeSite and with Form to insert image -->	
-				<td class="w3-display-container" style="width:40%">
-				    
-					<!-- Picture of the CoffeeSite, if available -->				  
-				    <div style="width:100%"> 	
-				         <!-- Element pro vlozeni obrazku situ -->
-				         <!-- Inserted like base64 image to the model of this view, not as URL to REST api -->
-				         <!-- <img th:src="${pic}" alt="" class="photo w3-image w3-round"/> -->
-				         <img th:src="${pic}" alt="" class="w3-image w3-round"/>
-			        </div>
-			        <div th:if="${coffeeSite.mainImageURL == ''}" th:text="#{site.noImage}" class="w3-small w3-display-middle" style="font-style: italic;"> 
-				       No image available message.
-			        </div>
-			        
-		       		<!-- Element with Form to Rotate image of the CoffeeSite Left by 90 degree  -->	
-			    	<div th:if="${coffeeSite.canBeModified}" class="w3-margin-top" style="width:100%">
-				    	 
-				    	 <div>
-				    	     <!-- Element with Form to Rotate image of the CoffeeSite Left by 90 degree -->
-						     <div class="w3-left" th:if="${thisSiteImageId > 0}">
-						        <form action="#"
-						              th:action="@{'/rotateImageLeft/?siteID=' + ${coffeeSite.id}}" 
-						              th:method="PUT">
-						            <input type="hidden" name="_method" value="put" />
-						            <button type="submit" id="rotateImageLeftButton" class="w3-button w3-light-blue w3-round w3-small fa fa-rotate-left" th:title="#{image.rotate.left}"></button>
-						        </form>
-						     </div> 
-						     
-						     <!-- Element with Form to Rotate image of the CoffeeSite Right by 90 degree -->	
-						     <div class="w3-left" th:if="${thisSiteImageId > 0}">
-						        <form action="#"
-						              th:action="@{'/rotateImageRight/?siteID=' + ${coffeeSite.id}}" 
-						              th:method="PUT">
-						            <input type="hidden" name="_method" value="put" />
-						            <button type="submit" id="rotateImageRightButton" class="w3-button w3-margin-left w3-light-blue w3-round w3-small fa fa-rotate-right" th:title="#{image.rotate.right}"></button>
-						        </form>
-						     </div> 
-					    
-					    	 <!-- Element with Form to Delete image of the CoffeeSite -->	
-						     <div class="w3-right" th:if="${thisSiteImageId > 0} AND ${coffeeSite.canBeModified}">
-						        <form action="#" th:object="${thisSiteImageId}"
-						              th:action="@{'/deleteImage/' + ${thisSiteImageId}}" 
-						              th:method="DELETE">
-						            <input type="hidden" name="_method" value="delete" />
-						            <button type="submit" id="submitDeleteFileButton"
-						            		th:title="#{image.delete}" class="w3-button w3-red w3-round w3-small fa fa-trash"></button>
-						        </form>
-						     </div> 
-					     </div>
-		     		</div>
-		     		
-		     		<!-- Element to show current weather data and Sunrise, Sunset times  on the CoffeeSite coordinates  -->
-		     		<div class="w3-margin-top" th:if="${!coffeeSite.canBeModified} AND ${weatherData != null}">
-				    	<p>
-				    		<span th:text="#{site.detail.weather.label}" class="w3-text-green"></span>
-					        <strong><span th:text="${weatherData.weather[0].description} +' ,'"></span></strong>
-				    		<strong><span th:text="${weatherData.main.temp}"></span><span> &#176;C</span><strong>
-					    </p>
-				    		
-		    			<span th:text="#{site.detail.sunrise.label}"></span><strong><span th:text="${weatherData.sunRiseTime}"></span></strong>
-		    			<div>
-		    				<span th:text="#{site.detail.sunset.label}"></span><strong><span th:text="${weatherData.sunSetTime}"></span></strong>
-			    		</div>
-				    		
-	     			</div>
-		     		
-					<!-- Element with Form to Upload image of the CoffeeSite -->
-					<div class="w3-display-bottommiddle" style="width:100%">
-						<div th:if="${coffeeSite.canBeModified}" class="w3-border w3-container">
-				         	
-				         	<h5 th:text="#{image.insert.label}">Insert photo here</h5>
-			         		<div style="width:100%">
-					         	<form method="POST"
-					         	      enctype="multipart/form-data"
-					         	      action="#"
-					         	      th:method="post"
-								      th:action="@{/imageUpload(${_csrf.parameterName}=${_csrf.token})}"
-								      th:object="${newImage}"> 
-								       
-							       <input th:type="hidden" name="siteId" th:field="*{coffeeSiteID}"/>
-							      
-								   <div>
-						                <div th:classappend="${#fields.hasErrors('file')} ? 'has-error' : ''">
-						                    <input class= "w3-border" 
-						                    	   style="width:100%"
-						                           name="file" id="fileNameInput"
-						                           type="file" th:field="*{file}"
-						                           th:text="#{image.selectfile.button}"
-						                           th:placeholder="#{image.selectfile.placeholder}"/>
-						                </div>
-					                	<div class="error-message" th:if="${#fields.hasErrors('file')}" th:errors="*{file}">Validation error messages</div>
-					                </div>
-					            
-						            <div class="w3-right">
-							            <button type="submit" id="saveImage" th:text="#{image.upload}" class="w3-button w3-light-blue w3-round w3-small w3-margin-bottom"  disabled>Upload image</button>    
-						            </div>
-						        </form>
-					        
-				      		</div> 
-				    	</div>	
-				    </div>  
-				</td>
-				</tr>
-			</table>
-		</div>
-		    
-		<!-- A common container for entering new Stars and comments and to show other already entered comments -->
-	    <div class="w3-container w3-half">  
-	        <!-- A panel for entering Stars and comment  -->
-	        <div th:if="${coffeeSite.canBeCommented} OR ${coffeeSite.canBeRatedByStars}">
-	        	
-		        <div class="w3-container w3-border w3-round w3-card-2">
-		        	<h4 th:text="#{commentAndStars.insert.label}" class="w3-margin-bottom w3-center">Your rating and/or comment</h4>
-					<!-- Formular pro zadani hodnoceni - Stars. Muze zadat pouze prihlaseny uzivatel. -->
-					<form action="#"
-					      th:action="@{'/saveStarsAndComment/' + ${coffeeSite.id}}" th:method="post">
-						
-						<div th:if="${coffeeSite.canBeRatedByStars}" style="width:20%" class="w3-margin-top">
-				            <b><label for="hodnoceniKavyStars" th:text="#{site.stars}">Hodnoceni kavy - stars</label></b>
-				            <select class="w3-select" th:field="*{starsAndComment.stars}">
-					            <option th:each="star : ${allHodnoceniKavyStars}"
-					            		class="w3-option"
-				                    	th:value="${star.numOfStars}" 
-				                    	th:text="${star}">Hodnoceni kavy - stars</option>
-				            </select>
-				        </div>
-				        
-						<div th:if="${coffeeSite.canBeCommented}" class="w3-margin-top">
-							<div>
-				        		<b><label for="comment" th:text="#{site.comment.add}">Message</label></b>
-				        	</div>
-				        	<div>
-							   <textarea id="commentArea" name="commentArea"
-				                         th:field="*{starsAndComment.comment}"
-				                         class="w3-input w3-border" style="resize:none"
-				                         maxlength=512
-				                         rows="3"
-				                         th:placeholder="#{site.comment.message.placeholder}">
-				               </textarea>
+                                   th:text="#{site.position.occupied.by.otheractivesite.error}">Cannot be activate due to occupied position by another ACTIVE site.</span>
+                            </div>
+
+                        </div>
+
+						<!-- Element for displaying list of all images of this CoffeeSite -->
+						<div class="w3-container w3-margin-top w3-margin-bottom">
+							<div class="w3-cell-row w3-panel w3-border w3-light-grey w3-round"
+								 id="imagesList">
+									<span th:each="imageUrl : ${imageUrls}" class="w3-cell-middle">
+                                        <img th:src="${imageUrl}" class="w3-round" style="height: 90px"/>
+									</span>
 							</div>
 						</div>
-						
-						<div>
-				        	<input type="hidden" name="_method" value="post" />
-				            <button type="submit" id="submitButton" th:text="#{site.submitStarsAndComment}" class="w3-btn w3-blue w3-border w3-margin w3-round">X</button>
-				        </div>
-			        </form>
-			        
-		        </div>
-		    </div>
-		    
-		    <!-- Comments list  -->
-		    <!--  Every comment has button Delete in case of ROLE_ADMIN user is logged-in or ROLE_USER who created the comment -->
-		    <!--  Every comment has button Update in case of ROLE_ADMIN user is logged-in or ROLE_USER who created the comment -->
-		    <div class="w3-container w3-margin-top"> 
-				<b><h3 th:text="#{site.listOfComments}" class="w3-border-bottom w3-bottombar">Comments: </h3></b>
-				<div class="w3-margin-top w3-small" style="font-style: italic" th:if="${#lists.isEmpty(comments)}" th:text="#{site.noComments}"></div>
-				<div class="w3-container w3-margin-top" th:if="${NOT #lists.isEmpty(comments)}">
-				
-					<div th:each="comment : ${comments}" class="w3-border-bottom w3-margin-top">
-					
-						<div class="w3-right"> <!--  to move user and date to the right side -->
-							<span th:text="${comment.userName}" style="font-weight: bold; font-style: italic" class="w3-small">User name</span> - 
-							<span th:text="${#temporals.format(comment.created, 'dd.MM. yyyy, HH:mm')}" class="w3-small" style="font-style: italic">Date of comment</span> <!-- style="font-weight: bold" -->
-						</div>
-						
-						<div class="w3-cell-row">
-						  <div th:text="${comment.text}" class="w3-margin-left w3-cell"></div>
-						  		
-					  	  <div class="w3-right w3-cell" th:if="${comment.canBeDeleted}">
-					      <form action="#" 
-			                    th:action="@{'/deleteComment/' + ${comment.id}}" 
-			                    th:method="DELETE">
-			               		<input type="hidden" name="_method" value="delete" />
-			               		<button type="submit" id="submitButton" th:title="#{comment.delete}" class="w3-button w3-small fa fa-trash w3-red w3-border w3-round"></button>
-			              </form>
-		                  </div>
-				               
-					    </div>
-					</div> <!-- <div th:each="comment : ${comments}" class="w3-border-bottom w3-margin-top"> -->
-					
-				</div>
-			</div>
-			
-		</div>
-	</div>
+
+                    </td>    <!-- End of Coffee site detailes table -->
+
+                    <!-- Start of Coffee site picture half -->
+                    <!-- Element with Forms to Update and Delete and Rotate image of the CoffeeSite and with Form to insert image -->
+                    <td class="w3-display-container" style="width:40%">
+
+                        <!-- Picture of the CoffeeSite, if available -->
+                        <div th:if="${selectedImageUrl != ''}" style="width:100%">
+                            <!-- CoffeeSite's selectedImage URL -->
+                            <img id="selectedImage" th:src="${selectedImageUrl}" class="w3-image w3-round"/>
+                        </div>
+                        <div th:if="${selectedImageUrl == ''}" th:text="#{site.noImage}"
+                             class="w3-small w3-display-middle" style="font-style: italic;">
+                            No image available message.
+                        </div>
+
+                        <!-- Element with Form/Buttons to Rotate image of the CoffeeSite Left by 90 degree  -->
+                        <div th:if="${coffeeSite.canBeModified AND (selectedImageUrl != '')}" class="w3-margin-top"
+                             style="width:100%">
+
+                            <div>
+                                <!-- Element with Button/Form to Rotate image of the CoffeeSite Left by 90 degree -->
+                                <div class="w3-left" th:if="${coffeeSite.mainImageURL != ''}">
+                                    <!-- -->
+                                    <form id="rotateLeftAction" action="#"
+                                          th:action="@{'/rotateImageLeft/' + ${coffeeSite.externalId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
+                                          th:method="PUT">
+                                        <input type="hidden" name="_method" value="put"/>
+                                        <button type="submit" id="rotateImageLeftButton"
+                                                class="w3-button w3-light-blue w3-round w3-small fa fa-rotate-left"
+                                                th:title="#{image.rotate.left}"></button>
+                                    </form>
+                                </div>
+
+                                <!-- Element with Button/Form to Rotate image of the CoffeeSite Right by 90 degree -->
+                                <div class="w3-left" th:if="${coffeeSite.mainImageURL != ''}">
+                                    <form id="rotateRightAction" action="#"
+                                          th:action="@{'/rotateImageRight/' + ${coffeeSite.externalId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
+                                          th:method="PUT">
+                                        <input type="hidden" name="_method" value="put"/>
+                                        <button type="submit" id="rotateImageRightButton"
+                                                class="w3-button w3-margin-left w3-light-blue w3-round w3-small fa fa-rotate-right"
+                                                th:title="#{image.rotate.right}"></button>
+                                    </form>
+                                </div>
+
+                                <!-- Element with Form to Delete selected image of the CoffeeSite -->
+                                <div class="w3-right"
+                                     th:if="${coffeeSite.mainImageURL != ''} AND ${coffeeSite.canBeModified}">
+                                    <form id="deleteImageForm" action="#" th:object="${thisSiteImageId}"
+                                          th:action="@{'/deleteImage/' + ${coffeeSite.externalId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
+                                          th:method="DELETE">
+                                        <input type="hidden" name="_method" value="delete"/>
+                                        <button type="submit" id="submitDeleteFileButton"
+                                                th:title="#{image.delete}"
+                                                class="w3-button w3-red w3-round w3-small fa fa-trash"></button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Element to show current weather data and Sunrise, Sunset times  on the CoffeeSite coordinates  -->
+                        <div class="w3-margin-top" th:if="${!coffeeSite.canBeModified} AND ${weatherData != null}">
+                            <p>
+                                <span th:text="#{site.detail.weather.label}" class="w3-text-green"></span>
+                                <strong><span th:text="${weatherData.weather[0].description} +' ,'"></span></strong>
+                                <strong><span th:text="${weatherData.main.temp}"></span><span> &#176;C</span></strong>
+                            </p>
+
+                            <span th:text="#{site.detail.sunrise.label}"></span><strong><span
+                                th:text="${weatherData.sunRiseTime}"></span></strong>
+                            <div>
+                                <span th:text="#{site.detail.sunset.label}"></span><strong><span
+                                    th:text="${weatherData.sunSetTime}"></span></strong>
+                            </div>
+
+                        </div>
+
+
+                        <!-- Element with Form to Upload image of the CoffeeSite -->
+                        <div class="w3-display-bottommiddle" style="width:100%">
+                            <div th:if="${coffeeSite.canBeModified}" class="w3-border w3-container">
+
+                                <h5 th:text="#{image.insert.label}">Insert photo here</h5>
+                                <div style="width:100%">
+                                    <form method="POST"
+                                          enctype="multipart/form-data"
+                                          action="#"
+                                          th:method="post"
+                                          th:action="@{/newImageUpload(${_csrf.parameterName}=${_csrf.token})}"
+                                          th:object="${newImageFile}">
+
+
+                                        <input th:type="hidden" name="externalObjectId"
+                                               th:field="${newImageFile.externalObjectId}"/>
+
+                                        <div>
+                                            <div th:classappend="${#fields.hasErrors('file')} ? 'has-error' : ''">
+                                                <input class="w3-border"
+                                                       style="width:100%"
+                                                       name="file" id="fileNameInput"
+                                                       type="file" th:field="*{file}"
+                                                       th:text="#{image.selectfile.button}"
+                                                       th:placeholder="#{image.selectfile.placeholder}"/>
+                                            </div>
+                                            <div class="error-message" th:if="${#fields.hasErrors('file')}"
+                                                 th:errors="*{file}">Validation error messages
+                                            </div>
+                                        </div>
+
+                                        <label class="w3-margin-top" th:text="#{image.insert.description}">Popis
+                                            obrazku</label>
+                                        <input class="w3-input" type="text" name="description"
+                                               th:field="${newImageFile.description}" placeholder="novy obrazek"/>
+
+                                        <label th:text="#{image.insert.type}">Typ obrazku</label>
+                                        <input class="w3-input" type="text" name="imageType"
+                                               th:field="${newImageFile.imageType}" placeholder="hlavni"/>
+
+                                        <div class="w3-right w3-margin-top">
+                                            <button type="submit" id="saveImage" th:text="#{image.upload}"
+                                                    class="w3-button w3-light-blue w3-round w3-small w3-margin-bottom"
+                                                    disabled>Upload image
+                                            </button>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- A common container for entering new Stars and comments and to show other already entered comments -->
+        <div class="w3-container w3-half">
+            <!-- A panel for entering Stars and comment  -->
+            <div th:if="${coffeeSite.canBeCommented} OR ${coffeeSite.canBeRatedByStars}">
+
+                <div class="w3-container w3-border w3-round w3-card-2">
+                    <h4 th:text="#{commentAndStars.insert.label}" class="w3-margin-bottom w3-center">Your rating and/or
+                        comment</h4>
+                    <!-- Formular pro zadani hodnoceni - Stars. Muze zadat pouze prihlaseny uzivatel. -->
+                    <form id="saveStarsAndCommentForm" action="#"
+                          th:action="@{'/saveStarsAndComment/' + ${coffeeSite.externalId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
+                          th:method="post">
+
+                        <div th:if="${coffeeSite.canBeRatedByStars}" style="width:20%" class="w3-margin-top">
+                            <b><label for="hodnoceniKavyStars" th:text="#{site.stars}">Hodnoceni kavy -
+                                stars</label></b>
+                            <select class="w3-select" th:field="*{starsAndComment.stars}">
+                                <option th:each="star : ${allHodnoceniKavyStars}"
+                                        class="w3-option"
+                                        th:value="${star.numOfStars}"
+                                        th:text="${star}">Hodnoceni kavy - stars
+                                </option>
+                            </select>
+                        </div>
+
+                        <div th:if="${coffeeSite.canBeCommented}" class="w3-margin-top">
+                            <div>
+                                <b><label for="comment" th:text="#{site.comment.add}">Message</label></b>
+                            </div>
+                            <div>
+							   <textarea id="commentArea" name="commentArea"
+                                         th:field="*{starsAndComment.comment}"
+                                         class="w3-input w3-border" style="resize:none"
+                                         maxlength=512
+                                         rows="3"
+                                         th:placeholder="#{site.comment.message.placeholder}">
+				               </textarea>
+                            </div>
+                        </div>
+
+                        <div>
+                            <input type="hidden" name="_method" value="post"/>
+                            <button type="submit" id="submitButton" th:text="#{site.submitStarsAndComment}"
+                                    class="w3-btn w3-blue w3-border w3-margin w3-round">X
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+            <!-- Comments list  -->
+            <!--  Every comment has button Delete in case of ROLE_ADMIN user is logged-in or ROLE_USER who created the comment -->
+            <!--  Every comment has button Update in case of ROLE_ADMIN user is logged-in or ROLE_USER who created the comment -->
+            <div class="w3-container w3-margin-top">
+                <b><h3 th:text="#{site.listOfComments}" class="w3-border-bottom w3-bottombar">Comments: </h3></b>
+                <div class="w3-margin-top w3-small" style="font-style: italic" th:if="${#lists.isEmpty(comments)}"
+                     th:text="#{site.noComments}"></div>
+                <div class="w3-container w3-margin-top" th:if="${NOT #lists.isEmpty(comments)}">
+
+                    <div th:each="comment : ${comments}" class="w3-border-bottom w3-margin-top">
+
+                        <div class="w3-right"> <!--  to move user and date to the right side -->
+                            <span th:text="${comment.userName}" style="font-weight: bold; font-style: italic"
+                                  class="w3-small">User name</span> -
+                            <span th:text="${#temporals.format(comment.created, 'dd.MM. yyyy, HH:mm')}" class="w3-small"
+                                  style="font-style: italic">Date of comment</span> <!-- style="font-weight: bold" -->
+                        </div>
+
+                        <div class="w3-cell-row">
+                            <div th:text="${comment.text}" class="w3-margin-left w3-cell"></div>
+
+                            <div class="w3-right w3-cell" th:if="${comment.canBeDeleted}">
+                                <form id="deleteStarsAndCommentForm" action="#"
+                                      th:action="@{'/deleteComment/' + ${comment.id} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
+                                      th:method="DELETE">
+                                    <input type="hidden" name="_method" value="delete"/>
+                                    <button type="submit" id="submitButton" th:title="#{comment.delete}"
+                                            class="w3-button w3-small fa fa-trash w3-red w3-border w3-round"></button>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div> <!-- <div th:each="comment : ${comments}" class="w3-border-bottom w3-margin-top"> -->
+
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
-	  
-	 <!-- <div th:replace="fragments/footer :: footer"/>  -->
-	 
+
+<!-- <div th:replace="~{fragments/footer :: footer}"/>  -->
+
 </body>
 
- 	 <!-- Script to handle availability of upload image Button --> 
-     <script>
-            var chooseFile = document.getElementById("fileNameInput");
-            
-            if (chooseFile) chooseFile.onchange = enableDisableButton;
-            
-            function enableDisableButton(event) {
-            	
-	        	var saveImageButton = document.getElementById("saveImage");	
-	        	
-	        	saveImageButton.disabled = (chooseFile.files.length == 0) ? true : false;
-            }
-     </script>
-  
+<!-- JavaScript to handle availability of upload image Button -->
+<script>
+        var chooseFile = document.getElementById("fileNameInput");
+        if (chooseFile) chooseFile.onchange = enableDisableButton;
+
+        function enableDisableButton(event) {
+            var saveImageButton = document.getElementById("saveImage");
+            saveImageButton.disabled = (chooseFile.files.length == 0) ? true : false;
+        }
+
+</script>
+
+<!-- JavaScript to handle click on one of CoffeeSite's image from the 'imagesList'  -->
+<script>
+            var images = document.querySelectorAll('#imagesList img');
+            var selectedImage = document.getElementById('selectedImage');
+            var rotateLeftActionForm = document.getElementById('rotateLeftAction');
+            var rotateRightActionForm = document.getElementById('rotateRightAction');
+            var deleteImageForm = document.getElementById('deleteImageForm');
+
+            var activateSiteForm = document.getElementById('activateSiteForm');
+            var deactivateSiteForm = document.getElementById('deactivateSiteForm');
+            var cancelStatusSiteForm = document.getElementById('cancelStatusSiteForm');
+
+            var saveStarsAndCommentForm = document.getElementById('saveStarsAndCommentForm');
+            var deleteStarsAndCommentForm = document.getElementById('deleteStarsAndCommentForm');
+
+			images.forEach( function(image, index) {
+				image.addEventListener('click', function() {
+					// Copy the clicked image's source to the selectedImage element
+					let indexToRemoveFrom = image.src.indexOf("&");
+            		selectedImage.src = image.src.substring(0, indexToRemoveFrom);
+
+					// Modify URLs for form action rotating selected image
+            		let imageExtIdIndex = selectedImage.src.indexOf("imageExtId") + "imageExtId".length + 1;
+            		let imageExtId = selectedImage.src.substring(imageExtIdIndex);
+
+            		updateFormUrlWithImage(rotateLeftActionForm, imageExtId);
+            		updateFormUrlWithImage(rotateRightActionForm, imageExtId);
+            		updateFormUrlWithImage(deleteImageForm, imageExtId);
+
+            		updateFormUrlWithImage(activateSiteForm, imageExtId);
+            		updateFormUrlWithImage(deactivateSiteForm, imageExtId);
+					updateFormUrlWithImage(cancelStatusSiteForm, imageExtId);
+
+            		updateFormUrlWithImage(saveStarsAndCommentForm, imageExtId);
+            		updateFormUrlWithImage(deleteStarsAndCommentForm, imageExtId);
+				});
+			});
+
+			function updateFormUrlWithImage(formToUpdate, imageExtId) {
+				if (formToUpdate != null) {
+					var imageExtIdPath = ""
+					if (imageExtId.length !== 0) {
+						imageExtIdPath = "/selectedImageExtId/" + imageExtId;
+					}
+					let idxOfImagePath = formToUpdate.action.indexOf("/selectedImageExtId");
+					if (idxOfImagePath > 0) {
+						formToUpdate.action = formToUpdate.action.substring(0, idxOfImagePath) + imageExtIdPath;
+					} else {
+						formToUpdate.action = formToUpdate.action + imageExtIdPath;
+					}
+            	}
+			}
+
+</script>
+
 </html> 

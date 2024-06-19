@@ -22,25 +22,22 @@ info:
     in 25% size (called Thumbnail mid) and in 12.5% size (called Thumbnail small)
 
 servers:
-  - url: 'https://coffeecompass.cz/api/v1'
+  - url: 'http://localhost:12002/api/v1/images'
 
 # Holds the relative paths to the individual endpoints. The path is appended to the
 # basePath in order to construct the full URL.
 paths:
-  '/image/upload':
-
+  # ################# UPLOAD #################################
+  '/upload':
     post:
       summary: Upload image file
-
       description: |
         Upload image related to object
-
       operationId: uploadImage
-
       requestBody:
         content:
-          multipart/form-data: # Media type
-            schema: # Request payload
+          multipart/form-data:
+            schema:
               type: object
               properties:
                 objectExtId:
@@ -48,64 +45,388 @@ paths:
                   format: uuid
                 description:
                   type: string
+                  maxLength: 255
+                imageType:
+                  type: string
+                  maxLength: 32
                 file: # image file
                   type: string
                   format: binary
+      # security schemas applied to this operation
+      security:
+        - main_auth:
+            - 'bearerAuth'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 634175d5-6eb6-48fd-bee0-abe70046b861
+        '403':
+          description: Forbidden
 
+  '/object/{objectExtId}/replace/{imageExtId}':
+    post:
+      summary: Upload image related to object
+      description: |
+        Upload image file replacing image related to the given Object and image Ext-Id
+      operationId: replaceImage
+      parameters:
+        - in: path
+          name: objectExtId
+          schema:
+            type: string
+          required: true
+          description: string Ext-ID of the image object
+        - in: path
+          name: imageExtId
+          schema:
+            type: string
+          required: true
+          description: string Ext-ID of the image
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  maxLength: 255
+                imageType:
+                  type: string
+                  maxLength: 32
+                file: # image file
+                  type: string
+                  format: binary
+      # security schemas applied to this operation
+      security:
+        - main_auth:
+            - 'bearerAuth'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema: # response schema can be specified for each response
+                $ref: '#/components/schemas/ImageObject'
+        '403':
+          description: Forbidden
+
+  # ############# GET ###################
+
+  '/object/{objectExtId}':
+    get:
+      summary: get image ImageObject with all ImageFiles description
+      description: |
+        Get list of image files related to given Image object Ext-Id
+      operationId: getImageObject
+      parameters:
+        - in: path
+          name: objectExtId
+          schema:
+            type: string
+          required: true
+          description: string Ext-ID of the image object
+      # security schemas applied to this operation
+      security:
+        - main_auth:
+            - 'bearerAuth'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema: # response schema can be specified for each response
+                $ref: '#/components/schemas/ImageObject'
+        '403':
+          description: Forbidden
+
+  # ############# GET Image by its Ext-Id ###################
+
+  '/base64/?imageExtId=ext-id&size=hd':
+    get:
+      summary: get image file in base64
+      description: |
+        Get image as Base64 for related image Id and size
+      operationId: getImageBase64
+      parameters:
+        - in: query
+          name: imageExtId
+          schema:
+            type: string
+          required: true
+          description: string Ext-ID of the image
+        - in: query
+          name: size
+          required: false
+          schema:
+            type: string
+          description: string of the image size, i.e. 'original', 'hd', 'large', 'mid', 'small'
       # security schemas applied to this operation
       security:
         - main_auth:
             - 'bearerAuth'
       responses: # list of responses
         '200':
-          description: Success
+          description: image in JPG format
           content:
-            application/json: # operation response mime type
-              schema: # response schema can be specified for each response
-                $ref: '#/components/schemas/ImageObject'
+            image/jpg:
+              schema:
+                type: string
+                format: byte64
         '403':
           description: Forbidden
+
+  '/bytes/?imageExtId=ext-id&size=hd':
+    get:
+      summary: get image file bytes
+      description: |
+        Get image as bytes for related image Id and size
+      operationId: getImageBytes
+      parameters:
+        - in: query
+          name: imageExtId
+          schema:
+            type: string
+          required: true
+          description: string Ext-ID of the image
+        - in: query
+          name: size
+          required: false
+          schema:
+            type: string
+          description: string of the image size, i.e. 'original', 'hd', 'large', 'mid', 'small'
+      # security schemas applied to this operation
+      security:
+        - main_auth:
+            - 'bearerAuth'
+      responses: # list of responses
+        '200':
+          description: binary image in JPG format
+          content:
+            image/jpg:
+              schema:
+                format: binary
+        '403':
+          description: Forbidden
+
+  # ############# GET Image by its Object Ext-Id ###################
+
+  '/base64/object/?objectExtId=Ext-Id&type=main&size=hd':
+    get:
+      summary: get image file in base64
+      description: |
+        Get latest image of the given type related to the Object ext-ID as base64 in given size
+      operationId: getImageOfTypeAsBase64
+      parameters:
+        - in: query
+          name: objectExtId
+          schema:
+            type: string
+          required: true
+          description: string Ext-ID of the object
+        - in: query
+          name: type
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: size
+          required: false
+          schema:
+            type: string
+          description: string of the image size, i.e. 'original', 'hd', 'large', 'mid', 'small'
+      # security schemas applied to this operation
+      security:
+        - main_auth:
+            - 'bearerAuth'
+      responses: # list of responses
+        '200':
+          description: image in JPG format
+          content:
+            image/jpg:
+              schema:
+                type: string
+                format: byte64
+        '403':
+          description: Forbidden
+
+  '/bytes/object/?objectExtId=Ext-Id&type=main&size=hd':
+    get:
+      summary: get image file bytes
+      description: |
+        Get latest image of the given type related to the Object ext-ID as bytes in given size
+      operationId: getImageOfTypeAsBytes
+      parameters:
+        - in: query
+          name: objectExtId
+          schema:
+            type: string
+          required: true
+          description: string Ext-ID of the object
+        - in: query
+          name: type
+          required: false
+          schema:
+            type: string
+          description: type of the image
+        - in: query
+          name: size
+          required: false
+          schema:
+            type: string
+          description: string of the image size, i.e. 'original', 'hd', 'large', 'mid', 'small'
+      # security schemas applied to this operation
+      security:
+        - main_auth:
+            - 'bearerAuth'
+      responses: # list of responses
+        '200':
+          description: binary image in JPG format
+          content:
+            image/jpg:
+              schema:
+                format: binary
+        '403':
+          description: Forbidden
+
+  # ############# ROTATE Image ###################
+
+  '/rotate/{imageExtId}/direction/{rotationDirection}':
+    get:
+      summary: rotate the image Right or Left by 90 degrees
+      description: |
+        Rotate the image Left or Right by 90 degrees and return it in default size
+      operationId: rotateImage
+      parameters:
+        - in: path
+          name: imageExtId
+          schema:
+            type: string
+          required: true
+          description: string Ext-ID of the image
+        - in: path
+          name: rotationDirection
+          required: true
+          schema:
+            type: string
+          description: direction of rotation - either 'left' or 'right'
+      # security schemas applied to this operation
+      security:
+        - main_auth:
+            - 'bearerAuth'
+      responses: # list of responses
+        '200':
+          description: image rotated successfully
+        '403':
+          description: Forbidden
+        '404':
+          description: image does not exist
+
+  # ######################## DELETE ###################################
+
+  '/object/{objectExtId}/image/{imageExtId}':
+    delete:
+      summary: delete image file
+      description: |
+        Delete image idetified by it's Object and Image Ext-Id
+      operationId: deleteImage
+      parameters:
+        - in: path
+          name: objectExtId
+          schema:
+            type: string
+          required: true
+          description: string Ext-ID of the image object
+        - in: path
+          name: imageExtId
+          schema:
+            type: string
+          required: true
+          description: string Ext-ID of the image
+      # security schemas applied to this operation
+      security:
+        - main_auth:
+            - 'bearerAuth'
+      responses: # list of responses
+        '200':
+          description: image deleted successfully
+        '403':
+          description: Forbidden
+        '404':
+          description: Image does not exist
+
+  '/object/{objectExtId}/all':
+    delete:
+      summary: delete all object's images
+      description: |
+        Delete alle images related to Object  Ext-Id
+      operationId: deleteObjectImages
+      parameters:
+        - in: path
+          name: objectExtId
+          schema:
+            type: string
+          required: true
+          description: string Ext-ID of the image object
+      # security schemas applied to this operation
+      security:
+        - main_auth:
+            - 'bearerAuth'
+      responses: # list of responses
+        '200':
+          description: all object's images deleted successfully
+        '403':
+          description: Forbidden
+        '404':
+          description: Image object does not exist
 
 
 # An object to hold reusable parts that can be used across the definition
 components:
   schemas:
+
     ImageObject:
       description: Image object - contains all uploaded images
       properties:
         externalObjectId:
           type: string
-        externalObjectImages:
+        baseBytesObjectUrl:
+          description: base url of the image object as Bytes
+          type: string
+        baseBase64ObjectUrl:
+          description: base url of the image object as Base64
+          type: string
+        objectImages:
           type: array
+          description: list of images related to this object
           items:
             $ref: '#/components/schemas/ImageFile'
+
     ImageFile:
       type: object
       properties:
-        extId:
-          description: image external ID
+        externalId:
+          description: id of the image
+          type: string
+        baseBytesImageUrl:
+          description: base url of the image as Bytes
+          type: string
+        baseBase64ImageUrl:
+          description: base url of the image as Base64
           type: string
         savedOn:
           description: date/time when the image was saved
           type: string
-        originalFileName:
-          description: original image file name
-          type: string
-        fileNameHd:
-          description: HD image file name
-          type: string
-        thumbnailSmallName:
-          description: small thumbnail image file name
-          type: string
-        thumbnailMidName:
-          description: mid thumbnail image file name
-          type: string
-        thumbnailLargeName:
-          description: large thumbnail image file name
-          type: string
         description:
           type: string
-          maxLength: 128
+          maxLength: 255
+        imageType:
+          type: string
+          maxLength: 32
 
   # Security scheme definitions that can be used across the definition.
   securitySchemes:

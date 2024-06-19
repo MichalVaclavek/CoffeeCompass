@@ -3,7 +3,7 @@ package cz.fungisoft.coffeecompass.dto;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;

@@ -1,8 +1,8 @@
 package cz.fungisoft.coffeecompass.controller.models;
 
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSort;
@@ -20,7 +20,7 @@ import lombok.Data;
  *  city name.<br>
  *  
  *  Trida tedy sdruzuje parametry, podle kterych lze vyhledavat CoffeeSite.
- *  Pouzito prevazne ve View coffeesite_search.html
+ *  Pouzito prevazne ve View coffeesite_search_new.html
  * 
  * @author Michal Václavek
  */
@@ -48,9 +48,9 @@ public class CoffeeSiteSearchCriteriaModel {
     /**
      * Atribut pro model, ktery urcuje, jestli se ve View bude vybirat coffeeSort nebo ne
      */
-    private Boolean sortSelected = false; // defaultni hodnota false, nevybira se podle CoffeeSort
+//    private Boolean sortSelected = false; // defaultni hodnota false, nevybira se podle CoffeeSort
     
-    private String coffeeSort = CoffeeSortEnum.ESPRESSO.getCoffeeType();
+//    private String coffeeSort = CoffeeSortEnum.ESPRESSO.getCoffeeType();
     
     private String cityName = "";
     

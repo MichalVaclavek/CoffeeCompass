@@ -132,7 +132,7 @@
 			
 			<div class="w3-row-padding">
 			
-				<div class="w3-third" th:classappend="${(authorization != null) AND authorization.expression('isAuthenticated()')} ? 'w3-half'">
+				<div th:class="'w3-' + ${(#authorization != null) AND #authorization.expression('isAuthenticated()') ? 'half' : 'third'}">
 					<div class="w3-container w3-padding-16 w3-sand w3-card-2 w3-round">
 					
 						<div class="w3-center" >
@@ -144,7 +144,7 @@
 		        	</div>	
 	        	</div>
 	        	
-	        	<div class="w3-third" th:classappend="${(authorization != null) AND authorization.expression('isAuthenticated()')} ? 'w3-half'">
+	        	<div th:class="'w3-' + ${(#authorization != null) AND #authorization.expression('isAuthenticated()') ? 'half' : 'third'}">
 					<div class="w3-container w3-padding-16 w3-sand w3-card-2 w3-round">
 		        	
 		        		<div class="w3-center">
@@ -224,11 +224,11 @@
 	        				<div th:if="${site.mainImageURL == ''}" th:text="#{site.noImage}" class="w3-center w3-small" style="font-style: italic"> No imagge</div>
 			        		<div th:unless="${site.mainImageURL == ''}" class="w3-center">
 			        			<!-- <a th:href="@{'/showSite/'+${site.id}}"><img class="photoShow w3-round" th:src="${site.mainImageURL}" style="height: 140px"></a> -->
-			        			<a th:href="@{'/showSite/'+${site.id}}"><img class="w3-round" th:src="${site.mainImageURL}" style="height: 192px"></a> <!-- 192 = 1280/10 * 1.5 -->
+			        			<a th:href="@{'/showSite/'+${site.externalId}}"><img class="w3-round" th:src="${site.mainImageURL}" style="height: 192px"></a> <!-- 192 = 1280/10 * 1.5 -->
 			        		</div>
 			        		<br> <!-- To create space above site name label -->
 			        		<div class="w3-center">
-	      						<a th:href="@{'/showSite/'+${site.id}}"><span th:text="${site.siteName}"></span></a>
+	      						<a th:href="@{'/showSite/'+${site.externalId}}"><span th:text="${site.siteName}"></span></a>
     						</div>
 			        	</div>
 		        	</div>
@@ -239,7 +239,7 @@
 	</div>
     
     <br>
-	<!-- <div th:replace="fragments/footer :: footer"/> -->
+	<!-- <div th:replace="~{fragments/footer :: footer}"/> -->
  
 </body>
 </html>

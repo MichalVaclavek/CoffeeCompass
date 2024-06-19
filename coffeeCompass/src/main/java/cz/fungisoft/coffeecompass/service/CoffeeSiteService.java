@@ -4,8 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.validation.Valid;
-
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -56,12 +55,16 @@ public interface CoffeeSiteService {
     Integer getNumberOfSitesNotCanceledFromLoggedInUser();
     
     Optional<CoffeeSiteDTO> findOneToTransfer(Long siteId);
+    Optional<CoffeeSiteDTO> findOneToTransfer(String externalId);
+
+    CoffeeSiteDTO mapOneToTransfer(CoffeeSite site);
 
     /**
      * @param id
      * @return
      */
     Optional<CoffeeSite> findOneById(Long id);
+    Optional<CoffeeSite> findOneByExternalId(String externalId);
     CoffeeSiteDTO findByName(String siteName);
     
     /**
@@ -142,7 +145,7 @@ public interface CoffeeSiteService {
                                                                             String cfSort, String siteStatus);
     
     List<CoffeeSiteDTO> findAllWithinCircleAndCityWithCSStatusAndCoffeeSort(double zemSirka, double zemDelka, long rangeMeters,
-                                                                                   String cfSort, String siteStatus, String cityName);
+                                                                            String siteStatus, String cityName);
     
     List<CoffeeSiteDTO> findAllWithinRangeWithRecordStatus(double zemSirka, double zemDelka, long rangeMeters, CoffeeSiteRecordStatus csRecordStatus);
 
@@ -161,7 +164,7 @@ public interface CoffeeSiteService {
     
     /**
      * A method to create a Page of CoffeeSites from given list of CoffeeSites.
-     * Usualy used on pages showing CoffeeSites found on location or city criteria, like coffeesite_search.html
+     * Usualy used on pages showing CoffeeSites found on location or city criteria, like coffeesite_search_new.html
      * 
      * @param pageable
      * @param coffeeSitesList
@@ -258,8 +261,11 @@ public interface CoffeeSiteService {
     @PreAuthorize("isAuthenticated()")
     CoffeeSite updateCSRecordStatusAndSave(CoffeeSite cs, CoffeeSiteRecordStatusEnum newStatus);
     
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     void delete(Long id);
+
+    @PreAuthorize("hasRole('ADMIN')")
+    void delete(String externalId);
     
     // Pomocna metoda pro otestovani, ze funguje volani Stored procedure v DB
     double getDistance(double zemSirka1, double zemDelka1, double zemSirka2, double zemDelka2);

@@ -10,9 +10,10 @@ import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 
-import javax.persistence.QueryHint;
+import jakarta.persistence.QueryHint;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Zakladni Repository trida pro CoffeeSite objekt.
@@ -46,6 +47,8 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
     @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Override
     Optional<CoffeeSite> findById(Long id);
+
+    Optional<CoffeeSite> findByExternalId(UUID externalId);
 
     @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select cs from CoffeeSite cs where originalUser.id=?1 order by cs.createdOn desc")
@@ -120,11 +123,11 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
      * double sirka, double delka a vraci takove CoffeeSite, ktere maji tuto vzdalenost menzi jako rangeMeters:
      * <p>
      * 1) HQL varianta, nefunguje, tato syntaxe asi neni spravna
-     * @Query("SELECT cs FROM CoffeeSite cs WHERE distance(?1, ?2, cs.zemSirka, cs.zemDelka) < ?3") 
+     * @Query("SELECT cs FROM CoffeeSite cs WHERE public.distance(?1, ?2, cs.zemSirka, cs.zemDelka) < ?3")
      * <p>
      * 2) Varianta "native" query - funguje     
      * @Query(nativeQuery = true, value = "SELECT *, poloha_gps_sirka, poloha_gps_delka"
-     *                                + " FROM coffeecompass.coffee_site WHERE distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3")
+     *                                + " FROM coffeecompass.coffee_site WHERE public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3")
      */
     @Query(nativeQuery = true, name = "getSitesWithinRange") // varianta, kdy je Query nadefinovano v jine tride pomoci @NamedNativeQuery anotace, v tomto pripade v CoffeeSite tride
     List<CoffeeSite> findSitesWithinRange(double sirka, double delka, long rangeMeters);
@@ -183,4 +186,8 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
     @Modifying // required by Hibernate, otherwise there is an exception ' ... Illegal state ...'
     @Query("delete FROM CoffeeSite cs WHERE originalUser.id=?1")
     void deleteAllFromUser(Long userId);
+
+    @Modifying
+    @Query("delete FROM CoffeeSite cs WHERE externalId=?1")
+    void deleteByExternalId(UUID externalId);
 }

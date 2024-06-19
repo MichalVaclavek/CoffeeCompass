@@ -1,5 +1,6 @@
 package cz.fungisoft.coffeecompass.serviceimpl.weather;
 
+import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.mappers.WeatherMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +10,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import cz.fungisoft.coffeecompass.domain.weather.WeatherData;
-import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.dto.WeatherDTO;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.weather.WeatherApiService;
@@ -71,7 +71,7 @@ public class WeatherApiServiceImpl implements WeatherApiService {
     }
 
     @Override
-    public Optional<WeatherDTO> getWeatherDTO(CoffeeSiteDTO coffeeSite) {
+    public Optional<WeatherDTO> getWeatherDTO(CoffeeSite coffeeSite) {
         Optional<WeatherData> weather = getWeather(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), "cz", "metric");
         return weather.map(weatherMapper::weatherDataToWeatherDTO);
     }

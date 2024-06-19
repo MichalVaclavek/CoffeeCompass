@@ -21,10 +21,10 @@ public class StatisticsToShow {
     public static class DBReturnPair {
         
         private String strVal;
-        private BigInteger intVal;
+        private Long intVal;
 
         
-        public DBReturnPair(String strVal, BigInteger intVal) {
+        public DBReturnPair(String strVal, Long intVal) {
             super();
             this.strVal = strVal;
             this.intVal = intVal;
@@ -34,7 +34,7 @@ public class StatisticsToShow {
             return strVal;
         }
 
-        public BigInteger getIntVal() {
+        public Long getIntVal() {
             return intVal;
         }
 

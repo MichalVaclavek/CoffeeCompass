@@ -16,7 +16,7 @@ public interface UserService {
 
     Optional<UserDTO> findByIdToTransfer(Long id);
     
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     Optional<User> findById(Long id);
     
     Optional<UserDTO> findByUserNameToTransfer(String userName);
@@ -51,22 +51,22 @@ public interface UserService {
      */
     User saveOAuth2User(ClientRegistration clientRegistration, OAuth2UserInfo oAuth2UserInfo);
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     User updateUser(UserDTO user);
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     User updateUser(User user);
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     User updateOAuth2User(User existingUser, OAuth2UserInfo oAuth2UserInfo); 
     
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     void deleteUserBySSO(String sso);
     
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     void deleteUserById(Long id);
  
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     List<UserDTO> findAllUsers();
     
     boolean isUserNameUnique(Long id, String sso);

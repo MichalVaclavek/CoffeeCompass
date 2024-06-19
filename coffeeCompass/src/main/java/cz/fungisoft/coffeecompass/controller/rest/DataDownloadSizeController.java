@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.*;
  */
 @Tag(name = "DownloadSize", description = "Get data size for download")
 @RestController
-@RequestMapping("/rest/dataDownloadSize")
+//@RequestMapping("/rest/dataDownloadSize")
+@RequestMapping("${site.coffeesites.baseurlpath.rest}" + "/dataDownloadSize")
 public class DataDownloadSizeController {
 
     @NonNull

@@ -8,18 +8,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Locale;
 
+import org.springframework.stereotype.Service;
+
+import cz.fungisoft.coffeecompass.entity.Image;
+import cz.fungisoft.coffeecompass.service.image.ImageResizeAndRotateService;
+import lombok.extern.slf4j.Slf4j;
+
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.ImageOutputStream;
-
-import org.springframework.stereotype.Service;
-
-import cz.fungisoft.coffeecompass.entity.Image;
-import cz.fungisoft.coffeecompass.service.image.ImageResizeAndRotateService;
-import lombok.extern.log4j.Log4j2;
 
 /**
  * Service to change the size of the Image to "standard" width and lenghth.<br>
@@ -32,7 +32,7 @@ import lombok.extern.log4j.Log4j2;
  *
  */
 @Service("imageResizeAndRotate")
-@Log4j2
+@Slf4j
 public class ImageResizeAndRotateServiceImpl implements ImageResizeAndRotateService {
 
     /**

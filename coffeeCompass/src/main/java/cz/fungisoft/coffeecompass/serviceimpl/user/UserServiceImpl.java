@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import cz.fungisoft.coffeecompass.mappers.UserMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,7 +30,6 @@ import cz.fungisoft.coffeecompass.security.oauth2.user.OAuth2UserInfo;
 import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.user.UserService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 
 /**
  * Implements all operations related to user data manipulation.<br>
@@ -41,7 +41,7 @@ import lombok.extern.log4j.Log4j2;
 @Service("userService")
 @RequiredArgsConstructor // Creates Constructor with all dependencies (used by Spring to inject them)
 @Transactional
-@Log4j2
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UsersRepository usersRepository;

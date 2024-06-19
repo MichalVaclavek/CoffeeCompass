@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 import cz.fungisoft.coffeecompass.controller.models.rest.PushNotificationRequest;
 import cz.fungisoft.coffeecompass.service.notifications.FirebaseNotificationService;
 import cz.fungisoft.coffeecompass.service.notifications.PushNotificationService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Not used in current implementation as instant sending of push notifications
  * is not needed.<br>
  */
-@Log4j2
+@Slf4j
 @Service
 public class PushNotificationServiceImpl implements PushNotificationService {
     

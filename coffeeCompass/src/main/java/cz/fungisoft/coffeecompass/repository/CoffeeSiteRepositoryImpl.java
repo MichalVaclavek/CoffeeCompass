@@ -1,18 +1,15 @@
 package cz.fungisoft.coffeecompass.repository;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-import javax.persistence.ParameterMode;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.StoredProcedureQuery;
-import javax.transaction.Transactional;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.ParameterMode;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.persistence.StoredProcedureQuery;
+import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +18,7 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSort;
 import cz.fungisoft.coffeecompass.entity.StatisticsToShow.DBReturnPair;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Trida implementujici Custom Repository interface  urcena pro specilani dotazy (napr. pouzivajici StoredProcedure
@@ -44,7 +41,7 @@ import lombok.extern.log4j.Log4j2;
  */
 @Repository
 @Transactional
-@Log4j2
+@Slf4j
 public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
     /*
      * Skoro vSechny vyhledavaci SQL query v teto tride budou mit stejny tvar. Na zacatku SELECT vsech polozek z coffeecompass.coffee_site tab. a na konci
@@ -52,10 +49,10 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
      * kde se bude menit akorat stred dotazu s dalsimi podminkami.
      * Zatim nepouzito.
      */
-    private static final String SITES_IN_RANGE_QUERY = "SELECT *, poloha_gps_sirka, poloha_gps_delka FROM coffeecompass.coffee_site WHERE distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3";
-    private static final String QUERY_START_WHERE = "SELECT *, poloha_gps_sirka, poloha_gps_delka FROM coffeecompass.coffee_site AS cs WHERE ";
-    private static final String QUERY_START_JOIN = "SELECT *, poloha_gps_sirka, poloha_gps_delka FROM coffeecompass.coffee_site AS cs JOIN ";
-    private static final String QUERY_END = " AND (distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
+    private static final String SITES_IN_RANGE_QUERY = "SELECT *, poloha_gps_sirka AS gps_sirka, poloha_gps_delka AS gps_delka FROM coffeecompass.coffee_site WHERE public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3";
+    private static final String QUERY_START_WHERE = "SELECT *, poloha_gps_sirka AS gps_sirka, poloha_gps_delka AS gps_delka FROM coffeecompass.coffee_site AS cs WHERE ";
+    private static final String QUERY_START_JOIN = "SELECT *, poloha_gps_sirka AS gps_sirka, poloha_gps_delka AS gps_delka FROM coffeecompass.coffee_site AS cs JOIN ";
+    private static final String QUERY_END = " AND (public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
         
     @PersistenceContext
     private EntityManager em;
@@ -117,14 +114,14 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
      */
     @Override
     public List<CoffeeSite> findSitesWithCoffeeSortAndSiteStatus(double sirka, double delka, long rangeMeters, CoffeeSort sort, CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus) {
-        String selectQuery = "SELECT *, poloha_gps_sirka, poloha_gps_delka"
-                            + " FROM coffeecompass.coffee_site AS cs, coffeecompass.coffee_site_to_druhy_kavy AS cs_dk"
-                            + " JOIN coffeecompass.druhy_kavy AS dk ON dk.id=?5"
-                            + " WHERE cs_dk.druhy_kavy_id=?5"
-                            + " AND cs.id=cs_dk.coffee_site_id"
-                            + " AND status_zarizeni_id=?4"
-                            + " AND status_zaznamu_id=?6"
-                            + " AND (distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
+        String selectQuery = "SELECT *, poloha_gps_sirka AS gps_sirka, poloha_gps_delka AS gps_delka "
+                            + "FROM coffeecompass.coffee_site AS cs, coffeecompass.coffee_site_to_druhy_kavy AS cs_dk "
+                            + "JOIN coffeecompass.druhy_kavy AS dk ON dk.id=?5 "
+                            + "WHERE cs_dk.druhy_kavy_id=?5 "
+                            + "AND cs.id=cs_dk.coffee_site_id "
+                            + "AND status_zarizeni_id=?4 "
+                            + "AND status_zaznamu_id=?6 "
+                            + "AND (public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
                       
         Query sites = em.createNativeQuery(selectQuery, CoffeeSite.class);
         
@@ -150,7 +147,7 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
      * @param sirka
      * @param delka
      * @param rangeMeters
-     * @param sort - muze byt prazde nebo null
+//     * @param sort - muze byt prazde nebo null
      * @param siteStatus - muze byt prazde nebo null
      * @param csRecordStatus - muze byt prazde nebo null
      * @param cityName - muze byt prazde nebo null
@@ -159,7 +156,6 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
      */ 
     @Override
     public List<CoffeeSite> findSitesWithSortAndSiteStatusAndRangeAndCity(double sirka, double delka, long rangeMeters,
-                                                                          CoffeeSort sort,
                                                                           CoffeeSiteStatus siteStatus,
                                                                           CoffeeSiteRecordStatus csRecordStatus,
                                                                           String cityName) {
@@ -168,69 +164,69 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
         //TODO This query assembly is not optimal, check!!!
         // POZOR - Nelze vynechavat vstupni parametry!!!
         
-        selectQuery.append("SELECT *, poloha_gps_sirka, poloha_gps_delka");
+        selectQuery.append("SELECT *, poloha_gps_sirka AS gps_sirka, poloha_gps_delka AS gps_delka ");
         
-        if (sort != null && !sort.getCoffeeSort().isEmpty()) {
-            selectQuery.append(" FROM coffeecompass.coffee_site AS cs, coffeecompass.coffee_site_to_druhy_kavy AS cs_dk");
-            selectQuery.append(" JOIN coffeecompass.druhy_kavy AS dk ON dk.id=?1");
-            selectQuery.append(" WHERE cs_dk.druhy_kavy_id=?1");
-            selectQuery.append(" AND cs.id=cs_dk.coffee_site_id ");
-            
-            if (csRecordStatus != null && !csRecordStatus.getStatus().isEmpty())
-                selectQuery.append("AND status_zaznamu_id=?2 ");
-            
-            if (cityName != null && cityName.length() > 1) {
-                selectQuery.append("AND ( (distance(?3, ?4, poloha_gps_sirka, poloha_gps_delka) < ?5) OR (LOWER(cs.poloha_mesto) like LOWER(CONCAT(?6,'%')) ))");
-                if (siteStatus != null && !siteStatus.getStatus().isEmpty()) {
-                    selectQuery.append("AND status_zarizeni_id=?7 ");
-                }
-            } else {
-                selectQuery.append("AND (distance(?3, ?4, poloha_gps_sirka, poloha_gps_delka) < ?5)");
-                if (siteStatus != null && !siteStatus.getStatus().isEmpty()) {
-                    selectQuery.append("AND status_zarizeni_id=?6 ");
-                }
+//        if (sort != null && !sort.getCoffeeSort().isEmpty()) {
+//            selectQuery.append(" FROM coffeecompass.coffee_site AS cs, coffeecompass.coffee_site_to_druhy_kavy AS cs_dk");
+//            selectQuery.append(" JOIN coffeecompass.druhy_kavy AS dk ON dk.id=?1");
+//            selectQuery.append(" WHERE cs_dk.druhy_kavy_id=?1");
+//            selectQuery.append(" AND cs.id=cs_dk.coffee_site_id ");
+//
+//            if (csRecordStatus != null && !csRecordStatus.getStatus().isEmpty())
+//                selectQuery.append("AND status_zaznamu_id=?2 ");
+//
+//            if (cityName != null && cityName.length() > 1) {
+//                selectQuery.append("AND ( (public.distance(?3, ?4, poloha_gps_sirka, poloha_gps_delka) < ?5) OR (LOWER(cs.poloha_mesto) like LOWER(CONCAT(?6,'%')) ))");
+//                if (siteStatus != null && !siteStatus.getStatus().isEmpty()) {
+//                    selectQuery.append("AND status_zarizeni_id=?7 ");
+//                }
+//            } else {
+//                selectQuery.append("AND (public.distance(?3, ?4, poloha_gps_sirka, poloha_gps_delka) < ?5)");
+//                if (siteStatus != null && !siteStatus.getStatus().isEmpty()) {
+//                    selectQuery.append("AND status_zarizeni_id=?6 ");
+//                }
+//            }
+//
+//        } else {
+        selectQuery.append("FROM coffeecompass.coffee_site AS cs WHERE ");
+
+        if (csRecordStatus != null && !csRecordStatus.getStatus().isEmpty())
+            selectQuery.append("status_zaznamu_id=?1 ");
+
+        if (cityName != null && cityName.length() > 1) {
+            selectQuery.append("AND ( (public.distance(?2, ?3, poloha_gps_sirka, poloha_gps_delka) < ?4) OR (LOWER(cs.poloha_mesto) like LOWER(CONCAT(?5,'%')) ))");
+            if (siteStatus != null && !siteStatus.getStatus().isEmpty()) {
+                selectQuery.append(" AND status_zarizeni_id=?6");
             }
-            
         } else {
-            selectQuery.append(" FROM coffeecompass.coffee_site AS cs WHERE ");
-            
-            if (csRecordStatus != null && !csRecordStatus.getStatus().isEmpty())
-                selectQuery.append("status_zaznamu_id=?2 AND ");
-            
-            if (cityName != null && cityName.length() > 1) {
-                selectQuery.append("( (distance(?3, ?4, poloha_gps_sirka, poloha_gps_delka) < ?5) OR (LOWER(cs.poloha_mesto) like LOWER(CONCAT(?6,'%')) ))");
-                if (siteStatus != null && !siteStatus.getStatus().isEmpty()) {
-                    selectQuery.append("status_zarizeni_id=?7 AND ");
-                }
-            } else {
-                selectQuery.append("(distance(?3, ?4, poloha_gps_sirka, poloha_gps_delka) < ?5)");
-                if (siteStatus != null && !siteStatus.getStatus().isEmpty()) {
-                    selectQuery.append("status_zarizeni_id=?6 AND ");
-                }
+            selectQuery.append("AND (public.distance(?2, ?3, poloha_gps_sirka, poloha_gps_delka) < ?4)");
+            if (siteStatus != null && !siteStatus.getStatus().isEmpty()) {
+                selectQuery.append(" AND status_zarizeni_id=?5");
             }
         }
+//        }
 
         Query sites = em.createNativeQuery(selectQuery.toString(), CoffeeSite.class);
         
-        if (sort != null) {
-            sites.setParameter(1, sort.getId());
-        }
+//        if (sort != null) {
+//            sites.setParameter(1, sort.getId());
+//        }
         
         if (csRecordStatus != null) {
-            sites.setParameter(2, csRecordStatus.getId());
+            sites.setParameter(1, csRecordStatus.getId());
         }
         
-        sites.setParameter(3, sirka);
-        sites.setParameter(4, delka);
-        sites.setParameter(5, rangeMeters);
+        sites.setParameter(2, sirka);
+        sites.setParameter(3, delka);
+        sites.setParameter(4, rangeMeters);
         
         if (cityName != null && cityName.length() > 1) {
-            sites.setParameter(6, cityName); 
+            sites.setParameter(5, cityName);
             if (siteStatus != null) {
-                sites.setParameter(7, siteStatus.getId());
+                sites.setParameter(6, siteStatus.getId());
             }
         } else if (siteStatus != null) {
-                sites.setParameter(6, siteStatus.getId());
+                sites.setParameter(5, siteStatus.getId());
         }
 
         
@@ -244,12 +240,12 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
     @Override
     public List<CoffeeSite> findSitesWithCoffeeSort(double sirka, double delka, long rangeMeters, CoffeeSort sort, CoffeeSiteRecordStatus csRecordStatus) {
 
-        String selectQuery = "SELECT *, poloha_gps_sirka, poloha_gps_delka"
-                          + " FROM coffeecompass.coffee_site AS cs, coffeecompass.coffee_site_to_druhy_kavy AS cs_dk"
-                          + " JOIN coffeecompass.druhy_kavy AS dk ON dk.id=?4"
-                          + " WHERE cs_dk.druhy_kavy_id=?4 AND cs.id=cs_dk.coffee_site_id"
-                          + " AND status_zaznamu_id=?5"
-                          + " AND (distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
+        String selectQuery = "SELECT *, poloha_gps_sirka AS gps_sirka, poloha_gps_delka AS gps_delka "
+                          + "FROM coffeecompass.coffee_site AS cs, coffeecompass.coffee_site_to_druhy_kavy AS cs_dk "
+                          + "JOIN coffeecompass.druhy_kavy AS dk ON dk.id=?4 "
+                          + "WHERE cs_dk.druhy_kavy_id=?4 AND cs.id=cs_dk.coffee_site_id "
+                          + "AND status_zaznamu_id=?5 "
+                          + "AND (public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
                       
         Query sites = em.createNativeQuery(selectQuery, CoffeeSite.class);
         
@@ -270,11 +266,11 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
     @Override
     public List<CoffeeSite> findSitesWithStatus(double sirka, double delka, long rangeMeters, CoffeeSiteStatus siteStatus, CoffeeSiteRecordStatus csRecordStatus) {
 
-        String selectQuery = "SELECT *, poloha_gps_sirka, poloha_gps_delka"
-                          + " FROM coffeecompass.coffee_site AS cs"
-                          + " WHERE status_zarizeni_id=?4"
-                          + " AND status_zaznamu_id=?5"
-                          + " AND (distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
+        String selectQuery = "SELECT *, poloha_gps_sirka AS gps_sirka, poloha_gps_delka AS gps_delka "
+                          + "FROM coffeecompass.coffee_site AS cs "
+                          + "WHERE status_zarizeni_id=?4 "
+                          + "AND status_zaznamu_id=?5 "
+                          + "AND (public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
                       
         Query sites = em.createNativeQuery(selectQuery, CoffeeSite.class);
         
@@ -295,9 +291,9 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
     @Override
     public List<CoffeeSite> findSitesWithRecordStatus(double sirka, double delka, long rangeMeters, CoffeeSiteRecordStatus csRecordStatus) {
 
-        String selectQuery = "SELECT *, poloha_gps_sirka, poloha_gps_delka"
-                          + " FROM coffeecompass.coffee_site AS cs"
-                          + " WHERE status_zaznamu_id=?4 AND (distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
+        String selectQuery = "SELECT *, poloha_gps_sirka AS gps_sirka, poloha_gps_delka AS gps_delka "
+                          + "FROM coffeecompass.coffee_site AS cs "
+                          + "WHERE status_zaznamu_id=?4 AND (public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
                       
         Query sites = em.createNativeQuery(selectQuery, CoffeeSite.class);
         
@@ -355,7 +351,7 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
         log.info("Top 5 cities statistics retrieved.");
         
         return results.stream().filter(rec -> !((String)rec[0]).isEmpty())
-                      .map(rec -> new DBReturnPair((String)rec[0], (BigInteger)rec[1]))
-                      .collect(Collectors.toList());
+                      .map(rec -> new DBReturnPair((String)rec[0], (Long)rec[1]))
+                      .toList();
     }
 }

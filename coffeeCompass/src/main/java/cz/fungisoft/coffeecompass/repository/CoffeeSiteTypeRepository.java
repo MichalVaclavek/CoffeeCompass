@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteType;
 import org.springframework.data.jpa.repository.QueryHints;
 
-import javax.persistence.QueryHint;
+import jakarta.persistence.QueryHint;
 
 public interface CoffeeSiteTypeRepository extends JpaRepository<CoffeeSiteType, Integer> {
 

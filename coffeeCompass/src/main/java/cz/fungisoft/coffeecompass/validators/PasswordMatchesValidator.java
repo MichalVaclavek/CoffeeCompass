@@ -1,10 +1,9 @@
 package cz.fungisoft.coffeecompass.validators;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-
 import cz.fungisoft.coffeecompass.controller.models.NewPasswordInputModel;
 import cz.fungisoft.coffeecompass.dto.UserDTO;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 /**
  * Validates if password and confirmationPassword matches.<br>
@@ -14,14 +13,14 @@ import cz.fungisoft.coffeecompass.dto.UserDTO;
  * @author Michal Vaclavek
  *
  */
-public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, Object>  {
+public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, Object> {
 
     @Override
     public void initialize(PasswordMatches constraintAnnotation) {       
     }
     
     @Override
-    public boolean isValid(Object obj, ConstraintValidatorContext context) {   
+    public boolean isValid(Object obj, ConstraintValidatorContext context) {
         
         boolean result = true;
         String errorMessageKey = "";

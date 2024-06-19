@@ -6,6 +6,8 @@ package cz.fungisoft.coffeecompass.service.image;
 import cz.fungisoft.coffeecompass.entity.Image;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Optional;
+
 /**
  * @author Michal Vaclavek
  *
@@ -25,7 +27,7 @@ public interface ImageStorageService {
      * @return id of the saved Image
      */
     Integer storeImageFile(Image image, MultipartFile file, Long siteID, boolean resize);
-    
+
     /**
      * Save Image and return db ID of the saved image.
      * This is version for savin image file uploaded via REST api.
@@ -41,8 +43,6 @@ public interface ImageStorageService {
     
     void saveImageToDB(Image image);
 
-    Image getImageById(Integer imageID);
-    String getImageAsBase64(Integer imageID);
     String getImageAsBase64ForSiteId(Long siteID);
     Integer getImageIdForSiteId(Long siteID);
 
@@ -53,7 +53,11 @@ public interface ImageStorageService {
 
     byte[] getImageAsBytesForSiteId(Long siteId);
 
+    Optional<byte[]> getImageAsBytesForSiteExternalId(String siteExternalId);
+
     boolean isImageAvailableForSiteId(Long siteId);
+
+    boolean isImageAvailableForSiteId(String siteExtId);
 
     String getBaseImageURLPath();
 }

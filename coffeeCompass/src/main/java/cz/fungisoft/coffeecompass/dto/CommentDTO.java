@@ -1,8 +1,9 @@
 package cz.fungisoft.coffeecompass.dto;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -32,9 +33,9 @@ public class CommentDTO {
     }
     
     @JsonFormat(pattern = "dd.MM. yyyy HH:mm", timezone="Europe/Prague")
-    private Date created;
+    private LocalDateTime created;
     
-    private long coffeeSiteID;
+    private long coffeeSiteId;
             
     private String userName;
     

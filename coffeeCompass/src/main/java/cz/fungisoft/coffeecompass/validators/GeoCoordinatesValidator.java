@@ -1,7 +1,7 @@
 package cz.fungisoft.coffeecompass.validators;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 /**
  * Will be used to validate View input for CoffeeSite geo coordinates.<br>

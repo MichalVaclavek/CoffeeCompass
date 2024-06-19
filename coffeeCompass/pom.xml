@@ -13,7 +13,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.9</version>
+		<version>3.1.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -22,11 +22,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
    		<jwt.version>0.9.1</jwt.version>
-<!--		<testcontainers.version>1.19.3</testcontainers.version>-->
-		<log4j2.version>2.16.0</log4j2.version> <!-- had to be changed due to Log4J2 Vulnerability CVE-2021-44228 -->
 
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
 		<org.lombok.version>1.18.30</org.lombok.version>
+		<spring-cloud.version>2022.0.4</spring-cloud.version>
 	</properties>
 
 	<dependencyManagement>
@@ -39,10 +38,23 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -67,8 +79,12 @@
     				</exclusion>
   				</exclusions>
 		</dependency>
-		
-		<!-- javax.validation -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency>
+
+		<!-- jakarta.validation -->
 		<dependency>
  			<groupId>org.springframework.boot</groupId>
  			<artifactId>spring-boot-starter-validation</artifactId>
@@ -81,7 +97,7 @@
 		</dependency> 
 		<dependency>
     		<groupId>org.thymeleaf</groupId>
-    		<artifactId>thymeleaf-spring5</artifactId>
+    		<artifactId>thymeleaf-spring6</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
@@ -92,7 +108,7 @@
         <!-- https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-springsecurity5 -->
         <dependency>
            <groupId>org.thymeleaf.extras</groupId>
-           <artifactId>thymeleaf-extras-springsecurity5</artifactId>
+           <artifactId>thymeleaf-extras-springsecurity6</artifactId>
         </dependency>
 		<!-- Thymeleaf support END -->
 		               
@@ -130,13 +146,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-<!--			<exclusions>-->
-<!--			  <exclusion>-->
-<!--			  	 &lt;!&ndash; Exclusion of some already integrated junit5 package - junit-vintage-engine is in SpringBoot 2.3.4 &ndash;&gt;-->
-<!--			     <groupId>org.junit.vintage</groupId> -->
-<!--			     <artifactId>junit-vintage-engine</artifactId>-->
-<!--			  </exclusion>-->
-<!--			</exclusions>-->
 		</dependency>
 		
 		<!-- Pro testovani prace s DB, vyuziva Spring-boot-starter-test pomoci @DataJpaTest pro vytvoreni TestEntityManager. -->
@@ -199,11 +208,12 @@
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
 		</dependency>
-		
-		<!-- Log4j2 -->
+
+		<!--		Feign Clients support-->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-log4j2</artifactId>
+			<groupId>io.github.openfeign</groupId>
+			<artifactId>feign-httpclient</artifactId>
+<!--			<version>9.4.0</version>-->
 		</dependency>
 
 		<!--	Test Dependencies	- for Integration tests using Postgre SQL DB within Docker container-->
@@ -300,6 +310,16 @@
 			<artifactId>junit-jupiter-api</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+
 	</dependencies>
 
 
@@ -346,6 +366,7 @@
 				<groupId>org.openapitools</groupId>
 				<artifactId>openapi-generator-maven-plugin</artifactId>
 				<version>6.3.0</version>
+
 				<executions>
 					<execution>
 						<!-- prints (only, additionally) language specific(!) "config options help" -->
@@ -368,8 +389,11 @@
 						<configuration>
 							<inputSpec>${project.basedir}/src/external-api/images-api.yaml</inputSpec>
 							<generatorName>spring</generatorName>
-							<apiPackage>cz.fungisoft.images.api</apiPackage>
 							<configOptions>
+								<basePackage>cz.fungisoft.images.api</basePackage>
+								<modelPackage>cz.fungisoft.images.api</modelPackage>
+								<apiPackage>cz.fungisoft.images.api</apiPackage>
+								<useJakartaEe>true</useJakartaEe>
 								<sourceFolder>src/gen/java/main</sourceFolder>
 							</configOptions>
 						</configuration>

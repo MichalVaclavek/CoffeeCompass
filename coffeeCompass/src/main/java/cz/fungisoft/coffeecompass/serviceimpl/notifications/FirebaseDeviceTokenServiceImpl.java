@@ -10,7 +10,7 @@ import cz.fungisoft.coffeecompass.entity.DeviceFirebaseToken;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.repository.FirebaseDeviceTokenRepository;
 import cz.fungisoft.coffeecompass.service.notifications.FirebaseDeviceTokenService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Implements {@link FirebaseDeviceTokenService} to handle creation and deletition
@@ -21,7 +21,7 @@ import lombok.extern.log4j.Log4j2;
  */
 @Service
 @Transactional
-@Log4j2
+@Slf4j
 public class FirebaseDeviceTokenServiceImpl implements FirebaseDeviceTokenService {
 
     private final FirebaseDeviceTokenRepository firebaseDeviceTokenRepository;

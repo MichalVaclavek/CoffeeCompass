@@ -30,6 +30,8 @@ import java.util.concurrent.atomic.AtomicReference;
 @Controller 
 public class CSStarsRatingAndCommentsController {
 
+    private static final String REDIRECT_SHOW_SITE_VIEW = "redirect:/showSite/";
+
     private final ICommentService commentsService;
     
     private final IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService;
@@ -53,21 +55,23 @@ public class CSStarsRatingAndCommentsController {
      * hodnoceni a komentar.
      * 
      * @param starsAndComment
-     * @param coffeeSiteId id of the CoffeeSite to which the StarsAndCommentModel belongs to
+     * @param coffeeSiteExtId id of the CoffeeSite to which the StarsAndCommentModel belongs to
      * @return
      */
-    @PostMapping("/saveStarsAndComment/{coffeeSiteId}") 
-    public ModelAndView saveCommentAndStarsForSite(@ModelAttribute StarsAndCommentModel starsAndComment, @PathVariable Long coffeeSiteId) {
+    @PostMapping({"/saveStarsAndComment/{coffeeSiteExtId}", "/saveStarsAndComment/{coffeeSiteExtId}/selectedImageExtId/{selectedImageExtId}"})
+    public ModelAndView saveCommentAndStarsForSite(@ModelAttribute StarsAndCommentModel starsAndComment,
+                                                   @PathVariable String coffeeSiteExtId,
+                                                   @PathVariable(required = false) String selectedImageExtId) {
         // Ulozit hodnoceni if not empty
-        starsForCoffeeSiteService.saveStarsForCoffeeSiteAndLoggedInUser(coffeeSiteId, starsAndComment.getStars().getNumOfStars());
+        starsForCoffeeSiteService.saveStarsForCoffeeSiteAndLoggedInUser(coffeeSiteExtId, starsAndComment.getStars().getNumOfStars());
 
         ModelAndView mavRet = new ModelAndView("404");
-        return coffeeSiteService.findOneById(coffeeSiteId).map(cs -> {
+        return coffeeSiteService.findOneByExternalId(coffeeSiteExtId).map(cs -> {
             // Ulozit Comment if not empty
             if ((starsAndComment.getComment() != null) && !starsAndComment.getComment().isEmpty()) {
                 commentsService.saveTextAsComment(starsAndComment.getComment(), cs);
             }
-            mavRet.setViewName("redirect:/showSite/" + coffeeSiteId);
+            mavRet.setViewName(REDIRECT_SHOW_SITE_VIEW + coffeeSiteExtId + ( (selectedImageExtId != null) ? "/selectedImageExtId/" + selectedImageExtId : ""));
             return mavRet;
         }).orElse(mavRet);
     }
@@ -82,11 +86,13 @@ public class CSStarsRatingAndCommentsController {
      * @param commentId id of the Comment to delete
      * @return
      */
-    @DeleteMapping("/deleteComment/{commentId}") 
-    public ModelAndView deleteCommentAndStarsForSite(@PathVariable Integer commentId) {
+    @DeleteMapping( {"/deleteComment/{commentId}", "/deleteComment/{commentId}/selectedImageExtId/{selectedImageExtId}" })
+    public ModelAndView deleteCommentAndStarsForSite(@PathVariable Integer commentId,
+                                                     @PathVariable(required = false) String selectedImageExtId) {
         // Smazat komentar - need to have site Id to give it to /showSite Controller
         Long siteId = commentsService.deleteCommentById(commentId);
+        String coffeeSiteExtId = coffeeSiteService.findOneById(siteId).map(cf -> cf.getExternalId().toString()).orElse("");
         // Show same coffee site with updated Stars and comments
-        return new ModelAndView("redirect:/showSite/" + siteId);
+        return new ModelAndView(REDIRECT_SHOW_SITE_VIEW + coffeeSiteExtId + ( (selectedImageExtId != null) ? "/selectedImageExtId/" + selectedImageExtId : ""));
     }
 }

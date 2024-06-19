@@ -1,19 +1,16 @@
 package cz.fungisoft.coffeecompass.entity;
 
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Hlavni model objekt aplikace. Obsahuje vsechny potrebne informace o "Coffee situ".<br>
@@ -28,7 +25,7 @@ import java.util.Set;
  */
 @Data
 @Entity
-@javax.persistence.Cacheable
+@jakarta.persistence.Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="coffee_site", schema="coffeecompass")
 @NamedStoredProcedureQueries({   
@@ -70,17 +67,17 @@ import java.util.Set;
             name = "getSitesWithinRange",
             query = "SELECT *, poloha_gps_sirka, poloha_gps_delka" + 
                               " FROM coffeecompass.coffee_site" +
-                              " WHERE distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3",
+                              " WHERE public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3",
             resultClass = CoffeeSite.class
     ),
     @NamedNativeQuery( // Counts number of already created CoffeeSites on selected location within defined meters range from the location  
             name = "numberOfSitesWithinRange",
-            query = "SELECT COUNT(*) AS cnt FROM (SELECT id, poloha_gps_sirka, poloha_gps_delka FROM coffeecompass.coffee_site WHERE distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3) AS items", 
+            query = "SELECT COUNT(*) AS cnt FROM (SELECT id, poloha_gps_sirka, poloha_gps_delka FROM coffeecompass.coffee_site WHERE public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3) AS items",
             resultSetMapping = "LongResult"
     ),
     @NamedNativeQuery( // Counts number of already created CoffeeSites in given status on selected location within defined meters range from the location. 
             name = "numberOfSitesWithinRangeInGivenStatus",
-            query = "SELECT COUNT(*) AS cnt FROM (SELECT id, status_zaznamu_id, poloha_gps_sirka, poloha_gps_delka FROM coffeecompass.coffee_site WHERE distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3) AS items WHERE status_zaznamu_id=?4", 
+            query = "SELECT COUNT(*) AS cnt FROM (SELECT id, status_zaznamu_id, poloha_gps_sirka, poloha_gps_delka FROM coffeecompass.coffee_site WHERE public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3) AS items WHERE status_zaznamu_id=?4",
             resultSetMapping = "LongResult"
     )
 })
@@ -94,6 +91,10 @@ public class CoffeeSite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
+    @Column(name="external_id")
+    @GeneratedValue
+    private UUID externalId;
 
     @NotNull
     @Size(min = 3, max = 50)
@@ -134,7 +135,10 @@ public class CoffeeSite {
     
     @Column(name = "pocet_kavovych_automatu_vedle_sebe")
     private int numOfCoffeeAutomatyVedleSebe;
-    
+
+    @Column(name = "number_of_images")
+    private int numOfImages;
+
     /**
      * To indicate, that push notification about this CoffeeSite first activation was already sent.
      * To avoid repeating notifications, when the CoffeeSite is deactivated and activated again. 

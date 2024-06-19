@@ -1,6 +1,6 @@
 package cz.fungisoft.coffeecompass.configuration;
 
-import javax.validation.constraints.Email;
+import jakarta.validation.constraints.Email;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

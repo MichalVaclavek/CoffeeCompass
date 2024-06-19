@@ -1,8 +1,7 @@
 package cz.fungisoft.coffeecompass.controller.models;
 
-import javax.validation.constraints.Size;
-
 import cz.fungisoft.coffeecompass.validators.PasswordMatches;
+import jakarta.validation.constraints.Size;
 
 /**
  * Class model used for entering new user's password in case old one

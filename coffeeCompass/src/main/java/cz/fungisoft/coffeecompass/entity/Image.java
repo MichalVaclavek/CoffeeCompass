@@ -4,15 +4,15 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotEmpty;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
+import jakarta.validation.constraints.NotEmpty;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +26,7 @@ import lombok.Data;
  * @author Michal Václavek
  */
 @Entity
-@javax.persistence.Cacheable
+@jakarta.persistence.Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="images", schema="coffeecompass")
 @Data

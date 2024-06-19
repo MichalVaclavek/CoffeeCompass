@@ -13,7 +13,7 @@
 
 	<h2 sec:authorize="NOT hasRole('ROLE_ADMIN')" th:if="${!user.toManageItself}" class="w3-display-container w3-margin-left">NOT ALLOWED!!!</h2>
 
-	<div class="w3-content" th:if="${(authorization != null) AND authorization.expression('hasRole(''ROLE_ADMIN'')')} OR ${user.toManageItself}">
+	<div class="w3-content" th:if="${(#authorization != null) AND #authorization.expression('hasRole(''ROLE_ADMIN'')')} OR ${user.toManageItself}">
 	
 		<!-- Confirm message - used in case User modification is redirected to this page -->
 		<div th:if="${userModifySuccess}" class="w3-pale-blue w3-display-container w3-round w3-panel w3-center">
@@ -122,14 +122,14 @@
 	                </div>
 	                
 	                <!-- User's email address confirmed check box - editable for ROLE_ADMIN user only -->
-	                <div class="w3-container w3-right">
+	                <div th:if="${user.id} != 0" class="w3-container w3-right">
 	                    <label for="userBan" th:text="#{user.edit.emailaddress.confirmed}">Email address confirmed?</label>
 	                   
 	               			 <input type="checkbox"
 	               			 		class="w3-check"
-	               			 		th:classappend="(*{!hasROLE_ADMINRole} AND *{toManageItself}) ? 'w3-disabled'"
-	               			 		th:disabled="(*{!hasROLE_ADMINRole} AND *{toManageItself})"
-	               			 		th:readonly="(*{!hasROLE_ADMINRole} AND *{toManageItself})"
+	               			 		th:classappend="(*{!hasADMINRole} AND *{toManageItself}) ? 'w3-disabled'"
+	               			 		th:disabled="(*{!hasADMINRole} AND *{toManageItself})"
+	               			 		th:readonly="(*{!hasADMINRole} AND *{toManageItself})"
 	                	  		    th:value="*{registerEmailConfirmed}"
 	                	  		    th:field="*{registerEmailConfirmed}"/> 
 			               			  
@@ -175,7 +175,7 @@
 			               			 		th:readonly="( (${userProfile.type} == 'ROLE_ADMIN') AND *{hasADMINRole} AND *{!toManageItself})"
 			                	 		    th:field="*{userProfiles}"
 			                	  		    th:value="${userProfile}" />
-			               			 <label th:for="${userProfile.id}" th:text="${userProfile}">User profiles</label>
+			               			  <label th:for="${userProfile.id}" th:text="${userProfile}">User profiles</label>
 			               			  <p class="error-message"
 			                       		th:each="error : ${#fields.errors('userProfiles')}"
 			                       		th:text="${error}">Validation error</p>
@@ -232,7 +232,7 @@
     	</div>
 	</div>
 
-	<div th:replace="fragments/footer :: footer"/>
+	<div th:replace="~{fragments/footer :: footer}"/>
 	
 </body>
 </html>

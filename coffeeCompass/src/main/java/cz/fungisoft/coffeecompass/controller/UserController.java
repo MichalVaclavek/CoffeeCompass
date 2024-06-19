@@ -8,12 +8,13 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.MailException;
@@ -52,7 +53,7 @@ import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
  * @author Michal Václavek
  *
  */
-@RequestMapping("/user") // uvadi se, pokud vsechny dotazy/url requesty v kontroleru maji zacinat timto retezcem
+@RequestMapping("/user")
 @Controller
 public class UserController {
 
@@ -82,6 +83,9 @@ public class UserController {
     
     @Autowired
     private final TokenCreateAndSendEmailService tokenCreateAndSendEmailService;
+
+    @Value("${redirect.to.https.home}")
+    private String redirectToHome;
     
     
     /* // For future use
@@ -154,7 +158,7 @@ public class UserController {
      * Vytvorit uzivatele muze pouze neprihlaseny uzivatel.<br>
      * Po uspesne registraci je uzivatel automaticky logged-in.<br>
      * <p>
-     * Je potreba provest kontrolu/validaci password, ktera je v prisusnem DTO vypnuta (v UserDataDto nema zadnou javax.validation.constraints.)
+     * Je potreba provest kontrolu/validaci password, ktera je v prisusnem DTO vypnuta (v UserDataDto nema zadnou jakarta.validation.constraints.)
      * protoze stejny UserDataDto objekt je pouzit i pro modifikaci, kdy prazdne heslo znamena, ze se heslo nepozaduje menit.
      * <p>
      * Pro modifikace je volana PUT metoda viz nize.
@@ -209,7 +213,7 @@ public class UserController {
             return mav;
         }
         
-        boolean userCreateSuccess = false;
+        boolean userCreateSuccess;
         User newUser = null;
         
         if (userDto.getId() == 0) {
@@ -297,7 +301,7 @@ public class UserController {
      * <p>
      * Pokud ADMIN meni jineho non ADMIN usera, muze menit pouze jeho password a ROLES.
      * <p>
-     * ADMIN muze u jineho ADMINA editovat heslo a ROLES, krome ROLE_ADMIN.
+     * ADMIN muze u jineho ADMINA editovat heslo a ROLES, krome ADMIN.
      * <p>
      * Pokud User, s jakoukoliv roli, meni svuj ucet, muze menit vsechny udaje, krome ROLES, vyjma ADMINa, ktery muze menit sve ROLES.
      * <p>
