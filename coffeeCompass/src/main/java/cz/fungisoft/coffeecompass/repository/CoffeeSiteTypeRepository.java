@@ -10,7 +10,7 @@ import jakarta.persistence.QueryHint;
 
 public interface CoffeeSiteTypeRepository extends JpaRepository<CoffeeSiteType, Integer> {
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select cst from CoffeeSiteType cst where coffeeSiteType=?1")
     CoffeeSiteType searchByName(String siteType);
 }

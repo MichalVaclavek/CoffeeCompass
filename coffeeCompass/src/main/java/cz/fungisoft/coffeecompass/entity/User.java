@@ -22,6 +22,7 @@ import jakarta.validation.constraints.NotNull;
 import cz.fungisoft.coffeecompass.controller.models.AuthProviders;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.cache.annotation.Cacheable;
 
 
 /**
@@ -30,7 +31,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  * @author Michal Vaclavek
  */
 @Entity
-@jakarta.persistence.Cacheable
+//@jakarta.persistence.Cacheable
+@Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="user", schema="coffeecompass")
 public class User implements Serializable {
@@ -103,11 +105,7 @@ public class User implements Serializable {
     @Column(name = "enabled")
     private boolean enabled = false;
     
-    /*
-    @OneToMany(mappedBy="user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Comment> comments;
-    */
-    
+
     public Long getId() {
         return id;
     }

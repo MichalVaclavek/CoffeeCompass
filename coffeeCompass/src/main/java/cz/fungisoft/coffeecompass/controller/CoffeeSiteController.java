@@ -194,8 +194,6 @@ public class CoffeeSiteController {
      * @return
      */
     @GetMapping("/allSitesInMap")
-//    public ModelAndView allSitesInMap(@PathVariable String selectedSiteExternalId,
-//                                      @PathVariable(required = false) String selectedImageExternalId) {
     public ModelAndView allSitesInMap() {
         ModelAndView mav = new ModelAndView();
 
@@ -210,16 +208,6 @@ public class CoffeeSiteController {
         }
 
         mav.addObject("allSites", allCoffeeSites);
-
-//        List<String> imageUrls = imagesService.getSmallImagesUrls(selectedSiteExternalId);
-//        mav.addObject("imageUrls", imageUrls);
-
-//        coffeeSiteService.findOneByExternalId(selectedSiteExternalId)
-//                .ifPresent(cs -> {
-//                    var coffeeSiteDto = coffeeSiteService.mapOneToTransfer(cs);
-//                    mav.addObject("selectedImageUrl", getSelectedImageUrl(selectedSiteExternalId, selectedImageExternalId).orElse(coffeeSiteDto.getMainImageURL()));
-//                    mav.addObject("selectedImageExternalId", getSelectedImageExternalId(selectedSiteExternalId, selectedImageExternalId).orElse(""));
-//                });
 
         mav.setViewName("coffeesites_all_map-new");
         return mav;

@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.repository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.ParameterMode;
@@ -166,28 +167,6 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
         
         selectQuery.append("SELECT *, poloha_gps_sirka AS gps_sirka, poloha_gps_delka AS gps_delka ");
         
-//        if (sort != null && !sort.getCoffeeSort().isEmpty()) {
-//            selectQuery.append(" FROM coffeecompass.coffee_site AS cs, coffeecompass.coffee_site_to_druhy_kavy AS cs_dk");
-//            selectQuery.append(" JOIN coffeecompass.druhy_kavy AS dk ON dk.id=?1");
-//            selectQuery.append(" WHERE cs_dk.druhy_kavy_id=?1");
-//            selectQuery.append(" AND cs.id=cs_dk.coffee_site_id ");
-//
-//            if (csRecordStatus != null && !csRecordStatus.getStatus().isEmpty())
-//                selectQuery.append("AND status_zaznamu_id=?2 ");
-//
-//            if (cityName != null && cityName.length() > 1) {
-//                selectQuery.append("AND ( (public.distance(?3, ?4, poloha_gps_sirka, poloha_gps_delka) < ?5) OR (LOWER(cs.poloha_mesto) like LOWER(CONCAT(?6,'%')) ))");
-//                if (siteStatus != null && !siteStatus.getStatus().isEmpty()) {
-//                    selectQuery.append("AND status_zarizeni_id=?7 ");
-//                }
-//            } else {
-//                selectQuery.append("AND (public.distance(?3, ?4, poloha_gps_sirka, poloha_gps_delka) < ?5)");
-//                if (siteStatus != null && !siteStatus.getStatus().isEmpty()) {
-//                    selectQuery.append("AND status_zarizeni_id=?6 ");
-//                }
-//            }
-//
-//        } else {
         selectQuery.append("FROM coffeecompass.coffee_site AS cs WHERE ");
 
         if (csRecordStatus != null && !csRecordStatus.getStatus().isEmpty())
@@ -204,13 +183,8 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
                 selectQuery.append(" AND status_zarizeni_id=?5");
             }
         }
-//        }
 
         Query sites = em.createNativeQuery(selectQuery.toString(), CoffeeSite.class);
-        
-//        if (sort != null) {
-//            sites.setParameter(1, sort.getId());
-//        }
         
         if (csRecordStatus != null) {
             sites.setParameter(1, csRecordStatus.getId());
@@ -287,6 +261,7 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
 
     /**
      * Implementace metody pro vyhledani CoffeeSites v danem geo. rangi s danym statusem DB zaznamu {@code CoffeeSiteRecordStatus}
+     * @return
      */
     @Override
     public List<CoffeeSite> findSitesWithRecordStatus(double sirka, double delka, long rangeMeters, CoffeeSiteRecordStatus csRecordStatus) {
@@ -294,7 +269,7 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
         String selectQuery = "SELECT *, poloha_gps_sirka AS gps_sirka, poloha_gps_delka AS gps_delka "
                           + "FROM coffeecompass.coffee_site AS cs "
                           + "WHERE status_zaznamu_id=?4 AND (public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
-                      
+
         Query sites = em.createNativeQuery(selectQuery, CoffeeSite.class);
         
         sites.setParameter(1, sirka);

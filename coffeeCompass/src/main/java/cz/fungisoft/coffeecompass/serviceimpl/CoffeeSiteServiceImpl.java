@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import cz.fungisoft.coffeecompass.mappers.CoffeeSiteMapper;
 import cz.fungisoft.coffeecompass.serviceimpl.images.ImagesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -159,7 +160,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     private List<CoffeeSiteDTO> modifyToTransfer(List<CoffeeSite> sites) {
         return sites.stream().map(this::mapOneToTransfer).toList();
     }
-    
+
+    @Cacheable(cacheNames = "coffeesites", key = "#id")
     @Override
     public List<CoffeeSiteDTO> findAll(String orderBy, String direction) {
         List<CoffeeSite> items = coffeeSiteRepo.findAll(Sort.by(Sort.Direction.fromString(direction.toUpperCase()), orderBy));
@@ -174,11 +176,12 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         // Transforms content to CoffeeSiteDTO
         return coffeeSitesPage.map(this::mapOneToTransfer);
     }
-    
+
+    @Cacheable(cacheNames = "coffeesites", key = "#id")
     @Override
     public List<CoffeeSiteDTO> findAllWithRecordStatus(CoffeeSiteRecordStatusEnum csRecordStatus) {
         List<CoffeeSite> items = coffeeSiteRepo.findSitesWithRecordStatus(csRecordStatus.getSiteRecordStatus());
-        log.info("All Coffee sites with status {} retrieved: {}",  csRecordStatus.toString(), items.size());
+        log.info("All Coffee sites with status {} retrieved: {}", csRecordStatus, items.size());
         return modifyToTransfer(items);
     }
     
@@ -196,6 +199,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * Used to get all CoffeeSites from search point with respective record status. Especially for non logged-in user
      * which can retrieve only ACTIVE sites.
      */
+    @Cacheable(cacheNames = "coffeesites", key = "#id")
     @Override
     public List<CoffeeSiteDTO> findAllWithinRangeWithRecordStatus(double zemSirka, double zemDelka, long meters, CoffeeSiteRecordStatus csRecordStatus) {
         List<CoffeeSite> items = coffeeSiteRepo.findSitesWithRecordStatus(zemSirka, zemDelka, meters, csRecordStatus);
@@ -221,7 +225,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     }
     
     @Override
-    public Integer getNumberOfSitesFromUserId(long userId) {
+    public Integer getNumberOfSitesFromUserId(Long userId) {
         Integer numberOfSitesFromUser = coffeeSiteRepo.getNumberOfSitesFromUserID(userId);
         return (numberOfSitesFromUser != null) ? numberOfSitesFromUser : 0;
     }
@@ -234,7 +238,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     }
     
     @Override
-    public Integer getNumberOfSitesNotCanceledFromUserId(long userId) {
+    public Integer getNumberOfSitesNotCanceledFromUserId(Long userId) {
         Integer numberOfSitesFromUser = coffeeSiteRepo.getNumberOfSitesNotCanceledFromUserID(userId);
         return (numberOfSitesFromUser != null) ? numberOfSitesFromUser : 0;
     }
@@ -701,9 +705,9 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         
         // Usporadani vysledku db dotazu (seznam CoffeeSites v danem okruhu) podle vzdalenosti od bodu hledani
         // Sama DB tyto vzdalenosti pro dane CoffeeSites nevraci
-        sites.sort(Comparator.comparingLong(CoffeeSiteDTO::getDistFromSearchPoint));
-        
-        return sites;
+        return sites.stream()
+                    .sorted((Comparator.comparingLong(CoffeeSiteDTO::getDistFromSearchPoint)))
+                    .toList();
     }
 
     /**

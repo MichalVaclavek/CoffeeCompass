@@ -1,6 +1,5 @@
 package cz.fungisoft.coffeecompass.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -29,7 +28,7 @@ public class PasswordResetToken {
   
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
   
     @NotNull
     @Column(name="token", nullable=false)
@@ -63,11 +62,11 @@ public class PasswordResetToken {
     }
 
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -82,7 +82,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
         double starsAvg = 0;
 
         try {
-            starsAvg = avgStarsRepo.averageStarsForSiteID(coffeeSiteExtId);
+            starsAvg = avgStarsRepo.averageStarsForSiteExternalId(coffeeSiteExtId);
             starsAvg = Math.round(starsAvg * 10.0)/10.0; // one decimal place round
         }
         catch (Exception e) {

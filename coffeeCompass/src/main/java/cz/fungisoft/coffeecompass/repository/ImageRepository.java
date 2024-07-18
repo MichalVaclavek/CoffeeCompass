@@ -20,7 +20,7 @@ public interface ImageRepository extends JpaRepository<Image, Integer> {
     @Query("select coffeeSiteID FROM Image im where id=?1")
     Long getSiteIdForImage(Integer imageId);
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select im from Image im WHERE coffeeSiteID=?1")
     Image getImageForSite(Long coffeeSiteID);
     
@@ -31,7 +31,7 @@ public interface ImageRepository extends JpaRepository<Image, Integer> {
     @Query("delete from Image im WHERE coffeeSiteID=?1")
     void deleteBySiteId(Long coffeeSiteId);
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select COUNT(im) from Image im WHERE coffeeSiteID=?1")
     int getNumOfImagesForSiteId(Long siteId);
 

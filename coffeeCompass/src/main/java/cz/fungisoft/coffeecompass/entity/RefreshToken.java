@@ -1,18 +1,23 @@
 package cz.fungisoft.coffeecompass.entity;
 
-import lombok.Data;
-
 import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.Hibernate;
+
 import java.time.Instant;
+import java.util.Objects;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Table(name="refresh_token", schema = "coffeecompass")
 public class RefreshToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @OneToOne(fetch = FetchType.EAGER)
@@ -23,4 +28,17 @@ public class RefreshToken {
 
     @Column(name="expiry_date", nullable = false)
     private Instant expiryDate;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        RefreshToken that = (RefreshToken) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

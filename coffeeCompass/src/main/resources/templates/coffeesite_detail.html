@@ -323,17 +323,11 @@
 
                         </div>
 
-						<!-- Element for displaying list of all images of this CoffeeSite -->
-						<div class="w3-container w3-margin-top w3-margin-bottom">
-							<div class="w3-cell-row w3-panel w3-border w3-light-grey w3-round"
-								 id="imagesList">
-									<span th:each="imageUrl : ${imageUrls}" class="w3-cell-middle">
-                                        <img th:src="${imageUrl}" class="w3-round" style="height: 90px"/>
-									</span>
-							</div>
-						</div>
+
 
                     </td>    <!-- End of Coffee site detailes table -->
+
+
 
                     <!-- Start of Coffee site picture half -->
                     <!-- Element with Forms to Update and Delete and Rotate image of the CoffeeSite and with Form to insert image -->
@@ -466,7 +460,20 @@
                     </td>
                 </tr>
             </table>
+
+            <!-- Element for displaying list of all images of this CoffeeSite -->
+            <div th:if="${imageUrls != null} AND ${!imageUrls.isEmpty()}" class="w3-container w3-margin-top w3-margin-bottom">
+                <div class="w3-cell-row w3-panel w3-border w3-light-grey w3-round"
+                     id="imagesList">
+                        <span th:each="imageUrl : ${imageUrls}" class="w3-cell-middle">
+                            <img th:src="${imageUrl}" class="w3-round" style="height: 90px"/>
+                        </span>
+                </div>
+            </div>
+
         </div>
+
+
 
         <!-- A common container for entering new Stars and comments and to show other already entered comments -->
         <div class="w3-container w3-half">

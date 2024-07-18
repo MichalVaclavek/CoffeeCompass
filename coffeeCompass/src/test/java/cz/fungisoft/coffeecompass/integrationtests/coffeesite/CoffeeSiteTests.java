@@ -92,7 +92,7 @@ class CoffeeSiteTests extends IntegrationTestBaseConfig {
         
         csRepository.saveAndFlush(cs);
      
-        mvc.perform(get("/rest/site/allSites/")
+        mvc.perform(get("/api/v1/coffeesites/site/allSites")
            .contentType(MediaType.APPLICATION_JSON))
            .andExpect(status().isOk())
            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

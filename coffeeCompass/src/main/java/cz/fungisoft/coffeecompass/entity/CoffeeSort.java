@@ -3,19 +3,14 @@
  */
 package cz.fungisoft.coffeecompass.entity;
 
-import java.io.Serializable;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Druh kavy. Obsahuje i výčet konstantních hodnot, které odpovídají hodnotám v DB.
@@ -23,7 +18,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  * @author Michal Vaclavek
  *
  */
-@Data
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Entity
 @jakarta.persistence.Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -33,7 +30,7 @@ public class CoffeeSort {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
     
     @NotNull
     @Column(name = "druh_kavy", unique=true)
@@ -64,7 +61,7 @@ public class CoffeeSort {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((coffeeSort == null) ? 0 : coffeeSort.hashCode());
-        result = prime * result + id;
+        result = (int) (prime * result + id);
         return result;
     }
 
@@ -86,7 +83,7 @@ public class CoffeeSort {
         } else if (!coffeeSort.equals(other.coffeeSort))
             return false;
         
-        return (id == other.id);
+        return (Objects.equals(id, other.id));
     }
 
     @Override

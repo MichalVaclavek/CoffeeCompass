@@ -29,7 +29,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -70,7 +69,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest
 public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
 
-    private static final String PUBLIC_REST_URLS = "/rest/public/**";
+    private static final String PUBLIC_REST_URLS = "/api/v1/coffeesites/public/**";
 
     private MockMvc mockMvc;
     
@@ -80,7 +79,7 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
   
     @TestConfiguration
     protected static class UserControllerTestContextConfiguration {
-      
+
         @MockBean //provided by Spring Context
         public static UserService userService;
 
@@ -91,19 +90,10 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
 
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//            http
-//                    .httpBasic().disable()
-//                    .cors().and().csrf().disable()
-//                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                    .and()
-//                    .authorizeRequests()
-//                    .antMatchers("/rest/public/user/register").permitAll()
-//                    .anyRequest().authenticated();
-
             http.csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authz) -> authz
-                .requestMatchers("/rest/public/user/register").permitAll()
+                .requestMatchers("/api/v1/coffeesites/public/**").permitAll()
                 .anyRequest().authenticated());
 
             return http.build();
@@ -122,7 +112,7 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
     private static final RefreshToken refreshToken = new RefreshToken();
     
     private static final User admin = new User();
-    private SignUpAndLoginRESTDto signUpAndLoginRESTDtoAdmin;
+//    private SignUpAndLoginRESTDto signUpAndLoginRESTDtoAdmin;
 
 
     @BeforeAll
@@ -196,7 +186,7 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
         given(refreshTokenService.createRefreshToken(Mockito.matches("john"))).willReturn(refreshToken);
 
         // when and then
-        mockMvc.perform(post("/rest/public/user/register").locale(Locale.ENGLISH).contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(signUpAndLoginRESTDto)))
+        mockMvc.perform(post("/api/v1/coffeesites/public/user/register").locale(Locale.ENGLISH).contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(signUpAndLoginRESTDto)))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$.*", hasSize(4)))
                .andExpect(jsonPath("$.tokenType", Matchers.is("Bearer")))
@@ -240,7 +230,7 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
         
 
         // and then Get all users
-        mockMvc.perform(get("/rest/secured/user/all")
+        mockMvc.perform(get("/api/v1/coffeesites/secured/user/all")
                           .header("Authorization", "Bearer " + token)
                           .accept("application/json;charset=UTF-8"))
                .andExpect(status().isOk())

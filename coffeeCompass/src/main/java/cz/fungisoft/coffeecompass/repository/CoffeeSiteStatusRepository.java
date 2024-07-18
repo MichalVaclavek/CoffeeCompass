@@ -16,7 +16,7 @@ import jakarta.persistence.QueryHint;
  */
 public interface CoffeeSiteStatusRepository extends JpaRepository<CoffeeSiteStatus, Integer> {
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select css from CoffeeSiteStatus css where status=?1")
     CoffeeSiteStatus searchByName(String status);
 }

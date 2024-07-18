@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import cz.fungisoft.coffeecompass.mappers.CoffeeSiteMapper;
 import cz.fungisoft.coffeecompass.mappers.CoffeeSiteMapperImpl;
+import cz.fungisoft.coffeecompass.unittest.MvcControllerUnitTestBaseSetup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,62 +44,28 @@ import java.util.Optional;
 @ContextConfiguration(classes = {
         CoffeeSiteMapperImpl.class
 })
-class CoffeeSiteControllerSecuredMvcTests { 
+class CoffeeSiteControllerSecuredMvcTests extends MvcControllerUnitTestBaseSetup {
 
-    private MockMvc mvc;
+    private MockMvc mockMvc;
     
     /**
      * Controller to be tested here
      */
     private CoffeeSiteControllerSecuredREST coffeeSiteControllerSecured;
  
-    @MockBean
-    private CoffeeSiteService csService;
-    
-    @MockBean
-    private IStarsForCoffeeSiteAndUserService starsForCoffeeSiteService;
-    
-    @MockBean
-    private MessageSource messageSource;
-     
-    @Autowired
-    private CoffeeSiteMapper coffeeSiteMapper;
-    
-    /** 
-     * Needed for maping from created User into UserDTO object, which is returned by UserControllerREST
-     * 
-     * @return
-     */
-//    @TestConfiguration
-//    static class CoffeeSiteControllerTestContextConfiguration {
-//
-//        @Bean
-//        @Primary
-//        public CoffeeSiteMapper mapperFacade() {
-//            CoffeeSiteMapper mapperFactory = new DefaultMapperFactory.Builder().build();
-//
-//            // Only userName is needed for CoffeeSiteDto object
-//            mapperFactory.classMap(CoffeeSite.class, CoffeeSiteDTO.class)
-//                         .field("originalUser.userName", "originalUserName")
-//                         .field("lastEditUser.userName", "lastEditUserName")
-//                         .byDefault()
-//                         .register();
-//
-//            return mapperFactory.getMapperFacade();
-//        }
-//    }
-       
-    
+
     @BeforeEach
     public void setUp() {
-        coffeeSiteControllerSecured = new CoffeeSiteControllerSecuredREST(csService, messageSource);
-        mvc = MockMvcBuilders.standaloneSetup(coffeeSiteControllerSecured).build();
+        coffeeSiteControllerSecured = new CoffeeSiteControllerSecuredREST(coffeeSiteService, messages);
+        mockMvc = MockMvcBuilders.webAppContextSetup(context)
+//                .apply(springSecurity()) // nacte nastaveni vnucene pomoci WithMockCustomUserSecurityContextFactory
+                .build();
     }
     
     private static final String COFFEE_SITE_NAME = "ControllerTestSite";
  
     /**
-     * Tests if user is saved in service layer after calling post /rest/secured/site/create  REST request.
+     * Tests if user is saved in service layer after calling post /api/v1/coffeesites/secured/site/create  REST request.
      * @throws Exception
      */
     @Test
@@ -106,14 +73,14 @@ class CoffeeSiteControllerSecuredMvcTests {
         
         CoffeeSite cs = CoffeeSiteFactory.getCoffeeSite(COFFEE_SITE_NAME, "automat");
                 
-        given(csService.save(Mockito.any(CoffeeSiteDTO.class))).willReturn(cs);
-        given(csService.findOneToTransfer(Mockito.eq(cs.getId()))).willReturn(Optional.of(coffeeSiteMapper.coffeeSiteToCoffeeSiteDTO(cs)));
+        given(coffeeSiteService.save(Mockito.any(CoffeeSiteDTO.class))).willReturn(cs);
+        given(coffeeSiteService.findOneToTransfer(Mockito.eq(cs.getId()))).willReturn(Optional.of(coffeeSiteMapper.coffeeSiteToCoffeeSiteDTO(cs)));
 
-        mvc.perform(post("/rest/secured/site/create").contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(cs)))
+        mockMvc.perform(post("/api/v1/coffeesites/secured/site/create").contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(cs)))
                                        .andExpect(status().isCreated())
                                        .andExpect(jsonPath("$.siteName", is(COFFEE_SITE_NAME)));
         
-        verify(csService, VerificationModeFactory.times(1)).save(Mockito.any(CoffeeSiteDTO.class));
+        verify(coffeeSiteService, VerificationModeFactory.times(1)).save(Mockito.any(CoffeeSiteDTO.class));
     }
     
 }

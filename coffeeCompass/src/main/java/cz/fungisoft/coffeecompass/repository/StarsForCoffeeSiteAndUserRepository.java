@@ -24,10 +24,10 @@ public interface StarsForCoffeeSiteAndUserRepository extends JpaRepository<Stars
     StarsForCoffeeSiteAndUser getOneStarEvalForSiteAndUser(Long coffeeSiteId, Long userID);
 
     @Query("select avg(stars.numOfStars) from StarsForCoffeeSiteAndUser stcsu where coffeeSite.id=?1")
-    double averageStarsForSiteID(Long coffeeSiteID);
+    double averageStarsForSiteExternalId(Long coffeeSiteID);
 
     @Query("select avg(stars.numOfStars) from StarsForCoffeeSiteAndUser stcsu where coffeeSite.externalId=?1")
-    double averageStarsForSiteID(UUID coffeeSiteExtId);
+    double averageStarsForSiteExternalId(UUID coffeeSiteExtId);
 
     @Query("select count(*) from StarsForCoffeeSiteAndUser stcsu where coffeeSite.id=?1")
     int getNumOfHodnoceniForSite(Long coffeeSiteID);

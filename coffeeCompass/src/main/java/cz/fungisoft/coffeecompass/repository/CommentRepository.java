@@ -13,7 +13,7 @@ import cz.fungisoft.coffeecompass.entity.Comment;
  * 
  * @author Michal Vaclavek
  */
-public interface CommentRepository extends JpaRepository<Comment, Integer> {
+public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Query("select cl from Comment cl where coffeeSite.id=?1 order by cl.created desc")
     List<Comment> getAllCommentsForSite(Long coffeeSiteID);
@@ -37,7 +37,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
      * @param commentId
      */
     @Query("select coffeeSite.id FROM Comment cl where id=?1")
-    Long getSiteIdForComment(Integer commentId);
+    Long getSiteIdForComment(Long commentId);
     
     @Modifying // required by Hibernate, otherwise there is an exception ' ... Illegal state ...'
     @Query("delete FROM Comment cl where user.id=?1")

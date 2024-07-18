@@ -10,7 +10,7 @@ import jakarta.persistence.QueryHint;
 
 public interface StarsQualityDescriptionRepository extends JpaRepository<StarsQualityDescription, Integer> {
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select sqd from StarsQualityDescription sqd where quality=?1")
     StarsQualityDescription searchByName(String starsQDescr);
 }

@@ -163,7 +163,7 @@ class CommentsRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
         // Get users login access token
         String accessToken = loginUserAndGetAccessToken(mockMvc, signUpAndLoginRESTuser);
         
-        mockMvc.perform(post("/rest/secured/starsAndComments/saveStarsAndComments")
+        mockMvc.perform(post("/api/v1/coffeesites/secured/starsAndComments/saveStarsAndComments")
                 .header("Authorization", "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(starsAndComments)))

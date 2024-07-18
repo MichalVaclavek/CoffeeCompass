@@ -10,7 +10,7 @@ import jakarta.persistence.QueryHint;
 
 public interface PriceRangeRepository extends JpaRepository<PriceRange, Integer> {
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select pr from PriceRange pr where priceRange=?1")
     PriceRange searchByName(String range);
 }

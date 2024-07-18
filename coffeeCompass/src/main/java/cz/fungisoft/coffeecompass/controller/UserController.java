@@ -145,7 +145,7 @@ public class UserController {
         
         ModelAndView mav = new ModelAndView();
         
-        user.setId(0l); // set Id to 0 of type long
+        user.setId(0L); // set Id to 0 of type long
         // we need to know, that this is a user managing its own profile
         user.setToManageItself(true);
         mav.addObject("user", user);
@@ -559,7 +559,7 @@ public class UserController {
         
         // Uzivatel, pravdepodobne jiz smazany z jineho zarizeni, se pokousi smazat svuj ucet
         // z aktualniho zarizeni, kde vypada stale prohlaseny. Je potreba provest logout explicitne.
-        if (!loggedInUser.isPresent()) {
+        if (loggedInUser.isEmpty()) {
             userSecurityService.logout();
         }
         

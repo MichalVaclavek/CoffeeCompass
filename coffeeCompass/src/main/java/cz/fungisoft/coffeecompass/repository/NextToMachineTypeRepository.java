@@ -10,7 +10,7 @@ import jakarta.persistence.QueryHint;
 
 public interface NextToMachineTypeRepository extends JpaRepository<NextToMachineType, Integer> {
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select ntmt from NextToMachineType ntmt where type=?1")
     NextToMachineType searchByName(String ntmType);
 }

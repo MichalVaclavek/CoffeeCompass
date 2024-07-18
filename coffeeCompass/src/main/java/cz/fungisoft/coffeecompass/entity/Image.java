@@ -1,24 +1,18 @@
 package cz.fungisoft.coffeecompass.entity;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
-
+import cz.fungisoft.coffeecompass.validators.ImageFileValidatorConstraint;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.web.multipart.MultipartFile;
 
-import cz.fungisoft.coffeecompass.validators.ImageFileValidatorConstraint;
-import lombok.Data;
+import java.io.IOException;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Class representing an image assigned to CoffeeSite. Contains {@link CoffeeSite} atribute to link the Image and respective CoffeeSite.
@@ -29,7 +23,9 @@ import lombok.Data;
 @jakarta.persistence.Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="images", schema="coffeecompass")
-@Data
+@Getter
+@Setter
+@ToString
 public class Image implements Serializable {
 
 	private static final long serialVersionUID = 4976306313068414171L;
@@ -100,4 +96,17 @@ public class Image implements Serializable {
 		}		
 	}
 	*/
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		Image image = (Image) o;
+		return id != null && Objects.equals(id, image.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }

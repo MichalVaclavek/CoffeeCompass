@@ -91,7 +91,7 @@ class UsersRESTIntegrationTests extends IntegrationTestBaseConfig {
         signUpAndLoginRESTDto.setDeviceID(deviceID);
 
         // when and then
-        mockMvc.perform(post("/rest/public/user/register").contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(signUpAndLoginRESTDto)))
+        mockMvc.perform(post("/api/v1/coffeesites/public/user/register").contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(signUpAndLoginRESTDto)))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$.*", hasSize(4)))
                .andExpect(jsonPath("$.tokenType", Matchers.is("Bearer")))

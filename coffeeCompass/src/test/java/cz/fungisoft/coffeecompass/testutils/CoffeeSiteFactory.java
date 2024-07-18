@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.context.annotation.Configuration;
 
@@ -42,7 +43,7 @@ public class CoffeeSiteFactory {
      * @return
      */
     public static CoffeeSite getCoffeeSite(String siteName, String coffeeSiteType) {
-        
+
         Set<CoffeeSort> csorts = new HashSet<>();
         Set<CupType> cups = new HashSet<>();
         Company comp = new Company();
@@ -108,8 +109,9 @@ public class CoffeeSiteFactory {
           
         siteStatus.setStatus(CoffeeSiteStatusEnum.INSERVICE.getSiteStatus());     
         
-        CoffeeSite coffeeS = new CoffeeSite();        
-        
+        CoffeeSite coffeeS = new CoffeeSite();
+
+        coffeeS.setExternalId(UUID.randomUUID());
         coffeeS.setSiteName(siteName);
         coffeeS.setTypPodniku(siteType);
         coffeeS.setStatusZarizeni(siteStatus);

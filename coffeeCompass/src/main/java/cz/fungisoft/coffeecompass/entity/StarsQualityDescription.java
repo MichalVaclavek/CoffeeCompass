@@ -3,17 +3,18 @@
  */
 package cz.fungisoft.coffeecompass.entity;
 
-import java.io.Serializable;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-
-import lombok.Data;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Slovni a čiselný popis kvality kavy, automatu, podniku ...
@@ -21,7 +22,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  *
  * @author Michal Vaclavek
  */
-@Data
+@Getter
+@Setter
 @Entity
 @jakarta.persistence.Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -71,26 +73,14 @@ public class StarsQualityDescription {
     
     public void setNumOfStars(Integer numOfStars) {
         this.numOfStars = numOfStars;
-        
-        switch (numOfStars)
-        {
-          case 1:
-              this.quality = StarsQualityEnum.ONE.getStarsQuality();
-              break;
-          case 2:
-              this.quality = StarsQualityEnum.TWO.getStarsQuality();
-              break;
-          case 3:
-              this.quality = StarsQualityEnum.THREE.getStarsQuality();
-              break;
-          case 4:
-              this.quality = StarsQualityEnum.FOUR.getStarsQuality();
-              break;
-          case 5:
-              this.quality = StarsQualityEnum.FIVE.getStarsQuality();
-              break;    
-          default:
-              break;
+
+        switch (numOfStars) {
+            case 1 -> this.quality = StarsQualityEnum.ONE.getStarsQuality();
+            case 2 -> this.quality = StarsQualityEnum.TWO.getStarsQuality();
+            case 3 -> this.quality = StarsQualityEnum.THREE.getStarsQuality();
+            case 4 -> this.quality = StarsQualityEnum.FOUR.getStarsQuality();
+            case 5 -> this.quality = StarsQualityEnum.FIVE.getStarsQuality();
+            default -> this.quality = StarsQualityEnum.THREE.getStarsQuality();
         }
     }
     
@@ -100,54 +90,43 @@ public class StarsQualityDescription {
     
     public void setQuality(StarsQualityEnum qual) {
         this.quality = qual.starsQuality;
-        
+
         switch (qual) {
-            case ONE:
-                numOfStars = 1;
-                break;
-            case TWO:
-                numOfStars = 2;
-                break;
-            case THREE:
-                numOfStars = 3;
-                break;
-            case FOUR:
-                numOfStars = 4;
-                break;
-            case FIVE:
-                numOfStars = 5;
-                break;    
-            default:
-                break;
+            case ONE -> numOfStars = 1;
+            case TWO -> numOfStars = 2;
+            case THREE -> numOfStars = 3;
+            case FOUR -> numOfStars = 4;
+            case FIVE -> numOfStars = 5;
         }
     }
     
     public void setQuality(String quality) {
         this.quality = quality;
-        
+
         switch (StarsQualityEnum.fromString(quality)) {
-          case ONE:
-              numOfStars = 1;
-              break;
-          case TWO:
-              numOfStars = 2;
-              break;
-          case THREE:
-              numOfStars = 3;
-              break;
-          case FOUR:
-              numOfStars = 4;
-              break;
-          case FIVE:
-              numOfStars = 5;
-              break;    
-          default:
-              break;
+            case ONE -> numOfStars = 1;
+            case TWO -> numOfStars = 2;
+            case THREE -> numOfStars = 3;
+            case FOUR -> numOfStars = 4;
+            case FIVE -> numOfStars = 5;
         }
     }
     
     @Override
     public String toString() {
         return quality;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        StarsQualityDescription that = (StarsQualityDescription) o;
+        return numOfStars != null && Objects.equals(numOfStars, that.numOfStars);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

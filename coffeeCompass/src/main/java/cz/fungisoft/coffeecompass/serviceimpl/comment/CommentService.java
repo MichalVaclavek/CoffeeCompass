@@ -236,7 +236,7 @@ public class CommentService implements ICommentService {
 	 * Returns CoffeeSite the deleted Comment belonged to.
 	 */
 	@Override
-    public Long deleteCommentById(Integer commentId) {
+    public Long deleteCommentById(Long commentId) {
 	    Long siteId = commentsRepo.getSiteIdForComment(commentId);
 	    commentsRepo.deleteById(commentId);
 	    log.info("Comment deleted. Id {}", commentId);
@@ -244,7 +244,7 @@ public class CommentService implements ICommentService {
     }
 
     @Override
-    public Comment getById(Integer id) {
+    public Comment getById(Long id) {
         Comment comment = commentsRepo.findById(id).orElse(null);
         if (comment == null) {
             throw new EntityNotFoundException("Comment with id " + id + " not found.");
@@ -253,7 +253,7 @@ public class CommentService implements ICommentService {
     }
     
     @Override
-    public CommentDTO getByIdToTransfer(Integer id) {
+    public CommentDTO getByIdToTransfer(Long id) {
         return modifyToTransfer(getById(id));
     }
 

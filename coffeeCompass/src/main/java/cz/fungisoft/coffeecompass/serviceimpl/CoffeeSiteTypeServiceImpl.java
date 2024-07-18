@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.serviceimpl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,12 +22,14 @@ public class CoffeeSiteTypeServiceImpl implements CoffeeSiteTypeService {
         this.coffeeSiteTypeRepo = coffeeSiteTypeRepo;
     }
 
+    @Cacheable(cacheNames = "coffeesitetypes", key = "#coffeeSiteType")
     @Override
     @Transactional
     public CoffeeSiteType findCoffeeSiteTypeByName(String coffeeSiteType) {
         return coffeeSiteTypeRepo.searchByName(coffeeSiteType);
     }
 
+    @Cacheable(cacheNames = "coffeesitetypes", key = "#coffeeSiteType")
     @Override
     @Transactional
     public List<CoffeeSiteType> getAllCoffeeSiteTypes() {

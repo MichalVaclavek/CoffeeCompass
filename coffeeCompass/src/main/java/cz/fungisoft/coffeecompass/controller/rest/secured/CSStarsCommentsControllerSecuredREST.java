@@ -317,9 +317,9 @@ public class CSStarsCommentsControllerSecuredREST {
      */
     @DeleteMapping("/deleteComment/{commentId}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<Integer> deleteCommentAndStarsForSite(@PathVariable("commentId") Integer commentId) {
+    public ResponseEntity<Integer> deleteCommentAndStarsForSite(@PathVariable("commentId") Long commentId) {
         
-        Long siteId = null;
+        Long siteId;
         siteId = commentsService.deleteCommentById(commentId);
         
         if (siteId == null) {

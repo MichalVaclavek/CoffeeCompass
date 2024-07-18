@@ -88,7 +88,7 @@
                 <div class="w3-cell-row w3-panel w3-border w3-light-grey w3-round"
                      id="imagesList">
                     <span th:each="imageUrl : ${imageUrls}" class="w3-cell-middle">
-                        <img th:src="${imageUrl}" class="w3-round" style="width: 64px"/>
+                        <img th:src="${imageUrl}" class="w3-round" style="height: 90px"/>
                     </span>
                 </div>
             </div>
@@ -97,12 +97,6 @@
             <div style="width:60%" class="w3-margin-top">
                 <img id="selectedImage" src="" alt="" class="w3-image w3-round"/>
             </div>
-
-<!--            &lt;!&ndash; Picture of the CoffeeSite, if available &ndash;&gt;-->
-<!--            <div th:if="${selectedImageUrl != ''}" style="width:60%">-->
-<!--                &lt;!&ndash; CoffeeSite's selectedImage URL &ndash;&gt;-->
-<!--                <img id="selectedImage" th:src="${selectedImageUrl}" class="w3-image w3-round"/>-->
-<!--            </div>-->
 
             <div th:if="${selectedImageUrl == ''}" th:text="#{site.noImage}"
                  class="w3-small w3-display-middle" style="font-style: italic;">

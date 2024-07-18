@@ -1,27 +1,33 @@
 package cz.fungisoft.coffeecompass.security;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.impl.compression.GzipCompressionCodec;
 
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
 
 import cz.fungisoft.coffeecompass.configuration.JwtAndOAuth2Properties;
 import cz.fungisoft.coffeecompass.service.tokens.TokenService;
 
+import javax.crypto.SecretKey;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Date;
 import java.util.Map;
 
 import static io.jsonwebtoken.SignatureAlgorithm.HS256;
-import static io.jsonwebtoken.impl.TextCodec.BASE64;
 import static java.util.Objects.requireNonNull;
 
 import java.time.LocalDateTime;
+import java.util.function.Supplier;
 
 /**
  * This class contains code to generate and verify Json Web Tokens.
@@ -40,12 +46,13 @@ public class JwtTokenProviderService implements Clock, TokenService {
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenProviderService.class);
     
     private static final String DOT = ".";
-    private static final GzipCompressionCodec COMPRESSION_CODEC = new GzipCompressionCodec();
+//    private static final GzipCompressionCodec COMPRESSION_CODEC = new GzipCompressionCodec();
 
     private final String issuer;
     private final int expirationSec;
-    private final int clockSkewSec;
-    private final String secretKey;
+//    private final int clockSkewSec;
+    private final SecretKey secretKey;
+//    private final PublicKey publicKey;
     
 
     private final JwtAndOAuth2Properties jwtPoperties;
@@ -55,8 +62,14 @@ public class JwtTokenProviderService implements Clock, TokenService {
         
         this.issuer = requireNonNull(jwtPoperties.getJwtAuth().getIssuer());
         this.expirationSec = jwtPoperties.getJwtAuth().getTokenExpirationSec();
-        this.clockSkewSec = jwtPoperties.getJwtAuth().getClockSkewSec();
-        this.secretKey = BASE64.encode(requireNonNull(jwtPoperties.getJwtAuth().getTokenSecret()));
+//        this.clockSkewSec = jwtPoperties.getJwtAuth().getClockSkewSec();
+        byte[] keyBytes = Decoders.BASE64.decode(jwtPoperties.getJwtAuth().getTokenSecret());
+        this.secretKey = Keys.hmacShaKeyFor(keyBytes);
+
+//        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+//        byte[] publicKeyBytes = Decoders.BASE64.decode(jwtPoperties.getJwtAuth().getPublicKey());
+//        X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(publicKeyBytes);
+//        this.publicKey = keyFactory.generatePublic(x509EncodedKeySpec);
     }
 
     /**
@@ -73,18 +86,20 @@ public class JwtTokenProviderService implements Clock, TokenService {
         Date expiryDate = new Date(now.getTime() + jwtPoperties.getJwtAuth().getTokenExpirationSec());
 
         return Jwts.builder()
-                   .setSubject(Long.toString(userPrincipal.getId()))
-                   .setIssuedAt(new Date())
-                   .setExpiration(expiryDate)
-                   .signWith(SignatureAlgorithm.HS512, jwtPoperties.getJwtAuth().getTokenSecret())
-                   .compact();
+                .subject(Long.toString(userPrincipal.getId()))
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(expiryDate)
+                .signWith(this.secretKey)
+                .compact();
     }
 
     public Long getUserIdFromToken(String token) {
-        Claims claims = Jwts.parser()
-                            .setSigningKey(jwtPoperties.getJwtAuth().getTokenSecret())
-                            .parseClaimsJws(token)
-                            .getBody();
+        Claims claims = Jwts
+                .parser()
+//                .verifyWith(publicKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
 
         return Long.parseLong(claims.getSubject());
     }
@@ -92,9 +107,13 @@ public class JwtTokenProviderService implements Clock, TokenService {
     public boolean validateToken(String authToken) {
         
         try {
-            Jwts.parser().setSigningKey(jwtPoperties.getJwtAuth().getTokenSecret()).parseClaimsJws(authToken);
+            Jwts
+                    .parser()
+//                    .verifyWith(publicKey)
+                    .build()
+                    .parseSignedClaims(authToken);
             return true;
-        } catch (SignatureException ex) {
+        } catch (InvalidClaimException ex) {
             logger.error("Invalid JWT signature");
         } catch (MalformedJwtException ex) {
             logger.error("Invalid JWT token");
@@ -122,44 +141,50 @@ public class JwtTokenProviderService implements Clock, TokenService {
 
     private String newToken(final Map<String, String> attributes, final int expiresInSec) {
         LocalDateTime now = LocalDateTime.now();
-        final Claims claims = Jwts.claims()
-                                  .setIssuer(issuer)
-                                  .setIssuedAt(convertToDate(now));
-
+        Date expiryDate = new Date(System.currentTimeMillis() + 1000 * 60 * 24);
         if (expiresInSec > 0) {
-            Date expiryDate = convertToDate(now.plusSeconds(jwtPoperties.getJwtAuth().getTokenExpirationSec()));
-            claims.setExpiration(expiryDate);
+            expiryDate = convertToDate(now.plusSeconds(jwtPoperties.getJwtAuth().getTokenExpirationSec()));
         }
+
+        final Claims claims = Jwts.claims()
+                                  .issuer(issuer)
+                                  .issuedAt(convertToDate(now))
+                                  .expiration(expiryDate)
+                                  .build();
+
         claims.putAll(attributes);
 
         return Jwts.builder()
-                   .setClaims(claims)
-                   .signWith(HS256, secretKey)
-                   .compressWith(COMPRESSION_CODEC)
+                   .claims(claims)
+                   .signWith(secretKey)
+//                   .compressWith(COMPRESSION_CODEC)
                    .compact();
     }
 
     @Override
     public Map<String, String> verify(final String token) {
-        final JwtParser parser = Jwts.parser()
-                                     .requireIssuer(issuer)
-                                     .setClock(this)
-                                     .setAllowedClockSkewSeconds(clockSkewSec)
-                                     .setSigningKey(secretKey);
-        return parseClaims(() -> parser.parseClaimsJws(token).getBody());
+        final JwtParser parser = Jwts
+                .parser()
+                .requireIssuer(issuer)
+//                .verifyWith(publicKey)
+                .clock(this)
+                .build();
+
+        return parseClaims(() -> parser.parseSignedClaims(token).getPayload());
     }
 
     @Override
     public Map<String, String> untrusted(final String token) {
-          
-        final JwtParser parser = Jwts.parser()
-                                     .requireIssuer(issuer)
-                                     .setClock(this)
-                                     .setAllowedClockSkewSeconds(clockSkewSec);
+        final JwtParser parser = Jwts
+                .parser()
+                .requireIssuer(issuer)
+//                .verifyWith(publicKey)
+                .clock(this)
+                .build();
 
         // See: https://github.com/jwtk/jjwt/issues/135
         final String withoutSignature = substringBeforeLast(token, DOT) + DOT;
-        return parseClaims(() -> parser.parseClaimsJwt(withoutSignature).getBody());
+        return parseClaims(() -> parser.parseUnsecuredClaims(withoutSignature).getPayload());
     }
 
 
@@ -172,7 +197,7 @@ public class JwtTokenProviderService implements Clock, TokenService {
             }
             return builder.build();
         } catch (final IllegalArgumentException | JwtException e) {
-            return ImmutableMap.of();
+            return Map.of();
         }
     }
 

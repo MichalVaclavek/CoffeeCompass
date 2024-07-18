@@ -145,7 +145,6 @@ COMMENT ON TABLE coffeecompass.user_to_user_profile
 
 
 
-
 -- -----------------------------------------------------
 -- Table `coffeecompass`.`dalsi_automat_vedle_type`
 -- -----------------------------------------------------
@@ -388,7 +387,7 @@ DROP TABLE coffeecompass.coffee_site;
 
 CREATE TABLE IF NOT EXISTS coffeecompass.coffee_site (
     id serial NOT NULL,
-    ext_id character varying(128) COLLATE pg_catalog."default" DEFAULT NULL::character varying,
+    external_id character varying(128) COLLATE pg_catalog."default" DEFAULT NULL::character varying,
     created_on timestamp(0) without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_on timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP,
     canceled_on timestamp(0) without time zone,

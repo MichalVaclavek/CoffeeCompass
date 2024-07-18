@@ -18,8 +18,8 @@ import cz.fungisoft.coffeecompass.entity.User;
  */
 public interface ICommentService {
 
-    Comment getById(Integer id);
-    CommentDTO getByIdToTransfer(Integer id);
+    Comment getById(Long id);
+    CommentDTO getByIdToTransfer(Long id);
     
     /**
 	 * Saves the text of comment into DB.
@@ -91,7 +91,7 @@ public interface ICommentService {
 	Long deleteComment(Comment comment);
 	
 	@PreAuthorize("hasRole('ADMIN') OR hasRole('DBA')")
-	Long deleteCommentById(Integer commentId);
+	Long deleteCommentById(Long commentId);
 	
 	@PreAuthorize("hasRole('ADMIN') OR hasRole('DBA')")
 	void deleteAllCommentsFromUser(Long userID);

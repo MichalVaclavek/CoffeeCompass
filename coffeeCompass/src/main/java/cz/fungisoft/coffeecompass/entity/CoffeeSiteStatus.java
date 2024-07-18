@@ -3,19 +3,15 @@
  */
 package cz.fungisoft.coffeecompass.entity;
 
-import java.io.Serializable;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
-import lombok.Data;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Status coffee situ.<br>
@@ -27,7 +23,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  * @author Michal Vaclavek
  *
  */
-@Data
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Entity
 @jakarta.persistence.Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -57,7 +55,7 @@ public class CoffeeSiteStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
     
     @NotNull
     @Column(name="status_podniku", unique=true, nullable=false)
@@ -66,5 +64,18 @@ public class CoffeeSiteStatus {
     @Override
     public String toString() {
         return status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        CoffeeSiteStatus that = (CoffeeSiteStatus) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

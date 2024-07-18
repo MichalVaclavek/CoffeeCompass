@@ -22,7 +22,7 @@ import lombok.Data;
 @PasswordMatches
 public class UserDTO {
 
-    private Long id; 
+    private Long id;
      
     @Size(min=3, max=30)
     private String userName;

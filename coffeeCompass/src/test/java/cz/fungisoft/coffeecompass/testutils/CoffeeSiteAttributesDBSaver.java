@@ -6,8 +6,6 @@ package cz.fungisoft.coffeecompass.testutils;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.transaction.Transactional;
-
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
@@ -22,6 +20,7 @@ import cz.fungisoft.coffeecompass.entity.PriceRange;
 import cz.fungisoft.coffeecompass.entity.SiteLocationType;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
+import org.springframework.transaction.annotation.Transactional;
 
 
 /**

@@ -1,13 +1,14 @@
 package cz.fungisoft.coffeecompass.entity;
 
-import java.io.Serializable;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
-import lombok.Data;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Status zaznamu o Coffee situ.
@@ -15,7 +16,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  * @author Michal Václavek
  *
  */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @jakarta.persistence.Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -44,7 +48,7 @@ public class CoffeeSiteRecordStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
     
     @NotNull
     @Column(name="status_zaznamu", length=15, unique=true, nullable=false)
@@ -52,5 +56,18 @@ public class CoffeeSiteRecordStatus {
     
     public CoffeeSiteRecordStatusEnum getRecordStatus() {
         return CoffeeSiteRecordStatusEnum.valueOf(status);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        CoffeeSiteRecordStatus that = (CoffeeSiteRecordStatus) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

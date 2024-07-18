@@ -1,14 +1,16 @@
 package cz.fungisoft.coffeecompass.entity;
 
-import jakarta.validation.constraints.Size;
-import lombok.Data;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
+import jakarta.validation.constraints.Size;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.JdbcTypeCode;
 
+import java.io.Serializable;
+import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -23,35 +25,35 @@ import java.util.*;
  * 
  * @author Michal Vaclavek
  */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
-@jakarta.persistence.Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@Table(name="coffee_site", schema="coffeecompass")
-@NamedStoredProcedureQueries({   
-    @NamedStoredProcedureQuery(
-            name = "distance", 
-            procedureName = "distance", 
-            parameters = { 
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = Double.class, name = "lat1"), 
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = Double.class, name = "lon1"),
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = Double.class, name = "lat2"), 
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = Double.class, name = "lon2"),
-                @StoredProcedureParameter(mode = ParameterMode.OUT, type = Double.class, name = "dist")
-            }
-        ),
-    @NamedStoredProcedureQuery(
-            name = "sitesInRangeProcedure", 
-            procedureName = "sitesWithinRange", 
-            resultClasses = CoffeeSite.class, 
-            parameters = { 
-                @StoredProcedureParameter(mode = ParameterMode.REF_CURSOR, type = void.class),
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = Double.class), 
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = Double.class),
-                @StoredProcedureParameter(mode = ParameterMode.IN, type = Long.class), 
-            }
-        )
- })
+
+@NamedStoredProcedureQuery(
+        name = "distance",
+        procedureName = "distance",
+        parameters = {
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = Double.class, name = "lat1"),
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = Double.class, name = "lon1"),
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = Double.class, name = "lat2"),
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = Double.class, name = "lon2"),
+            @StoredProcedureParameter(mode = ParameterMode.OUT, type = Double.class, name = "dist")
+        }
+    )
+@NamedStoredProcedureQuery(
+        name = "sitesInRangeProcedure",
+        procedureName = "sitesWithinRange",
+        resultClasses = CoffeeSite.class,
+        parameters = {
+            @StoredProcedureParameter(mode = ParameterMode.REF_CURSOR, type = void.class),
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = Double.class),
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = Double.class),
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = Long.class),
+        }
+    )
 
 /** 
  * Jde o variantu definice SQL dotazu pro zpracovani JPA Springem. Na jmeno "getSitesWithinRange" esp. "numberOfSitesWithinRange" se pak lze odkazovat 
@@ -81,11 +83,11 @@ import java.util.*;
             resultSetMapping = "LongResult"
     )
 })
-/**
- * Result mapping for "numberOfSitesWithinRange" named query.
- */
+// Result mapping for "numberOfSitesWithinRange" named query.
 @SqlResultSetMapping(name="LongResult", columns={@ColumnResult(name="cnt", type = Long.class)})
-public class CoffeeSite {
+
+@Table(name="coffee_site", schema="coffeecompass")
+public class CoffeeSite implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -94,6 +96,7 @@ public class CoffeeSite {
 
     @Column(name="external_id")
     @GeneratedValue
+//    @JdbcTypeCode(Types.VARCHAR)
     private UUID externalId;
 
     @NotNull
@@ -151,47 +154,56 @@ public class CoffeeSite {
     @ManyToOne(fetch = FetchType.LAZY)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "status_zaznamu_id")
+    @ToString.Exclude
     private CoffeeSiteRecordStatus recordStatus;
     
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "zadal_user_id")
+    @ToString.Exclude
     private User originalUser;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "naposledy_upravil_user_id")
+    @ToString.Exclude
     private User lastEditUser;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "smazal_user_id")
+    @ToString.Exclude
     private User canceledUser;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "typ_podniku_id")
+    @ToString.Exclude
     private CoffeeSiteType typPodniku;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "status_zarizeni_id")
+    @ToString.Exclude
     private CoffeeSiteStatus statusZarizeni;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "dodavatel_jmeno_podniku_id")
+    @ToString.Exclude
     private Company dodavatelPodnik;  
     
     @ManyToOne(fetch = FetchType.LAZY)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "cena_id")
+    @ToString.Exclude
     private PriceRange cena;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "typ_lokality_id")
+    @ToString.Exclude
     private SiteLocationType typLokality;
     
     /* **** MANY TO MANY relations **** */
@@ -201,6 +213,7 @@ public class CoffeeSite {
     @JoinTable(name = "coffee_site_to_typ_kelimku", schema="coffeecompass",
                    joinColumns = { @JoinColumn(name = "coffee_site_id") }, 
                       inverseJoinColumns = { @JoinColumn(name = "typ_kelimku_id") })
+    @ToString.Exclude
     private Set<CupType> cupTypes = new HashSet<>();
 
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -208,6 +221,7 @@ public class CoffeeSite {
     @JoinTable(name = "coffee_site_to_nabidka", schema="coffeecompass",
                    joinColumns = { @JoinColumn(name = "id_mainsitetab") }, 
                       inverseJoinColumns = { @JoinColumn(name = "id_nabidka") })
+    @ToString.Exclude
     private Set<OtherOffer> otherOffers = new HashSet<>();
 
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -215,6 +229,7 @@ public class CoffeeSite {
     @JoinTable(name = "coffee_site_to_dalsi_automat_vedle", schema="coffeecompass",
                     joinColumns = { @JoinColumn(name = "id_mainsitetab") }, 
                        inverseJoinColumns = { @JoinColumn(name = "id_dalsi_automat") })
+    @ToString.Exclude
     private Set<NextToMachineType> nextToMachineTypes = new HashSet<>();
 
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -222,6 +237,7 @@ public class CoffeeSite {
     @JoinTable(name = "coffee_site_to_druhy_kavy", schema="coffeecompass",
                     joinColumns = { @JoinColumn(name = "coffee_site_id") }, 
                        inverseJoinColumns = { @JoinColumn(name = "druhy_kavy_id") })
+    @ToString.Exclude
     private Set<CoffeeSort> coffeeSorts = new HashSet<>();      
     
     /* **** ONE TO MANY relations **** */
@@ -234,9 +250,24 @@ public class CoffeeSite {
      * */
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @OneToMany(mappedBy="coffeeSite", fetch = FetchType.LAZY, orphanRemoval = true)
+    @ToString.Exclude
     private List<Comment> comments = new ArrayList<>();
 
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @OneToMany(mappedBy="coffeeSite", fetch = FetchType.LAZY, orphanRemoval = true)
+    @ToString.Exclude
     private List<StarsForCoffeeSiteAndUser> ratings = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        CoffeeSite that = (CoffeeSite) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

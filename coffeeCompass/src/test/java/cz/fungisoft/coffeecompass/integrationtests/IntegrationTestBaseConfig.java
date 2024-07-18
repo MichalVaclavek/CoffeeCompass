@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.jupiter.api.AfterEach;
@@ -216,8 +217,9 @@ public class IntegrationTestBaseConfig {
         
         CoffeeSiteStatus siteStatus = coffeeSiteStatusRepo.searchByName(CoffeeSiteStatusEnum.INSERVICE.getSiteStatus());
         
-        CoffeeSite coffeeS = new CoffeeSite();        
-        
+        CoffeeSite coffeeS = new CoffeeSite();
+
+        coffeeS.setExternalId(UUID.randomUUID());
         coffeeS.setSiteName(siteName);
         coffeeS.setStatusZarizeni(siteStatus);
         coffeeS.setCena(pr);
@@ -291,7 +293,7 @@ public class IntegrationTestBaseConfig {
      * @throws Exception
      */
     protected String loginUserAndGetAccessToken(MockMvc mockMvc, SignUpAndLoginRESTDto userDto) throws Exception {
-        ResultActions result = mockMvc.perform(post("/rest/public/user/login").contentType(MediaType.APPLICATION_JSON)
+        ResultActions result = mockMvc.perform(post("/api/v1/coffeesites/public/user/login").contentType(MediaType.APPLICATION_JSON)
                    .contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(userDto)))
                    .andExpect(status().isOk())
                    .andExpect(content().contentType("application/json"));

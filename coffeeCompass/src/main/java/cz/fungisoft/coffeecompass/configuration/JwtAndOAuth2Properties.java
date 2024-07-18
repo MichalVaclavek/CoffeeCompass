@@ -33,6 +33,8 @@ public class JwtAndOAuth2Properties {
     public static class JwtAuth {
         
         private String tokenSecret;
+
+        private String publicKey;
         
         private int tokenExpirationSec;
         
@@ -60,8 +62,16 @@ public class JwtAndOAuth2Properties {
             return tokenSecret;
         }
 
+        public String getPublicKey() {
+            return publicKey;
+        }
+
         public void setTokenSecret(String tokenSecret) {
             this.tokenSecret = tokenSecret;
+        }
+
+        public void setPublicKey(String publicKey) {
+            this.publicKey = publicKey;
         }
 
         public int getTokenExpirationSec() {

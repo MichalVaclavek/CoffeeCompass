@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Optional<UserDTO> findByIdToTransfer(Long id) {        
+    public Optional<UserDTO> findByIdToTransfer(Long id) {
         return addNonPersistentInfoToUser(findById(id).orElse(null));
     }
     
@@ -527,7 +527,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isUserNameUnique(Long id, String sso) {
         Optional<User> user = usersRepository.searchByUsername(sso);
-        return (!user.isPresent() || ((id != null) && (Objects.equals(user.get().getId(), id))));
+        return (user.isEmpty() || ((id != null) && (Objects.equals(user.get().getId(), id))));
     }
 
     /**

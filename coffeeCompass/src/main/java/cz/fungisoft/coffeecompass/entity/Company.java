@@ -3,17 +3,14 @@
  */
 package cz.fungisoft.coffeecompass.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import java.util.Objects;
 
 /**
  * Jmeno dodavatele automatu nebo jmeno podniku.
@@ -21,7 +18,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  * @author Michal Vaclavek
  *
  */
-@Data
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Entity
 @jakarta.persistence.Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -31,7 +30,7 @@ public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
     
     @Size(max = 85) // Validace vstupu, pocet znaku
     @Column(name = "jmeno_podniku_dodavatele", unique = true)
@@ -44,5 +43,18 @@ public class Company {
     @Override
     public String toString() {
         return nameOfCompany;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Company company = (Company) o;
+        return id != null && Objects.equals(id, company.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

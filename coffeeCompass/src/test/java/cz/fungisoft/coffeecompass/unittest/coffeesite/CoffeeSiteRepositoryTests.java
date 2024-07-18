@@ -5,11 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +37,7 @@ import cz.fungisoft.coffeecompass.entity.CupType.CupTypeEnum;
 import cz.fungisoft.coffeecompass.entity.NextToMachineType.NextToMachineTypeEnum;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
 import cz.fungisoft.coffeecompass.testutils.CoffeeSiteAttributesDBSaver;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Testy pro CRUD/Repository operace s CoffeeSite objekty.

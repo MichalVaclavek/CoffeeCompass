@@ -238,8 +238,7 @@ class CoffeeSiteServiceImplTest {
      * Tests if correct CoffeeSite is returned when requested by name.
      */
     @Test
-    public void whenValidName_thenSiteShouldBeFound()
-    {
+    void whenValidName_thenSiteShouldBeFound() {
         CoffeeSiteDTO found = coffeeSiteService.findByName(testSiteName);
       
         assertThat(found.getSiteName())

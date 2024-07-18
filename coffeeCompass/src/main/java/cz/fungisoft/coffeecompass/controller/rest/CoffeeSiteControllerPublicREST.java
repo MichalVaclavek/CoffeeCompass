@@ -114,17 +114,17 @@ public class CoffeeSiteControllerPublicREST {
     /**
      * Priklady http dotazu, ktere vrati serazeny seznam CoffeeSitu jsou:
      * <br>
-     * https://coffeecompass.cz/rest/site/allSites/?orderBy=siteName&direction=asc<br>
-     * https://coffeecompass.cz/rest/site/allSites/?orderBy=cena&direction=asc<br>
-     * https://coffeecompass.cz/rest/site/allSites/
+     * https://coffeecompass.cz/rest/site/allSites?orderBy=siteName&direction=asc<br>
+     * https://coffeecompass.cz/rest/site/allSites?orderBy=cena&direction=asc<br>
+     * https://coffeecompass.cz/rest/site/allSites
      * 
      * @param orderBy
      * @param direction
      * @return
      */
-    @GetMapping("/allSites/") 
-    public ResponseEntity<List<CoffeeSiteDTO>> sites(@RequestParam(defaultValue = "id") String orderBy,
-                                                     @RequestParam(defaultValue = "asc") String direction) {
+    @GetMapping("/allSites")
+    public ResponseEntity<List<CoffeeSiteDTO>> sites(@RequestParam(defaultValue = "id", required = false) String orderBy,
+                                                     @RequestParam(defaultValue = "asc", required = false) String direction) {
         
         List<CoffeeSiteDTO> coffeeSites = coffeeSiteService.findAll(orderBy, direction);
         

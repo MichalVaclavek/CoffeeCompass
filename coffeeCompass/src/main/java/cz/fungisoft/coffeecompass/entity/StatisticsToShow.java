@@ -1,6 +1,5 @@
 package cz.fungisoft.coffeecompass.entity;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import lombok.Data;
@@ -20,8 +19,8 @@ public class StatisticsToShow {
      */
     public static class DBReturnPair {
         
-        private String strVal;
-        private Long intVal;
+        private final String strVal;
+        private final Long intVal;
 
         
         public DBReturnPair(String strVal, Long intVal) {

@@ -21,7 +21,7 @@
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-   		<jwt.version>0.9.1</jwt.version>
+   		<jwt.version>0.12.5</jwt.version>
 
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
 		<org.lombok.version>1.18.30</org.lombok.version>
@@ -125,9 +125,21 @@
 		
 		<!-- Java Web Token (JWT) library -->
 		<dependency>
-		  <groupId>io.jsonwebtoken</groupId>
-		  <artifactId>jjwt</artifactId>
-		  <version>${jwt.version}</version>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>${jwt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>${jwt.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>${jwt.version}</version>
+			<scope>runtime</scope>
 		</dependency>
         
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
@@ -240,8 +252,8 @@
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
-			<version>5.9.2</version>
-			<scope>test</scope>
+<!--			<version>5.9.2</version>-->
+<!--			<scope>test</scope>-->
 		</dependency>
 		
 		<dependency>
@@ -274,41 +286,44 @@
   			<version>0.17.0</version>
 		</dependency>
 
-		<!-- Hibernate's L2 caching  -->
+		<!-- L2 caching  -->
 		<dependency>
-			<groupId>org.hibernate</groupId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+			<version>3.1.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-ehcache</artifactId>
-			<version>5.4.21.Final</version>
+			<version>6.0.0.Alpha7</version>
 		</dependency>
-
 		<dependency>
-			<groupId>org.hibernate</groupId>
+			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-jcache</artifactId>
-			<version>5.4.21.Final</version>
+			<version>6.2.0.CR2</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
-			<version>3.8.1</version>
-			<scope>runtime</scope>
+			<version>3.10.8</version>
 		</dependency>
 		<!-- Hibernate's L2 caching  END -->
 
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
-			<version>RELEASE</version>
+			<version>7.10.2</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-test</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.junit.jupiter</groupId>-->
+<!--			<artifactId>junit-jupiter-api</artifactId>-->
+<!--		</dependency>-->
 
 		<dependency>
 			<groupId>org.springframework.kafka</groupId>

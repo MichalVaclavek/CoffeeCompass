@@ -10,7 +10,7 @@ import jakarta.persistence.QueryHint;
 
 public interface CompanyRepository extends JpaRepository<Company, Integer> {
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select comp from Company comp where nameOfCompany=?1")
     Company searchByName(String company);
 }

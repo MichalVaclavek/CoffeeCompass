@@ -1,0 +1,14 @@
+
+*.p12
+users/src/main/resources/configprops-prod.properties
+users/src/main/resources/application-prod_https.properties
+users/src/main/resources/application-prod_docker_https.properties
+users/src/main/resources/application-prod_docker_db.properties
+users/target/classes/application-prod_docker_db.properties
+users/target/classes/application-prod_docker_https.properties
+users/target/classes/application-prod_https.properties
+users/target/classes/configprops-prod.properties
+users/target/classes/application-prod.properties
+users/src/main/resources/application-prod.properties
+*.properties
+*.log

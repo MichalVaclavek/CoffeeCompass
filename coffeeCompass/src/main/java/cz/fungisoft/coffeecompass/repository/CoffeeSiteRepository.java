@@ -2,6 +2,7 @@ package cz.fungisoft.coffeecompass.repository;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -36,25 +37,28 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
     @Query("select cs from CoffeeSite cs where siteName=?1")
     CoffeeSite searchByName(String name);
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Override
+    @NotNull
     List<CoffeeSite> findAll();
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Override
-    List<CoffeeSite> findAll(Sort sort);
+    @NotNull
+    List<CoffeeSite> findAll(@NotNull Sort sort);
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Override
-    Optional<CoffeeSite> findById(Long id);
+    @NotNull
+    Optional<CoffeeSite> findById(@NotNull Long id);
 
     Optional<CoffeeSite> findByExternalId(UUID externalId);
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select cs from CoffeeSite cs where originalUser.id=?1 order by cs.createdOn desc")
     List<CoffeeSite> findSitesFromUserID(long userId);
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select cs from CoffeeSite cs where originalUser.id=?1 and NOT cs.recordStatus.status='CANCELED' order by cs.createdOn desc")
     List<CoffeeSite> findSitesNotCanceledFromUserID(long userId);
     
@@ -64,7 +68,7 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
     @Query("select count(id) from CoffeeSite cs where originalUser.id=?1 and NOT cs.recordStatus.status='CANCELED'")
     Integer getNumberOfSitesNotCanceledFromUserID(long userId);
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select cs from CoffeeSite cs where cs.recordStatus.status=?1 order by cs.createdOn desc")
     List<CoffeeSite> findSitesWithRecordStatus(String csRecordStatus);
 
@@ -94,7 +98,7 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
      * @param cityName - the name (of city) which is in the beginning of the CoffeeSite.mesto field
      * @return
      */
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select cs from CoffeeSite cs where lower(cs.mesto) like lower(CONCAT(?1,'%')) AND cs.recordStatus.status='ACTIVE'")
     List<CoffeeSite> getAllActiveSitesInCity(String cityName);
     
@@ -104,7 +108,7 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, Long>, C
      * @param cityName - the name of city which is equal to CoffeeSite.mesto field
      * @return
      */
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select cs from CoffeeSite cs where cs.mesto=?1 AND cs.recordStatus.status='ACTIVE'")
     List<CoffeeSite> getAllSitesInCityExactly(String cityName);
     

@@ -129,7 +129,7 @@ class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
         // Create and save some normal Users - END -
         
         // Then request all users will be returned
-        mockMvc.perform(get("/rest/secured/user/all")
+        mockMvc.perform(get("/api/v1/coffeesites/secured/user/all")
                .header("Authorization", "Bearer " + accessToken)
                .accept("application/json"))
                .andDo((result) -> log.info(result.getResponse().getContentAsString()))

@@ -22,13 +22,13 @@ import jakarta.persistence.QueryHint;
  */
 public interface CoffeeSitePageableRepository extends PagingAndSortingRepository<CoffeeSite, Long> {
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     Page<CoffeeSite> findAll(Pageable pageable);
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     Page<CoffeeSite> findByRecordStatus(CoffeeSiteRecordStatus recordStatus, Pageable pageable);
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     Page<CoffeeSite> findByOriginalUser(User originalUser, Pageable pageable);
 
     /**

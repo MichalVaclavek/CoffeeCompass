@@ -3,25 +3,24 @@
  */
 package cz.fungisoft.coffeecompass.entity;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+import org.hibernate.Hibernate;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
-
-import lombok.Data;
+import java.util.Objects;
 
 /**
  * Class representing a "contact-me" message sent to web admin via respective UI form.
  * 
  * @author Michal Václavek
  */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name="contact_me_message", schema="coffeecompass")
 public class ContactMeMessage implements Serializable {
@@ -43,4 +42,17 @@ public class ContactMeMessage implements Serializable {
 	 
     @Column(name="message", length = 512, nullable = false)
     private String textOfMessage;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        ContactMeMessage that = (ContactMeMessage) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

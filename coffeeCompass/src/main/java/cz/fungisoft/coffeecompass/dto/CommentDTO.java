@@ -23,7 +23,7 @@ import lombok.Data;
 @Data
 public class CommentDTO {
     
-    private Integer id;
+    private Long id;
     
     @Size(max=512)
     private String text;

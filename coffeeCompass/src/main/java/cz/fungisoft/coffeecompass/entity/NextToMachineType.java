@@ -3,26 +3,22 @@
  */
 package cz.fungisoft.coffeecompass.entity;
 
-import java.io.Serializable;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import java.io.Serializable;
 
 /**
  * Druh automatu, ktere stoji vedle kavoveho automatu.
  * 
  * @author Michal Vaclavek
  */
-@Data
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Entity
 @jakarta.persistence.Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -51,7 +47,7 @@ public class NextToMachineType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
     
     @NotNull
     @Column(name="druh_automatu", length=45, unique=true, nullable=false)

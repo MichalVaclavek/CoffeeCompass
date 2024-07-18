@@ -10,7 +10,7 @@ import jakarta.persistence.QueryHint;
 
 public interface SiteLocationTypeRepository extends JpaRepository<SiteLocationType, Integer> {
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select slt from SiteLocationType slt where locationType=?1")
     SiteLocationType searchByName(String locType);
 }

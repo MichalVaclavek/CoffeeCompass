@@ -1,24 +1,14 @@
 package cz.fungisoft.coffeecompass.entity;
 
 
-import java.util.HashSet;
-import java.util.Set;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.Hibernate;
+
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Class to hold info about tokens assigned by FIrebase to user's device.
@@ -28,7 +18,9 @@ import lombok.Data;
  * @author Michal V.
  *
  */
-@Data
+@Getter
+@Setter
+@ToString
 @Entity
 @Table(name="user_firebase_token", schema="coffeecompass")
 public class DeviceFirebaseToken {
@@ -54,6 +46,7 @@ public class DeviceFirebaseToken {
     @JoinTable(name = "subscription_token_to_topic", schema="coffeecompass",
                     joinColumns = { @JoinColumn(name = "firebase_token_id") }, 
                        inverseJoinColumns = { @JoinColumn(name = "firebase_topic_id") })
+    @ToString.Exclude
     private Set<FirebaseTopic> topics = new HashSet<>();
     
     /**
@@ -69,5 +62,18 @@ public class DeviceFirebaseToken {
     public DeviceFirebaseToken(String token, User user) {
         this(token);
         this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        DeviceFirebaseToken that = (DeviceFirebaseToken) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

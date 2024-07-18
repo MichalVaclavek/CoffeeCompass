@@ -15,11 +15,11 @@ import jakarta.persistence.QueryHint;
  */
 public interface UsersRepository extends JpaRepository<User, Long>, UsersRepositoryCustom {
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select u from User u where userName= ?1")
     Optional<User> searchByUsername(String userName);
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select u from User u where email= ?1")
     Optional<User> searchByEmail(String email);
     

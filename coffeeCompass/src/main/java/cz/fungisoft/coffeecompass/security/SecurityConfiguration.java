@@ -119,7 +119,7 @@ public class SecurityConfiguration {
         http.csrf(csrfConfigurer -> csrfConfigurer.requireCsrfProtectionMatcher(new AndRequestMatcher(CsrfFilter.DEFAULT_CSRF_MATCHER, new RegexRequestMatcher("^(?!/rest/)", null))));
 //            .requireCsrfProtectionMatcher(new AndRequestMatcher(CsrfFilter.DEFAULT_CSRF_MATCHER, new RegexRequestMatcher("^(?!/rest/)", null)));
         
-        http.authorizeHttpRequests((authz) -> authz
+        http.authorizeHttpRequests(authz -> authz
             .requestMatchers("/**","/home", "/about").permitAll()
             .requestMatchers("/oauth2/**").permitAll()
             .requestMatchers(PUBLIC_REST_URLS).permitAll()
@@ -129,7 +129,7 @@ public class SecurityConfiguration {
             .requestMatchers("/saveStarsAndComment/**", "/mySites").hasAnyRole("ADMIN", "DBA", "USER")
             .requestMatchers("/finalDeleteSite/**").hasRole("ADMIN") // real deletition of the CoffeeSite record
             .requestMatchers("/user/all", "/user/show/**", "/rest/user/all").hasRole("ADMIN")
-            .requestMatchers("/allSites/**").hasAnyRole("ADMIN", "DBA")
+            .requestMatchers("/allSites**").hasAnyRole("ADMIN", "DBA")
             .requestMatchers("/user/delete/**").hasAnyRole("ADMIN", "DBA", "USER")
             .requestMatchers("/user/edit-put", "/user/edit/**").hasAnyRole("ADMIN", "USER") // only USER itself or ADMIN can modify user account
             .requestMatchers("/imageUpload", "/deleteImage/**").hasAnyRole("ADMIN", "DBA", "USER")

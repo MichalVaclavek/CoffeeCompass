@@ -1,19 +1,13 @@
 package cz.fungisoft.coffeecompass.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
-import lombok.Data;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import java.util.Objects;
 
 /**
  * Trida/objekt pro hodncoeni daneho CoffeeSite jednim Userem. Reprezentuje jeden radek
@@ -21,7 +15,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  * 
  * @author Michal Vaclavek
  */
-@Data
+@Getter
+@Setter
+@ToString
 @Entity
 @jakarta.persistence.Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -31,7 +27,7 @@ public class StarsForCoffeeSiteAndUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
 
     @NotNull
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -67,5 +63,18 @@ public class StarsForCoffeeSiteAndUser {
         this.coffeeSite = coffeeSite;
         this.user = user;
         this.stars = stars;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        StarsForCoffeeSiteAndUser that = (StarsForCoffeeSiteAndUser) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

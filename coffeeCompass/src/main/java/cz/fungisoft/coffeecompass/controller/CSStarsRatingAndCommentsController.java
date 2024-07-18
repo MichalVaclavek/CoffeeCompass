@@ -87,7 +87,7 @@ public class CSStarsRatingAndCommentsController {
      * @return
      */
     @DeleteMapping( {"/deleteComment/{commentId}", "/deleteComment/{commentId}/selectedImageExtId/{selectedImageExtId}" })
-    public ModelAndView deleteCommentAndStarsForSite(@PathVariable Integer commentId,
+    public ModelAndView deleteCommentAndStarsForSite(@PathVariable Long commentId,
                                                      @PathVariable(required = false) String selectedImageExtId) {
         // Smazat komentar - need to have site Id to give it to /showSite Controller
         Long siteId = commentsService.deleteCommentById(commentId);
