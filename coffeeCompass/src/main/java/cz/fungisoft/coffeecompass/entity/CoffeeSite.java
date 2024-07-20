@@ -20,7 +20,7 @@ import java.util.*;
  * <p>
  * Prvni Stored procedure je jen pro otestovani, ze funguje volani stored procedure v DB.<br>
  * Druha Stored procedure se zatim nepouziva. Pro realne pripady je pouzita implementace metody<br>
- * {@link cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository#findSitesWithSortAndSiteStatusAndRangeAndCity(double, double , long ,CoffeeSort, CoffeeSiteStatus, CoffeeSiteRecordStatus, String)},
+ * {@link cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository#findSitesWithSortAndSiteStatusAndRangeAndCity(double, double, long, CoffeeSiteStatus, CoffeeSiteRecordStatus, String)},
  * ktera pracuje i s dalsimi vstup. parametry, jako napr. coffeesite_record_status 
  * 
  * @author Michal Vaclavek
@@ -30,7 +30,6 @@ import java.util.*;
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 
 @NamedStoredProcedureQuery(
         name = "distance",
@@ -152,63 +151,53 @@ public class CoffeeSite implements Serializable {
     /* **** MANY TO ONE relations **** */
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "status_zaznamu_id")
     @ToString.Exclude
     private CoffeeSiteRecordStatus recordStatus;
     
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "zadal_user_id")
     @ToString.Exclude
     private User originalUser;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "naposledy_upravil_user_id")
     @ToString.Exclude
     private User lastEditUser;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "smazal_user_id")
     @ToString.Exclude
     private User canceledUser;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "typ_podniku_id")
     @ToString.Exclude
     private CoffeeSiteType typPodniku;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "status_zarizeni_id")
     @ToString.Exclude
     private CoffeeSiteStatus statusZarizeni;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "dodavatel_jmeno_podniku_id")
     @ToString.Exclude
     private Company dodavatelPodnik;  
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "cena_id")
     @ToString.Exclude
     private PriceRange cena;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinColumn(name = "typ_lokality_id")
     @ToString.Exclude
     private SiteLocationType typLokality;
     
     /* **** MANY TO MANY relations **** */
 
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @ManyToMany(fetch= FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(name = "coffee_site_to_typ_kelimku", schema="coffeecompass",
                    joinColumns = { @JoinColumn(name = "coffee_site_id") }, 
@@ -216,7 +205,6 @@ public class CoffeeSite implements Serializable {
     @ToString.Exclude
     private Set<CupType> cupTypes = new HashSet<>();
 
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @ManyToMany(fetch= FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(name = "coffee_site_to_nabidka", schema="coffeecompass",
                    joinColumns = { @JoinColumn(name = "id_mainsitetab") }, 
@@ -224,7 +212,6 @@ public class CoffeeSite implements Serializable {
     @ToString.Exclude
     private Set<OtherOffer> otherOffers = new HashSet<>();
 
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @ManyToMany(fetch= FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(name = "coffee_site_to_dalsi_automat_vedle", schema="coffeecompass",
                     joinColumns = { @JoinColumn(name = "id_mainsitetab") }, 
@@ -232,7 +219,6 @@ public class CoffeeSite implements Serializable {
     @ToString.Exclude
     private Set<NextToMachineType> nextToMachineTypes = new HashSet<>();
 
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @ManyToMany(fetch= FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(name = "coffee_site_to_druhy_kavy", schema="coffeecompass",
                     joinColumns = { @JoinColumn(name = "coffee_site_id") }, 
@@ -248,12 +234,10 @@ public class CoffeeSite implements Serializable {
      * si uzivatel zobrazi informace o jednom CoffeeSite.
      * Nebude se tedy ziskavat cely seznam commentu pri kazdem dotazu na CoffeeSite.???
      * */
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @OneToMany(mappedBy="coffeeSite", fetch = FetchType.LAZY, orphanRemoval = true)
     @ToString.Exclude
     private List<Comment> comments = new ArrayList<>();
 
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @OneToMany(mappedBy="coffeeSite", fetch = FetchType.LAZY, orphanRemoval = true)
     @ToString.Exclude
     private List<StarsForCoffeeSiteAndUser> ratings = new ArrayList<>();

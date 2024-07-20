@@ -2,8 +2,6 @@ package cz.fungisoft.coffeecompass.serviceimpl;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import cz.fungisoft.coffeecompass.mappers.CoffeeSiteMapper;
 import cz.fungisoft.coffeecompass.serviceimpl.images.ImagesService;
@@ -161,7 +159,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         return sites.stream().map(this::mapOneToTransfer).toList();
     }
 
-    @Cacheable(cacheNames = "coffeesites", key = "#id")
+    @Cacheable(cacheNames = "coffeeSitesCache")
     @Override
     public List<CoffeeSiteDTO> findAll(String orderBy, String direction) {
         List<CoffeeSite> items = coffeeSiteRepo.findAll(Sort.by(Sort.Direction.fromString(direction.toUpperCase()), orderBy));
@@ -177,7 +175,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         return coffeeSitesPage.map(this::mapOneToTransfer);
     }
 
-    @Cacheable(cacheNames = "coffeesites", key = "#id")
+    @Cacheable(cacheNames = "coffeeSitesCache")
     @Override
     public List<CoffeeSiteDTO> findAllWithRecordStatus(CoffeeSiteRecordStatusEnum csRecordStatus) {
         List<CoffeeSite> items = coffeeSiteRepo.findSitesWithRecordStatus(csRecordStatus.getSiteRecordStatus());
@@ -199,7 +197,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * Used to get all CoffeeSites from search point with respective record status. Especially for non logged-in user
      * which can retrieve only ACTIVE sites.
      */
-    @Cacheable(cacheNames = "coffeesites", key = "#id")
+    @Cacheable(cacheNames = "coffeeSitesCache")
     @Override
     public List<CoffeeSiteDTO> findAllWithinRangeWithRecordStatus(double zemSirka, double zemDelka, long meters, CoffeeSiteRecordStatus csRecordStatus) {
         List<CoffeeSite> items = coffeeSiteRepo.findSitesWithRecordStatus(zemSirka, zemDelka, meters, csRecordStatus);
@@ -216,7 +214,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         // only ACTIVE sites are relevant for distance searching - all users (even non-registered, not loggedd-in) can search, so only ACTIVE are interesting
         return  coffeeSiteRepo.findNumbersOfSitesInGivenDistances(zemSirka, zemDelka, distances, csS, csRecordStatusService.findCSRecordStatus(CoffeeSiteRecordStatusEnum.ACTIVE));
     }
-    
+
+    @Cacheable(cacheNames = "coffeeSitesCache")
     @Override
     public List<CoffeeSiteDTO> findAllFromUser(User user) {
         List<CoffeeSite> items = coffeeSiteRepo.findSitesFromUserID(user.getId());
@@ -256,7 +255,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
                           .map(this::findAllFromUser)
                           .orElse(Collections.emptyList());
     }
-    
+
+    @Cacheable(cacheNames = "coffeeSitesCache")
     @Override
     public List<CoffeeSiteDTO> findAllFromLoggedInUser() {
         return userService.getCurrentLoggedInUser()
@@ -283,6 +283,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     }
 
 
+    @Cacheable(cacheNames = "coffeeSitesCache")
     @Override
     public Optional<CoffeeSiteDTO> findOneToTransfer(Long id) {
         return findOneById(id).map(this::mapOneToTransfer);
@@ -306,6 +307,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      *
      * @param id
      */
+    @Cacheable(cacheNames = "coffeeSitesCache")
     @Override
     public Optional<CoffeeSite> findOneById(Long id) {
         Optional<CoffeeSite> site = coffeeSiteRepo.findById(id);
@@ -313,6 +315,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         return site;
     }
 
+    @Cacheable(cacheNames = "coffeeSitesCache")
     @Override
     public Optional<CoffeeSite> findOneByExternalId(String externalId) {
         Optional<CoffeeSite> site = coffeeSiteRepo.findByExternalId(UUID.fromString(externalId));

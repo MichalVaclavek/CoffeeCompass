@@ -22,14 +22,14 @@ public class CoffeeSiteTypeServiceImpl implements CoffeeSiteTypeService {
         this.coffeeSiteTypeRepo = coffeeSiteTypeRepo;
     }
 
-    @Cacheable(cacheNames = "coffeesitetypes", key = "#coffeeSiteType")
+    @Cacheable(cacheNames = "coffeeSiteTypesCache")
     @Override
     @Transactional
     public CoffeeSiteType findCoffeeSiteTypeByName(String coffeeSiteType) {
         return coffeeSiteTypeRepo.searchByName(coffeeSiteType);
     }
 
-    @Cacheable(cacheNames = "coffeesitetypes", key = "#coffeeSiteType")
+    @Cacheable(cacheNames = "coffeeSiteTypesCache")
     @Override
     @Transactional
     public List<CoffeeSiteType> getAllCoffeeSiteTypes() {

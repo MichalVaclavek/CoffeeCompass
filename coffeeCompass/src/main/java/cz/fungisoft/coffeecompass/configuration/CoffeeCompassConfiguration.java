@@ -2,8 +2,10 @@ package cz.fungisoft.coffeecompass.configuration;
 
 import java.util.Locale;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +25,34 @@ import cz.fungisoft.coffeecompass.exceptions.GeneralErrorAttributes;
  * @author Michal Václavek
  */
 @Configuration
+@EnableCaching
 public class CoffeeCompassConfiguration implements WebMvcConfigurer {
+
+    /**
+     * Caching config
+     */
+    @Bean
+    public CacheManager cacheManager() {
+        return new ConcurrentMapCacheManager(
+                "coffeeSitesCache",
+                "coffeeSiteTypesCache",
+                "coffeeSortsCache",
+                "coffeeSiteCommentsCache",
+                "companiesCache",
+                "csRecordStatusesCache",
+                "csStatusesCache",
+                "csTypesCache",
+                "csNextToMachineTypesCache",
+                "otherOffersCache",
+                "priceRangesCache",
+                "siteLocationTypesCache",
+                "starsQualityRatingsCache",
+                "starsQualityRatingsCache",
+                "cupTypesCache",
+                "usersCache",
+                "userProfilesCache");
+    }
+
     /**
      * Implementace rozhrani pro nastaveni Locale, zmenu jazyka
      * 

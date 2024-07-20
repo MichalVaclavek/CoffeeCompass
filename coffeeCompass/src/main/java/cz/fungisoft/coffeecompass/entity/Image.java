@@ -20,8 +20,6 @@ import java.util.Objects;
  * @author Michal Václavek
  */
 @Entity
-@jakarta.persistence.Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="images", schema="coffeecompass")
 @Getter
 @Setter

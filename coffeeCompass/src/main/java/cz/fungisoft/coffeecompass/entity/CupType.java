@@ -3,8 +3,6 @@ package cz.fungisoft.coffeecompass.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -19,8 +17,6 @@ import java.util.Objects;
 @Setter
 @RequiredArgsConstructor
 @Entity
-@jakarta.persistence.Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="typ_kelimku", schema="coffeecompass")
 public class CupType {
 

@@ -31,9 +31,6 @@ import org.springframework.cache.annotation.Cacheable;
  * @author Michal Vaclavek
  */
 @Entity
-//@jakarta.persistence.Cacheable
-@Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="user", schema="coffeecompass")
 public class User implements Serializable {
 

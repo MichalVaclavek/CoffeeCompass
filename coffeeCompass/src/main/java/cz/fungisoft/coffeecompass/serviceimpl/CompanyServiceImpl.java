@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.serviceimpl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +41,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    @Cacheable(cacheNames = "companiesCache")
     public List<Company> getAllCompanies() {
         return companyRepo.findAll();
     }

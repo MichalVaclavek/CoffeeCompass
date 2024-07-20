@@ -19,8 +19,6 @@ import java.util.Objects;
 @Setter
 @ToString
 @Entity
-@jakarta.persistence.Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="hodnoceni", schema="coffeecompass")
 public class StarsForCoffeeSiteAndUser {
 

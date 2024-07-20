@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.serviceimpl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ public class SiteLocationTypeServiceImpl implements SiteLocationTypeService {
     }
 
     @Override
+    @Cacheable(cacheNames = "siteLocationTypesCache")
     public SiteLocationType findSiteLocationType(String siteLocationTypeName) {
         
         SiteLocationType locType = siteLocTypeRepo.searchByName(siteLocationTypeName);
@@ -33,6 +35,7 @@ public class SiteLocationTypeServiceImpl implements SiteLocationTypeService {
     }
 
     @Override
+    @Cacheable(cacheNames = "siteLocationTypesCache")
     public List<SiteLocationType> getAllSiteLocationTypes() {
         return siteLocTypeRepo.findAll();
     }

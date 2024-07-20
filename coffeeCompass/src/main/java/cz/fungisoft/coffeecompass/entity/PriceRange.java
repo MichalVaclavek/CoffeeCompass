@@ -21,8 +21,6 @@ import java.util.Objects;
 @Setter
 @RequiredArgsConstructor
 @Entity
-@jakarta.persistence.Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="price_range", schema="coffeecompass")
 public class PriceRange {
 

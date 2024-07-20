@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.serviceimpl.user;
 import java.util.List;
  
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
+    @Cacheable(cacheNames = "userProfilesCache")
     public UserProfile findById(Integer id) {
         UserProfile userProfile = userProfRepository.findById(id).orElse(null);
         if (userProfile == null)
@@ -33,6 +35,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
  
     @Override
+    @Cacheable(cacheNames = "userProfilesCache")
     public UserProfile findByType(String type) {
         UserProfile userProfile = userProfRepository.searchByType(type);
         if (userProfile == null)
@@ -41,6 +44,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
  
     @Override
+    @Cacheable(cacheNames = "userProfilesCache")
     public List<UserProfile> findAll() {
         return userProfRepository.findAll();
     }

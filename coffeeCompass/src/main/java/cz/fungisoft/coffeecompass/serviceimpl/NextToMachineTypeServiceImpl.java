@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.serviceimpl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ public class NextToMachineTypeServiceImpl implements NextToMachineTypeService {
     }
 
     @Override
+    @Cacheable(cacheNames = "csNextToMachineTypesCache")
     public NextToMachineType findNextToMachineTypeByName(String nextToMachineTypeName) {
         NextToMachineType ntmType = ntmTypeRepo.searchByName(nextToMachineTypeName);
         if (ntmType == null)
@@ -32,6 +34,7 @@ public class NextToMachineTypeServiceImpl implements NextToMachineTypeService {
     }
 
     @Override
+    @Cacheable(cacheNames = "csNextToMachineTypesCache")
     public List<NextToMachineType> getAllNextToMachineTypes() {
         return ntmTypeRepo.findAll();
     }

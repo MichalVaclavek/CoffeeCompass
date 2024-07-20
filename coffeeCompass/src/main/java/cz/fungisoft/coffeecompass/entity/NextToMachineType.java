@@ -20,8 +20,6 @@ import java.io.Serializable;
 @Setter
 @RequiredArgsConstructor
 @Entity
-@jakarta.persistence.Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="dalsi_automat_vedle_type", schema="coffeecompass")
 public class NextToMachineType {
 

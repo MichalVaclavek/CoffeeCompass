@@ -78,7 +78,7 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService {
     /**
      * Base part of the CoffeeSite's image URL, loaded from ConfigProperties.<br>
      * <p>
-     * as it can be build using current html request URI and current requsted CoffeeSite id.
+     * as it can be build using current html request URI and current requested CoffeeSite id.
      */
     private String baseImageURLPath;
 

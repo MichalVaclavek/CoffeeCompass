@@ -35,7 +35,6 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
      */
     private final StatisticsToShow statsToShow;
     
-    @Autowired
     public StatisticsInfoServiceImpl(CoffeeSiteRepository csRepo, UsersRepository usersRepo) {
         super();
         this.csRepo = csRepo;

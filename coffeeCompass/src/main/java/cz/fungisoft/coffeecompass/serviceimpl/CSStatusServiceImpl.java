@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.serviceimpl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ public class CSStatusServiceImpl implements CSStatusService {
     }
 
     @Override
+    @Cacheable(cacheNames = "csStatusesCache")
     public CoffeeSiteStatus findCoffeeSiteStatusByName(String coffeeSiteStatus) {
         CoffeeSiteStatus csStatus = csStatusRepo.searchByName(coffeeSiteStatus);
         if (csStatus == null)
@@ -32,6 +34,7 @@ public class CSStatusServiceImpl implements CSStatusService {
     }
 
     @Override
+    @Cacheable(cacheNames = "csStatusesCache")
     public List<CoffeeSiteStatus> getAllCoffeeSiteStatuses() {
         return csStatusRepo.findAll();
     }

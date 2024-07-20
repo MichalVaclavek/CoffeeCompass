@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.serviceimpl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,11 +33,13 @@ public class StarsQualityServiceImpl implements StarsQualityService {
     }
 
     @Override
+    @Cacheable(cacheNames = "starsQualityRatingsCache")
     public List<StarsQualityDescription> getAllStarsQualityDescriptions() {
         return starsQaulityRepo.findAll();
     }
     
     @Override
+    @Cacheable(cacheNames = "starsQualityRatingsCache")
     public StarsQualityDescription findStarsQualityById(Integer id) {
         StarsQualityDescription qualityDescr = starsQaulityRepo.findById(id).orElse(null);
         if (qualityDescr == null)

@@ -22,8 +22,6 @@ import java.util.Objects;
 @Setter
 @RequiredArgsConstructor
 @Entity
-@jakarta.persistence.Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="dodavatel_nebo_jmeno_podniku", schema="coffeecompass")
 public class Company {
 

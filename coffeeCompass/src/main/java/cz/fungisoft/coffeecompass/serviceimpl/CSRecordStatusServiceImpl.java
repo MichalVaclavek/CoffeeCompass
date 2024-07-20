@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.serviceimpl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,11 +34,13 @@ public class CSRecordStatusServiceImpl implements CSRecordStatusService {
     }
 
     @Override
+    @Cacheable(cacheNames = "csRecordStatusesCache")
     public List<CoffeeSiteRecordStatus> getAllCSRecordStatuses() {
         return csRecordStatusRepo.findAll();
     }
 
     @Override
+    @Cacheable(cacheNames = "csRecordStatusesCache")
     public CoffeeSiteRecordStatus findCSRecordStatus(CoffeeSiteRecordStatusEnum coffeeSiteRecordStatus) {
         String recordStatus = coffeeSiteRecordStatus.getSiteRecordStatus();
         return csRecordStatusRepo.searchByName(recordStatus);

@@ -19,8 +19,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Setter
 @RequiredArgsConstructor
 @Entity
-@jakarta.persistence.Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="nabidka", schema="coffeecompass")
 public class OtherOffer {
 

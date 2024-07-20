@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import cz.fungisoft.coffeecompass.mappers.UserMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -67,6 +68,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @Cacheable(cacheNames = "usersCache")
     public Optional<UserDTO> findByIdToTransfer(Long id) {
         return addNonPersistentInfoToUser(findById(id).orElse(null));
     }
@@ -75,7 +77,7 @@ public class UserServiceImpl implements UserService {
     public Optional<User> findById(Long id) {
         Optional<User> user = usersRepository.findById(id);
         
-        if (!user.isPresent()) {
+        if (user.isEmpty()) {
             log.warn("User with id {} not found.", id);
         }
         else {
@@ -86,12 +88,14 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
+    @Cacheable(cacheNames = "usersCache")
     public Optional<UserDTO> findByUserNameToTransfer(String userName) {
         Optional<User> user = findByUserName(userName);
         return user.isPresent() ? addNonPersistentInfoToUser(user.get()) : Optional.empty();
     }
     
     @Override
+    @Cacheable(cacheNames = "usersCache")
     public Optional<User> findByUserName(String userName) {
         Optional<User> user = usersRepository.searchByUsername(userName);
         
@@ -124,6 +128,7 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
+    @Cacheable(cacheNames = "usersCache")
     public Optional<User> findByEmail(String email) {
         
         Optional<User> user = usersRepository.searchByEmail(email);

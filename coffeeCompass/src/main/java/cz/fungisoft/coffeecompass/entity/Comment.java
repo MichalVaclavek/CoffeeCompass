@@ -21,8 +21,6 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Entity
-@jakarta.persistence.Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="comment", schema="coffeecompass")
 public class Comment implements Serializable {
 
