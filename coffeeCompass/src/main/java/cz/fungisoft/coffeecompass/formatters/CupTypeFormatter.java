@@ -23,7 +23,7 @@ public class CupTypeFormatter implements Formatter<CupType> {
 
     @Override
     public String print(CupType cupType, Locale locale) {
-        return (cupType != null ? Integer.toString(cupType.getId()) : "");
+        return Integer.toString(cupType.getLongId());
     }
 
     @Override

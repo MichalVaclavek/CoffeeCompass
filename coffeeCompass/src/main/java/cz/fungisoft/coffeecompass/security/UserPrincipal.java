@@ -26,7 +26,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
 
     private static final long serialVersionUID = 2750856799274399097L;
     
-    private Long id;
+    private String id;
     private String email;
     private String password;
     private String userName;
@@ -48,7 +48,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
      * @param accountNonLocked
      * @param enabled
      */
-    public UserPrincipal(Long id, String userName, String email, String password,
+    public UserPrincipal(String id, String userName, String email, String password,
                          Collection<? extends GrantedAuthority> authorities, boolean accountNonLocked, boolean enabled) {
         this.id = id;
         this.email = email;
@@ -63,7 +63,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     public static UserPrincipal create(User user) {
 
         return new UserPrincipal(
-                user.getId(),
+                user.getLongId().toString(),
                 user.getUserName(),
                 user.getEmail(),
                 user.getPassword(),
@@ -92,7 +92,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     }
     
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
@@ -146,6 +146,6 @@ public class UserPrincipal implements OAuth2User, UserDetails {
 
     @Override
     public String getName() {
-        return String.valueOf(id);
+        return id;
     }
 }

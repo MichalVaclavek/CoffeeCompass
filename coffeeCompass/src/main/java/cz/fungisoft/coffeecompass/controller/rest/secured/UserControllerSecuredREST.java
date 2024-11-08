@@ -42,7 +42,6 @@ import cz.fungisoft.coffeecompass.service.user.UserService;
  */
 @Tag(name = "UserSecured", description = "Users administration")
 @RestController
-//@RequestMapping("/rest/secured/user")
 @RequestMapping("${site.coffeesites.baseurlpath.rest}" + "/secured/user")
 public class UserControllerSecuredREST {
 
@@ -78,12 +77,12 @@ public class UserControllerSecuredREST {
   
     // ------------------- Retrieve Single User -------------------------------------------------------- //
       
-    @GetMapping("/{id}")
+    @GetMapping("/{extId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long id) {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable("extId") String id) {
         logger.info("Fetching User with id {}", id);
-        Optional<UserDTO> user = userService.findByIdToTransfer(id);
-        if (!user.isPresent()) {
+        Optional<UserDTO> user = userService.findByExtIdToTransfer(id);
+        if (user.isEmpty()) {
             logger.info("User with id {} not found.", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -95,7 +94,7 @@ public class UserControllerSecuredREST {
     public ResponseEntity<UserDTO> getUserByUsername(@PathVariable("userName") String userName) {
         logger.info("Fetching User with username '{}'", userName);
         Optional<UserDTO> currentUser = userService.findByUserNameToTransfer(userName); 
-        if (!currentUser.isPresent()) {
+        if (currentUser.isEmpty()) {
             logger.info("User with username '{}' not found.", userName);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -111,7 +110,7 @@ public class UserControllerSecuredREST {
           
         Optional<UserDTO> currentUser = userService.findByUserNameToTransfer(updateUserRequest.getUserName());        
           
-        if (!currentUser.isPresent()) {
+        if (currentUser.isEmpty()) {
             logger.info("User with username '{}' not found.", updateUserRequest.getUserName());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }        
@@ -119,7 +118,7 @@ public class UserControllerSecuredREST {
         UserDTO updatedUser = userService.updateRESTUser(updateUserRequest);
         
         if (updatedUser != null) {
-            Optional<UserDTO> userDTO = userService.findByIdToTransfer(updatedUser.getId());
+            Optional<UserDTO> userDTO = userService.findByExtIdToTransfer(updatedUser.getExtId());
 
             return userDTO.map(userDTO1 -> new ResponseEntity<>(userDTO1, HttpStatus.OK))
                           .orElse(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
@@ -137,7 +136,7 @@ public class UserControllerSecuredREST {
         logger.info("Fetching & Deleting User with username {} via REST api.", userName);
   
         Optional<User> currentUser = userService.findByUserName(userName);
-        if (!currentUser.isPresent()) {
+        if (currentUser.isEmpty()) {
             logger.info("Unable to delete. User with username '{}' not found.", userName);
             throw new ResourceNotFoundException("User", "username", userName);
         } 
@@ -146,20 +145,20 @@ public class UserControllerSecuredREST {
         return userName;
     }
     
-    @DeleteMapping(("/delete/id/{userId}"))
+    @DeleteMapping(("/delete/id/{userExtId}"))
     @PreAuthorize("hasRole('USER')")
     @ResponseStatus(HttpStatus.OK)
-    public Long deleteUserById(@PathVariable("userId") long userId) {
-        logger.info("Fetching & Deleting User with userID {} via REST api.", userId);
+    public String deleteUserById(@PathVariable("userId") String userExtId) {
+        logger.info("Fetching & Deleting User with userID {} via REST api.", userExtId);
   
-        Optional<User> user = userService.findById(userId);
-        if (!user.isPresent()) {
-            logger.info("Unable to delete. User with ID='{}' not found.", userId);
-            throw new ResourceNotFoundException("User", "userId", userId);
+        Optional<User> user = userService.findByExtId(userExtId);
+        if (user.isEmpty()) {
+            logger.info("Unable to delete. User with ID='{}' not found.", userExtId);
+            throw new ResourceNotFoundException("User", "userId", userExtId);
         } 
   
         userService.deleteUserById(user.get().getId());
-        return userId;
+        return userExtId;
     }
     
     
@@ -189,12 +188,12 @@ public class UserControllerSecuredREST {
     /**
      * REST logout by userID
      * 
-     * @param userId
+     * @param userExtId
      * @return
      */
-    @GetMapping("/logout/{userId}")
-    public boolean logoutByUserId(@PathVariable("userId") long userId) {
-        Optional<User> user = userService.findById(userId);
+    @GetMapping("/logout/{userExtId}")
+    public boolean logoutByUserId(@PathVariable("userExtId") String userExtId) {
+        Optional<User> user = userService.findByExtId(userExtId);
         if (user.isPresent()) {
             userSecurityService.logout(user.get().getUserName());
             return true;

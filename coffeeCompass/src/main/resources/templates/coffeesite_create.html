@@ -17,13 +17,13 @@
 	<div id="inputForm" class="w3-margin-top w3-card-4 w3-display-topmiddle">
 
       <form th:object="${coffeeSite}" action="#" th:action="@{/createModifySite}" method="post" class="w3-container w3-round-large w3-light-gray">
-        <input th:type="hidden" name="id" th:field="${coffeeSite.externalId}" />
+        <input th:type="hidden" name="id" th:field="${coffeeSite.extId}" />
         <input th:type="hidden" name="originalUserName" th:field="${coffeeSite.originalUserName}" />
         <input th:type="hidden" name="recordStatus" th:field="${coffeeSite.recordStatus.status}" />
         
         <div class="w3-light-grey w3-margin-bottom w3-center">
-     	   <h2  th:if="${coffeeSite.externalId != null}" th:text="#{site.modify-site.label}" class="w3-center">Modify</h2>
-     	   <h2  th:if="${coffeeSite.externalId == null}" th:text="#{site.create-new-site.label}" class="w3-center">Create label</h2>
+     	   <h2  th:if="${coffeeSite.extId != null}" th:text="#{site.modify-site.label}" class="w3-center">Modify</h2>
+     	   <h2  th:if="${coffeeSite.extId == null}" th:text="#{site.create-new-site.label}" class="w3-center">Create label</h2>
      	</div>
      	
      	<div th:if="${param.success}" class="w3-gray w3-display-container w3-round w3-panel">
@@ -186,36 +186,36 @@
           
 	          <div class="w3-container w3-cell w3-border w3-round">
 	            <label class="w3-center" for="typPodniku" th:text="#{site.type}" style="font-weight: bold">Type of podnik</label>
-	            <select th:field="*{typPodniku.id}" class="w3-select">
+	            <select th:field="*{typPodniku.extId}" class="w3-select">
 	            <option th:each="siteType : ${allCoffeeSiteTypes}" 
-	                    th:value="${siteType.id}"
+	                    th:value="${siteType.extId}"
 	                    th:text="${siteType}">Type of podnik</option>
 	            </select>
 	          </div>
 	          
 	          <div class="w3-container w3-cell w3-border w3-round">
 	            <label class="w3-center" for="statusZarizeni" th:text="#{site.siteStatus}" style="font-weight: bold">Site status</label>
-	            <select th:field="*{statusZarizeni.id}" class="w3-select">
+	            <select th:field="*{statusZarizeni.extId}" class="w3-select">
 	            <option th:each="status : ${allSiteStatuses}" 
-	                    th:value="${status.id}"
+	                    th:value="${status.extId}"
 	                    th:text="${status}">Site status</option>
 	            </select>
 	          </div>
 	          
 	          <div class="w3-container w3-cell w3-border w3-round">
 	            <label class="w3-center" for="cena" th:text="#{site.pricerange}" style="font-weight: bold">Price range</label>
-	            <select th:field="*{cena.id}" class="w3-select">
+	            <select th:field="*{cena.extId}" class="w3-select">
 	            <option th:each="price : ${allPriceRanges}" 
-	                    th:value="${price.id}"
+	                    th:value="${price.extId}"
 	                    th:text="${price}">Price range</option>
 	            </select>
 	          </div>
 	          
 	          <div class="w3-container w3-cell w3-border w3-round">
 	            <label class="w3-center" for="typLokality" th:text="#{site.locationtype}" style="font-weight: bold">Location type</label>
-	            <select th:field="*{typLokality.id}" class="w3-select">
+	            <select th:field="*{typLokality.extId}" class="w3-select">
 	            <option th:each="locType : ${allLocationTypes}" 
-	                    th:value="${locType.id}"
+	                    th:value="${locType.extId}"
 	                    th:text="${locType}">Location type</option>
 	            </select>
 	          </div>
@@ -228,11 +228,11 @@
 	          <div class="w3-container w3-cell w3-border w3-round" th:classappend="${#fields.hasErrors('otherOffers')} ? 'has-error':''">
 	            <label class="w3-center" th:text="#{site.otherOffers}" style="font-weight: bold">Other offers</label>
 	            <ul>
-	              <li th:each="offer : ${allOffers}">
+	              <li th:each="otherOffer : ${allOffers}">
 	                <input type="checkbox" class="w3-check"
 	                       th:field="*{otherOffers}"
-	                       th:value="${offer}" />
-	                <label th:for="${offer.id}" th:text="${offer}">Other offers</label>
+	                       th:value="${otherOffer}" />
+	                <label th:for="${extId}" th:text="${otherOffer}">Other offers</label>
 	              </li>
 	            </ul>
 	            <p class="error-message"
@@ -247,7 +247,7 @@
 	                <input type="checkbox" class="w3-check"
 	                       th:field="*{coffeeSorts}"
 	                       th:value="${coffeeSort}" />
-	                <label th:for="${coffeeSort.id}" th:text="${coffeeSort}">Coffee sorts</label>
+	                <label th:for="${extId}" th:text="${coffeeSort}">Coffee sorts</label>
 	              </li>
 	            </ul>
 	          </div>
@@ -259,7 +259,7 @@
 	                <input type="checkbox" class="w3-check"
 	                       th:field="*{nextToMachineTypes}"
 	                       th:value="${ntmt}" />
-	                <label th:for="${ntmt.id}" th:text="${ntmt}">Next to machine type</label>
+	                <label th:for="${extId}" th:text="${ntmt}">Next to machine type</label>
 	              </li>
 	              
 	            </ul>
@@ -272,7 +272,7 @@
 	                  <input type="checkbox" class="w3-check"
 	                    	 th:field="*{cupTypes}"
 	                	     th:value="${cupType}" />
-	                  <label th:for="${cupType.id}" th:text="${cupType}">Cup types</label>
+	                  <label th:for="${extId}" th:text="${cupType}">Cup types</label>
 	               </li>
 	             </ul>
 	          </div>
@@ -292,12 +292,12 @@
     
     	  <div class="w3-bar w3-margin-top">
 	          <div class="w3-bar-item">
-	             <button type="submit" name="save" th:text="(${coffeeSite.externalId} == 0) ? #{site.button.create} : #{site.button.update}" class="w3-button w3-blue w3-round">Save/Modify Coffee site</button>    
+	             <button type="submit" name="save" th:text="(${coffeeSite.extId} == 0) ? #{site.button.create} : #{site.button.update}" class="w3-button w3-blue w3-round">Save/Modify Coffee site</button>
 	          </div>
 	          
 	          <div class="w3-bar-item">
-	          	 <a  th:if="${coffeeSite.externalId != null}" th:href="@{'/showSite/' + ${coffeeSite.externalId}}" th:text="#{site.edit.cancel}" class="w3-button">Cancel update site</a>
-	          	 <a  th:if="${coffeeSite.externalId == null}" th:href="@{'/home'}" th:text="#{site.edit.cancel}" class="w3-button">Cancel creation of the site</a>
+	          	 <a  th:if="${coffeeSite.extId != null}" th:href="@{'/showSite/' + ${coffeeSite.extId}}" th:text="#{site.edit.cancel}" class="w3-button">Cancel update site</a>
+	          	 <a  th:if="${coffeeSite.extId == null}" th:href="@{'/home'}" th:text="#{site.edit.cancel}" class="w3-button">Cancel creation of the site</a>
 		      </div>
 		      
 		      <div class="w3-bar-item w3-text-gray w3-margin-top w3-right">

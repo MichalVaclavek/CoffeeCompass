@@ -2,6 +2,8 @@ package cz.fungisoft.coffeecompass.controller.models;
 
 import lombok.Data;
 
+import java.util.UUID;
+
 /**
  * Class to hold data needed in Form where user is requested to confirm<br>
  * his/her user account.
@@ -12,7 +14,7 @@ import lombok.Data;
 @Data
 public class DeleteUserAccountModel {
 
-    private Long userId;
+    private UUID userId;
     
     private String userName;
     

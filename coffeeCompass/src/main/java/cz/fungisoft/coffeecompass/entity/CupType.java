@@ -18,7 +18,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Entity
 @Table(name="typ_kelimku", schema="coffeecompass")
-public class CupType {
+public class CupType extends BaseEntity {
 
     public enum CupTypeEnum implements Serializable {
         PLASTIC("plastový"),
@@ -36,10 +36,9 @@ public class CupType {
         }         
     }
     
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Integer longId;
     
     @NotNull
     @Column(name="typ_kelimku", length=45, unique=true, nullable=false)
@@ -62,7 +61,7 @@ public class CupType {
         } else if (!cupType.equals(other.cupType))
             return false;
         
-        return Objects.equals(id, other.id);
+        return Objects.equals(longId, other.longId);
     }
 
     
@@ -71,7 +70,7 @@ public class CupType {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((cupType == null) ? 0 : cupType.hashCode());
-        result = prime * result + id;
+        result = prime * result + longId;
         return result;
     }
     

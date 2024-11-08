@@ -26,6 +26,9 @@
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
 		<org.lombok.version>1.18.30</org.lombok.version>
 		<spring-cloud.version>2022.0.4</spring-cloud.version>
+
+		<!-- The main class to start by executing "java -jar" -->
+		<start-class>cz.fungisoft.coffeecompass.CoffeeCompassApplication</start-class>
 	</properties>
 
 	<dependencyManagement>
@@ -225,7 +228,6 @@
 		<dependency>
 			<groupId>io.github.openfeign</groupId>
 			<artifactId>feign-httpclient</artifactId>
-<!--			<version>9.4.0</version>-->
 		</dependency>
 
 		<!--	Test Dependencies	- for Integration tests using Postgre SQL DB within Docker container-->
@@ -252,8 +254,6 @@
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
-<!--			<version>5.9.2</version>-->
-<!--			<scope>test</scope>-->
 		</dependency>
 		
 		<dependency>
@@ -319,15 +319,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-test</artifactId>
-		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.junit.jupiter</groupId>-->
-<!--			<artifactId>junit-jupiter-api</artifactId>-->
-<!--		</dependency>-->
-
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
 		</dependency>
 
 		<dependency>

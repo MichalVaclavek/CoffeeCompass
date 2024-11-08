@@ -2,6 +2,7 @@ package cz.fungisoft.coffeecompass.dto;
 
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
@@ -11,8 +12,9 @@ import java.io.Serializable;
  *
  * @author Michal Václavek
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class ImageDTO implements Serializable {
+public class ImageDTO extends BaseItem implements Serializable {
 
 	private MultipartFile file;
 

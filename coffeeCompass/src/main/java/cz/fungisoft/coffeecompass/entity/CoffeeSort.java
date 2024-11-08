@@ -6,8 +6,6 @@ package cz.fungisoft.coffeecompass.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -23,12 +21,11 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Entity
 @Table(name="druhy_kavy", schema="coffeecompass")
-public class CoffeeSort {
+public class CoffeeSort extends BaseEntity {
 
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Integer longId;
     
     @NotNull
     @Column(name = "druh_kavy", unique=true)
@@ -59,7 +56,7 @@ public class CoffeeSort {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((coffeeSort == null) ? 0 : coffeeSort.hashCode());
-        result = (int) (prime * result + id);
+        result = (int) (prime * result + longId);
         return result;
     }
 
@@ -81,7 +78,7 @@ public class CoffeeSort {
         } else if (!coffeeSort.equals(other.coffeeSort))
             return false;
         
-        return (Objects.equals(id, other.id));
+        return (Objects.equals(longId, other.longId));
     }
 
     @Override

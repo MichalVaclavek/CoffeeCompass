@@ -6,8 +6,6 @@ package cz.fungisoft.coffeecompass.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.io.Serializable;
 
@@ -21,7 +19,7 @@ import java.io.Serializable;
 @RequiredArgsConstructor
 @Entity
 @Table(name="dalsi_automat_vedle_type", schema="coffeecompass")
-public class NextToMachineType {
+public class NextToMachineType extends BaseEntity {
 
     /* INNER STATIC CLASS */
     public enum NextToMachineTypeEnum implements Serializable {
@@ -42,10 +40,9 @@ public class NextToMachineType {
     }
     
 
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Integer longId;
     
     @NotNull
     @Column(name="druh_automatu", length=45, unique=true, nullable=false)
@@ -61,7 +58,7 @@ public class NextToMachineType {
             return false;
         
         NextToMachineType other = (NextToMachineType) obj;
-        if (id != other.id)
+        if (longId != other.longId)
             return false;
         
         if (type == null)
@@ -74,7 +71,7 @@ public class NextToMachineType {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + id; // id ve vypoctu hashCode() ovlivnuje vyhodnoceni assertThat().equals pri testech
+        result = prime * result + longId; // id ve vypoctu hashCode() ovlivnuje vyhodnoceni assertThat().equals pri testech
         // repository. Prestoze id i type jsou shodne, tak pokud je jich vice v Set<NextToMachineType>
         // AssertThat. .. equal() vyhodnoti 2 takove Sety jako false
         result = prime * result + ((type == null) ? 0 : type.hashCode());

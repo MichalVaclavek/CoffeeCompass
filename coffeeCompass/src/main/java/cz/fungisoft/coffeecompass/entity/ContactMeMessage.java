@@ -23,12 +23,12 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Entity
 @Table(name="contact_me_message", schema="coffeecompass")
-public class ContactMeMessage implements Serializable {
+public class ContactMeMessage extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = -2996183922875213246L;
 
-	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Integer longId;
 	
     @Column(name="author_name", length = 50, nullable = false)
     private String authorName;
@@ -48,7 +48,7 @@ public class ContactMeMessage implements Serializable {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         ContactMeMessage that = (ContactMeMessage) o;
-        return id != null && Objects.equals(id, that.id);
+        return longId != null && Objects.equals(longId, that.longId);
     }
 
     @Override

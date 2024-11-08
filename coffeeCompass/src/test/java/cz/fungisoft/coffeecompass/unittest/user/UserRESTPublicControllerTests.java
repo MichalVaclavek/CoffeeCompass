@@ -7,8 +7,6 @@ import cz.fungisoft.coffeecompass.entity.RefreshToken;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.listeners.OnRegistrationCompleteEvent;
-import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
-import cz.fungisoft.coffeecompass.service.*;
 import cz.fungisoft.coffeecompass.service.tokens.RefreshTokenService;
 import cz.fungisoft.coffeecompass.service.tokens.TokenCreateAndSendEmailService;
 import cz.fungisoft.coffeecompass.service.tokens.TokenService;
@@ -23,13 +21,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -160,7 +155,7 @@ class UserRESTPublicControllerTests {
         admin.setUserName("admin");
         admin.setPassword("adminpassword");
         admin.setEmail("admin@boss.com");
-        admin.setId(1L);
+        admin.setLongId(1L);
         admin.setCreatedOn(LocalDateTime.now());
         admin.setUserProfiles(userProfilesADMIN);
        
@@ -197,7 +192,7 @@ class UserRESTPublicControllerTests {
         john.setUserName("john");
         john.setPassword("johnpassword");
         john.setEmail("john@vonneuman4.com");
-        john.setId(1L);
+        john.setLongId(1L);
         
         john.setCreatedOn(LocalDateTime.now());
         john.setUserProfiles(userProfiles);

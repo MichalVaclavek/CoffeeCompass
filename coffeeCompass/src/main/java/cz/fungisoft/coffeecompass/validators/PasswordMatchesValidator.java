@@ -25,12 +25,10 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
         boolean result = true;
         String errorMessageKey = "";
         
-        if (obj instanceof UserDTO) {
-            UserDTO user = (UserDTO) obj;
+        if (obj instanceof UserDTO user) {
             result = user.getPassword().equals(user.getConfirmPassword());
         }
-        if (obj instanceof NewPasswordInputModel) {
-            NewPasswordInputModel changePasswd = (NewPasswordInputModel) obj;
+        if (obj instanceof NewPasswordInputModel changePasswd) {
             result = changePasswd.getNewPassword().equals(changePasswd.getConfirmPassword());
         }
         

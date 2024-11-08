@@ -18,7 +18,6 @@ import cz.fungisoft.coffeecompass.service.StatisticsInfoService;
  */
 @Tag(name = "Basic pages", description = "Home page")
 @RestController
-//@RequestMapping("/rest")
 @RequestMapping("${site.coffeesites.baseurlpath.rest}")
 public class BasicControllerREST {
 

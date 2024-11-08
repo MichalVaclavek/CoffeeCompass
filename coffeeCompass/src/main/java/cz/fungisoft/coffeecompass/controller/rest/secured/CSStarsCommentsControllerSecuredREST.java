@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.controller.rest.secured;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import jakarta.validation.Valid;
@@ -45,7 +46,6 @@ import cz.fungisoft.coffeecompass.service.comment.ICommentService;
  */
 @Tag(name = "RatingAndComments", description = "Coffee site's rating and comments")
 @RestController 
-//@RequestMapping("/rest/secured/starsAndComments")
 @RequestMapping("${site.coffeesites.baseurlpath.rest}" + "/secured/starsAndComments")
 public class CSStarsCommentsControllerSecuredREST {
     
@@ -81,7 +81,7 @@ public class CSStarsCommentsControllerSecuredREST {
      * Returns list of comments belonging to this coffeeSite id
      * 
      * @param starsAndComment
-     * @param coffeeSiteId CoffeeSite id to which the StarsAndCommentModel belongs to
+     * @param coffeeSiteExtId CoffeeSite id to which the StarsAndCommentModel belongs to
      * 
      * @return list of comments belonging to this coffeeSitie id
      */
@@ -200,7 +200,7 @@ public class CSStarsCommentsControllerSecuredREST {
                 updatedComment = commentsService.updateComment(commentDTO);
                 
                 if (updatedComment != null) {
-                    commentToReturn = commentsService.getByIdToTransfer(updatedComment.getId());
+                    commentToReturn = commentsService.getByExtIdToTransfer(updatedComment.getLongId().toString());
                     LOG.info("Comment updated for CoffeeSite id {}, from User id {}.", commentDTO.getCoffeeSiteId(), commentDTO.getUserId());
                 }
             } catch (Exception ex) {
@@ -286,7 +286,7 @@ public class CSStarsCommentsControllerSecuredREST {
      * 
      * @param numOfStars
      * @param coffeeSiteExtId
-     * @param userId
+     * @param userExtId
      * 
      * @return 
      */
@@ -294,11 +294,11 @@ public class CSStarsCommentsControllerSecuredREST {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Integer> updateStarsForCoffeeSiteAndUser(@PathVariable(value="numOfStars") int numOfStars,
                                                                    @PathVariable(value="coffeeSiteExtId") String coffeeSiteExtId,
-                                                                   @PathVariable(value="userId") Long userId) {
+                                                                   @PathVariable(value="userExtId") String userExtId) {
         // Save updated Stars if not null
         if (numOfStars >= StarsQualityDescription.StarsQualityEnum.ONE.ordinal() + 1
                && numOfStars <= StarsQualityDescription.StarsQualityEnum.FIVE.ordinal() + 1) {
-            StarsForCoffeeSiteAndUser starsForCoffeeSiteAndUser = starsForCoffeeSiteService.updateStarsForCoffeeSiteAndUser(coffeeSiteExtId, userId, numOfStars);
+            StarsForCoffeeSiteAndUser starsForCoffeeSiteAndUser = starsForCoffeeSiteService.updateStarsForCoffeeSiteAndUser(coffeeSiteExtId, userExtId, numOfStars);
             
             return (starsForCoffeeSiteAndUser != null) ? new ResponseEntity<>(starsForCoffeeSiteAndUser.getStars().getNumOfStars(), HttpStatus.OK)
                                                        : new ResponseEntity<>(0, HttpStatus.BAD_REQUEST);
@@ -312,18 +312,18 @@ public class CSStarsCommentsControllerSecuredREST {
      * Muze byt volano pouze ADMINEM nebo prihlasenym autorem hodnoceni s roli USER.<br>
      * Vrati aktualni pocet Comments pro coffee site, ke kteremu patril smazany komentar.<br>
      * 
-     * @param commentId id of the Comment to be deleted
+     * @param commentExtId id of the Comment to be deleted
      * @return number of Comments of the coffeeSite where the deleted comment belonged to
      */
     @DeleteMapping("/deleteComment/{commentId}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<Integer> deleteCommentAndStarsForSite(@PathVariable("commentId") Long commentId) {
+    public ResponseEntity<Integer> deleteCommentAndStarsForSite(@PathVariable("commentExtId") String commentExtId) {
         
-        Long siteId;
-        siteId = commentsService.deleteCommentById(commentId);
+        UUID siteId;
+        siteId = commentsService.deleteCommentByExtId(commentExtId);
         
         if (siteId == null) {
-            throw new ResourceNotFoundException("Comment", "commentId", commentId);
+            throw new ResourceNotFoundException("Comment", "commentId", commentExtId);
         }
         Integer commentsNumber = commentsService.getNumberOfCommentsForSiteId(siteId);
         

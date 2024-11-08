@@ -80,7 +80,7 @@ map.insertSites = function(mAllSites) {
 		// vytvoreni markeru pro kazdy site
 		allSites.forEach(function(site) {
 			// prirazeni id jednotlivemu markeru - vlastni id, jinak se generuje nahodne
-            var znacka = L.marker(L.latLng(site.zemSirka, site.zemDelka), {icon: siteIcon, alt: site.externalId})
+            var znacka = L.marker(L.latLng(site.zemSirka, site.zemDelka), {icon: siteIcon, alt: site.id})
                           .bindPopup(createMarkerPopups(site))
                           .addTo(mapa);
             znacka.on('click', onMarkerClick);
@@ -96,7 +96,7 @@ function onMarkerClick(e) {
 
     // zobrazit data o lokaci v tab. - parovani vybraneho markeru pomoci jeho id a nasich vstupnich dat
     for (var i = 0; i < markers.length; i++) {
-        if (allSites[i].externalId == markerSiteExtId) {
+        if (allSites[i].id == markerSiteExtId) {
             if (previousMarker) {
               previousMarker.setIcon(siteIcon);
             }
@@ -128,7 +128,7 @@ createMarkerPopups = function(site) {
 
     // Inserts link to CoffeeSite details page
     var footerText = "<a href='" + base_url + "/showSite/";
-    footerText += site.externalId + "'>Další detaily ...</a>";
+    footerText += site.id + "'>Další detaily ...</a>";
 
     var popupText = headerText + textVizitka + footerText;
     return popupText;
@@ -183,7 +183,7 @@ fillInListOfImages = function(site) {
     // call images API to get all imageFiles for given site and fill in the list of images using URLs of the images
     var xhr = new XMLHttpRequest();
     var imagesApiUrl = window.location.href;
-    imagesApiUrl = imagesApiUrl.replace("allSitesInMap", 'api/v1/images/object/' + site.externalId);
+    imagesApiUrl = imagesApiUrl.replace("allSitesInMap", 'api/v1/images/object/' + site.id);
 
     xhr.open('GET', imagesApiUrl, true);
     xhr.onload = function () {

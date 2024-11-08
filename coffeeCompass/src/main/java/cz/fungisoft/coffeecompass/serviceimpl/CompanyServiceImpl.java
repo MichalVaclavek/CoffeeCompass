@@ -49,7 +49,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public Company saveCompany(String companyName) {
         Company company = new Company();
-        company.setId(0);
+        company.setLongId(0);
         company.setNameOfCompany(companyName);
         return companyRepo.saveAndFlush(company);
     }

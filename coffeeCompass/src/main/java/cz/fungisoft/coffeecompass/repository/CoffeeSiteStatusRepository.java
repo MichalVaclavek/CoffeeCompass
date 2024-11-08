@@ -11,12 +11,13 @@ import org.springframework.data.jpa.repository.QueryHints;
 
 import jakarta.persistence.QueryHint;
 
+import java.util.UUID;
+
 /**
  * @author Michal Vaclavek
  */
-public interface CoffeeSiteStatusRepository extends JpaRepository<CoffeeSiteStatus, Integer> {
+public interface CoffeeSiteStatusRepository extends JpaRepository<CoffeeSiteStatus, UUID> {
 
-//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select css from CoffeeSiteStatus css where status=?1")
     CoffeeSiteStatus searchByName(String status);
 }

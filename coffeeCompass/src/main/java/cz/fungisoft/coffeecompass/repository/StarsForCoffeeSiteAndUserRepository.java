@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.QueryHints;
 
 import jakarta.persistence.QueryHint;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -15,24 +16,21 @@ import java.util.UUID;
  * 
  * @author Michal Vaclavek
  */
-public interface StarsForCoffeeSiteAndUserRepository extends JpaRepository<StarsForCoffeeSiteAndUser, Integer> {
-
-    @Query("select stcsu from StarsForCoffeeSiteAndUser stcsu where coffeeSite.externalId=?1 and user.id=?2")
-    StarsForCoffeeSiteAndUser getOneStarEvalForSiteAndUser(UUID coffeeSiteExtId, Long userID);
+public interface StarsForCoffeeSiteAndUserRepository extends JpaRepository<StarsForCoffeeSiteAndUser, UUID> {
 
     @Query("select stcsu from StarsForCoffeeSiteAndUser stcsu where coffeeSite.id=?1 and user.id=?2")
-    StarsForCoffeeSiteAndUser getOneStarEvalForSiteAndUser(Long coffeeSiteId, Long userID);
+    Optional<StarsForCoffeeSiteAndUser> getOneStarEvalForSiteAndUser(UUID coffeeSiteId, UUID userID);
+
+//    @Query("select avg(stars.numOfStars) from StarsForCoffeeSiteAndUser stcsu where coffeeSite.id=?1")
+//    double averageStarsForSiteExternalId(UUID coffeeSiteID);
 
     @Query("select avg(stars.numOfStars) from StarsForCoffeeSiteAndUser stcsu where coffeeSite.id=?1")
-    double averageStarsForSiteExternalId(Long coffeeSiteID);
-
-    @Query("select avg(stars.numOfStars) from StarsForCoffeeSiteAndUser stcsu where coffeeSite.externalId=?1")
     double averageStarsForSiteExternalId(UUID coffeeSiteExtId);
 
-    @Query("select count(*) from StarsForCoffeeSiteAndUser stcsu where coffeeSite.id=?1")
-    int getNumOfHodnoceniForSite(Long coffeeSiteID);
+//    @Query("select count(*) from StarsForCoffeeSiteAndUser stcsu where coffeeSite.id=?1")
+//    int getNumOfHodnoceniForSite(Long coffeeSiteID);
 
-    @Query("select count(*) from StarsForCoffeeSiteAndUser stcsu where coffeeSite.externalId=?1")
+    @Query("select count(*) from StarsForCoffeeSiteAndUser stcsu where coffeeSite.id=?1")
     int getNumOfHodnoceniForSite(UUID coffeeSiteExtId);
     
     /**
@@ -41,11 +39,11 @@ public interface StarsForCoffeeSiteAndUserRepository extends JpaRepository<Stars
      * @return
      */
     @Query("select avg(stars.numOfStars) from StarsForCoffeeSiteAndUser stcsu where user.id=?1")
-    double averageStarsForUserID(Long userID);
+    double averageStarsForUserID(UUID userID);
     
     /**
      * Deletes stars evaluation of one User for one CoffeeSite
      */
     @Query("delete StarsForCoffeeSiteAndUser where coffeeSite.id=?1 and user.id=?1")
-    void deleteStarsForSiteAndUser(Long coffeeSiteID, Long userID);
+    void deleteStarsForSiteAndUser(UUID coffeeSiteID, UUID userID);
 }

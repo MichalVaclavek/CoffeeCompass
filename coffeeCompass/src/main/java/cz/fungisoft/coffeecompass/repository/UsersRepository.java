@@ -1,6 +1,7 @@
 package cz.fungisoft.coffeecompass.repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,13 +14,11 @@ import jakarta.persistence.QueryHint;
 /**
  * JpaRepository<User, Long> - Long znamena ze primarni klic pro User je typu Long
  */
-public interface UsersRepository extends JpaRepository<User, Long>, UsersRepositoryCustom {
+public interface UsersRepository extends JpaRepository<User, UUID>, UsersRepositoryCustom {
 
-//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select u from User u where userName= ?1")
     Optional<User> searchByUsername(String userName);
 
-//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select u from User u where email= ?1")
     Optional<User> searchByEmail(String email);
     

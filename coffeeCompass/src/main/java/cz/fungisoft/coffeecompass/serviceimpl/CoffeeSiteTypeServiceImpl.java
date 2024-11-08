@@ -2,6 +2,8 @@ package cz.fungisoft.coffeecompass.serviceimpl;
 
 import java.util.List;
 
+import cz.fungisoft.coffeecompass.dto.CoffeeSiteTypeDTO;
+import cz.fungisoft.coffeecompass.mappers.CoffeeSiteTypeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -15,11 +17,14 @@ import cz.fungisoft.coffeecompass.service.CoffeeSiteTypeService;
 public class CoffeeSiteTypeServiceImpl implements CoffeeSiteTypeService {
 
     private final CoffeeSiteTypeRepository coffeeSiteTypeRepo;
+
+    private final CoffeeSiteTypeMapper coffeeSiteTypeMapper;
     
     @Autowired
-    public CoffeeSiteTypeServiceImpl(CoffeeSiteTypeRepository coffeeSiteTypeRepo) {
+    public CoffeeSiteTypeServiceImpl(CoffeeSiteTypeRepository coffeeSiteTypeRepo, CoffeeSiteTypeMapper coffeeSiteTypeMapper) {
         super();
         this.coffeeSiteTypeRepo = coffeeSiteTypeRepo;
+        this.coffeeSiteTypeMapper = coffeeSiteTypeMapper;
     }
 
     @Cacheable(cacheNames = "coffeeSiteTypesCache")
@@ -32,7 +37,7 @@ public class CoffeeSiteTypeServiceImpl implements CoffeeSiteTypeService {
     @Cacheable(cacheNames = "coffeeSiteTypesCache")
     @Override
     @Transactional
-    public List<CoffeeSiteType> getAllCoffeeSiteTypes() {
-        return coffeeSiteTypeRepo.findAll();
+    public List<CoffeeSiteTypeDTO> getAllCoffeeSiteTypes() {
+        return coffeeSiteTypeRepo.findAll().stream().map(coffeeSiteTypeMapper::coffeeSiteTypeToCoffeeSiteTypeDto).toList();
     }
 }

@@ -100,7 +100,7 @@ public class RegistrationController {
             // If email confirmed by already logged-in user, then go to home page
             // Default go to login page, after e-mail confirm success, but first log-out user if it is different from new user, whio confirmed email
             if (loggedInUser.isPresent()) {
-                if (loggedInUser.get().getId().equals(newUser.getId())) {
+                if (loggedInUser.get().getLongId().equals(newUser.getLongId())) {
                    return REDIRECT_HOME_VIEW;
                 } else { // new user is different from current logged-in user - logout current user
                     userSecurityService.logout();
@@ -170,8 +170,8 @@ public class RegistrationController {
             
             Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
             
-            if (loggedInUser.isPresent() && loggedInUser.get().getId() != null
-                && loggedInUser.get().getId().equals(user.getId())) {
+            if (loggedInUser.isPresent() && loggedInUser.get().getLongId() != null
+                && loggedInUser.get().getLongId().equals(user.getLongId())) {
                 mav.setViewName(REDIRECT_HOME_VIEW);
             } 
         } catch (Exception me) {

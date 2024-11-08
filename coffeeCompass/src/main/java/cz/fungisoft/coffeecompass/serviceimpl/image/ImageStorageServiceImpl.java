@@ -1,6 +1,5 @@
 package cz.fungisoft.coffeecompass.serviceimpl.image;
 
-import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.serviceimpl.CoffeeSiteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +22,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 import jakarta.transaction.Transactional;
@@ -46,7 +46,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
 
     /**
      * Base part of the CoffeeSite's image URL, loaded from ConfigProperties.<br>
-     * Complete URL of the image is provided by {@link CoffeeSiteServiceImpl#getMainImageURL(CoffeeSiteDTO)}.
+     * Complete URL of the image is provided by {@link CoffeeSiteServiceImpl#getMainImageURL(CoffeeSite)} (CoffeeSiteDTO)}.
      * as it can be build using current html request URI and current requsted CoffeeSite id.
      */
     private String baseImageURLPath;
@@ -129,18 +129,17 @@ public class ImageStorageServiceImpl implements ImageStorageService {
      */
     @Override
     @Transactional
-    public Integer storeImageFile(Image image, MultipartFile file, Long siteID, boolean resize) {
-        
+    public UUID storeImageFile(Image image, MultipartFile file, UUID siteID, boolean resize) {
         AtomicReference<Image> atomicImage = new AtomicReference<>(image);
 
-        coffeeSiteService.findOneById(siteID).ifPresent(cs -> {
+        coffeeSiteService.findOneByExternalId(siteID).ifPresent(cs -> {
             try {
                 // Check if there is already image assigned to the CS. If yes, delete the old image first
                 Optional.ofNullable(imageRepo.getImageForSite(siteID))
                         .ifPresent(imageRepo::delete);
                 atomicImage.get().setImageBytes(file.getBytes());
                 atomicImage.get().setFile(file);
-                atomicImage.get().setCoffeeSiteID(cs.getId());
+                atomicImage.get().setCoffeeSiteId(cs.getId());
                 atomicImage.get().setSavedOn(LocalDateTime.now());
             } catch (IOException e) {
                 log.warn("Error during creating Image object. File name: {}. CoffeeSite name: {}. Exception: {}", atomicImage.get().getFileName(), cs.getSiteName(), e.getMessage());
@@ -159,7 +158,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
             log.info("Image saved. File name: {}. CoffeeSite name: {}", image.getFileName(), cs.getSiteName());
         });
 
-        return atomicImage.get() == null ? 0 : atomicImage.get().getId();
+        return atomicImage.get().getId();
     }
     
     /**
@@ -167,10 +166,9 @@ public class ImageStorageServiceImpl implements ImageStorageService {
      */
     @Override
     @Transactional
-    public Integer storeImageFile(MultipartFile file, Long siteID, boolean resize) {
-        
+    public UUID storeImageFile(MultipartFile file, UUID siteID, boolean resize) {
         AtomicReference<Image> atomicImage = new AtomicReference<>(null);
-        coffeeSiteService.findOneById(siteID).ifPresent(cs -> {
+        coffeeSiteService.findOneByExternalId(siteID).ifPresent(cs -> {
             // Check if there is already image assigned to the CS. If yes, delete the old image first
             Optional.ofNullable(imageRepo.getImageForSite(siteID))
                     .ifPresent(imageRepo::delete);
@@ -178,7 +176,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
             try {
                 image.setImageBytes(file.getBytes());
                 image.setFile(file);
-                image.setCoffeeSiteID(cs.getId());
+                image.setCoffeeSiteId(cs.getId());
                 image.setSavedOn(LocalDateTime.now());
             } catch (IOException e) {
                 log.warn("Error during creating Image object. File name: {}. CoffeeSite name: {}. Exception: {}", image.getFileName(), cs.getSiteName(), e.getMessage());
@@ -197,7 +195,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
             }
         });
 
-        return atomicImage.get() == null ? 0 : atomicImage.get().getId();
+        return atomicImage.get().getId();
 }
     
     /**
@@ -216,19 +214,19 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     }
     
     @Override
-    public String getImageAsBase64ForSiteId(Long siteID) {
-        return convertImageToBase64(imageRepo.getImageForSite(siteID));
-    }
-
-    @Override
-    public byte[] getImageAsBytesForSiteId(Long siteId) {
-        Image image = getImageForSiteId(siteId);
-        return (image != null) ? image.getImageBytes() : null;
+    public String getImageAsBase64ForSiteId(String siteID) {
+        return convertImageToBase64(imageRepo.getImageForSite(UUID.fromString(siteID)));
     }
 
     @Override
     public Optional<byte[]> getImageAsBytesForSiteExternalId(String siteExternalId) {
         return coffeeSiteService.findOneByExternalId(siteExternalId).map(CoffeeSite::getId).map(this::getImageAsBytesForSiteId);
+    }
+
+    @Override
+    public byte[] getImageAsBytesForSiteId(UUID siteId) {
+        Image image = getImageForSiteId(siteId);
+        return (image != null) ? image.getImageBytes() : null;
     }
     
     /**
@@ -252,8 +250,8 @@ public class ImageStorageServiceImpl implements ImageStorageService {
      */
     @Transactional
     @Override
-    public Long deleteSiteImageById(Integer imageId) {
-        Long siteId = 0L;
+    public String deleteSiteImageById(UUID imageId) {
+        UUID siteId;
         try {
             siteId = imageRepo.getSiteIdForImage(imageId);
             imageRepo.deleteById(imageId);
@@ -262,14 +260,14 @@ public class ImageStorageServiceImpl implements ImageStorageService {
             throw ex;
         }
         log.info("Image id {} deleted for CoffeeSite id: {}", imageId, siteId);
-        return siteId;
+        return siteId.toString();
     }
     
     @Transactional
     @Override
-    public Long deleteSiteImageBySiteId(Long coffeeSiteId) {
+    public String deleteSiteImageBySiteId(String coffeeSiteId) {
         try {
-            imageRepo.deleteBySiteId(coffeeSiteId);
+            imageRepo.deleteBySiteId(UUID.fromString(coffeeSiteId));
         } catch (Exception ex) {
             log.error("Image delete failed for CoffeeSite id: {}", coffeeSiteId);
             throw ex;
@@ -279,27 +277,27 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     }
     
     @Override
-    public Image getImageForSiteId(Long siteId) {
+    public Image getImageForSiteId(UUID siteId) {
         return imageRepo.getImageForSite(siteId);
     }
 
     @Transactional
     @Override
-    public Integer getImageIdForSiteId(Long siteID) {
-        return imageRepo.getImageIdForSiteId(siteID);
+    public UUID getImageIdForSiteId(String siteID) {
+        return imageRepo.getImageIdForSiteId(UUID.fromString(siteID));
     }
 
     @Override
-    public boolean isImageAvailableForSiteId(Long siteId) {
+    public boolean isImageAvailableForSiteId(UUID siteId) {
         return imageRepo.getNumOfImagesForSiteId(siteId) > 0;
     }
 
-    @Override
-    public boolean isImageAvailableForSiteId(String coffeeSiteExtId) {
-        return coffeeSiteService.findOneByExternalId(coffeeSiteExtId)
-                                .map(CoffeeSite::getId)
-                                .map(this::isImageAvailableForSiteId).orElse(false);
-    }
+//    @Override
+//    public boolean isImageAvailableForSiteId(UUID coffeeSiteExtId) {
+//        return coffeeSiteService.findOneByExternalId(coffeeSiteExtId)
+//                                .map(CoffeeSite::getLongId)
+//                                .map(csId -> imageRepo.getNumOfImagesForSiteId(csId) > 0).orElse(false);
+//    }
 
     @Override
     public String getBaseImageURLPath() {

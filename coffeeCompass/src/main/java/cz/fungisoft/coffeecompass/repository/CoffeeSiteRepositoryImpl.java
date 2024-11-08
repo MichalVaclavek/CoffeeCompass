@@ -3,7 +3,6 @@ package cz.fungisoft.coffeecompass.repository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.ParameterMode;
@@ -130,9 +129,9 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
         sites.setParameter(2, delka);
         sites.setParameter(3, rangeMeters);
         
-        sites.setParameter(4, siteStatus.getId());
-        sites.setParameter(5, sort.getId()); 
-        sites.setParameter(6, csRecordStatus.getId()); 
+        sites.setParameter(4, siteStatus.getLongId());
+        sites.setParameter(5, sort.getLongId());
+        sites.setParameter(6, csRecordStatus.getLongId());
         
         return sites.getResultList();
     }
@@ -187,7 +186,7 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
         Query sites = em.createNativeQuery(selectQuery.toString(), CoffeeSite.class);
         
         if (csRecordStatus != null) {
-            sites.setParameter(1, csRecordStatus.getId());
+            sites.setParameter(1, csRecordStatus.getLongId());
         }
         
         sites.setParameter(2, sirka);
@@ -197,10 +196,10 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
         if (cityName != null && cityName.length() > 1) {
             sites.setParameter(5, cityName);
             if (siteStatus != null) {
-                sites.setParameter(6, siteStatus.getId());
+                sites.setParameter(6, siteStatus.getLongId());
             }
         } else if (siteStatus != null) {
-                sites.setParameter(5, siteStatus.getId());
+                sites.setParameter(5, siteStatus.getLongId());
         }
 
         
@@ -227,8 +226,8 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
         sites.setParameter(2, delka);
         sites.setParameter(3, rangeMeters);
         
-        sites.setParameter(4, sort.getId()); 
-        sites.setParameter(5, csRecordStatus.getId()); 
+        sites.setParameter(4, sort.getLongId());
+        sites.setParameter(5, csRecordStatus.getLongId());
         
         return sites.getResultList();
     }
@@ -252,8 +251,8 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
         sites.setParameter(2, delka);
         sites.setParameter(3, rangeMeters);
         
-        sites.setParameter(4, siteStatus.getId());
-        sites.setParameter(5, csRecordStatus.getId()); 
+        sites.setParameter(4, siteStatus.getLongId());
+        sites.setParameter(5, csRecordStatus.getLongId());
         
         return sites.getResultList();
     }
@@ -276,7 +275,7 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
         sites.setParameter(2, delka);
         sites.setParameter(3, rangeMeters);
         
-        sites.setParameter(4, csRecordStatus.getId());
+        sites.setParameter(4, csRecordStatus.getLongId());
         
         return sites.getResultList();
     }
@@ -301,7 +300,7 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
       
         Query sites = em.createNativeQuery(selectQuery, Long.class);
         
-        sites.setParameter(1, csRecordStatus.getId());
+        sites.setParameter(1, csRecordStatus.getLongId());
         
         return (long) sites.getFirstResult();
     }

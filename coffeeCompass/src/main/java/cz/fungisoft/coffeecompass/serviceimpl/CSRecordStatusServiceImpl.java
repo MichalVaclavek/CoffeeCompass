@@ -2,6 +2,8 @@ package cz.fungisoft.coffeecompass.serviceimpl;
 
 import java.util.List;
 
+import cz.fungisoft.coffeecompass.dto.CoffeeSiteRecordStatusDTO;
+import cz.fungisoft.coffeecompass.mappers.CoffeeSiteRecordStatusMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -18,11 +20,14 @@ import cz.fungisoft.coffeecompass.service.CSRecordStatusService;
 public class CSRecordStatusServiceImpl implements CSRecordStatusService {
 
     private final CoffeeSiteRecordStatusRepository csRecordStatusRepo;
+
+    private final CoffeeSiteRecordStatusMapper csRecordStatusMapper;
     
     @Autowired
-    public CSRecordStatusServiceImpl(CoffeeSiteRecordStatusRepository csRecordStatusRepo) {
+    public CSRecordStatusServiceImpl(CoffeeSiteRecordStatusRepository csRecordStatusRepo, CoffeeSiteRecordStatusMapper csRecordStatusMapper) {
         super();
         this.csRecordStatusRepo = csRecordStatusRepo;
+        this.csRecordStatusMapper = csRecordStatusMapper;
     }
 
     @Override
@@ -35,8 +40,8 @@ public class CSRecordStatusServiceImpl implements CSRecordStatusService {
 
     @Override
     @Cacheable(cacheNames = "csRecordStatusesCache")
-    public List<CoffeeSiteRecordStatus> getAllCSRecordStatuses() {
-        return csRecordStatusRepo.findAll();
+    public List<CoffeeSiteRecordStatusDTO> getAllCSRecordStatuses() {
+        return csRecordStatusRepo.findAll().stream().map(csRecordStatusMapper::csRecordStatusToCsRecordStatusDto).toList();
     }
 
     @Override

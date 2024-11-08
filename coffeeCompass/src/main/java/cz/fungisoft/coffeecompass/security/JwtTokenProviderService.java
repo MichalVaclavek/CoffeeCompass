@@ -15,15 +15,9 @@ import cz.fungisoft.coffeecompass.configuration.JwtAndOAuth2Properties;
 import cz.fungisoft.coffeecompass.service.tokens.TokenService;
 
 import javax.crypto.SecretKey;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Date;
 import java.util.Map;
 
-import static io.jsonwebtoken.SignatureAlgorithm.HS256;
 import static java.util.Objects.requireNonNull;
 
 import java.time.LocalDateTime;
@@ -86,14 +80,14 @@ public class JwtTokenProviderService implements Clock, TokenService {
         Date expiryDate = new Date(now.getTime() + jwtPoperties.getJwtAuth().getTokenExpirationSec());
 
         return Jwts.builder()
-                .subject(Long.toString(userPrincipal.getId()))
+                .subject(userPrincipal.getId())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(expiryDate)
                 .signWith(this.secretKey)
                 .compact();
     }
 
-    public Long getUserIdFromToken(String token) {
+    public String getUserIdFromToken(String token) {
         Claims claims = Jwts
                 .parser()
 //                .verifyWith(publicKey)
@@ -101,7 +95,7 @@ public class JwtTokenProviderService implements Clock, TokenService {
                 .parseSignedClaims(token)
                 .getPayload();
 
-        return Long.parseLong(claims.getSubject());
+        return claims.getSubject();
     }
 
     public boolean validateToken(String authToken) {

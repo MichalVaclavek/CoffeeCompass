@@ -12,18 +12,18 @@ import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.validators.PasswordMatches;
 import cz.fungisoft.coffeecompass.validators.ValidEmail;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Trida pro prenos vybranych informaci o objektu User na clienta. Tzv. DTO objekt.
  * 
  * @author Michal Vaclavek
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @PasswordMatches
-public class UserDTO {
+public class UserDTO extends BaseItem {
 
-    private Long id;
-     
     @Size(min=3, max=30)
     private String userName;
     

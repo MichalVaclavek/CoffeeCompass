@@ -1,6 +1,7 @@
 package cz.fungisoft.coffeecompass.controller.rest.secured;
 
 import java.util.Locale;
+import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
@@ -25,7 +26,6 @@ import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
 */
 @Tag(name = "CoffeeSiteImage", description = "Coffee site image REST operations")
 @RestController 
-//@RequestMapping("/rest/secured/image")
 @RequestMapping("${site.coffeesites.baseurlpath.rest}" + "/secured/image")
 public class
 ImageControllerSecuredREST {
@@ -58,38 +58,39 @@ ImageControllerSecuredREST {
      * 
      * @return load URL of the new image - used to assign to the edited CoffeeSite as a new CoffeeSite's image URL 
      */
-    @PostMapping("/upload") // POST https://coffeecompass.cz/rest/secured/image/upload?coffeeSiteId=2 a správné Body
+    @PostMapping("/upload") // POST https://coffeecompass.cz/rest/secured/image/upload?coffeeSiteId=uuid a správné Body
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file,
-                                                   @RequestParam("coffeeSiteId") Long coffeeSiteId,
+                                                   @RequestParam("coffeeSiteId") String coffeeSiteId,
                                                    Locale locale) {
        if (file == null) {
            throw new BadRESTRequestException(messages.getMessage("coffeesite.image.upload.rest.error", null, locale));
        }
        
-       Integer imageId = imageStorageService.storeImageFile(file, coffeeSiteId, false);
-       if (imageId == null || imageId == 0) {
+       UUID imageId = imageStorageService.storeImageFile(file, UUID.fromString(coffeeSiteId), false);
+       if (imageId == null) {
            return new ResponseEntity<>( HttpStatus.NOT_FOUND);
        }
        log.info("Image uploaded. CoffeeSite id: {}. Image id: {}", coffeeSiteId, imageId);
-        return coffeeSiteService.findOneToTransfer(coffeeSiteId).map(cs ->  new ResponseEntity<>(cs.getMainImageURL(), HttpStatus.OK))
+        return coffeeSiteService.findOneToTransfer(coffeeSiteId)
+                .map(cs ->  new ResponseEntity<>(cs.getMainImageURL(), HttpStatus.OK))
                                                                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
     
     /**
      * Zpracuje DELETE pozadavek na smazani obrazku/Image k jednomu CoffeeSitu.<br>
      * 
-     * @param imageId id of the Image to delete
+     * @param imageExtId id of the Image to delete
      * @return coffeeSiteId the image belonged to before deleting
      */
-    @DeleteMapping("/delete/{imageId}") 
-    public ResponseEntity<Long> deleteImageByImageId(@PathVariable Integer imageId) {
+    @DeleteMapping("/delete/{imageExtId}")
+    public ResponseEntity<String> deleteImageByImageId(@PathVariable String imageExtId) {
         
-        Long siteId = imageStorageService.deleteSiteImageById(imageId);
+        String siteId = imageStorageService.deleteSiteImageById(UUID.fromString(imageExtId));
         
-        if (siteId == null || siteId == 0) {
-            return new ResponseEntity<>(0L, HttpStatus.NOT_FOUND);
+        if (siteId == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        log.info("Image deleted. Image id: {}", imageId);
+        log.info("Image deleted. Image id: {}", imageExtId);
         return new ResponseEntity<>(siteId, HttpStatus.OK);
     }
     
@@ -101,12 +102,12 @@ ImageControllerSecuredREST {
      * is same as returned one
      */
     @DeleteMapping("/delete/site/{coffeeSiteId}") 
-    public ResponseEntity<Long> deleteImageBySiteId(@PathVariable Long coffeeSiteId) {
+    public ResponseEntity<String> deleteImageBySiteId(@PathVariable String coffeeSiteId) {
         
-        Long siteId = imageStorageService.deleteSiteImageBySiteId(coffeeSiteId);
+        String siteId = imageStorageService.deleteSiteImageBySiteId(coffeeSiteId);
         
-        if (siteId == null || siteId == 0) {
-            return new ResponseEntity<>(0L, HttpStatus.NOT_FOUND);
+        if (siteId == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         log.info("Image deleted. CoffeeSite id: {}.", coffeeSiteId);
         return new ResponseEntity<>(siteId, HttpStatus.OK);

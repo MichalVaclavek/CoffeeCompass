@@ -8,9 +8,14 @@ import org.springframework.data.jpa.repository.QueryHints;
 
 import jakarta.persistence.QueryHint;
 
-public interface StarsQualityDescriptionRepository extends JpaRepository<StarsQualityDescription, Integer> {
+import java.util.Optional;
+import java.util.UUID;
 
-//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+public interface StarsQualityDescriptionRepository extends JpaRepository<StarsQualityDescription, UUID> {
+
     @Query("select sqd from StarsQualityDescription sqd where quality=?1")
     StarsQualityDescription searchByName(String starsQDescr);
+
+    @Query("select sqd from StarsQualityDescription sqd where id=?1")
+    Optional<StarsQualityDescription> searchById(Integer id);
 }

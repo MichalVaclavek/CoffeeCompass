@@ -8,9 +8,10 @@ import org.springframework.data.jpa.repository.QueryHints;
 
 import jakarta.persistence.QueryHint;
 
-public interface NextToMachineTypeRepository extends JpaRepository<NextToMachineType, Integer> {
+import java.util.UUID;
 
-//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+public interface NextToMachineTypeRepository extends JpaRepository<NextToMachineType, UUID> {
+
     @Query("select ntmt from NextToMachineType ntmt where type=?1")
     NextToMachineType searchByName(String ntmType);
 }

@@ -7,8 +7,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.util.Objects;
 
@@ -22,12 +20,11 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Entity
 @Table(name="typ_lokality", schema="coffeecompass")
-public class SiteLocationType {
+public class SiteLocationType extends BaseEntity {
 
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Integer longId;
     
     @NotNull // Validace vstupu, nesmi byt null
     @Column(name = "lokalita", unique=true, length=55)
@@ -43,7 +40,7 @@ public class SiteLocationType {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         SiteLocationType that = (SiteLocationType) o;
-        return id != null && Objects.equals(id, that.id);
+        return longId != null && Objects.equals(longId, that.longId);
     }
 
     @Override

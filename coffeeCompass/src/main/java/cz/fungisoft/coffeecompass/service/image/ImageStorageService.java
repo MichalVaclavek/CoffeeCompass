@@ -7,6 +7,7 @@ import cz.fungisoft.coffeecompass.entity.Image;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author Michal Vaclavek
@@ -26,7 +27,7 @@ public interface ImageStorageService {
      *  
      * @return id of the saved Image
      */
-    Integer storeImageFile(Image image, MultipartFile file, Long siteID, boolean resize);
+    UUID storeImageFile(Image image, MultipartFile file, UUID siteID, boolean resize);
 
     /**
      * Save Image and return db ID of the saved image.
@@ -39,25 +40,25 @@ public interface ImageStorageService {
      *  
      * @return id of the saved Image
      */
-    Integer storeImageFile(MultipartFile file, Long siteID, boolean resize);
+    UUID storeImageFile(MultipartFile file, UUID siteID, boolean resize);
     
     void saveImageToDB(Image image);
 
-    String getImageAsBase64ForSiteId(Long siteID);
-    Integer getImageIdForSiteId(Long siteID);
+    String getImageAsBase64ForSiteId(String siteID);
+    UUID getImageIdForSiteId(String siteID);
 
-    Long deleteSiteImageById(Integer imageId);
-    Long deleteSiteImageBySiteId(Long coffeeSiteId);
+    String deleteSiteImageById(UUID imageId);
+    String deleteSiteImageBySiteId(String coffeeSiteId);
 
-    Image getImageForSiteId(Long siteId);
+    Image getImageForSiteId(UUID siteId);
 
-    byte[] getImageAsBytesForSiteId(Long siteId);
+    byte[] getImageAsBytesForSiteId(UUID siteId);
 
     Optional<byte[]> getImageAsBytesForSiteExternalId(String siteExternalId);
 
-    boolean isImageAvailableForSiteId(Long siteId);
+    boolean isImageAvailableForSiteId(UUID siteId);
 
-    boolean isImageAvailableForSiteId(String siteExtId);
+//    boolean isImageAvailableForSiteId(UUID siteExtId);
 
     String getBaseImageURLPath();
 }

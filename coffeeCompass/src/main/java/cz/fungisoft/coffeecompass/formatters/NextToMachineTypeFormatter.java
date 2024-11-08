@@ -23,7 +23,7 @@ public class NextToMachineTypeFormatter implements Formatter<NextToMachineType> 
 
     @Override
     public String print(NextToMachineType ntmt, Locale locale) {
-        return (ntmt != null ? Integer.toString(ntmt.getId()) : "");
+        return Integer.toString(ntmt.getLongId());
     }
 
     @Override

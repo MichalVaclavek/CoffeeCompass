@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.service;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -65,6 +66,7 @@ public interface CoffeeSiteService {
      */
     Optional<CoffeeSite> findOneById(Long id);
     Optional<CoffeeSite> findOneByExternalId(String externalId);
+    Optional<CoffeeSite> findOneByExternalId(UUID externalId);
     CoffeeSiteDTO findByName(String siteName);
     
     /**
@@ -275,10 +277,12 @@ public interface CoffeeSiteService {
      * 
      * @return URL of the CoffeeSite's image if available, otherwise empty String
      */
-    String getMainImageURL(CoffeeSiteDTO cs);
+//    String getMainImageURL(CoffeeSiteDTO cs);
+
+    String getMainImageURL(CoffeeSite cs);
     
     @PreAuthorize("isAuthenticated()")
-    void deleteCoffeeSitesFromUser(Long userId);
+    void deleteCoffeeSitesFromUser(UUID userId);
     
     @Transactional
     CoffeeSite updateSite(CoffeeSiteDTO cs);

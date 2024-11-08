@@ -108,13 +108,13 @@ public class TopicsServiceImpl implements TopicsForPushNotificationsService {
 
     @Override
     public List<FirebaseTopic> getTopicsForUser(User user) {
-        List<DeviceFirebaseToken> userTokens = firebaseDeviceTokenRepository.getAllTokensForUser(user.getId());
+        List<DeviceFirebaseToken> userTokens = firebaseDeviceTokenRepository.getAllTokensForUser(user.getLongId());
         return userTokens.stream().flatMap(token -> token.getTopics().stream()).toList();
     }
     
     @Override
     public List<String> getTopicsOneStringForUser(User user) {
-        List<DeviceFirebaseToken> userTokens = firebaseDeviceTokenRepository.getAllTokensForUser(user.getId());
+        List<DeviceFirebaseToken> userTokens = firebaseDeviceTokenRepository.getAllTokensForUser(user.getLongId());
         return userTokens.stream()
                          .flatMap(token -> token.getTopics().stream())
                          .map(firebaseTopic -> firebaseTopic.getMainTopic() + "_" + firebaseTopic.getSubTopic())
@@ -123,7 +123,7 @@ public class TopicsServiceImpl implements TopicsForPushNotificationsService {
     
     @Override
     public List<Integer> getTopicIdsForUser(User user) {
-        List<DeviceFirebaseToken> userTokens = firebaseDeviceTokenRepository.getAllTokensForUser(user.getId());
+        List<DeviceFirebaseToken> userTokens = firebaseDeviceTokenRepository.getAllTokensForUser(user.getLongId());
         return userTokens.stream()
                          .flatMap(token -> token.getTopics().stream())
                          .map(FirebaseTopic::getId)
@@ -171,7 +171,7 @@ public class TopicsServiceImpl implements TopicsForPushNotificationsService {
 
     @Override
     public void deleteTopicsOfUser(User user) {
-        List<DeviceFirebaseToken> userTokens = firebaseDeviceTokenRepository.getAllTokensForUser(user.getId());
+        List<DeviceFirebaseToken> userTokens = firebaseDeviceTokenRepository.getAllTokensForUser(user.getLongId());
         userTokens.forEach(token -> token.getTopics().clear());
         log.info("All subscribed Topics for user deleted. User: {}", user.getUserName());
     }

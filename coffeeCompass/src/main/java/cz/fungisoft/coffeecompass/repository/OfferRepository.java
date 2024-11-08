@@ -8,9 +8,17 @@ import org.springframework.data.jpa.repository.QueryHints;
 
 import jakarta.persistence.QueryHint;
 
-public interface OfferRepository extends JpaRepository<OtherOffer, Integer> {
+import java.util.Optional;
+import java.util.UUID;
 
-//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+public interface OfferRepository extends JpaRepository<OtherOffer, UUID> {
+
     @Query("select oo from OtherOffer oo where offer=?1")
     OtherOffer searchByName(String offer);
+
+//    @Query("select oo from OtherOffer oo where id=?1")
+//    Optional<OtherOffer> findByExtId(UUID extId);
+
+    @Query("select oo from OtherOffer oo where longId=?1")
+    Optional<OtherOffer> findByLongId(Integer id);
 }

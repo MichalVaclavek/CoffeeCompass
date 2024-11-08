@@ -26,7 +26,6 @@ import java.util.concurrent.ExecutionException;
  */
 @Tag(name = "PushNotifications", description = "Push notifications about new coffee sites")
 @RestController
-//@RequestMapping("/rest/firebase")
 @RequestMapping("${site.coffeesites.baseurlpath.rest}" + "/firebase")
 public class PushNotificationController {
     

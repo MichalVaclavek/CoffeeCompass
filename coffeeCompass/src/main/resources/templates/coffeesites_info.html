@@ -59,16 +59,16 @@
 	        <thead>        
 	        <tbody>
 		        <tr th:each="site : ${coffeeSitePage.content}" style="cursor: pointer"
-		        	th:onclick="rowClicked([[${site.externalId}]]);"> <!-- Reference na /showSite/{site.externalId} viz nize -->
+		        	th:onclick="rowClicked([[${site.extId}]]);"> <!-- Reference na /showSite/{site.extId} viz nize -->
 	
 				  <td th:text="${site.siteName}">SiteName</td>
 				  <td th:text="${site.statusZarizeni.status}">SiteStatus</td>
 				  <td th:text="${#temporals.format(site.createdOn, 'dd. MM. yyyy , HH:mm')}"></td>
 				   
 				  <td th:text="!${site.typPodniku == null} ? ${site.typPodniku.coffeeSiteType} : ''">TypPodniku</td>
-				  <td><span th:each="offer, iterStat : ${site.otherOffers}" th:text="!${iterStat.last} ? ${offer}+', ' : ${offer}">Other Offer</span></td>
+				  <td><span th:each="offer, iterStat : ${site.otherOffers}" th:text="!${iterStat.last} ? ${offer.otherOffer}+', ' : ${offer.otherOffer}">Other Offer</span></td>
 				  <!-- <td th:text="${site.otherOffers}">Offer</td>  -->
-				  <td><span th:each="sort, iterStat : ${site.coffeeSorts}" th:text="!${iterStat.last} ? ${sort}+', ' : ${sort}">Coffee Sorts</span></td>
+				  <td><span th:each="sort, iterStat : ${site.coffeeSorts}" th:text="!${iterStat.last} ? ${sort.coffeeSort}+', ' : ${sort.coffeeSort}">Coffee Sorts</span></td>
 				  <!-- <td th:text="${site.coffeeSorts}">CoffeeSorts</td>  -->
 				  <td th:text="${site.mesto}">City</td>	  
 				  <td th:text="${site.uliceCP}">Street</td>	
@@ -80,7 +80,7 @@
 		          <!-- Form to generate GET http request with Modify button -->
 		          <!-- Available only for logged-in user who created the site or for ROLE_DBA or ROLE_ADMIN user -->
 		          <td  th:if="${site.canBeModified}">
-		            <form action="#" th:action="@{'/modifySite/' + ${site.externalId}}" th:method="GET" >
+		            <form action="#" th:action="@{'/modifySite/' + ${site.extId}}" th:method="GET" >
 		              <input type="hidden" name="_method" value="get" />
 		              <button type="submit" id="submitButton" th:text="#{site.modify}" class="w3-btn w3-blue w3-round w3-small">X</button>
 		            </form>
@@ -89,7 +89,7 @@
 		          <!-- Form to generate GET http request with Delete button -->
 		          <!-- Available only for logged-in user who created the site or for ROLE_DBA or ROLE_ADMIN user -->
 		          <td  th:if="${site.canBeDeleted}">
-		            <form action="#" th:action="@{'/finalDeleteSite/' + ${site.externalId}}" th:method="DELETE" >
+		            <form action="#" th:action="@{'/finalDeleteSite/' + ${site.extId}}" th:method="DELETE" >
 		              <input type="hidden" name="_method" value="delete" />
 		              <button type="submit" id="submitButton" th:text="#{site.delete}" class="w3-btn w3-red w3-round w3-small">X</button>
 		            </form>
@@ -116,7 +116,7 @@
 	</div>
 	
 	
-	<!-- Reference to /showSite/{site.externalId} after table row click --> 
+	<!-- Reference to /showSite/{site.extId} after table row click -->
 	<script>
        function rowClicked(value) {
           location.href = "/showSite/" + value;

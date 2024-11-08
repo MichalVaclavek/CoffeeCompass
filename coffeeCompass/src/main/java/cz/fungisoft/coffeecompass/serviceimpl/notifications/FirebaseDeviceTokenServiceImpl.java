@@ -46,12 +46,12 @@ public class FirebaseDeviceTokenServiceImpl implements FirebaseDeviceTokenServic
 
     @Override
     public List<DeviceFirebaseToken> getTokensForUser(User user) {
-        return firebaseDeviceTokenRepository.getAllTokensForUser(user.getId());
+        return firebaseDeviceTokenRepository.getAllTokensForUser(user.getLongId());
     }
 
     @Override
     public void deleteTokensOfUser(User user) {
-        firebaseDeviceTokenRepository.deleteAllFromUser(user.getId());
+        firebaseDeviceTokenRepository.deleteAllFromUser(user.getLongId());
         log.info("All user's Firebase tokens deleted. User name: {}", user.getUserName());
     }
 

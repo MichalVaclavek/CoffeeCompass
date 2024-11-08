@@ -1,7 +1,6 @@
 package cz.fungisoft.coffeecompass.testutils;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -56,7 +55,7 @@ public class WithMockCustomUserSecurityContextFactory implements WithSecurityCon
         admin.setUserName(customUser.userName());
         admin.setPassword(customUser.password());
         admin.setEmail(customUser.email());
-        admin.setId(1L);
+        admin.setLongId(1L);
         admin.setCreatedOn(LocalDateTime.now());
         admin.setUserProfiles(userProfilesADMIN);
         

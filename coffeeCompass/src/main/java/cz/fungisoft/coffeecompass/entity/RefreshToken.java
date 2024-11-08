@@ -19,7 +19,7 @@ public class RefreshToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_uuid", referencedColumnName = "id")
     @OneToOne(fetch = FetchType.EAGER)
     private User user;
 

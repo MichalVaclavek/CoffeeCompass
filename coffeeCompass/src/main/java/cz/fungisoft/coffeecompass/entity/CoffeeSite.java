@@ -5,12 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.JdbcTypeCode;
 
 import java.io.Serializable;
-import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -86,17 +82,10 @@ import java.util.*;
 @SqlResultSetMapping(name="LongResult", columns={@ColumnResult(name="cnt", type = Long.class)})
 
 @Table(name="coffee_site", schema="coffeecompass")
-public class CoffeeSite implements Serializable {
+public class CoffeeSite extends BaseEntity implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
-
-    @Column(name="external_id")
-    @GeneratedValue
-//    @JdbcTypeCode(Types.VARCHAR)
-    private UUID externalId;
+    private Long longId;
 
     @NotNull
     @Size(min = 3, max = 50)
@@ -151,48 +140,48 @@ public class CoffeeSite implements Serializable {
     /* **** MANY TO ONE relations **** */
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "status_zaznamu_id")
+    @JoinColumn(name = "status_zaznamu_uuid")
     @ToString.Exclude
     private CoffeeSiteRecordStatus recordStatus;
     
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "zadal_user_id")
+    @JoinColumn(name = "zadal_user_uuid")
     @ToString.Exclude
     private User originalUser;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "naposledy_upravil_user_id")
+    @JoinColumn(name = "upravil_user_uuid")
     @ToString.Exclude
     private User lastEditUser;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "smazal_user_id")
+    @JoinColumn(name = "smazal_user_uuid")
     @ToString.Exclude
     private User canceledUser;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "typ_podniku_id")
+    @JoinColumn(name = "typ_podniku_uuid")
     @ToString.Exclude
     private CoffeeSiteType typPodniku;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "status_zarizeni_id")
+    @JoinColumn(name = "status_site_uuid")
     @ToString.Exclude
     private CoffeeSiteStatus statusZarizeni;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dodavatel_jmeno_podniku_id")
+    @JoinColumn(name = "dodavatel_jmeno_podniku_uuid")
     @ToString.Exclude
     private Company dodavatelPodnik;  
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cena_id")
+    @JoinColumn(name = "cena_uuid")
     @ToString.Exclude
     private PriceRange cena;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "typ_lokality_id")
+    @JoinColumn(name = "typ_lokality_uuid")
     @ToString.Exclude
     private SiteLocationType typLokality;
     
@@ -200,29 +189,29 @@ public class CoffeeSite implements Serializable {
 
     @ManyToMany(fetch= FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(name = "coffee_site_to_typ_kelimku", schema="coffeecompass",
-                   joinColumns = { @JoinColumn(name = "coffee_site_id") }, 
-                      inverseJoinColumns = { @JoinColumn(name = "typ_kelimku_id") })
+                   joinColumns = { @JoinColumn(name = "uuid_coffee_site") },
+                   inverseJoinColumns = { @JoinColumn(name = "uuid_typ_kelimku") })
     @ToString.Exclude
     private Set<CupType> cupTypes = new HashSet<>();
 
     @ManyToMany(fetch= FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(name = "coffee_site_to_nabidka", schema="coffeecompass",
-                   joinColumns = { @JoinColumn(name = "id_mainsitetab") }, 
-                      inverseJoinColumns = { @JoinColumn(name = "id_nabidka") })
+                   joinColumns = { @JoinColumn(name = "uuid_coffeesite") },
+                   inverseJoinColumns = { @JoinColumn(name = "uuid_nabidka") })
     @ToString.Exclude
     private Set<OtherOffer> otherOffers = new HashSet<>();
 
     @ManyToMany(fetch= FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(name = "coffee_site_to_dalsi_automat_vedle", schema="coffeecompass",
-                    joinColumns = { @JoinColumn(name = "id_mainsitetab") }, 
-                       inverseJoinColumns = { @JoinColumn(name = "id_dalsi_automat") })
+                    joinColumns = { @JoinColumn(name = "uuid_coffeesite") },
+                    inverseJoinColumns = { @JoinColumn(name = "uuid_dalsi_automat") })
     @ToString.Exclude
     private Set<NextToMachineType> nextToMachineTypes = new HashSet<>();
 
     @ManyToMany(fetch= FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(name = "coffee_site_to_druhy_kavy", schema="coffeecompass",
-                    joinColumns = { @JoinColumn(name = "coffee_site_id") }, 
-                       inverseJoinColumns = { @JoinColumn(name = "druhy_kavy_id") })
+                    joinColumns = { @JoinColumn(name = "coffee_site_uuid") },
+                    inverseJoinColumns = { @JoinColumn(name = "druhy_kavy_uuid") })
     @ToString.Exclude
     private Set<CoffeeSort> coffeeSorts = new HashSet<>();      
     
@@ -247,7 +236,7 @@ public class CoffeeSite implements Serializable {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         CoffeeSite that = (CoffeeSite) o;
-        return id != null && Objects.equals(id, that.id);
+        return longId != null && Objects.equals(longId, that.longId);
     }
 
     @Override

@@ -64,12 +64,6 @@
 			<version>0.4.20</version>
 		</dependency>
 
-		<!-- Kafka support -->
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
-		</dependency>
-
 	</dependencies>
 
 	<build>

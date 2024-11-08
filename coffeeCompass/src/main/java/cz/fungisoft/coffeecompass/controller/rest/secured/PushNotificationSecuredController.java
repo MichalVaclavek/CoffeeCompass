@@ -32,7 +32,6 @@ import cz.fungisoft.coffeecompass.service.notifications.PushNotificationService;
  */
 @Tag(name = "PushNotificationsSecured", description = "New coffee site's Push notifications subscription")
 @RestController
-//@RequestMapping("/rest/secured/firebase")
 @RequestMapping("${site.coffeesites.baseurlpath.rest}" + "/secured/firebase")
 public class PushNotificationSecuredController {
     

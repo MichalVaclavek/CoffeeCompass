@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Object/model pro prenos a validaci zakladni entity ContactMeMessage
@@ -11,11 +12,10 @@ import lombok.Data;
  * @author Michal Vaclavek
  *
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class ContactMeMessageDTO {
+public class ContactMeMessageDTO extends BaseItem {
 
-    private Integer id;
-    
     @Size(max=50)
     private String authorName;
       

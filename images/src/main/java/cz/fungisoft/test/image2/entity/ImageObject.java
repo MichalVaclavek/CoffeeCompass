@@ -2,7 +2,6 @@ package cz.fungisoft.test.image2.entity;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import cz.fungisoft.test.image2.dto.ImageObjectDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -20,7 +19,6 @@ import java.util.Objects;
  * @author Michal Václavek
  */
 @Entity
-//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "image_object", schema="images")
 @NamedQueries({
 		@NamedQuery(name = "getByExternalObjectId", query = "select i from ImageObject i where i.externalObjectId = :externalObjectId"),

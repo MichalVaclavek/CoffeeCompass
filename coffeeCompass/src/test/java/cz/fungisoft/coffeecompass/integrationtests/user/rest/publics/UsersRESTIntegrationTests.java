@@ -60,7 +60,7 @@ class UsersRESTIntegrationTests extends IntegrationTestBaseConfig {
         admin.setUserName("admin");
         admin.setPassword("adminpassword");
         admin.setEmail("admin@boss.com");
-        admin.setId(1L);
+        admin.setLongId(1L);
         admin.setCreatedOn(LocalDateTime.now());
         admin.setUserProfiles(userProfilesADMIN);
     }
@@ -78,7 +78,7 @@ class UsersRESTIntegrationTests extends IntegrationTestBaseConfig {
         john.setUserName("john");
         john.setPassword("johnpassword");
         john.setEmail("john@vonneuman4.com");
-        john.setId(1L);
+        john.setLongId(1L);
         
         john.setCreatedOn(LocalDateTime.now());
         john.setUserProfiles(userProfilesUser);

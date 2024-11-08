@@ -53,9 +53,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String userNameEmail) throws UsernameNotFoundException {
         
         Optional<User> user = userService.findByUserName(userNameEmail);
-        if (!user.isPresent()) { // not found by user name
+        if (user.isEmpty()) { // not found by user name
             user = userService.findByEmail(userNameEmail); // try to find by email
-            if (!user.isPresent()) {
+            if (user.isEmpty()) {
                 logger.info("Username/email {} not found.", userNameEmail);
                 throw new UsernameNotFoundException("Username/email not found: " + userNameEmail) ;
             }
@@ -76,7 +76,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             
         try {
             Optional<User> user = userService.findByEmail(email);
-            if (!user.isPresent()) {
+            if (user.isEmpty()) {
                 logger.info("User with e-mail {} not found.", email);
                 throw new UsernameNotFoundException("No user found with e-mail: " + email);
             }
@@ -89,12 +89,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
     
     @Transactional
-    public UserDetails loadUserById(Long id) {
+    public UserDetails loadUserById(String extId) {
         
-        Optional<User> user = userService.findById(id);
-        if (!user.isPresent()) {
-            logger.info("User with id {} not found.", id);
-            throw new UsernameNotFoundException("There is no user with this id: " + id);
+        Optional<User> user = userService.findByExtId(extId);
+        if (user.isEmpty()) {
+            logger.info("User with id {} not found.", extId);
+            throw new UsernameNotFoundException("There is no user with this id: " + extId);
         }
 
         return UserPrincipal.create(user.get());

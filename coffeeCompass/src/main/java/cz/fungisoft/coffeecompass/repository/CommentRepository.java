@@ -1,6 +1,7 @@
 package cz.fungisoft.coffeecompass.repository;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -13,16 +14,17 @@ import cz.fungisoft.coffeecompass.entity.Comment;
  * 
  * @author Michal Vaclavek
  */
-public interface CommentRepository extends JpaRepository<Comment, Long> {
+public interface CommentRepository extends JpaRepository<Comment, UUID> {
 
     @Query("select cl from Comment cl where coffeeSite.id=?1 order by cl.created desc")
-    List<Comment> getAllCommentsForSite(Long coffeeSiteID);
+    List<Comment> getAllCommentsForSite(UUID coffeeSiteId);
     
     @Query("select count(*) from Comment cl where coffeeSite.id=?1")
-    Integer getNumberOfCommentsForSite(Long coffeeSiteID);
+    Integer getNumberOfCommentsForSite(UUID coffeeSiteId);
     
     @Query("select cl from Comment cl where user.id=?1 order by cl.created desc")
-    List<Comment> getAllCommentsFromUser(Long userID);
+    List<Comment>
+    getAllCommentsFromUser(UUID userID);
 
     /**
      * Number of all Comments, used to estimate the size of Comments when dowanloading for Offline mode.
@@ -36,13 +38,16 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
      * Gets CoffeeSite id this Comment belongs to
      * @param commentId
      */
+//    @Query("select coffeeSite.id FROM Comment cl where longId=?1")
+//    Long getSiteIdForComment(Long commentId);
+
     @Query("select coffeeSite.id FROM Comment cl where id=?1")
-    Long getSiteIdForComment(Long commentId);
+    UUID getSiteIdForComment(UUID commentId);
     
     @Modifying // required by Hibernate, otherwise there is an exception ' ... Illegal state ...'
     @Query("delete FROM Comment cl where user.id=?1")
-    void deleteAllFromUser(Long userID);
+    void deleteAllFromUser(UUID userID);
 
     @Query("delete FROM Comment cl where coffeeSite.id=?1")
-    void deleteAllForSite(Long siteID);
+    void deleteAllForSite(UUID siteID);
 }

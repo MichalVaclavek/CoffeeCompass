@@ -2,6 +2,8 @@ package cz.fungisoft.coffeecompass.serviceimpl;
 
 import java.util.List;
 
+import cz.fungisoft.coffeecompass.dto.CoffeeSortDTO;
+import cz.fungisoft.coffeecompass.mappers.CoffeeSortMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -15,11 +17,14 @@ import cz.fungisoft.coffeecompass.service.CoffeeSortService;
 public class CoffeeSortServiceImpl implements CoffeeSortService {
 
     private final CoffeeSortRepository coffeeSortRepo;
+
+    private final CoffeeSortMapper coffeeSortMapper;
     
     @Autowired
-    public CoffeeSortServiceImpl(CoffeeSortRepository coffeeSort) {
+    public CoffeeSortServiceImpl(CoffeeSortRepository coffeeSort, CoffeeSortMapper coffeeSortMapper) {
         super();
         this.coffeeSortRepo = coffeeSort;
+        this.coffeeSortMapper = coffeeSortMapper;
     }
 
     @Override
@@ -32,7 +37,7 @@ public class CoffeeSortServiceImpl implements CoffeeSortService {
     @Override
     @Transactional
     @Cacheable(cacheNames = "coffeeSortsCache")
-    public List<CoffeeSort> getAllCoffeeSorts() {
-        return coffeeSortRepo.findAll();
+    public List<CoffeeSortDTO> getAllCoffeeSorts() {
+        return coffeeSortRepo.findAll().stream().map(coffeeSortMapper::coffeeSorToCoffeeSortDto).toList();
     }
 }

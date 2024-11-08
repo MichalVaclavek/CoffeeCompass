@@ -23,7 +23,7 @@ public class PriceRangeFormatter implements Formatter<PriceRange> {
 
     @Override
     public String print(PriceRange priceRange, Locale locale) {
-        return (priceRange != null ? Integer.toString(priceRange.getId()) : "");
+        return Integer.toString(priceRange.getLongId());
     }
 
     @Override

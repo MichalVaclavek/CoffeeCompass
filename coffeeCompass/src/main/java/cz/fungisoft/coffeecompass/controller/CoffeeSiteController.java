@@ -1,19 +1,9 @@
 package cz.fungisoft.coffeecompass.controller;
 
 import cz.fungisoft.coffeecompass.controller.models.StarsAndCommentModel;
-import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
-import cz.fungisoft.coffeecompass.dto.CommentDTO;
-import cz.fungisoft.coffeecompass.dto.ImageDTO;
+import cz.fungisoft.coffeecompass.dto.*;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
-import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
-import cz.fungisoft.coffeecompass.entity.CoffeeSiteType;
-import cz.fungisoft.coffeecompass.entity.CoffeeSort;
-import cz.fungisoft.coffeecompass.entity.CupType;
-import cz.fungisoft.coffeecompass.entity.NextToMachineType;
-import cz.fungisoft.coffeecompass.entity.OtherOffer;
-import cz.fungisoft.coffeecompass.entity.PriceRange;
-import cz.fungisoft.coffeecompass.entity.SiteLocationType;
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.mappers.CoffeeSiteMapper;
@@ -35,7 +25,6 @@ import cz.fungisoft.coffeecompass.service.weather.WeatherApiService;
 
 import cz.fungisoft.coffeecompass.serviceimpl.images.ImagesService;
 import cz.fungisoft.images.api.ImageFile;
-import cz.fungisoft.images.api.ImageObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -51,10 +40,8 @@ import jakarta.validation.Valid;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -222,77 +209,60 @@ public class CoffeeSiteController {
      * @param externalId of CoffeeSite to show
      * @return
      */
-    @GetMapping({"/showSite/{externalId}", "/showSite/{externalId}/selectedImageExtId/{selectedImageExternalId}"})
-    // napr. http://localhost:8080/showSite/5dac71ea-042c-4807-ae7a-7991d48b9f7c
+    @GetMapping({"/showSite/{externalId}", "/showSite/{externalId}/selectedImageExtId/{selectedImageExternalId}"}) // napr. http://localhost:8080/showSite/5dac71ea-042c-4807-ae7a-7991d48b9f7c
     public ModelAndView showSiteDetailForm(@PathVariable String externalId,
                                            @PathVariable(required = false) String selectedImageExternalId,
                                            ModelMap model) {
 
         ModelAndView mav = new ModelAndView("404");
 
-        return coffeeSiteService.findOneByExternalId(externalId)
-                .map(cs -> {
-                    // Add object to cary users's comment and stars evaluation
-                    // If a user is logged-in, than find if he already saved comment for this site. If yes, this stars to model.
-                    StarsAndCommentModel starsAndComment = new StarsAndCommentModel();
+        // Find CoffeeSite by externalId
+        Optional<CoffeeSite> cs = coffeeSiteService.findOneByExternalId(externalId);
 
-                    StarsQualityDescription userStarsForThisSite = starsForCoffeeSiteService.getStarsForCoffeeSiteAndLoggedInUser(cs);
-                    if (userStarsForThisSite != null)
-                        starsAndComment.setStars(userStarsForThisSite);
+        cs.ifPresent(coffeeSite -> {
+            // Add object to cary users's comment and stars evaluation
+            // If a user is logged-in, than find if he already saved comment for this site. If yes, this stars to model.
+            StarsAndCommentModel starsAndComment = new StarsAndCommentModel();
 
-                    mav.addObject("starsAndComment", starsAndComment);
+            StarsQualityDescription userStarsForThisSite = starsForCoffeeSiteService.getStarsForCoffeeSiteAndLoggedInUser(coffeeSite);
+            if (userStarsForThisSite != null)
+                starsAndComment.setStars(userStarsForThisSite);
 
-                    // Add all comments for this coffeeSite
-                    List<CommentDTO> comments = commentsService.getAllCommentsForSiteId(cs.getId());
-                    mav.addObject("comments", comments);
+            mav.addObject("starsAndComment", starsAndComment);
 
-                    // Add new Image to model
-                    if (!model.containsAttribute("newImageFile")) { // otherwise, returned after validation error and model already contains newImage object
-                        var newImage = new ImageDTO();
-                        newImage.setImageType("main");
-                        newImage.setExternalObjectId(cs.getExternalId().toString());
-                        newImage.setDescription("novy obrazek");
+            // Add all comments for this coffeeSite
+            List<CommentDTO> comments = commentsService.getAllCommentsForSiteId(coffeeSite.getId());
+            mav.addObject("comments", comments);
 
-                        mav.addObject("newImageFile", newImage);
-                    }
+            // Add new Image to model
+            if (!model.containsAttribute("newImageFile")) { // otherwise, returned after validation error and model already contains newImage object
+                var newImage = new ImageDTO();
+                newImage.setImageType("main");
+                newImage.setExternalObjectId(coffeeSite.getLongId().toString());
+                newImage.setDescription("novy obrazek");
 
-                    // Add CoffeeSite to model
-                    var coffeeSiteDto = coffeeSiteService.mapOneToTransfer(cs);
-                    mav.addObject("coffeeSite", coffeeSiteDto);
+                mav.addObject("newImageFile", newImage);
+            }
 
-                    // Add all images for this CoffeeSite
-                    List<String> imageUrls = imagesService.getSmallImagesUrls(cs.getExternalId().toString());
-                    mav.addObject("imageUrls", imageUrls);
+            // Add CoffeeSite to model
+            var coffeeSiteDto = coffeeSiteService.mapOneToTransfer(coffeeSite);
+            mav.addObject("coffeeSite", coffeeSiteDto);
 
+            // Add all images for this CoffeeSite
+            List<String> imageUrls = imagesService.getSmallImagesUrls(coffeeSite.getLongId().toString());
+            mav.addObject("imageUrls", imageUrls);
 
-//                    var images = imagesService.getImageFiles(cs.getExternalId().toString());
-//
-//                    Optional<String> selectedImageExtId = Optional.ofNullable(selectedImageExternalId);
-//
-//                    Optional<String> currentSelectedImageUrl = selectedImageExtId.flatMap( imgExtId -> images
-//                            .filter(img -> img.getBaseBytesImageUrl().contains(imgExtId))
-//                            .findFirst()
-//                            .map(ImageFile::getBaseBytesImageUrl));
-//
-//
-//                    if (selectedImageExternalId == null) {
-//                        Optional<ImageFile> currentSelectedImage = images
-//                                .filter(img -> img.getImageType().equalsIgnoreCase("main"))
-//                                .findFirst();
-//                        currentSelectedImageUrl = currentSelectedImage.map(ImageFile::getBaseBytesImageUrl);
-//                        selectedImageExtId = currentSelectedImage.map(ImageFile::getExternalId);
-//                    }
+            mav.addObject("selectedImageUrl", getSelectedImageUrl(coffeeSite.getLongId().toString(), selectedImageExternalId).orElse(coffeeSiteDto.getMainImageURL()));
+            mav.addObject("selectedImageExternalId", getSelectedImageExternalId(coffeeSite.getLongId().toString(), selectedImageExternalId).orElse(""));
 
-                    mav.addObject("selectedImageUrl", getSelectedImageUrl(cs.getExternalId().toString(), selectedImageExternalId).orElse(coffeeSiteDto.getMainImageURL()));
-                    mav.addObject("selectedImageExternalId", getSelectedImageExternalId(cs.getExternalId().toString(), selectedImageExternalId).orElse(""));
+            // Get Weather info for the geo location of the CofeeSite to be shown
+            weatherService.getWeatherDTO(coffeeSite)
+                    .ifPresent(w -> mav.addObject("weatherData", w));
 
-                    // Get Weather info for the geo location of the CofeeSite to be shown
-                    weatherService.getWeatherDTO(cs)
-                            .ifPresent(w -> mav.addObject("weatherData", w));
+            mav.setViewName("coffeesite_detail");
+        });
 
-                    mav.setViewName("coffeesite_detail");
-                    return mav;
-                }).orElse(mav);
+        return mav;
     }
 
     private Optional<String> getSelectedImageUrl(String objectExtId, String currentSelectedImageExternalId) {
@@ -315,12 +285,12 @@ public class CoffeeSiteController {
      * @return
      */
     @GetMapping("/mySitesPaginated/") // napr. https://coffeecompass.cz/mySitesPaginated/?size=5&page=1
-    public ModelAndView showMySitesPaginated(@RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+    public ModelAndView showMySitesPaginated(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "size", defaultValue = "15") Integer size) {
 
         ModelAndView mav = new ModelAndView();
 
-        int currentPage = page.orElse(1);
-        int pageSize = size.orElse(15);
+        int currentPage = page;
+        int pageSize = size;
         Page<CoffeeSiteDTO> coffeeSitePage;
 
         coffeeSitePage = coffeeSiteService.findAllFromLoggedInUserPaginated(PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.fromString("DESC"), "createdOn")));
@@ -436,14 +406,14 @@ public class CoffeeSiteController {
 
         CoffeeSite cs;
 
-        if (!coffeeSite.getExternalId().isEmpty()) { // modify CoffeeSite
+        if (coffeeSite.getExtId() != null) { // modify CoffeeSite
             returnSuffix = "?modifySuccess";
             cs = coffeeSiteService.updateSite(coffeeSite);
         } else {
             cs = coffeeSiteService.save(coffeeSite);
         }
 
-        returnView = (cs != null) ? returnView + cs.getExternalId() + "/selectedImageExtId/" + selectedImageExtId + returnSuffix
+        returnView = (cs != null) ? returnView + cs.getLongId() + "/selectedImageExtId/" + selectedImageExtId + returnSuffix
                 : "404";
         return returnView;
     }
@@ -459,12 +429,12 @@ public class CoffeeSiteController {
 
         AtomicReference<String> returnPage = new AtomicReference<>("404");
         coffeeSiteService.findOneByExternalId(externalId).ifPresent(cs -> {
-            if (coffeeSiteService.isLocationAlreadyOccupiedByActiveSite(cs.getZemSirka(), cs.getZemDelka(), 5, cs.getId())) {
-                returnPage.set(REDIRECT_SHOW_SITE_VIEW + cs.getExternalId() + "/selectedImageExtId/" + selectedImageExtId + "?anyOtherSiteActiveOnSamePosition");
+            if (coffeeSiteService.isLocationAlreadyOccupiedByActiveSite(cs.getZemSirka(), cs.getZemDelka(), 5, cs.getLongId())) {
+                returnPage.set(REDIRECT_SHOW_SITE_VIEW + cs.getLongId() + "/selectedImageExtId/" + selectedImageExtId + "?anyOtherSiteActiveOnSamePosition");
             } else {
                 cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, CoffeeSiteRecordStatusEnum.ACTIVE);
                 // After CoffeeSite activation, go to the same page and show confirmation message
-                returnPage.set(REDIRECT_SHOW_SITE_VIEW + cs.getExternalId() + "/selectedImageExtId/" + selectedImageExtId + "?activationSuccess");
+                returnPage.set(REDIRECT_SHOW_SITE_VIEW + cs.getLongId() + "/selectedImageExtId/" + selectedImageExtId + "?activationSuccess");
             }
         });
         return returnPage.get();
@@ -504,7 +474,7 @@ public class CoffeeSiteController {
                                                  String imageExternalId) {
         return coffeeSiteService.findOneByExternalId(externalId).map(cs -> {
             cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, newStatus);
-            return REDIRECT_SHOW_SITE_VIEW + cs.getExternalId() + "/selectedImageExtId/" + imageExternalId;
+            return REDIRECT_SHOW_SITE_VIEW + cs.getLongId() + "/selectedImageExtId/" + imageExternalId;
         }).orElse("404");
     }
 
@@ -534,47 +504,47 @@ public class CoffeeSiteController {
     /* *** Atributes for coffeesite_create.html and other Forms **** */
 
     @ModelAttribute("allOffers")
-    public List<OtherOffer> populateOffers() {
+    public List<OtherOfferDTO> populateOffers() {
         return offerService.getAllOtherOffers();
     }
 
     @ModelAttribute("allSiteStatuses")
-    public List<CoffeeSiteStatus> populateSiteStatuses() {
+    public List<CoffeeSiteStatusDTO> populateSiteStatuses() {
         return csStatusService.getAllCoffeeSiteStatuses();
     }
 
     @ModelAttribute("allHodnoceniKavyStars")
-    public List<StarsQualityDescription> populateQualityStars() {
+    public List<StarsQualityDescriptionDTO> populateQualityStars() {
         return starsQualityService.getAllStarsQualityDescriptions();
     }
 
     @ModelAttribute("allPriceRanges")
-    public List<PriceRange> populatePriceRanges() {
+    public List<PriceRangeDTO> populatePriceRanges() {
         return priceRangeService.getAllPriceRanges();
     }
 
     @ModelAttribute("allLocationTypes")
-    public List<SiteLocationType> populateLocationTypes() {
+    public List<SiteLocationTypeDTO> populateLocationTypes() {
         return locationTypesService.getAllSiteLocationTypes();
     }
 
     @ModelAttribute("allCupTypes")
-    public List<CupType> populateCupTypes() {
+    public List<CupTypeDTO> populateCupTypes() {
         return cupTypesService.getAllCupTypes();
     }
 
     @ModelAttribute("allNextToMachineTypes")
-    public List<NextToMachineType> populateNextToMachineTypes() {
+    public List<NextToMachineTypeDTO> populateNextToMachineTypes() {
         return ntmtService.getAllNextToMachineTypes();
     }
 
     @ModelAttribute("allCoffeeSiteTypes")
-    public List<CoffeeSiteType> populateCoffeeSiteTypes() {
+    public List<CoffeeSiteTypeDTO> populateCoffeeSiteTypes() {
         return coffeeSiteTypeService.getAllCoffeeSiteTypes();
     }
 
     @ModelAttribute("allCoffeeSorts")
-    public List<CoffeeSort> populateCoffeeSorts() {
+    public List<CoffeeSortDTO> populateCoffeeSorts() {
         return coffeeSortService.getAllCoffeeSorts();
     }
 }

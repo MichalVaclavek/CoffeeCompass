@@ -1,7 +1,11 @@
 package cz.fungisoft.coffeecompass.serviceimpl;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
+import cz.fungisoft.coffeecompass.dto.StarsQualityDescriptionDTO;
+import cz.fungisoft.coffeecompass.mappers.StarsQualityDescriptionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -17,11 +21,14 @@ import cz.fungisoft.coffeecompass.service.StarsQualityService;
 public class StarsQualityServiceImpl implements StarsQualityService {
 
     private final StarsQualityDescriptionRepository starsQaulityRepo;
+
+    private final StarsQualityDescriptionMapper starsQualityDescriptionMapper;
         
     @Autowired
-    public StarsQualityServiceImpl(StarsQualityDescriptionRepository starsQaulityRepo) {
+    public StarsQualityServiceImpl(StarsQualityDescriptionRepository starsQaulityRepo, StarsQualityDescriptionMapper starsQualityDescriptionMapper) {
         super();
         this.starsQaulityRepo = starsQaulityRepo;
+        this.starsQualityDescriptionMapper = starsQualityDescriptionMapper;
     }
     
     @Override
@@ -34,16 +41,25 @@ public class StarsQualityServiceImpl implements StarsQualityService {
 
     @Override
     @Cacheable(cacheNames = "starsQualityRatingsCache")
-    public List<StarsQualityDescription> getAllStarsQualityDescriptions() {
-        return starsQaulityRepo.findAll();
+    public List<StarsQualityDescriptionDTO> getAllStarsQualityDescriptions() {
+        return starsQaulityRepo.findAll().stream().map(starsQualityDescriptionMapper::starsQualityDescriptionTostarsQualityDescriptionDto).toList();
     }
     
     @Override
     @Cacheable(cacheNames = "starsQualityRatingsCache")
     public StarsQualityDescription findStarsQualityById(Integer id) {
-        StarsQualityDescription qualityDescr = starsQaulityRepo.findById(id).orElse(null);
-        if (qualityDescr == null)
+        Optional<StarsQualityDescription> qualityDescr = starsQaulityRepo.searchById(id);
+        if (qualityDescr.isEmpty())
             throw new EntityNotFoundException("Quality description id " + id + " not found in DB.");
+        return qualityDescr.get();
+    }
+
+    @Override
+    @Cacheable(cacheNames = "starsQualityRatingsCache")
+    public StarsQualityDescription findStarsQualityByExtId(String extId) {
+        StarsQualityDescription qualityDescr = starsQaulityRepo.findById(UUID.fromString(extId)).orElse(null);
+        if (qualityDescr == null)
+            throw new EntityNotFoundException("Quality description id " + extId + " not found in DB.");
         return qualityDescr;
     }
 }

@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import cz.fungisoft.coffeecompass.mappers.CoffeeSiteMapper;
 import cz.fungisoft.coffeecompass.mappers.CoffeeSiteMapperImpl;
 import cz.fungisoft.coffeecompass.unittest.MvcControllerUnitTestBaseSetup;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,9 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -27,8 +23,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import cz.fungisoft.coffeecompass.controller.rest.secured.CoffeeSiteControllerSecuredREST;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
-import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
-import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.testutils.CoffeeSiteFactory;
 import cz.fungisoft.coffeecompass.testutils.JsonUtil;
 
@@ -74,7 +68,7 @@ class CoffeeSiteControllerSecuredMvcTests extends MvcControllerUnitTestBaseSetup
         CoffeeSite cs = CoffeeSiteFactory.getCoffeeSite(COFFEE_SITE_NAME, "automat");
                 
         given(coffeeSiteService.save(Mockito.any(CoffeeSiteDTO.class))).willReturn(cs);
-        given(coffeeSiteService.findOneToTransfer(Mockito.eq(cs.getId()))).willReturn(Optional.of(coffeeSiteMapper.coffeeSiteToCoffeeSiteDTO(cs)));
+        given(coffeeSiteService.findOneToTransfer(Mockito.eq(cs.getLongId()))).willReturn(Optional.of(coffeeSiteMapper.coffeeSiteToCoffeeSiteDTO(cs)));
 
         mockMvc.perform(post("/api/v1/coffeesites/secured/site/create").contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(cs)))
                                        .andExpect(status().isCreated())

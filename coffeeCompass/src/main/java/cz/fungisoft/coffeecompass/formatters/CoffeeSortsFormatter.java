@@ -23,7 +23,7 @@ public class CoffeeSortsFormatter implements Formatter<CoffeeSort> {
 
     @Override
     public String print(CoffeeSort coffeeSort, Locale locale) {
-        return (coffeeSort != null ? Integer.toString(coffeeSort.getId()) : "");
+        return Integer.toString(coffeeSort.getLongId());
     }
 
     @Override

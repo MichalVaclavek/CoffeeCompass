@@ -7,8 +7,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.util.Objects;
 
@@ -23,12 +21,11 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Entity
 @Table(name="dodavatel_nebo_jmeno_podniku", schema="coffeecompass")
-public class Company {
+public class Company extends BaseEntity {
 
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Integer longId;
     
     @Size(max = 85) // Validace vstupu, pocet znaku
     @Column(name = "jmeno_podniku_dodavatele", unique = true)
@@ -48,7 +45,7 @@ public class Company {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Company company = (Company) o;
-        return id != null && Objects.equals(id, company.id);
+        return longId != null && Objects.equals(longId, company.longId);
     }
 
     @Override

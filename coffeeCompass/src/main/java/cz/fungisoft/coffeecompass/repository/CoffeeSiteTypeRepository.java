@@ -8,9 +8,10 @@ import org.springframework.data.jpa.repository.QueryHints;
 
 import jakarta.persistence.QueryHint;
 
-public interface CoffeeSiteTypeRepository extends JpaRepository<CoffeeSiteType, Integer> {
+import java.util.UUID;
 
-//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+public interface CoffeeSiteTypeRepository extends JpaRepository<CoffeeSiteType, UUID> {
+
     @Query("select cst from CoffeeSiteType cst where coffeeSiteType=?1")
     CoffeeSiteType searchByName(String siteType);
 }

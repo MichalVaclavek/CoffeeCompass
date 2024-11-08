@@ -11,12 +11,13 @@ import org.springframework.data.jpa.repository.QueryHints;
 
 import jakarta.persistence.QueryHint;
 
+import java.util.UUID;
+
 /**
  * @author Michal Vaclavek
  */
-public interface CoffeeSortRepository extends JpaRepository<CoffeeSort, Integer> {
+public interface CoffeeSortRepository extends JpaRepository<CoffeeSort, UUID> {
 
-//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select csort from CoffeeSort csort where coffeeSort=?1")
     CoffeeSort searchByName(String coffeeSort);
 }

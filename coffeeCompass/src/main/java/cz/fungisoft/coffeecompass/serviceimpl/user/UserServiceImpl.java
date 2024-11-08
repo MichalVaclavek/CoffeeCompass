@@ -66,25 +66,58 @@ public class UserServiceImpl implements UserService {
     
     // ** Findind User ** /
 
+//    @Override
+//    @Transactional
+//    @Cacheable(cacheNames = "usersCache")
+//    public Optional<UserDTO> findByIdToTransfer(Long id) {
+//        return addNonPersistentInfoToUser(findById(id).orElse(null));
+//    }
+
     @Override
     @Transactional
     @Cacheable(cacheNames = "usersCache")
-    public Optional<UserDTO> findByIdToTransfer(Long id) {
-        return addNonPersistentInfoToUser(findById(id).orElse(null));
+    public Optional<UserDTO> findByExtIdToTransfer(UUID id) {
+        return addNonPersistentInfoToUser(findByExtId(id).orElse(null));
+    }
+
+    @Override
+    @Transactional
+    @Cacheable(cacheNames = "usersCache")
+    public Optional<UserDTO> findByExtIdToTransfer(String id) {
+        return findByExtIdToTransfer(UUID.fromString(id));
     }
     
+//    @Override
+//    public Optional<User> findById(Long id) {
+//        Optional<User> user = usersRepository.findById(id);
+//
+//        if (user.isEmpty()) {
+//            log.warn("User with id {} not found.", id);
+//        }
+//        else {
+//            log.info("User with id {} found.", id);
+//        }
+//
+//        return user;
+//    }
+
     @Override
-    public Optional<User> findById(Long id) {
+    public Optional<User> findByExtId(UUID id) {
         Optional<User> user = usersRepository.findById(id);
-        
+
         if (user.isEmpty()) {
             log.warn("User with id {} not found.", id);
         }
         else {
             log.info("User with id {} found.", id);
         }
-        
+
         return user;
+    }
+
+    @Override
+    public Optional<User> findByExtId(String extId) {
+        return findByExtId(UUID.fromString(extId));
     }
     
     @Override
@@ -201,6 +234,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(User user) {
         
+
         User entity = usersRepository.findById(user.getId()).orElse(null);
         
         if (entity != null) {
@@ -348,7 +382,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User save(UserDTO registration) {
         User user = new User();
-        
+
+        user.setId(UUID.randomUUID());
         user.setUserName(registration.getUserName());
         user.setFirstName(registration.getFirstName());
         user.setLastName(registration.getLastName());
@@ -457,17 +492,22 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public void deleteUserById(Long id) {
+    public void deleteUserById(UUID id) {
         
-        Optional<User> userToDelete = findById(id);
+        Optional<User> userToDelete = findByExtId(id);
         
         if (userToDelete.isPresent()) {
-            deleteTokensByUser(findById(id));
+            deleteTokensByUser(findByExtId(id));
             usersRepository.deleteById(id);
             log.info("User id {} deleted.", id);
         } else {
             log.error("User with id {} does not exist. Cannot be deleted.", id);
         }
+    }
+
+    @Override
+    public void deleteUserById(String id) {
+        deleteUserById(UUID.fromString(id));
     }
     
     /**
@@ -491,7 +531,7 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public void clearUserDataById(Long userId) {
+    public void clearUserDataById(UUID userId) {
         User userToClear = usersRepository.findById(userId).orElse(null);
         
         if (userToClear != null) {
@@ -532,7 +572,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isUserNameUnique(Long id, String sso) {
         Optional<User> user = usersRepository.searchByUsername(sso);
-        return (user.isEmpty() || ((id != null) && (Objects.equals(user.get().getId(), id))));
+        return (user.isEmpty() || ((id != null) && (Objects.equals(user.get().getLongId(), id))));
+    }
+
+    @Override
+    public boolean isUserNameUnique(UUID id, String sso) {
+        Optional<User> user = usersRepository.searchByUsername(sso);
+        return (user.isEmpty() || ((id != null) && (Objects.equals(user.get().getLongId(), id))));
     }
 
     /**
@@ -544,10 +590,16 @@ public class UserServiceImpl implements UserService {
      * @param id - id of the user whos's e-mail is to be verified
      * @param email - address to be verified.
      */
+//    @Override
+//    public boolean isEmailUnique(Long id, String email) {
+//        Optional<User> user = usersRepository.searchByEmail(email);
+//        return (user.isEmpty() || ((id != null) && (user.get().getId().equals(id))));
+//    }
+
     @Override
-    public boolean isEmailUnique(Long id, String email) {
+    public boolean isEmailUnique(UUID id, String email) {
         Optional<User> user = usersRepository.searchByEmail(email);
-        return (!user.isPresent() || ((id != null) && (user.get().getId().equals(id))));
+        return (user.isEmpty() || ((id != null) && (user.get().getLongId().equals(id))));
     }
     
     @Override
@@ -571,7 +623,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isLoggedInUserToManageItself(User user) {
         Optional<User> loggedInUser = getCurrentLoggedInUser();
-        return loggedInUser.isPresent() && loggedInUser.get().getId().equals(user.getId());
+        return loggedInUser.isPresent() && loggedInUser.get().getLongId().equals(user.getLongId());
     }
 
     @Override

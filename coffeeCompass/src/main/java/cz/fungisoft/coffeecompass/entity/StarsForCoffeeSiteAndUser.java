@@ -20,28 +20,27 @@ import java.util.Objects;
 @ToString
 @Entity
 @Table(name="hodnoceni", schema="coffeecompass")
-public class StarsForCoffeeSiteAndUser {
+public class StarsForCoffeeSiteAndUser extends BaseEntity {
 
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Integer longId;
 
     @NotNull
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "uuid_user")
     private User user;
     
     @NotNull
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @ManyToOne
-    @JoinColumn(name = "coffeesite_id", nullable = false)
+    @JoinColumn(name = "uuid_coffee_site", nullable = false)
     private CoffeeSite coffeeSite;
     
     @OneToOne
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JoinColumn(name = "stars_id")
+    @JoinColumn(name = "uuid_stars")
     private StarsQualityDescription stars;
     
     /**
@@ -68,7 +67,7 @@ public class StarsForCoffeeSiteAndUser {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         StarsForCoffeeSiteAndUser that = (StarsForCoffeeSiteAndUser) o;
-        return id != null && Objects.equals(id, that.id);
+        return longId != null && Objects.equals(longId, that.longId);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package cz.fungisoft.coffeecompass.testutils;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -111,7 +110,7 @@ public class CoffeeSiteFactory {
         
         CoffeeSite coffeeS = new CoffeeSite();
 
-        coffeeS.setExternalId(UUID.randomUUID());
+        coffeeS.setId(UUID.randomUUID());
         coffeeS.setSiteName(siteName);
         coffeeS.setTypPodniku(siteType);
         coffeeS.setStatusZarizeni(siteStatus);

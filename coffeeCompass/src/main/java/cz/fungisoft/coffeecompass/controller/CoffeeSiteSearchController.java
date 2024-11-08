@@ -8,6 +8,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import cz.fungisoft.coffeecompass.dto.CoffeeSortDTO;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import cz.fungisoft.coffeecompass.controller.models.CoffeeSiteSearchCriteriaModel;
 import cz.fungisoft.coffeecompass.controller.models.OneStringModel;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
-import cz.fungisoft.coffeecompass.entity.CoffeeSort;
 import cz.fungisoft.coffeecompass.pojo.LatLong;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.CoffeeSortService;
@@ -347,7 +347,7 @@ public class CoffeeSiteSearchController {
     * @return
     */
    @ModelAttribute("allCoffeeSorts")
-   public List<CoffeeSort> populateCoffeeSorts() {
+   public List<CoffeeSortDTO> populateCoffeeSorts() {
        return coffeeSortService.getAllCoffeeSorts();
    }
 }

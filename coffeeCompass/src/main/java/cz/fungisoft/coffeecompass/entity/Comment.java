@@ -22,12 +22,13 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Entity
 @Table(name="comment", schema="coffeecompass")
-public class Comment implements Serializable {
+public class Comment extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = -4668072504757454270L;
 
-	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name = "id")
+	private Long longId;
 	
     @NotNull
 	@Column(name="text", nullable=false)
@@ -40,13 +41,13 @@ public class Comment implements Serializable {
     @NotNull
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @ManyToOne // jde o pohled ze strany Comment, tedy Many Comments To One CoffeeSite
-    @JoinColumn(name = "site_id", nullable = false)
+    @JoinColumn(name = "uuid_coffee_site", nullable = false)
     private CoffeeSite coffeeSite;
 	    	
     @NotNull
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "uuid_user", nullable = false)
     private User user;
 
     @Override
@@ -54,7 +55,7 @@ public class Comment implements Serializable {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Comment comment = (Comment) o;
-        return id != null && Objects.equals(id, comment.id);
+        return longId != null && Objects.equals(longId, comment.longId);
     }
 
     @Override

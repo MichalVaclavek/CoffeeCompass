@@ -2,6 +2,7 @@ package cz.fungisoft.coffeecompass.controller.rest;
 
 import java.util.*;
 
+import cz.fungisoft.coffeecompass.dto.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,17 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
-import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
-import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
-import cz.fungisoft.coffeecompass.entity.CoffeeSiteType;
-import cz.fungisoft.coffeecompass.entity.CoffeeSort;
-import cz.fungisoft.coffeecompass.entity.CupType;
-import cz.fungisoft.coffeecompass.entity.NextToMachineType;
-import cz.fungisoft.coffeecompass.entity.OtherOffer;
-import cz.fungisoft.coffeecompass.entity.PriceRange;
-import cz.fungisoft.coffeecompass.entity.SiteLocationType;
-import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
 import cz.fungisoft.coffeecompass.service.CSRecordStatusService;
 import cz.fungisoft.coffeecompass.service.CSStatusService;
@@ -53,7 +43,6 @@ import jakarta.validation.constraints.Min;
  */
 @Tag(name = "CoffeeSite", description = "Coffee site operations")
 @RestController 
-//@RequestMapping("/rest/site")
 @RequestMapping("${site.coffeesites.baseurlpath.rest}" + "/site")
 public class CoffeeSiteControllerPublicREST {
     
@@ -319,7 +308,7 @@ public class CoffeeSiteControllerPublicREST {
      * @param status
      * @return pocet lokaci v danem okruhu s kavou podle coffeeSite statusu. druhu kavy a typu lokace
      */
-    @GetMapping("/getNumberOfSites")
+    @GetMapping("/getNumberOfSites/")
     public ResponseEntity<Integer> getNumberOfSitesWithStatus(@RequestParam(value="lat1") double lat1,
                                                               @RequestParam(value="lon1") double lon1,
                                                               @RequestParam(value="range") int rangeMeters,
@@ -339,7 +328,7 @@ public class CoffeeSiteControllerPublicREST {
      * @param distances - map containing one value name "distances" wit list of search distances as value
      * @return
      */
-    @PostMapping("/getNumberOfSitesInGivenDistances")
+    @PostMapping("/getNumberOfSitesInGivenDistances/")
     public ResponseEntity<Map<String, Integer>> getNumbersOfSitesWithStatus(@RequestParam(value="lat1") double lat1,
                                                                             @RequestParam(value="lon1") double lon1,
                                                                             @RequestParam(value="status", defaultValue="V provozu") String status,
@@ -353,15 +342,11 @@ public class CoffeeSiteControllerPublicREST {
      * REST endpoint for obtaining number of stars gived by userID to coffeeSiteID
      * If there was no rating for this site and user yet, then returns zero 0.
      * URL example: https://localhost:8443/rest/site/stars/?siteID=2&userID=1
-     * 
-     * @param siteID
-     * @param userID
-     * @return
      */
     @GetMapping("/stars/number/")
     @ResponseStatus(HttpStatus.OK)
-    public Integer getNumberOfStarsForSiteFromUser(@RequestParam(value="siteID") Long siteID, @RequestParam(value="userID") Long userID) {
-        Integer numOfStars = starsForCoffeeSiteService.getStarsForCoffeeSiteAndUser(siteID, userID);
+    public Integer getNumberOfStarsForSiteFromUser(@RequestParam(value="siteID") String siteExtId, @RequestParam(value="userID") String userExtId) {
+        Integer numOfStars = starsForCoffeeSiteService.getStarsForCoffeeSiteAndUser(siteExtId, userExtId);
         if (numOfStars == null) {
             numOfStars = 0;
         }
@@ -371,52 +356,52 @@ public class CoffeeSiteControllerPublicREST {
     /* *** Atributes needed for client creating/editing Coffee site **** */
     
     @GetMapping("/allOtherOffers")
-    public List<OtherOffer> populateOtherOffers() {
+    public List<OtherOfferDTO> populateOtherOffers() {
         return offerService.getAllOtherOffers();
     }
        
     @GetMapping("/allSiteStatuses")
-    public List<CoffeeSiteStatus> populateSiteStatuses() {
+    public List<CoffeeSiteStatusDTO> populateSiteStatuses() {
         return csStatusService.getAllCoffeeSiteStatuses();
     }
     
     @GetMapping("/allSiteRecordStatuses")
-    public List<CoffeeSiteRecordStatus> populateSiteRecordStatuses() {
+    public List<CoffeeSiteRecordStatusDTO> populateSiteRecordStatuses() {
         return csRecordStatusService.getAllCSRecordStatuses();
     }
     
     @GetMapping("/allHodnoceniKavyStars")
-    public List<StarsQualityDescription> populateQualityStars() {
+    public List<StarsQualityDescriptionDTO> populateQualityStars() {
         return starsQualityService.getAllStarsQualityDescriptions();
     }
     
     @GetMapping("/allPriceRanges")
-    public List<PriceRange> populatePriceRanges() {
+    public List<PriceRangeDTO> populatePriceRanges() {
         return priceRangeService.getAllPriceRanges();
     }
     
     @GetMapping("/allLocationTypes")
-    public List<SiteLocationType> populateLocationTypes() {
+    public List<SiteLocationTypeDTO> populateLocationTypes() {
         return locationTypesService.getAllSiteLocationTypes();
     }
     
     @GetMapping("/allCupTypes")
-    public List<CupType> populateCupTypes() {
+    public List<CupTypeDTO> populateCupTypes() {
         return cupTypesService.getAllCupTypes();
     }
         
     @GetMapping("/allCoffeeSorts")
-    public List<CoffeeSort> populateCoffeeSorts() {
+    public List<CoffeeSortDTO> populateCoffeeSorts() {
         return coffeeSortService.getAllCoffeeSorts();
     }
        
     @GetMapping("/allNextToMachineTypes")
-    public List<NextToMachineType> populateNextToMachineTypes() {
+    public List<NextToMachineTypeDTO> populateNextToMachineTypes() {
         return ntmtService.getAllNextToMachineTypes();
     }
     
     @GetMapping("/allCoffeeSiteTypes")
-    public List<CoffeeSiteType> populateCoffeeSiteTypes() {
+    public List<CoffeeSiteTypeDTO> populateCoffeeSiteTypes() {
         return coffeeSiteTypeService.getAllCoffeeSiteTypes();
     }
 }

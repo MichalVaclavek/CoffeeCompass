@@ -72,11 +72,11 @@ insertTableRow = function(site) {
 	// Insert a row in the table at the last row
 	var newRow   = tableBodyRef.insertRow();
 	newRow.setAttribute("style", "cursor: pointer;");
-	newRow.onclick = function() {rowClicked(site.externalId)};
+	newRow.onclick = function() {rowClicked(site.id)};
 	
 	insertTableRowCell(newRow, site.averageStarsWithNumOfHodnoceni.common);
 	insertTableRowCell(newRow, site.distFromSearchPoint);
-	insertTableRowCell(newRow, createStringFromList(site.otherOffers, 'offer'));
+	insertTableRowCell(newRow, createStringFromList(site.otherOffers, 'otherOffer'));
 	insertTableRowCell(newRow, createStringFromList(site.coffeeSorts, 'coffeeSort'));
 	insertTableRowCell(newRow, site.typPodniku.coffeeSiteType);
 	insertTableRowCell(newRow, site.statusZarizeni.status);
@@ -114,9 +114,7 @@ insertSitesToTable = function(foundSites, tableBodyReferenceLoc)
 	if (foundSites != null && foundSites.length > 0)
 	{	     		     	
 		foundSitesInTable = foundSites;
-		
 		tableBodyRef = tableBodyReferenceLoc;
-		
 		changePage(1);
 	}
 }

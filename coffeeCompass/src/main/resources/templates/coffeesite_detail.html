@@ -98,14 +98,14 @@
                                 <td th:text="#{site.coffeeSorts}">CoffeeSorts</td>
                                 <td style="font-weight: bold" class="w3-right-align w3-sand"><span
                                         th:each="sort, iterStat : ${coffeeSite.coffeeSorts}"
-                                        th:text="!${iterStat.last} ? ${sort}+', ' : ${sort}">Coffee Sort</span></td>
+                                        th:text="!${iterStat.last} ? ${sort.coffeeSort}+', ' : ${sort.coffeeSort}">Coffee Sort</span></td>
                             </tr>
 
                             <tr th:if="${#lists.size(coffeeSite.otherOffers) > 0}">
                                 <td th:text="#{site.otherOffers}">Offer</td>
                                 <td class="w3-right-align w3-sand" style="font-weight: bold"><span
                                         th:each="offer, iterStat : ${coffeeSite.otherOffers}"
-                                        th:text="!${iterStat.last} ? ${offer}+', ' : ${offer}">Other Offer</span></td>
+                                        th:text="!${iterStat.last} ? ${offer.otherOffer}+', ' : ${offer.otherOffer}">Other Offer</span></td>
                             </tr>
 
                             <tr th:if="${coffeeSite.cena != null}">
@@ -119,7 +119,7 @@
                                 <td th:text="#{site.cupTypes}">Cup Types</td>
                                 <td class="w3-right-align w3-sand" style="font-weight: bold"><span
                                         th:each="cupType, iterStat : ${coffeeSite.cupTypes}"
-                                        th:text="!${iterStat.last} ? ${cupType}+', ' : ${cupType}">Cup Types</span></td>
+                                        th:text="!${iterStat.last} ? ${cupType.cupType}+', ' : ${cupType.cupType}">Cup Types</span></td>
                             </tr>
 
                             <tr th:if="${coffeeSite.numOfCoffeeAutomatyVedleSebe} > 0">
@@ -140,7 +140,7 @@
                                 <td th:text="#{site.nextToMachineTypes}">Other neighbering machines types</td>
                                 <td class="w3-right-align w3-sand" style="font-weight: bold"><span
                                         th:each="ntmType, iterStat : ${coffeeSite.nextToMachineTypes}"
-                                        th:text="!${iterStat.last} ? ${ntmType}+', ' : ${ntmType}">Other neighbering machines types</span>
+                                        th:text="!${iterStat.last} ? ${ntmType.nextToMachineType}+', ' : ${ntmType.nextToMachineType}">Other neighbering machines types</span>
                                 </td>
                             </tr>
 
@@ -185,7 +185,7 @@
                                         </div>
                                         <div class="w3-cell w3-cell-middle w3-container w3-border-left">
                                             <form action="#"
-                                                  th:action="@{'/showSiteInMap/' + ${coffeeSite.externalId}}"
+                                                  th:action="@{'/showSiteInMap/' + ${coffeeSite.extId}}"
                                                   th:method="GET">
                                                 <input type="hidden" name="_method" value="get"/>
                                                 <button type="submit" id="submitButton" th:text="#{site.show.map}"
@@ -243,7 +243,7 @@
                                         <form id="modifySiteForm"
                                               th:if="${coffeeSite.canBeModified} OR ${coffeeSite.canBeDeactivated}"
                                               action="#"
-                                              th:action="@{'/modifySite/' + ${coffeeSite.externalId}}"
+                                              th:action="@{'/modifySite/' + ${coffeeSite.extId}}"
                                               th:method="GET">
                                             <input type="hidden" name="_method" value="get"/>
                                             <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit"
@@ -258,7 +258,7 @@
                                         <form id="activateSiteForm"
                                               th:if="${coffeeSite.canBeActivated} OR ${coffeeSite.canBeDeactivated} "
                                               action="#"
-                                              th:action="@{'/activateSite/' + ${coffeeSite.externalId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
+                                              th:action="@{'/activateSite/' + ${coffeeSite.extId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
                                               th:method="PUT">
                                             <input type="hidden" name="_method" value="put"/>
                                             <button th:disabled="${coffeeSite.canBeDeactivated} OR ${param.anyOtherSiteActiveOnSamePosition}"
@@ -273,7 +273,7 @@
                                         <form id="deactivateSiteForm"
                                               th:if="${coffeeSite.canBeActivated} OR ${coffeeSite.canBeDeactivated}"
                                               action="#"
-                                              th:action="@{'/deactivateSite/' + ${coffeeSite.externalId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
+                                              th:action="@{'/deactivateSite/' + ${coffeeSite.extId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
                                               th:method="PUT">
                                             <input type="hidden" name="_method" value="put"/>
                                             <button th:disabled="${coffeeSite.canBeActivated}" type="submit"
@@ -288,7 +288,7 @@
                                         <form id="cancelStatusSiteForm"
                                               th:if="${coffeeSite.canBeCanceled} OR ${coffeeSite.canBeDeactivated}"
                                               action="#"
-                                              th:action="@{'/cancelStatusSite/' + ${coffeeSite.externalId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
+                                              th:action="@{'/cancelStatusSite/' + ${coffeeSite.extId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
                                               th:method="PUT">
                                             <input type="hidden" name="_method" value="put"/>
                                             <button th:disabled="${coffeeSite.canBeDeactivated}" type="submit"
@@ -302,7 +302,7 @@
                                     <div class="w3-cell">
                                         <form th:if="${coffeeSite.canBeDeleted}"
                                               action="#"
-                                              th:action="@{'/finalDeleteSite/' + ${coffeeSite.externalId}}"
+                                              th:action="@{'/finalDeleteSite/' + ${coffeeSite.extId}}"
                                               th:method="DELETE">
                                             <input type="hidden" name="_method" value="delete"/>
                                             <button type="submit" id="submitButton" th:text="#{site.delete}"
@@ -352,7 +352,7 @@
                                 <div class="w3-left" th:if="${coffeeSite.mainImageURL != ''}">
                                     <!-- -->
                                     <form id="rotateLeftAction" action="#"
-                                          th:action="@{'/rotateImageLeft/' + ${coffeeSite.externalId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
+                                          th:action="@{'/rotateImageLeft/' + ${coffeeSite.extId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
                                           th:method="PUT">
                                         <input type="hidden" name="_method" value="put"/>
                                         <button type="submit" id="rotateImageLeftButton"
@@ -364,7 +364,7 @@
                                 <!-- Element with Button/Form to Rotate image of the CoffeeSite Right by 90 degree -->
                                 <div class="w3-left" th:if="${coffeeSite.mainImageURL != ''}">
                                     <form id="rotateRightAction" action="#"
-                                          th:action="@{'/rotateImageRight/' + ${coffeeSite.externalId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
+                                          th:action="@{'/rotateImageRight/' + ${coffeeSite.extId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
                                           th:method="PUT">
                                         <input type="hidden" name="_method" value="put"/>
                                         <button type="submit" id="rotateImageRightButton"
@@ -377,7 +377,7 @@
                                 <div class="w3-right"
                                      th:if="${coffeeSite.mainImageURL != ''} AND ${coffeeSite.canBeModified}">
                                     <form id="deleteImageForm" action="#" th:object="${thisSiteImageId}"
-                                          th:action="@{'/deleteImage/' + ${coffeeSite.externalId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
+                                          th:action="@{'/deleteImage/' + ${coffeeSite.extId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
                                           th:method="DELETE">
                                         <input type="hidden" name="_method" value="delete"/>
                                         <button type="submit" id="submitDeleteFileButton"
@@ -485,7 +485,7 @@
                         comment</h4>
                     <!-- Formular pro zadani hodnoceni - Stars. Muze zadat pouze prihlaseny uzivatel. -->
                     <form id="saveStarsAndCommentForm" action="#"
-                          th:action="@{'/saveStarsAndComment/' + ${coffeeSite.externalId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
+                          th:action="@{'/saveStarsAndComment/' + ${coffeeSite.extId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
                           th:method="post">
 
                         <div th:if="${coffeeSite.canBeRatedByStars}" style="width:20%" class="w3-margin-top">

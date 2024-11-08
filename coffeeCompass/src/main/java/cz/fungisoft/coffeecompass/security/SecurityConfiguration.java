@@ -1,20 +1,21 @@
 package cz.fungisoft.coffeecompass.security;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,14 +25,15 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProvider
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
+import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -47,6 +49,10 @@ import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
 import cz.fungisoft.coffeecompass.serviceimpl.user.CustomOAuth2UserService;
 
 import jakarta.servlet.Filter;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -123,7 +129,6 @@ public class SecurityConfiguration {
             .requestMatchers("/**","/home", "/about").permitAll()
             .requestMatchers("/oauth2/**").permitAll()
             .requestMatchers(PUBLIC_REST_URLS).permitAll()
-            .requestMatchers("/kafka/**").permitAll()
             .requestMatchers("/createModifySite/**", "/createSite", "/modifySite/**").hasAnyRole("ADMIN", "DBA", "USER")
             .requestMatchers("/cancelStatusSite/**", "/deactivateSite/**", "/activateSite/**").hasAnyRole("ADMIN", "DBA", "USER")
             .requestMatchers("/saveStarsAndComment/**", "/mySites").hasAnyRole("ADMIN", "DBA", "USER")
@@ -173,7 +178,7 @@ public class SecurityConfiguration {
 //            .successHandler(oAuth2AuthenticationSuccessHandler)
 //            .failureHandler(oAuth2AuthenticationFailureHandler);
 
-        http.oauth2Login(withDefaults());
+//        http.oauth2Login(withDefaults());
         http.oauth2Login(httpSecurityOAuth2LoginConfigurer -> httpSecurityOAuth2LoginConfigurer
                 .loginPage("/login")
                 .defaultSuccessUrl("/oauth2/loginSuccess")
@@ -197,13 +202,13 @@ public class SecurityConfiguration {
 
 
 //    @Bean
-//    private GrantedAuthoritiesMapper userAuthoritiesMapper() {
+//    GrantedAuthoritiesMapper userAuthoritiesMapper() {
 //        return authorities -> {
 //            Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
 //
 //            authorities.forEach(authority -> {
-//                if (authority instanceof OidcUserAuthority) {
-//                    OidcUserAuthority oidcUserAuthority = (OidcUserAuthority)authority;
+//                if (authority instanceof OidcUserAuthority oidcUserAuthority) {
+////                    OidcUserAuthority oidcUserAuthority = (OidcUserAuthority)authority;
 //
 //                    OidcIdToken idToken = oidcUserAuthority.getIdToken();
 //                    OidcUserInfo userInfo = oidcUserAuthority.getUserInfo();
@@ -211,8 +216,8 @@ public class SecurityConfiguration {
 //                    // Map the claims found in idToken and/or userInfo
 //                    // to one or more GrantedAuthority's and add it to mappedAuthorities
 //
-//                } else if (authority instanceof OAuth2UserAuthority) {
-//                    OAuth2UserAuthority oauth2UserAuthority = (OAuth2UserAuthority)authority;
+//                } else if (authority instanceof OAuth2UserAuthority oauth2UserAuthority) {
+////                    OAuth2UserAuthority oauth2UserAuthority = (OAuth2UserAuthority)authority;
 //
 //                    Map<String, Object> userAttributes = oauth2UserAuthority.getAttributes();
 //
@@ -249,18 +254,26 @@ public class SecurityConfiguration {
         return new BCryptPasswordEncoder(11);
     }
  
+//    @Bean
+//    public DaoAuthenticationProvider authenticationProvider() {
+//        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+//        authenticationProvider.setUserDetailsService(userDetailsService);
+//        authenticationProvider.setPasswordEncoder(passwordEncoder());
+//        return authenticationProvider;
+//    }
+
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
+    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService);
-        authenticationProvider.setPasswordEncoder(passwordEncoder());
-        return authenticationProvider;
+        authenticationProvider.setPasswordEncoder(passwordEncoder);
+        return new ProviderManager(authenticationProvider);
     }
  
-    @Bean
-    public AuthenticationTrustResolver getAuthenticationTrustResolver() {
-        return new AuthenticationTrustResolverImpl();
-    }
+//    @Bean
+//    public AuthenticationTrustResolver getAuthenticationTrustResolver() {
+//        return new AuthenticationTrustResolverImpl();
+//    }
     
     /**
      * By default, Spring OAuth2 uses HttpSessionOAuth2AuthorizationRequestRepository to save

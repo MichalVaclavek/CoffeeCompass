@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import cz.fungisoft.coffeecompass.exceptions.UserNotFoundException;
 import cz.fungisoft.coffeecompass.mappers.CommentMapper;
+import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +24,6 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.Comment;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.exceptions.EntityNotFoundException;
-import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
 import cz.fungisoft.coffeecompass.repository.CommentRepository;
 import cz.fungisoft.coffeecompass.repository.CommentsPageableRepository;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
@@ -43,7 +43,8 @@ import lombok.extern.slf4j.Slf4j;
 public class CommentService implements ICommentService {
 
     @Autowired
-    private CoffeeSiteRepository coffeeSiteRepo;
+//    private CoffeeSiteRepository coffeeSiteRepo;
+    private CoffeeSiteService coffeeSiteService;
     
     @Autowired
     private UserService userService;
@@ -72,12 +73,23 @@ public class CommentService implements ICommentService {
 	/**
 	 * Can return null, if the User or CoffeeSite are not found based on it's id
 	 */
-	@Override
-    public Comment saveTextAsComment(String commentText, Long userID, Long coffeeSiteID) {
-	    Optional<User> user = userService.findById(userID);
-        CoffeeSite cs = coffeeSiteRepo.findById(coffeeSiteID).orElse(null);             
-        if (user.isPresent() && cs != null) {
-            return saveTextAsComment(commentText, user.get(), cs);
+//	@Override
+//    public Comment saveTextAsComment(String commentText, Long userID, Long coffeeSiteID) {
+//	    Optional<User> user = userService.findById(userID);
+//        CoffeeSite cs = coffeeSiteRepo.findById(coffeeSiteID).orElse(null);
+//        if (user.isPresent() && cs != null) {
+//            return saveTextAsComment(commentText, user.get(), cs);
+//        } else {
+//            return null;
+//        }
+//    }
+
+    @Override
+    public Comment saveTextAsComment(String commentText, String userExtId, String coffeeSiteExtId) {
+        Optional<User> user = userService.findByExtId(userExtId);
+        Optional<CoffeeSite> cs = coffeeSiteService.findOneByExternalId(coffeeSiteExtId);
+        if (user.isPresent() && cs.isPresent()) {
+            return saveTextAsComment(commentText, user.get(), cs.get());
         } else {
             return null;
         }
@@ -119,28 +131,28 @@ public class CommentService implements ICommentService {
     @Override
     public Comment updateComment(CommentDTO updatedComment) {
         
-        if (updatedComment != null && updatedComment.getCoffeeSiteId() > 0 && updatedComment.getUserId() > 0) {
+        if (updatedComment != null && updatedComment.getCoffeeSiteId() != null && updatedComment.getUserId() != null) {
             
-            Optional<Comment> comment = commentsRepo.findById(updatedComment.getId());
+            Optional<Comment> comment = commentsRepo.findById(updatedComment.getExtId());
             
             if (comment.isPresent()) {
                 if (updatedComment.getText().isEmpty()) { // empty text of Comment means delete Comment
-                    commentsRepo.deleteById(updatedComment.getId());
-                    log.info("Comment update. Comment id {} deleted, because of empty comment text. User id {}, CoffeeSite id {}", updatedComment.getId(),  updatedComment.getUserId(), updatedComment.getCoffeeSiteId());
+                    commentsRepo.deleteById(updatedComment.getExtId());
+                    log.info("Comment update. Comment id {} deleted, because of empty comment text. User id {}, CoffeeSite id {}", updatedComment.getExtId(),  updatedComment.getUserId(), updatedComment.getCoffeeSiteId());
                     return null;
                 }
                 
-                if (comment.get().getUser().getId() == updatedComment.getUserId()
-                        && comment.get().getCoffeeSite().getId() == updatedComment.getCoffeeSiteId()) {
+                if (comment.get().getUser().getId().equals(updatedComment.getUserId())
+                        && comment.get().getCoffeeSite().getId().equals(updatedComment.getCoffeeSiteId())) {
                     comment.get().setText(updatedComment.getText());
                     comment.get().setCreated(LocalDateTime.now());
-                    log.info("Comment id {} updated from User id {} for CoffeeSite id {}", updatedComment.getId(),  updatedComment.getUserId(), updatedComment.getCoffeeSiteId());
+                    log.info("Comment id {} updated from User id {} for CoffeeSite id {}", updatedComment.getExtId(),  updatedComment.getUserId(), updatedComment.getCoffeeSiteId());
                     return commentsRepo.save(comment.get());
                 }
             }
         } // if any input data are wrong, log it
         if (updatedComment != null) {
-            log.warn("Comment id {} update failed. User id {} for CoffeeSite id {}", updatedComment.getId(),  updatedComment.getUserId(), updatedComment.getCoffeeSiteId());
+            log.warn("Comment id {} update failed. User id {} for CoffeeSite id {}", updatedComment.getExtId(),  updatedComment.getUserId(), updatedComment.getCoffeeSiteId());
         }
         return null;
     }
@@ -148,25 +160,43 @@ public class CommentService implements ICommentService {
 	/* (non-Javadoc)
 	 * @see cz.zutrasoft.base.services.CommentService#getAllCommentsFromUser(int)
 	 */
-	@Override
-	public List<CommentDTO> getAllCommentsFromUser(Long userID) {
-	    return modifyToTransfer(commentsRepo.getAllCommentsFromUser(userID));
-	}
+//	@Override
+//	public List<CommentDTO> getAllCommentsFromUser(Long userID) {
+//	    return modifyToTransfer(commentsRepo.getAllCommentsFromUser(userID));
+//	}
+
+    @Override
+    public List<CommentDTO> getAllCommentsFromUser(String userExtID) {
+        return getAllCommentsFromUser(UUID.fromString(userExtID));
+    }
+
+    @Override
+    public List<CommentDTO> getAllCommentsFromUser(UUID userExtID) {
+        return userService.findByExtId(userExtID)
+                .map( user -> modifyToTransfer(commentsRepo.getAllCommentsFromUser(user.getId())) )
+                .orElse(Collections.emptyList());
+    }
 
 	@Override
 	public List<CommentDTO> getAllCommentsFromUser(User user) {
 	    return modifyToTransfer(commentsRepo.getAllCommentsFromUser(user.getId()));
 	}
 	
-	@Override
-    public List<CommentDTO> getAllCommentsForSiteId(Long coffeeSiteID) {
-	    return modifyToTransfer(commentsRepo.getAllCommentsForSite(coffeeSiteID));
+//	@Override
+//    public List<CommentDTO> getAllCommentsForSiteId(Long coffeeSiteID) {
+//	    return modifyToTransfer(commentsRepo.getAllCommentsForSite(coffeeSiteID));
+//    }
+
+    @Override
+    public List<CommentDTO> getAllCommentsForSiteId(String siteExtId) {
+        return getAllCommentsForSiteId(UUID.fromString(siteExtId));
     }
 
-    public List<CommentDTO> getAllCommentsForSiteId(String siteExtId) {
-        return coffeeSiteRepo.findByExternalId(UUID.fromString(siteExtId))
-                             .map(cs -> getAllCommentsForSiteId(cs.getId()))
-                             .orElse(Collections.emptyList());
+    @Override
+    public List<CommentDTO> getAllCommentsForSiteId(UUID siteExtId) {
+        return commentsRepo.getAllCommentsForSite(siteExtId).stream()
+                .map(this::modifyToTransfer)
+                .toList();
     }
 	
 	@Override
@@ -175,10 +205,21 @@ public class CommentService implements ICommentService {
         return commentsPage.map(this::modifyToTransfer);
     }
 	
-	@Override
-    public Integer getNumberOfCommentsForSiteId(Long siteId) {
+//	@Override
+//    public Integer getNumberOfCommentsForSiteId(Long siteId) {
+//        return commentsRepo.getNumberOfCommentsForSite(siteId);
+//    }
+
+    @Override
+    public Integer getNumberOfCommentsForSiteId(UUID siteId) {
         return commentsRepo.getNumberOfCommentsForSite(siteId);
     }
+
+    @Override
+    public Integer getNumberOfCommentsForSiteId(String siteId) {
+        return getNumberOfCommentsForSiteId(UUID.fromString(siteId));
+    }
+
 
 	@Override
 	public List<CommentDTO> getAllComments() {
@@ -227,24 +268,51 @@ public class CommentService implements ICommentService {
     }
 
 	@Override
-	public Long deleteComment(Comment comment) {
-	    return deleteCommentById(comment.getId());
+	public UUID deleteComment(Comment comment) {
+	    return deleteCommentByExtId(comment.getId());
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * Returns CoffeeSite the deleted Comment belonged to.
 	 */
-	@Override
-    public Long deleteCommentById(Long commentId) {
-	    Long siteId = commentsRepo.getSiteIdForComment(commentId);
-	    commentsRepo.deleteById(commentId);
-	    log.info("Comment deleted. Id {}", commentId);
-	    return siteId;
+//	@Override
+//    public Long deleteCommentById(Long commentId) {
+//	    Long siteId = commentsRepo.getSiteIdForComment(commentId);
+//	    commentsRepo.deleteById(commentId);
+//	    log.info("Comment deleted. Id {}", commentId);
+//	    return siteId;
+//    }
+
+    @Override
+    public UUID deleteCommentByExtId(UUID commentId) {
+        UUID siteId = commentsRepo.getSiteIdForComment(commentId);
+        commentsRepo.deleteById(commentId);
+        log.info("Comment deleted. Id {}", commentId);
+        return siteId;
     }
 
     @Override
-    public Comment getById(Long id) {
+    public UUID deleteCommentByExtId(String commentId) {
+        return deleteCommentByExtId(UUID.fromString(commentId));
+    }
+
+//    @Override
+//    public Comment getById(Long id) {
+//        Comment comment = commentsRepo.findById(id).orElse(null);
+//        if (comment == null) {
+//            throw new EntityNotFoundException("Comment with id " + id + " not found.");
+//        }
+//        return comment;
+//    }
+
+    @Override
+    public Comment getByExtId(String id) {
+        return getByExtId(UUID.fromString(id));
+    }
+
+    @Override
+    public Comment getByExtId(UUID id) {
         Comment comment = commentsRepo.findById(id).orElse(null);
         if (comment == null) {
             throw new EntityNotFoundException("Comment with id " + id + " not found.");
@@ -252,21 +320,32 @@ public class CommentService implements ICommentService {
         return comment;
     }
     
+//    @Override
+//    public CommentDTO getByIdToTransfer(Long id) {
+//        return modifyToTransfer(getById(id));
+//    }
+
     @Override
-    public CommentDTO getByIdToTransfer(Long id) {
-        return modifyToTransfer(getById(id));
+    public CommentDTO getByExtIdToTransfer(String id) {
+        return modifyToTransfer(getByExtId(id));
     }
 
     @Override
-    public void deleteAllCommentsFromUser(Long userID) {
+    public CommentDTO getByExtIdToTransfer(UUID id) {
+        return modifyToTransfer(getByExtId(id));
+    }
+
+    @Override
+    public void deleteAllCommentsFromUser(UUID userID) {
         log.info("All comments from user id {} deleted.", userID);
-        commentsRepo.deleteAllFromUser(userID);
+        Optional<User> user = userService.findByExtId(userID);
+        user.ifPresent(u -> commentsRepo.deleteAllFromUser(u.getId()));
     }
 
-    @Override
-    public void deleteAllCommentsForSite(Long coffeeSiteID) {
-        log.info("All comments of the Coffee site id {} deleted.", coffeeSiteID);
-        commentsRepo.deleteAllForSite(coffeeSiteID);
-    }
+//    @Override
+//    public void deleteAllCommentsForSite(Long coffeeSiteID) {
+//        log.info("All comments of the Coffee site id {} deleted.", coffeeSiteID);
+//        commentsRepo.deleteAllForSite(coffeeSiteID);
+//    }
 
 }

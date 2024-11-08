@@ -2,6 +2,8 @@ package cz.fungisoft.coffeecompass.serviceimpl;
 
 import java.util.List;
 
+import cz.fungisoft.coffeecompass.dto.SiteLocationTypeDTO;
+import cz.fungisoft.coffeecompass.mappers.SiteLocationTypeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -17,11 +19,14 @@ import cz.fungisoft.coffeecompass.service.SiteLocationTypeService;
 public class SiteLocationTypeServiceImpl implements SiteLocationTypeService {
 
     private final SiteLocationTypeRepository siteLocTypeRepo;
+
+    private final SiteLocationTypeMapper siteLocationTypeMapper;
     
     @Autowired
-    public SiteLocationTypeServiceImpl(SiteLocationTypeRepository siteLocTypeRepo) {
+    public SiteLocationTypeServiceImpl(SiteLocationTypeRepository siteLocTypeRepo, SiteLocationTypeMapper siteLocationTypeMapper) {
         super();
         this.siteLocTypeRepo = siteLocTypeRepo;
+        this.siteLocationTypeMapper = siteLocationTypeMapper;
     }
 
     @Override
@@ -36,7 +41,7 @@ public class SiteLocationTypeServiceImpl implements SiteLocationTypeService {
 
     @Override
     @Cacheable(cacheNames = "siteLocationTypesCache")
-    public List<SiteLocationType> getAllSiteLocationTypes() {
-        return siteLocTypeRepo.findAll();
+    public List<SiteLocationTypeDTO> getAllSiteLocationTypes() {
+        return siteLocTypeRepo.findAll().stream().map(siteLocationTypeMapper::siteLocationTypeToSiteLocationTypeDto).toList();
     }
 }

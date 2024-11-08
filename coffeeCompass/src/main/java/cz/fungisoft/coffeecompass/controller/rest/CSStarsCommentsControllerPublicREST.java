@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.controller.rest;
 import java.util.List;
 import java.util.Optional;
 
+import cz.fungisoft.coffeecompass.dto.StarsQualityDescriptionDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,15 +16,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 
 import cz.fungisoft.coffeecompass.dto.CommentDTO;
-import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
 import cz.fungisoft.coffeecompass.exceptions.rest.ResourceNotFoundException;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
 import cz.fungisoft.coffeecompass.service.comment.ICommentService;
-//import io.swagger.annotations.Api;
 
 /**
  * Controller for handling addition/deletition of Comment and Stars for CoffeeSite.<br>
@@ -38,8 +36,6 @@ import cz.fungisoft.coffeecompass.service.comment.ICommentService;
  *
  */
 @Tag(name = "Stars and comments", description = "Stars rating and comments of the coffee site")
-@RestController 
-//@RequestMapping("/rest/public/starsAndComments")
 @RequestMapping("${site.coffeesites.baseurlpath.rest}" + "/public/starsAndComments")
 public class CSStarsCommentsControllerPublicREST {
 
@@ -63,17 +59,17 @@ public class CSStarsCommentsControllerPublicREST {
     /**
      * Zpracuje GET pozadavek na Comment urciteho ID
      * 
-     * @param commentId Comment to be returned
+     * @param commentExtId Comment to be returned
      * @return
      */
-    @GetMapping("/getComment/{commentId}") 
-    public ResponseEntity<CommentDTO> getCommentByID(@PathVariable Long commentId) {
+    @GetMapping("/getComment/{commentExtId}")
+    public ResponseEntity<CommentDTO> getCommentByID(@PathVariable String commentExtId) {
         
         CommentDTO comment = null;
         
         // Ulozit Comment if not empty
-        if (commentId != null) {
-            comment = commentsService.getByIdToTransfer(commentId);
+        if (commentExtId != null) {
+            comment = commentsService.getByExtIdToTransfer(commentExtId);
         }
         
         return (comment != null) ? new ResponseEntity<>(comment, HttpStatus.OK)
@@ -131,7 +127,7 @@ public class CSStarsCommentsControllerPublicREST {
      */
     @GetMapping("/comments/{siteId}") // napr. https://localhost:8443/rest/public/starsAndComments/comments/2
     @ResponseStatus(HttpStatus.OK)
-    public List<CommentDTO> commentsBySiteId(@PathVariable("siteId") Long siteId) {
+    public List<CommentDTO> commentsBySiteId(@PathVariable("siteId") String siteId) {
         
         // Gets all comments for this coffeeSite
         List<CommentDTO> comments = commentsService.getAllCommentsForSiteId(siteId);
@@ -171,7 +167,7 @@ public class CSStarsCommentsControllerPublicREST {
      */
     @GetMapping("/comments/number/{siteId}") // napr. http://localhost:8080/rest/public/starsAndComments/comments/number/2
     @ResponseStatus(HttpStatus.OK)
-    public Integer numberOfCommentsForSiteId(@PathVariable("siteId") Long siteId) {
+    public Integer numberOfCommentsForSiteId(@PathVariable("siteId") String siteId) {
         
         // Gets number of all comments for this coffeeSite
         Integer commentsNumber = commentsService.getNumberOfCommentsForSiteId(siteId);
@@ -192,7 +188,7 @@ public class CSStarsCommentsControllerPublicREST {
      */
     @GetMapping("/starsQualityDescription/all")
     @ResponseStatus(HttpStatus.OK)
-    public List<StarsQualityDescription> populateAllQualityStars() {
+    public List<StarsQualityDescriptionDTO> populateAllQualityStars() {
         return starsQualityService.getAllStarsQualityDescriptions();
     }
 }

@@ -8,9 +8,10 @@ import org.springframework.data.jpa.repository.QueryHints;
 
 import jakarta.persistence.QueryHint;
 
-public interface CompanyRepository extends JpaRepository<Company, Integer> {
+import java.util.UUID;
 
-//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+public interface CompanyRepository extends JpaRepository<Company, UUID> {
+
     @Query("select comp from Company comp where nameOfCompany=?1")
     Company searchByName(String company);
 }

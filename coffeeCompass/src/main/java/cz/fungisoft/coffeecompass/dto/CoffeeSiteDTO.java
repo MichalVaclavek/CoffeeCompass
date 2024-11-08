@@ -20,6 +20,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Trida pro prenos vybranych informaci o objektu CoffeeSite na clienta, tzv. DTO objekt.
@@ -27,10 +28,9 @@ import lombok.Data;
  * 
  * @author Michal Vaclavek
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class CoffeeSiteDTO {
-
-    private String externalId; // default empty, not saved in DB
+public class CoffeeSiteDTO extends BaseItem {
 
     @Size(min=3, max=50)
     private String siteName;
@@ -44,30 +44,30 @@ public class CoffeeSiteDTO {
     @JsonFormat(pattern = "dd. MM. yyyy HH:mm", timezone="Europe/Prague")
     private LocalDateTime createdOn;
     
-    private Set<CoffeeSort> coffeeSorts;
+    private Set<CoffeeSortDTO> coffeeSorts;
 
     private String originalUserName;
     private String lastEditUserName;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private CoffeeSiteType typPodniku;
+    private CoffeeSiteTypeDTO typPodniku;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private CoffeeSiteStatus statusZarizeni;
+    private CoffeeSiteStatusDTO statusZarizeni;
     
     // status zaznamu je potreba prenaset, protoze uzivatele budou moci tento status u "svych" CoffeeSite menit.
     private CoffeeSiteRecordStatusDTO recordStatus;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Company dodavatelPodnik;
+    private CompanyDTO dodavatelPodnik;
     
-    private Set<CupType> cupTypes;
+    private Set<CupTypeDTO> cupTypes;
     
     private AverageStarsForSiteDTO averageStarsWithNumOfHodnoceni;
 
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private PriceRange cena;
-    
+//    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private PriceRangeDTO cena;
+
     @NotNull
     @DecimalMax(value="180.0")
     @DecimalMin(value="-180.0")
@@ -86,7 +86,25 @@ public class CoffeeSiteDTO {
     
     @Size(max=60)
     private String mesto;
-    
+
+    @DecimalMax(value="9")
+    @DecimalMin(value="0")
+    private int numOfCoffeeAutomatyVedleSebe = 0;
+
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private SiteLocationTypeDTO typLokality;
+
+    private Set<OtherOfferDTO> otherOffers;
+
+    private Set<NextToMachineTypeDTO> nextToMachineTypes;
+
+    /**
+     * To indicate if the Image is saved for this CoffeeSite.
+     * Used especialy for REST services.
+     */
+    private String mainImageURL = ""; // default value for image URL. Means, no image available if empty, otherwise URL of the image inserted by CoffeeSite service evaluateOperationalAttributes() method
+
+
     public void setMesto(String mesto) {
         if (mesto != null) {
             this.mesto = mesto.trim();
@@ -129,24 +147,7 @@ public class CoffeeSiteDTO {
         }
     }
     
-    @DecimalMax(value="9")
-    @DecimalMin(value="0")
-    private int numOfCoffeeAutomatyVedleSebe = 0;
-
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private SiteLocationType typLokality;
-    
-    private Set<OtherOffer> otherOffers;
-    
-    private Set<NextToMachineType> nextToMachineTypes;
-   
-    /**
-     * To indicate if the Image is saved for this CoffeeSite.
-     * Used especialy for REST services.
-     */
-    private String mainImageURL = ""; // default value for image URL. Means, no image available if empty, otherwise URL of the image inserted by CoffeeSite service evaluateOperationalAttributes() method
-    
-    /* 
+    /*
      * Attributes to hold info about "editable" status of the CoffeeSite
      */
     private boolean isVisible;

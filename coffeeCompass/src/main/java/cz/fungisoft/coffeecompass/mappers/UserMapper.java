@@ -8,8 +8,10 @@ import org.mapstruct.Mapping;
 @Mapper
 public interface UserMapper {
 
+    @Mapping(target = "id", source="extId")
     User userDTOtoUser(UserDTO userDTO);
 
     @Mapping(target = "password", ignore = true)
+    @Mapping(target = "extId", source="id")
     UserDTO usertoUserDTO(User user);
 }

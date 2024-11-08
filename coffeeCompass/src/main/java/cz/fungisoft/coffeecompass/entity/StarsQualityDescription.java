@@ -26,7 +26,7 @@ import java.util.Objects;
 @Setter
 @Entity
 @Table(name="stars_hodnoceni_kvality", schema="coffeecompass")
-public class StarsQualityDescription {
+public class StarsQualityDescription extends BaseEntity {
 
     public enum StarsQualityEnum implements Serializable {
         ONE("Břečka"),
@@ -64,7 +64,6 @@ public class StarsQualityDescription {
     }
     
     
-    @Id
     @NotNull
     @Column(name = "pocet_hvezdicek")
     private Integer numOfStars; 

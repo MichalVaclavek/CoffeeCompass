@@ -74,7 +74,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
 
         Optional<User> userOptional = this.userService.findByEmail(oAuth2UserInfo.getEmail());
-        User user = null;
+        User user;
         if (userOptional.isPresent()) {
             user = userOptional.get();
             if (!user.getAuthProvider().equals(AuthProviders.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))) {

@@ -11,6 +11,8 @@ import cz.fungisoft.coffeecompass.entity.User;
 
 import jakarta.persistence.QueryHint;
 
+import java.util.UUID;
+
 /**
  * Interface to get Lists of found CoffeeSite in Pageable format. Extends Spring interface PagingAndSortingRepository.<br>
  * No implementation needed as already implemented by Spring.<br>
@@ -20,15 +22,12 @@ import jakarta.persistence.QueryHint;
  * @author Michal Vaclavek
  *
  */
-public interface CoffeeSitePageableRepository extends PagingAndSortingRepository<CoffeeSite, Long> {
+public interface CoffeeSitePageableRepository extends PagingAndSortingRepository<CoffeeSite, UUID> {
 
-//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     Page<CoffeeSite> findAll(Pageable pageable);
 
-//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     Page<CoffeeSite> findByRecordStatus(CoffeeSiteRecordStatus recordStatus, Pageable pageable);
 
-//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     Page<CoffeeSite> findByOriginalUser(User originalUser, Pageable pageable);
 
     /**
@@ -40,6 +39,6 @@ public interface CoffeeSitePageableRepository extends PagingAndSortingRepository
      * @param pageable
      * @return
      */
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     Page<CoffeeSite> findByOriginalUserAndRecordStatusStatusNot(User originalUser, String status, Pageable pageable);
 }

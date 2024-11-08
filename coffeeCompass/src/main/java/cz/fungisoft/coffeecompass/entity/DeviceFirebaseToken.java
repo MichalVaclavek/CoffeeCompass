@@ -38,7 +38,7 @@ public class DeviceFirebaseToken {
      * thou the user may not be logged-in
      */
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = true) 
+    @JoinColumn(name = "uuid_user")
     private User user;
     
     // Set of topics ordered/subscribed by this Firebase token/user

@@ -7,8 +7,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.util.Objects;
 
@@ -22,17 +20,16 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Entity
 @Table(name="price_range", schema="coffeecompass")
-public class PriceRange {
+public class PriceRange extends BaseEntity {
 
     /* ======= INSTANCES VARIABLES ======== */
     
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Integer longId;
     
     @NotNull // Validace vstupu, nesmi byt null
-    @Column(name = "price_range", unique=true, length=45)
+    @Column(name = "price_range", unique = true, length=45)
     private String priceRange;
     
     @Override
@@ -45,7 +42,7 @@ public class PriceRange {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         PriceRange that = (PriceRange) o;
-        return id != null && Objects.equals(id, that.id);
+        return longId != null && Objects.equals(longId, that.longId);
     }
 
     @Override

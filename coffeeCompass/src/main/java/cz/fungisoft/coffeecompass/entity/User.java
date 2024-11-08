@@ -12,7 +12,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -22,7 +21,6 @@ import jakarta.validation.constraints.NotNull;
 import cz.fungisoft.coffeecompass.controller.models.AuthProviders;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.cache.annotation.Cacheable;
 
 
 /**
@@ -32,7 +30,7 @@ import org.springframework.cache.annotation.Cacheable;
  */
 @Entity
 @Table(name="user", schema="coffeecompass")
-public class User implements Serializable {
+public class User extends BaseEntity implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -9006499187256143209L;
@@ -43,10 +41,9 @@ public class User implements Serializable {
         this.banned = false;
     }
 
-    @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id")
-    private Long id;
+    private Long longId;
  
     @NotNull
     @Column(name="username", unique=true, nullable=false)
@@ -103,12 +100,12 @@ public class User implements Serializable {
     private boolean enabled = false;
     
 
-    public Long getId() {
-        return id;
+    public Long getLongId() {
+        return longId;
     }
  
-    public void setId(Long id) {
-        this.id = id;
+    public void setLongId(Long longId) {
+        this.longId = longId;
     }
  
     public String getUserName(){
@@ -163,7 +160,7 @@ public class User implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((longId == null) ? 0 : longId.hashCode());
         result = prime * result + ((userName == null) ? 0 : userName.hashCode());
         return result;
     }
@@ -178,10 +175,10 @@ public class User implements Serializable {
             return false;
         
         User other = (User) obj;
-        if (id == null) {
-            if (other.id != null)
+        if (longId == null) {
+            if (other.longId != null)
                 return false;
-        } else if (!id.equals(other.id))
+        } else if (!longId.equals(other.longId))
             return false;
         
         if (userName == null) {
@@ -191,7 +188,7 @@ public class User implements Serializable {
  
     @Override
     public String toString() {
-        return "User [id=" + id + ", ssoId=" + userName 
+        return "User [id=" + longId + ", ssoId=" + userName
                 + ", firstName=" + firstName + ", lastName=" + lastName
                 + ", email=" + email + "]";
     }

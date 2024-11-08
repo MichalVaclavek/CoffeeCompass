@@ -8,9 +8,10 @@ import org.springframework.data.jpa.repository.QueryHints;
 
 import jakarta.persistence.QueryHint;
 
-public interface SiteLocationTypeRepository extends JpaRepository<SiteLocationType, Integer> {
+import java.util.UUID;
 
-//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+public interface SiteLocationTypeRepository extends JpaRepository<SiteLocationType, UUID> {
+
     @Query("select slt from SiteLocationType slt where locationType=?1")
     SiteLocationType searchByName(String locType);
 }

@@ -49,7 +49,6 @@ import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 @Tag(name = "CoffeeSiteCRUD", description = "Coffee site REST CRUD operations")
 @RestController
 @Validated
-//@RequestMapping("/rest/secured/site")
 @RequestMapping("${site.coffeesites.baseurlpath.rest}" + "/secured/site")
 public class CoffeeSiteControllerSecuredREST  {
 
@@ -97,8 +96,8 @@ public class CoffeeSiteControllerSecuredREST  {
        if (cs != null) {
            log.info("New Coffee site created.");
            //TODO - why headers?
-           headers.setLocation(ucBuilder.path("/rest/site/{id}").buildAndExpand(cs.getId()).toUri());
-           return coffeeSiteService.findOneToTransfer(cs.getId()).map(csDTO ->  new ResponseEntity<>(csDTO, HttpStatus.CREATED))
+           headers.setLocation(ucBuilder.path("/rest/site/{id}").buildAndExpand(cs.getLongId()).toUri());
+           return coffeeSiteService.findOneToTransfer(cs.getLongId()).map(csDTO ->  new ResponseEntity<>(csDTO, HttpStatus.CREATED))
                                                                  .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
 
        } else {
@@ -112,7 +111,7 @@ public class CoffeeSiteControllerSecuredREST  {
      * vytvoril/modifikoval mobilni uzivatel v OFFLINE mode.<br>
      * Obrazky k temto CoffeeSitum lze ukladat postupnym volani {@link ImageControllerSecuredREST#handleFileUpload}
      * 
-     * @Valid zajisti, ze se pred zavolanim metody zvaliduje Coffee Site podle limitu, ktere jsou u atributu coffeeSite
+     * Valid zajisti, ze se pred zavolanim metody zvaliduje Coffee Site podle limitu, ktere jsou u atributu coffeeSite
      *
      * @param coffeeSites sity k ulozeni
      * @return true if saved successfully
@@ -162,12 +161,10 @@ public class CoffeeSiteControllerSecuredREST  {
     @PutMapping("/update/{id}") // Mapovani http PUT na DB operaci UPDATE tj. zmena zaznamu c. id polozkou coffeeSite, napr. http://localhost:8080/rest/secured/site/update/2
     public ResponseEntity<CoffeeSiteDTO> updateCoffeeSite(@PathVariable Long id, @Valid @RequestBody CoffeeSiteDTO coffeeSite, Locale locale) {
         
-//        coffeeSite.setId(id);
-        
         CoffeeSite cs = coffeeSiteService.updateSite(coffeeSite);
         if (cs != null) {
             log.info("Coffee site update successful.");
-            return coffeeSiteService.findOneToTransfer(cs.getId()).map(csDTO ->  new ResponseEntity<>(csDTO, HttpStatus.CREATED))
+            return coffeeSiteService.findOneToTransfer(cs.getLongId()).map(csDTO ->  new ResponseEntity<>(csDTO, HttpStatus.CREATED))
                                                                   .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
             
         } else {
@@ -181,7 +178,7 @@ public class CoffeeSiteControllerSecuredREST  {
         CoffeeSite cs = coffeeSiteService.updateSite(coffeeSite);
         if (cs != null) {
             log.info("Coffee site update successful.");
-            return coffeeSiteService.findOneToTransfer(cs.getId()).map(csDTO ->  new ResponseEntity<>(csDTO, HttpStatus.CREATED))
+            return coffeeSiteService.findOneToTransfer(cs.getLongId()).map(csDTO ->  new ResponseEntity<>(csDTO, HttpStatus.CREATED))
                     .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 
         } else {
@@ -196,7 +193,7 @@ public class CoffeeSiteControllerSecuredREST  {
      * @param id
      */
     @DeleteMapping("/delete/{id}") // Mapovani http DELETE na DB operaci delete, napr. http://localhost:8080/rest/secured/site/delete/2
-    public ResponseEntity<Long> delete(@PathVariable Long id, Locale locale) {
+    public ResponseEntity<String> delete(@PathVariable String id, Locale locale) {
         try {
             coffeeSiteService.delete(id);
             return new ResponseEntity<>(id, HttpStatus.OK);
@@ -212,7 +209,7 @@ public class CoffeeSiteControllerSecuredREST  {
     @PutMapping("/{id}/activate") 
     public ResponseEntity<CoffeeSiteDTO> activateCoffeeSite(@PathVariable(name = "id") Long id, UriComponentsBuilder ucBuilder, Locale locale) {
         coffeeSiteService.findOneById(id).ifPresent(cs -> {
-            if (coffeeSiteService.isLocationAlreadyOccupiedByActiveSite(cs.getZemSirka(), cs.getZemDelka(), 5, cs.getId())) {
+            if (coffeeSiteService.isLocationAlreadyOccupiedByActiveSite(cs.getZemSirka(), cs.getZemDelka(), 5, cs.getLongId())) {
                 throw new InvalidParameterValueException("CoffeeSite", "latitude/longitude", cs.getZemSirka(), messages.getMessage("coffeesite.create.wrong.location.rest.error", null, locale));
             }
         });
@@ -247,7 +244,7 @@ public class CoffeeSiteControllerSecuredREST  {
             }
             HttpHeaders headers = new HttpHeaders(); //TODO - why headers here?
             log.info("CoffeeSite's status modified. New status: {}", newStatus.getSiteRecordStatus());
-            headers.setLocation(ucBuilder.path("/rest/site/{id}").buildAndExpand(cs.getId()).toUri());
+            headers.setLocation(ucBuilder.path("/rest/site/{id}").buildAndExpand(cs.getLongId()).toUri());
             return new ResponseEntity<>(coffeeSiteService.findOneToTransfer(csID).orElseGet(null), HttpStatus.OK);
 
         }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));

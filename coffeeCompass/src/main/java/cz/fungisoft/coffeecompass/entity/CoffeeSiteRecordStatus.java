@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -22,7 +20,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Entity
 @Table(name="status_coffee_site_zaznamu", schema="coffeecompass")
-public class CoffeeSiteRecordStatus {
+public class CoffeeSiteRecordStatus extends BaseEntity {
 
     public enum CoffeeSiteRecordStatusEnum implements Serializable {
         ACTIVE("ACTIVE"),
@@ -43,10 +41,9 @@ public class CoffeeSiteRecordStatus {
 
     /* ======= INSTANCE VARIABLES ======== */
     
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Integer longId;
     
     @NotNull
     @Column(name="status_zaznamu", length=15, unique=true, nullable=false)
@@ -61,7 +58,7 @@ public class CoffeeSiteRecordStatus {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         CoffeeSiteRecordStatus that = (CoffeeSiteRecordStatus) o;
-        return id != null && Objects.equals(id, that.id);
+        return longId != null && Objects.equals(longId, that.longId);
     }
 
     @Override

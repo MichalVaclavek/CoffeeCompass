@@ -5,14 +5,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Class representing an image assigned to CoffeeSite. Contains {@link CoffeeSite} atribute to link the Image and respective CoffeeSite.
@@ -24,22 +23,30 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-public class Image implements Serializable {
+public class Image extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 4976306313068414171L;
 
-	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer id;
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "id")
+	private Integer longId;
 
-	public void setCoffeeSiteID(Long coffeeSiteId) {
-	    this.coffeeSiteID = coffeeSiteId;
+//	public void setCoffeeSiteID(Long coffeeSiteId) {
+//	    this.coffeeSiteID = coffeeSiteId;
+//	}
+
+	public void setCoffeeSiteId(UUID coffeeSiteId) {
+		this.coffeeSiteID = coffeeSiteId;
 	}
 	
 	/**
 	 * Used to transfer coffeeSite id between different Views/Forms in case only Image object is handled by the Form
 	 */
-	@Column(name = "coffeesite_id")
-	private Long coffeeSiteID = 0L;
+//	@Column(name = "coffeesite_id")
+//	private Long coffeeSiteID = 0L;
+
+	@Column(name = "uuid_coffee_site")
+	private UUID coffeeSiteID;
 	
 	@Column(name = "saved_on", nullable = false)
 	private LocalDateTime savedOn;
@@ -66,16 +73,13 @@ public class Image implements Serializable {
 	public Image() {}
 	
 	public Image(CoffeeSite cfSite, MultipartFile imageFile) throws IOException {
-		setCoffeeSiteID(cfSite.getId());
+		setCoffeeSiteId(cfSite.getId());
 		setFileName(imageFile.getOriginalFilename());
 		setImageBytes(imageFile.getBytes());
 	}
 	
 	/**
 	 * "Helping" constructor to allow saving image file to the DB during testing.
-	 * 
-	 * @param directory
-	 * @param imageFile
 	 */
 	/*
 	public Image(Directory directory, Path imageFile)
@@ -100,7 +104,7 @@ public class Image implements Serializable {
 		if (this == o) return true;
 		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
 		Image image = (Image) o;
-		return id != null && Objects.equals(id, image.id);
+		return longId != null && Objects.equals(longId, image.longId);
 	}
 
 	@Override

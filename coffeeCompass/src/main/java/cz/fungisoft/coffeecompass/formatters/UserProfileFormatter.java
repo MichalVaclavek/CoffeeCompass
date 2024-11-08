@@ -23,7 +23,7 @@ public class UserProfileFormatter implements Formatter<UserProfile> {
 
     @Override
     public String print(UserProfile userProfile, Locale locale) {
-        return (userProfile != null ? Integer.toString(userProfile.getId()) : "");
+        return Integer.toString(userProfile.getLongId());
     }
 
     @Override

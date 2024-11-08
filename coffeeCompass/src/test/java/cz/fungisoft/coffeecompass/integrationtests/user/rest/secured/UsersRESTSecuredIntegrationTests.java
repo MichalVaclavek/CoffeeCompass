@@ -81,7 +81,7 @@ class UsersRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
         admin.setUserName("admin");
         admin.setPassword(passwordEncoder.encode(ADMIN_PASSWORD));
         admin.setEmail("admin@boss.com");
-        admin.setId(1L);
+        admin.setLongId(1L);
         admin.setCreatedOn(LocalDateTime.now());
         admin.setUserProfiles(userProfilesADMIN);
         userRepo.saveAndFlush(admin);

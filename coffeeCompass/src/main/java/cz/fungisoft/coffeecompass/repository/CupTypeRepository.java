@@ -8,9 +8,10 @@ import org.springframework.data.jpa.repository.QueryHints;
 
 import jakarta.persistence.QueryHint;
 
-public interface CupTypeRepository extends JpaRepository<CupType, Integer> {
+import java.util.UUID;
 
-//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+public interface CupTypeRepository extends JpaRepository<CupType, UUID> {
+
     @Query("select ct from CupType ct where cupType=?1")
     CupType searchByName(String cupType);
 }

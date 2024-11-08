@@ -4,7 +4,6 @@ import cz.fungisoft.coffeecompass.mappers.CoffeeSiteMapper;
 import cz.fungisoft.coffeecompass.service.*;
 import cz.fungisoft.coffeecompass.service.tokens.RefreshTokenService;
 import cz.fungisoft.coffeecompass.serviceimpl.images.ImagesService;
-import cz.fungisoft.coffeecompass.serviceimpl.kafka.ImageProducerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -150,7 +149,4 @@ public abstract class MvcControllerUnitTestBaseSetup {
 
     @MockBean
     protected CoffeeSiteMapper coffeeSiteMapper;
-
-    @MockBean
-    protected ImageProducerService imageProducerService;
 }

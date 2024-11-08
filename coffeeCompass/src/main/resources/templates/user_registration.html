@@ -56,12 +56,12 @@
 	
 			<div class="w3-right w3-card-2 w3-border w3-sand w3-round-large w3-half">
 			
-	           <h2 th:text="(${user.id} == 0) ? #{user.register.label.create} : #{user.register.label.update}" class="w3-center">Register/Update Label</h2>
+	           <h2 th:text="(${user.id} == null) ? #{user.register.label.create} : #{user.register.label.update}" class="w3-center">Register/Update Label</h2>
 	           
-	           <!-- <form th:action="${user.id} == 0 ? @{/user/register-post} : @{/user/edit-put}"  -->
-	           <form th:action="${user.id} == 0 ? @{/user/registration} : @{/user/edit-put}" 
+	           <!-- <form th:action="${user.id} == null ? @{/user/register-post} : @{/user/edit-put}"  -->
+	           <form th:action="${user.id} == null ? @{/user/registration} : @{/user/edit-put}"
 	           		 th:object="${user}"
-	           		 th:method="${user.id} == 0 ? POST : PUT"
+	           		 th:method="${user.id} == null ? POST : PUT"
 	           		 class="w3-margin">
 	            
 	              <input th:type="hidden" name="id" th:field="${user.id}" />
@@ -122,7 +122,7 @@
 	                </div>
 	                
 	                <!-- User's email address confirmed check box - editable for ROLE_ADMIN user only -->
-	                <div th:if="${user.id} != 0" class="w3-container w3-right">
+	                <div th:if="${user.id} != null" class="w3-container w3-right">
 	                    <label for="userBan" th:text="#{user.edit.emailaddress.confirmed}">Email address confirmed?</label>
 	                   
 	               			 <input type="checkbox"
@@ -136,7 +136,7 @@
 	                </div>
 	                
 	                <div class="w3-container w3-margin-top"> 
-	                    <label for="password" th:text="#{user.register.password}">Password</label> <label th:if="${user.id} == 0"> *</label>
+	                    <label for="password" th:text="#{user.register.password}">Password</label> <label th:if="${user.id} == null"> *</label>
 	                    <div th:classappend="${#fields.hasErrors('password')} ? 'has-error':''">
 	                       <input id="password"
 	                              class="w3-input w3-border"
@@ -148,7 +148,7 @@
 	                       th:text="${error}">Validation error</p>
 	                </div>
 	                <div class="w3-container">
-	                    <label for="confirmPassword" th:text="#{user.register.confirmpassword}">Confirm password</label><label th:if="${user.id} == 0"> *</label>
+	                    <label for="confirmPassword" th:text="#{user.register.confirmpassword}">Confirm password</label><label th:if="${user.id} == null"> *</label>
 	                    <div th:classappend="${#fields.hasErrors('confirmPassword')} ? 'has-error':''">
 	                       <input id="confirmPassword"
 	                              class="w3-input w3-border"
@@ -203,7 +203,7 @@
 	                <div class="w3-bar w3-margin-top"> <!-- Buttons row -->
 	                
 	                  <div class="w3-bar-item"> <!-- Submit button -->
-	               		 <button type="submit" class="w3-button w3-blue w3-border w3-round" name="save" th:text="(${user.id} == 0) ? #{user.register.button.create} : #{user.register.button.update}">Save/Modify User</button>    
+	               		 <button type="submit" class="w3-button w3-blue w3-border w3-round" name="save" th:text="(${user.id} == null) ? #{user.register.button.create} : #{user.register.button.update}">Save/Modify User</button>
 	          		  </div>
 	          		
 	          		  <div class="w3-bar-item"> <!-- Cancel edit button -->

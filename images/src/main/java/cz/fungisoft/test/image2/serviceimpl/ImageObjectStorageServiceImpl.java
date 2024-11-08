@@ -46,7 +46,7 @@ public class ImageObjectStorageServiceImpl implements ImageObjectStorageService 
 
     private final Path fileStorageLocation;
 
-    private ImageObjectMapper imageObjectMapper;
+    private final ImageObjectMapper imageObjectMapper;
 
     public ImageObjectStorageServiceImpl(ImageObjectRepository imageObjectRepo,
                                          ImageFilesDeleteOperationService imageFilesDeleteOperationService,

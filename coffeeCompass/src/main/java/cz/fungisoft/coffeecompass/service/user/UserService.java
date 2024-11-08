@@ -2,6 +2,7 @@ package cz.fungisoft.coffeecompass.service.user;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -14,12 +15,18 @@ import cz.fungisoft.coffeecompass.security.oauth2.user.OAuth2UserInfo;
  
 public interface UserService {
 
-    Optional<UserDTO> findByIdToTransfer(Long id);
-    
-    @PreAuthorize("hasRole('ADMIN')")
-    Optional<User> findById(Long id);
-    
+//    Optional<UserDTO> findByIdToTransfer(Long id);
+    Optional<UserDTO> findByExtIdToTransfer(UUID id);
+    Optional<UserDTO> findByExtIdToTransfer(String id);
     Optional<UserDTO> findByUserNameToTransfer(String userName);
+    
+//    @PreAuthorize("hasRole('ADMIN')")
+//    Optional<User> findById(Long id);
+
+    @PreAuthorize("hasRole('ADMIN')")
+    Optional<User> findByExtId(UUID id);
+    @PreAuthorize("hasRole('ADMIN')")
+    Optional<User> findByExtId(String extId);
     Optional<User> findByUserName(String userName);
     Optional<User> findByEmail(String email);
      
@@ -63,14 +70,22 @@ public interface UserService {
     @PreAuthorize("hasRole('ADMIN')")
     void deleteUserBySSO(String sso);
     
+//    @PreAuthorize("hasRole('ADMIN')")
+//    void deleteUserById(Long id);
+
     @PreAuthorize("hasRole('ADMIN')")
-    void deleteUserById(Long id);
+    void deleteUserById(UUID id);
+
+    @PreAuthorize("hasRole('ADMIN')")
+    void deleteUserById(String id);
  
     @PreAuthorize("hasRole('ADMIN')")
     List<UserDTO> findAllUsers();
     
     boolean isUserNameUnique(Long id, String sso);
-    boolean isEmailUnique(Long id, String email);
+    boolean isUserNameUnique(UUID id, String sso);
+//    boolean isEmailUnique(Long id, String email);
+    boolean isEmailUnique(UUID id, String email);
     
     boolean hasADMINRole(User user);
     boolean hasADMINorDBARole(User user);
@@ -113,5 +128,7 @@ public interface UserService {
      * 
      * @param userId
      */
-    void clearUserDataById(Long userId);
+//    void clearUserDataById(Long userId);
+
+    void clearUserDataById(UUID userId);
 }

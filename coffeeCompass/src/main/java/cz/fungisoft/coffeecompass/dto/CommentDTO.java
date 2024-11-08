@@ -2,12 +2,14 @@ package cz.fungisoft.coffeecompass.dto;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.UUID;
 
 import jakarta.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Trida pro prenos informace o 1 Commentu k jednomu CoffeeSitu od jednomu uzivatele<br>
@@ -20,10 +22,9 @@ import lombok.Data;
  * 
  * @author Michal Vaclavek
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class CommentDTO {
-    
-    private Long id;
+public class CommentDTO extends BaseItem {
     
     @Size(max=512)
     private String text;
@@ -35,13 +36,13 @@ public class CommentDTO {
     @JsonFormat(pattern = "dd.MM. yyyy HH:mm", timezone="Europe/Prague")
     private LocalDateTime created;
     
-    private long coffeeSiteId;
+    private UUID coffeeSiteId;
             
     private String userName;
     
     // to allow better mapping from Comment to CommentDTO, which included starsFromUser
     // its easier to serach fro user by its id
-    private long userId; 
+    private UUID userId;
     
     private boolean canBeDeleted = false; // default value
     

@@ -9,31 +9,31 @@ import org.springframework.data.jpa.repository.QueryHints;
 
 import jakarta.persistence.QueryHint;
 
+import java.util.UUID;
+
 /**
  * JPA operations with Image entity.
  * 
  * @author Michal Vaclavek
  *
  */
-public interface ImageRepository extends JpaRepository<Image, Integer> {
+public interface ImageRepository extends JpaRepository<Image, UUID> {
 
     @Query("select coffeeSiteID FROM Image im where id=?1")
-    Long getSiteIdForImage(Integer imageId);
+    UUID getSiteIdForImage(UUID imageId);
 
-//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select im from Image im WHERE coffeeSiteID=?1")
-    Image getImageForSite(Long coffeeSiteID);
+    Image getImageForSite(UUID coffeeSiteID);
     
     @Query("select im.id from Image im WHERE coffeeSiteID=?1")
-    Integer getImageIdForSiteId(Long siteID);
+    UUID getImageIdForSiteId(UUID siteID);
     
     @Modifying // required by Hibernate, otherwise there is an Exception ' ... Illegal state ...'
     @Query("delete from Image im WHERE coffeeSiteID=?1")
-    void deleteBySiteId(Long coffeeSiteId);
+    void deleteBySiteId(UUID coffeeSiteId);
 
-//    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     @Query("select COUNT(im) from Image im WHERE coffeeSiteID=?1")
-    int getNumOfImagesForSiteId(Long siteId);
+    int getNumOfImagesForSiteId(UUID siteId);
 
     @Query("select COUNT(*) from Image")
     int getNumOfAllImagesForAllSites();

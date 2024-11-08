@@ -30,7 +30,7 @@ public class OtherOfferFormatter implements Formatter<OtherOffer> {
 
     @Override
     public String print(OtherOffer offer, Locale arg1) {
-        return (offer != null ? Integer.toString(offer.getId()) : "");
+        return Integer.toString(offer.getLongId());
     }
 
     @Override

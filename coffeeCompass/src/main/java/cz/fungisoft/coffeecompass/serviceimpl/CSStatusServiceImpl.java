@@ -2,6 +2,8 @@ package cz.fungisoft.coffeecompass.serviceimpl;
 
 import java.util.List;
 
+import cz.fungisoft.coffeecompass.dto.CoffeeSiteStatusDTO;
+import cz.fungisoft.coffeecompass.mappers.CoffeeSiteStatusMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -17,11 +19,14 @@ import cz.fungisoft.coffeecompass.service.CSStatusService;
 public class CSStatusServiceImpl implements CSStatusService {
 
     private final CoffeeSiteStatusRepository csStatusRepo;
+
+    private final CoffeeSiteStatusMapper csStatusMapper;
     
     @Autowired
-    public CSStatusServiceImpl(CoffeeSiteStatusRepository csStatusRepo) {
+    public CSStatusServiceImpl(CoffeeSiteStatusRepository csStatusRepo, CoffeeSiteStatusMapper csStatusMapper) {
         super();
         this.csStatusRepo = csStatusRepo;
+        this.csStatusMapper = csStatusMapper;
     }
 
     @Override
@@ -35,7 +40,7 @@ public class CSStatusServiceImpl implements CSStatusService {
 
     @Override
     @Cacheable(cacheNames = "csStatusesCache")
-    public List<CoffeeSiteStatus> getAllCoffeeSiteStatuses() {
-        return csStatusRepo.findAll();
+    public List<CoffeeSiteStatusDTO> getAllCoffeeSiteStatuses() {
+        return csStatusRepo.findAll().stream().map(csStatusMapper::csStatusToCsStatusDto).toList();
     }
 }

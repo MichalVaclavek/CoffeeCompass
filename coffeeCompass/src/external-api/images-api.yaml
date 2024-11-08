@@ -296,7 +296,7 @@ paths:
   # ############# ROTATE Image ###################
 
   '/rotate/{imageExtId}/direction/{rotationDirection}':
-    get:
+    put:
       summary: rotate the image Right or Left by 90 degrees
       description: |
         Rotate the image Left or Right by 90 degrees and return it in default size

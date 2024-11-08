@@ -152,7 +152,7 @@ public class NewCoffeeSiteEventListener implements ApplicationListener<OnNewCoff
                 // are there tokens subscribed for this specific town topic
                 if (!firebaseTopicService.getTokensSubscribed(firebaseTopic.getId()).isEmpty()) { 
                     String topic = mainTopic + "_" + firebaseTopic.getId();
-                    sendNotifications(topic, town, newCoffeeSite.getId());
+                    sendNotifications(topic, town, newCoffeeSite.getLongId());
                 }
         });
         // there can be also 'all_towns' subscriptions
@@ -160,7 +160,7 @@ public class NewCoffeeSiteEventListener implements ApplicationListener<OnNewCoff
                 .ifPresent(firebaseTopic -> { 
                     if (!firebaseTopicService.getTokensSubscribed(firebaseTopic.getId()).isEmpty()) { 
                         String topic = mainTopic + "_" + firebaseTopic.getId();
-                        sendNotifications(topic, town, newCoffeeSite.getId());
+                        sendNotifications(topic, town, newCoffeeSite.getLongId());
                     }
                 });
         

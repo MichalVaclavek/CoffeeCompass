@@ -20,14 +20,20 @@ import java.util.UUID;
  */
 public interface IStarsForCoffeeSiteAndUserService {
 
-    Integer getStarsForCoffeeSiteAndUser(Long coffeeSiteId, Long userId);
+//    Integer getStarsForCoffeeSiteAndUser(Long coffeeSiteId, Long userId);
+
+    Integer getStarsForCoffeeSiteAndUser(String coffeeSiteExtId, String userExtId);
+
+    Integer getStarsForCoffeeSiteAndUser(UUID coffeeSiteExtId, UUID userExtId);
     
-    String getStarsForCoffeeSiteAndUser(CoffeeSiteDTO coffeeSite, User user);
+//    String getStarsForCoffeeSiteAndUser(CoffeeSiteDTO coffeeSite, User user);
     StarsQualityDescription getStarsForCoffeeSiteAndLoggedInUser(CoffeeSite coffeeSite);
     
     void saveStarsForCoffeeSiteAndLoggedInUser(String coffeeSiteExtId, Integer stars);
     void saveStarsForCoffeeSiteAndUser(CoffeeSite coffeeSite, User user, int stars);
-    StarsForCoffeeSiteAndUser updateStarsForCoffeeSiteAndUser(String coffeeSiteExtId, Long userId, int stars);
+//    StarsForCoffeeSiteAndUser updateStarsForCoffeeSiteAndUser(Long coffeeSiteId, Long userId, int stars);
+    StarsForCoffeeSiteAndUser updateStarsForCoffeeSiteAndUser(String coffeeSiteExtId, String userExtId, int stars);
+    StarsForCoffeeSiteAndUser updateStarsForCoffeeSiteAndUser(UUID coffeeSiteExtId, UUID userExtId, int stars);
     
     /**
      * Updates stars rating for CoffeeSite included in CommentsDTO object

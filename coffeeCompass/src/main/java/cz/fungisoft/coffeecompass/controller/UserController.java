@@ -3,10 +3,7 @@ package cz.fungisoft.coffeecompass.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -145,7 +142,8 @@ public class UserController {
         
         ModelAndView mav = new ModelAndView();
         
-        user.setId(0L); // set Id to 0 of type long
+//        user.setId(0L); // set Id to 0 of type long
+//        user.setExtId(0L); // set Id to 0 of type long
         // we need to know, that this is a user managing its own profile
         user.setToManageItself(true);
         mav.addObject("user", user);
@@ -183,7 +181,7 @@ public class UserController {
         ModelAndView mav = new ModelAndView();
         mav.setViewName(USER_REGISTRATION_VIEW);
         
-        if (userDto.getId() == 0) { // Jde o noveho usera k registraci
+        if (userDto.getExtId() == null) { // Jde o noveho usera k registraci
             Optional<User> existing = userService.findByUserName(userDto.getUserName());
             
             if (existing.isPresent()) {
@@ -192,7 +190,7 @@ public class UserController {
     
             // Kontrola i na e-mail adresu, pokud je zadana
             if (userDto.getEmail() != null && !userDto.getEmail().isEmpty()) { // should be true as input of e-mail has been validated
-                if (!userService.isEmailUnique(null, userDto.getEmail())) {
+                if (!userService.isEmailUnique(userDto.getExtId(), userDto.getEmail())) {
                     result.rejectValue("email", "error.user.emailused", "There is already an account registered with that e-mail address.");
                 }
             }
@@ -216,7 +214,7 @@ public class UserController {
         boolean userCreateSuccess;
         User newUser = null;
         
-        if (userDto.getId() == 0) {
+        if (userDto.getExtId() == null) {
             newUser = userService.save(userDto);
         }
         
@@ -330,11 +328,11 @@ public class UserController {
         if (loggedInUser.isPresent()) { // Jde o prihlaseneho uzivatele - muze pokracovat editace
             // Prihlaseny uzivatel meni svoje data - je potreba overit userName a e-mail, ktere se nesmi shodovat s jinym jiz vytvorenym.
             // Pokud jineho usera edituje ADMIN, neni potreba overovat, protoze ADMIn nemuze menit ve formulari ani userName ani e-mail
-            if (Objects.equals(userDto.getId(), loggedInUser.get().getId())) {
+            if (Objects.equals(userDto.getExtId(), loggedInUser.get().getLongId())) {
                 // Tento blok je spravny pouze pokud prihlaseny user meni svoje udaje (je jedno jaky ma Profile)
                 if (!loggedInUser.get().getUserName().equalsIgnoreCase(userDto.getUserName())) { // Prihlaseny uzivatel chce zmenit userName
                     // Je uzivatelske jmeno jiz pouzito
-                    if (!userService.isUserNameUnique(userDto.getId(), userDto.getUserName())) {
+                    if (!userService.isUserNameUnique(userDto.getExtId(), userDto.getUserName())) {
                         result.rejectValue(USER_NAME_ATTRIB_KEY, "error.user.name.used", "There is already an account registered with that user name.");
                     }
                 }
@@ -342,7 +340,7 @@ public class UserController {
                 // Prihlaseny user chce zmenit svoji e-mail adresu - overit jestli je to mozne
                 if (!loggedInUser.get().getEmail().equalsIgnoreCase(userDto.getEmail())) { // nova e-mail adresa se lisi nebo je smazana
                     // Je e-mail jiz pouzit ?
-                    if (!userService.isEmailUnique(userDto.getId(), userDto.getEmail())) {
+                    if (!userService.isEmailUnique(userDto.getExtId(), userDto.getEmail())) {
                         result.rejectValue("email", "error.user.emailused", "There is already an account registered with that e-mail");
                     } 
                 }
@@ -358,7 +356,7 @@ public class UserController {
         if (result.hasErrors()) { // In case of error, show the user edit page again with errors
             // Prihlaseny uzivatel edituje svuj profil - musi se nastavit prislusny flag, aby zustaly ve formulari vsechny plozky editovatelne
             // i v pripade predchozi chyby ve formulari
-           if (loggedInUser.isPresent() && Objects.equals(userDto.getId(), loggedInUser.get().getId())) {
+           if (loggedInUser.isPresent() && Objects.equals(userDto.getExtId(), loggedInUser.get().getLongId())) {
                userDto.setToManageItself(true);
            }
            return mav;
@@ -371,7 +369,7 @@ public class UserController {
         
         if (updatedUser != null) {
             userModifySuccess = true;
-            if (loggedInUser.isPresent() && updatedUser.getId().equals(loggedInUser.get().getId())) { // If the user modifies it's own profile
+            if (loggedInUser.isPresent() && updatedUser.getLongId().equals(loggedInUser.get().getLongId())) { // If the user modifies it's own profile
                 // Check if the email address is confirmed
                 if (!updatedUser.isRegisterEmailConfirmed()
                      && !updatedUser.getEmail().isEmpty()) { // novy email nepotvrzen a neprazdny. Poslat confirm e-mail token
@@ -409,16 +407,16 @@ public class UserController {
      * @return
      */
     @GetMapping(value = "/delete/")
-    public ModelAndView getDeleteUserAndRelatedItemsForm(@RequestParam("userID") Long id, RedirectAttributes attr) {
+    public ModelAndView getDeleteUserAndRelatedItemsForm(@RequestParam("userID") String id, RedirectAttributes attr) {
         
         ModelAndView mav = new ModelAndView();
         
-        Optional<User> user = userService.findById(id);
+        Optional<User> user = userService.findByExtId(id);
         
         if (user.isPresent()) {
             DeleteUserAccountModel userToDeleteModel = new DeleteUserAccountModel();
             
-            userToDeleteModel.setUserId(id);
+            userToDeleteModel.setUserId(UUID.fromString(id));
             userToDeleteModel.setUserName(user.get().getUserName());
             userToDeleteModel.setUserToDeleteItself(userService.isLoggedInUserToManageItself(user.get()));
     
@@ -447,23 +445,23 @@ public class UserController {
      * tables/entities. Usualy called from the page listing all the user accounts by ADMIN
      * user.
      * 
-     * @param id - id of the user to be deleted
+     * @param extId - id of the user to be deleted
      * @return
      */
-    @DeleteMapping(value = "/delete/{id}")
-    public ModelAndView deleteUser(@PathVariable("id") Long id, RedirectAttributes attr) {
+    @DeleteMapping(value = "/delete/{extId}")
+    public ModelAndView deleteUser(@PathVariable("extId") String extId, RedirectAttributes attr) {
         
         ModelAndView mav = new ModelAndView();
         
-        Optional<UserDTO> user = userService.findByIdToTransfer(id);
+        Optional<UserDTO> user = userService.findByExtIdToTransfer(extId);
         boolean deleteOK = false;
         
         if (user.isPresent()) {
             try {
-                userService.deleteUserById(id);
+                userService.deleteUserById(extId);
                 deleteOK = true;
             } catch (Exception ex) {
-                logger.error("Unable to delete user with id {}. Probably already deleted. Exception: {}", id, ex.getMessage());
+                logger.error("Unable to delete user with id {}. Probably already deleted. Exception: {}", extId, ex.getMessage());
             }
         }
         
@@ -471,7 +469,7 @@ public class UserController {
             mav.setViewName("redirect:/user/all");
             return mav;
         } else {
-            return redirectToHomeAfterFailedUserDelete(id, attr);
+            return redirectToHomeAfterFailedUserDelete(extId, attr);
         }
     }
     
@@ -490,7 +488,7 @@ public class UserController {
                                                   RedirectAttributes attr) {
         ModelAndView mav = new ModelAndView();
 
-        Optional<UserDTO> userDto = userService.findByIdToTransfer(userDataToDelete.getUserId());
+        Optional<UserDTO> userDto = userService.findByExtIdToTransfer(userDataToDelete.getUserId());
         Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
         
         String userName = "";
@@ -501,7 +499,7 @@ public class UserController {
            
            // Prihlaseny uzivatel maze svoje data?
            // Pokud jineho usera maze ADMIN, neodhlasovat z app
-           if (userDto.get().getId().equals(loggedInUser.get().getId())
+           if (userDto.get().getExtId().equals(loggedInUser.get().getLongId())
                    && !userService.isADMINloggedIn()) { 
                userSecurityService.logout();
            }
@@ -517,17 +515,17 @@ public class UserController {
            }
 
            // Delete user's email verification tokens
-           userService.findById(userDataToDelete.getUserId())
-                      .ifPresent(userToDelete -> tokenCreateAndSendEmailService.deleteRegistrationTokenByUser(userToDelete));
+           userService.findByExtId(userDataToDelete.getUserId())
+                      .ifPresent(tokenCreateAndSendEmailService::deleteRegistrationTokenByUser);
 
-           if (commentsService.getAllCommentsFromUser(userDto.get().getId()).isEmpty()
+           if (commentsService.getAllCommentsFromUser(userDto.get().getExtId()).isEmpty()
                    && coffeeSiteService.findAllFromUserName(userName).isEmpty()) { // user's comments and CoffeeSites deleted, now User can be deleted too
                try {
                    userService.deleteUserById(userDataToDelete.getUserId());
                } catch (Exception ex) {
                    logger.error("Unable to delete user with id {}. Probably already deleted.", userDataToDelete.getUserId());
                    attr.addFlashAttribute(USER_DELETE_FAIL_ATTRIB_KEY, true);
-                   return redirectToHomeAfterFailedUserDelete(userDataToDelete.getUserId(), attr);
+                   return redirectToHomeAfterFailedUserDelete(userDataToDelete.getUserId().toString(), attr);
                }
            } else { // clear user's data as either user's CoffeeSites or comments are not deleted
                userService.clearUserDataById(userDataToDelete.getUserId());   
@@ -535,7 +533,7 @@ public class UserController {
         } else {
            logger.info("Unable to delete. User with id {} not found or not registered currently.", userDataToDelete.getUserId());
            attr.addFlashAttribute(USER_DELETE_FAIL_ATTRIB_KEY, true);
-           return redirectToHomeAfterFailedUserDelete(userDataToDelete.getUserId(), attr);
+           return redirectToHomeAfterFailedUserDelete(userDataToDelete.getUserId().toString(), attr);
         }
        
         attr.addFlashAttribute("userDeleteSuccess", true);
@@ -547,11 +545,11 @@ public class UserController {
     /**
      * Helper method to simplify call to home page after User delete cannot be performed.
      * 
-     * @param id
+     * @param extId - user's id
      * @param attr
      * @return
      */
-    private ModelAndView redirectToHomeAfterFailedUserDelete(Long id, RedirectAttributes attr) {
+    private ModelAndView redirectToHomeAfterFailedUserDelete(String extId, RedirectAttributes attr) {
         
         ModelAndView mav = new ModelAndView();
         
@@ -565,13 +563,13 @@ public class UserController {
         
         // Prihlaseny uzivatel maze svoje data?
         // Pokud jineho usera maze ADMIN, neodhlasovat z app
-        if (loggedInUser.isPresent() && id.equals(loggedInUser.get().getId())
+        if (loggedInUser.isPresent() && extId.equals(loggedInUser.get().getLongId().toString())
                 && !userService.isADMINloggedIn()) { 
             userSecurityService.logout();
         }
         
-        logger.info("Unable to delete. User with id {} not found", id);
-        attr.addFlashAttribute(USER_NAME_ATTRIB_KEY, id);
+        logger.info("Unable to delete. User with id {} not found", extId);
+        attr.addFlashAttribute(USER_NAME_ATTRIB_KEY, extId);
         attr.addFlashAttribute(USER_DELETE_FAIL_ATTRIB_KEY, true);
         
         mav.setViewName("redirect:/home/");

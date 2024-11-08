@@ -9,12 +9,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import cz.fungisoft.coffeecompass.controller.models.StarsAndCommentModel;
-import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.service.comment.ICommentService;
 
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.UUID;
 
 /**
  * Controller for handling addition/deletition/update of Comment and Stars for CoffeeSite.<br>
@@ -83,16 +82,16 @@ public class CSStarsRatingAndCommentsController {
      * ktery zobrazi delete tlacitko jen pokud jsou tyto podminky splneny). Zda muze byt Comment smazan se nastavi<br>
      * v Service vrstve CommentService
      * 
-     * @param commentId id of the Comment to delete
+     * @param commentExtId id of the Comment to delete
      * @return
      */
-    @DeleteMapping( {"/deleteComment/{commentId}", "/deleteComment/{commentId}/selectedImageExtId/{selectedImageExtId}" })
-    public ModelAndView deleteCommentAndStarsForSite(@PathVariable Long commentId,
+    @DeleteMapping( {"/deleteComment/{commentExtId}", "/deleteComment/{commentId}/selectedImageExtId/{selectedImageExtId}" })
+    public ModelAndView deleteCommentAndStarsForSite(@PathVariable String commentExtId,
                                                      @PathVariable(required = false) String selectedImageExtId) {
         // Smazat komentar - need to have site Id to give it to /showSite Controller
-        Long siteId = commentsService.deleteCommentById(commentId);
-        String coffeeSiteExtId = coffeeSiteService.findOneById(siteId).map(cf -> cf.getExternalId().toString()).orElse("");
+        UUID siteId = commentsService.deleteCommentByExtId(commentExtId);
+//        String coffeeSiteExtId = coffeeSiteService.findOneByExternalId(siteId).map(cf -> cf.getLongId().toString()).orElse("");
         // Show same coffee site with updated Stars and comments
-        return new ModelAndView(REDIRECT_SHOW_SITE_VIEW + coffeeSiteExtId + ( (selectedImageExtId != null) ? "/selectedImageExtId/" + selectedImageExtId : ""));
+        return new ModelAndView(REDIRECT_SHOW_SITE_VIEW + siteId + ( (selectedImageExtId != null) ? "/selectedImageExtId/" + selectedImageExtId : ""));
     }
 }

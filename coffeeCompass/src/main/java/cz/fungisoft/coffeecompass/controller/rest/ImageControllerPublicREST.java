@@ -28,7 +28,6 @@ import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
 @Tag(name = "Images", description = "Images of the coffee sites")
 @RestController
 @RequiredArgsConstructor
-//@RequestMapping("/rest/image")
 @RequestMapping("${site.coffeesites.baseurlpath.rest}" + "/image")
 public class ImageControllerPublicREST  {
 
@@ -36,12 +35,7 @@ public class ImageControllerPublicREST  {
 
     private final ImagesService imagesService;
 
-//    @Autowired
-//    public ImageControllerPublicREST(ImageStorageService storageService) {
-//        this.imageStorageService = storageService;
-//    }
 
-    
     /**
      * Returns image of the CoffeeSite of id=siteId
      * 
@@ -49,7 +43,7 @@ public class ImageControllerPublicREST  {
      * @return
      */
     @GetMapping("/base64/{siteId}") // napr. http://coffeecompass.cz/rest/image/base64/2
-    public ResponseEntity<String> getImageAsBase64BySiteId(@PathVariable Long siteId) {
+    public ResponseEntity<String> getImageAsBase64BySiteId(@PathVariable String siteId) {
         
         String picString = imageStorageService.getImageAsBase64ForSiteId(siteId);
         

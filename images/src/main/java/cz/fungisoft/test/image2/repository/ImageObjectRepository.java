@@ -16,8 +16,6 @@ import java.util.Optional;
  */
 public interface ImageObjectRepository extends JpaRepository<ImageObject, Long> {
 
-//    @Query("{ 'externalObjectId': ?1}")
-//    @Query("SELECT ImageObject imo FROM ImageObject WHERE externalObjectId=?1")
     Optional<ImageObject> findByExternalObjectId(String extObjectId);
 
     @Modifying

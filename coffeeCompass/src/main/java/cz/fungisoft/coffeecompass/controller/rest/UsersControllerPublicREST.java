@@ -35,7 +35,6 @@ import cz.fungisoft.coffeecompass.service.user.UserService;
 
 @Tag(name = "Users", description = "User management")
 @RestController
-//@RequestMapping("/rest/public/user")
 @RequestMapping("${site.coffeesites.baseurlpath.rest}" + "/public/user")
 public class UsersControllerPublicREST {
 
