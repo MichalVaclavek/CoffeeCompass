@@ -4,8 +4,15 @@
       <div th:replace="~{fragments/header :: header-css}"/>
       
       <script type="text/javascript" src="https://api.mapy.cz/loader.js"></script>
-      <script type="text/javascript">Loader.load(null, {suggest: true})</script> <!-- loads mapy.cz API	with Naseptavac feature --> 
-      
+      <script type="text/javascript">Loader.load(null, {suggest: true})</script> <!-- loads mapy.cz API	with Naseptavac feature -->
+
+	<!--	Leaflet map API-->
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+		  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+		  crossorigin=""/>
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+
 </head>
 <!-- Stránka pro vytváření nebo editaci CoffeeSitu -->
 <body>
@@ -189,7 +196,7 @@
 	            <select th:field="*{typPodniku.extId}" class="w3-select">
 	            <option th:each="siteType : ${allCoffeeSiteTypes}" 
 	                    th:value="${siteType.extId}"
-	                    th:text="${siteType}">Type of podnik</option>
+	                    th:text="${siteType.coffeeSiteType}">Type of podnik</option>
 	            </select>
 	          </div>
 	          
@@ -198,7 +205,7 @@
 	            <select th:field="*{statusZarizeni.extId}" class="w3-select">
 	            <option th:each="status : ${allSiteStatuses}" 
 	                    th:value="${status.extId}"
-	                    th:text="${status}">Site status</option>
+	                    th:text="${status.status}">Site status</option>
 	            </select>
 	          </div>
 	          
@@ -207,7 +214,7 @@
 	            <select th:field="*{cena.extId}" class="w3-select">
 	            <option th:each="price : ${allPriceRanges}" 
 	                    th:value="${price.extId}"
-	                    th:text="${price}">Price range</option>
+	                    th:text="${price.priceRange}">Price range</option>
 	            </select>
 	          </div>
 	          
@@ -216,7 +223,7 @@
 	            <select th:field="*{typLokality.extId}" class="w3-select">
 	            <option th:each="locType : ${allLocationTypes}" 
 	                    th:value="${locType.extId}"
-	                    th:text="${locType}">Location type</option>
+	                    th:text="${locType.locationType}">Location type</option>
 	            </select>
 	          </div>
           
@@ -232,7 +239,7 @@
 	                <input type="checkbox" class="w3-check"
 	                       th:field="*{otherOffers}"
 	                       th:value="${otherOffer}" />
-	                <label th:for="${extId}" th:text="${otherOffer}">Other offers</label>
+	                <label th:for="${extId}" th:text="${otherOffer.otherOffer}">Other offers</label>
 	              </li>
 	            </ul>
 	            <p class="error-message"
@@ -247,7 +254,7 @@
 	                <input type="checkbox" class="w3-check"
 	                       th:field="*{coffeeSorts}"
 	                       th:value="${coffeeSort}" />
-	                <label th:for="${extId}" th:text="${coffeeSort}">Coffee sorts</label>
+	                <label th:for="${extId}" th:text="${coffeeSort.coffeeSort}">Coffee sorts</label>
 	              </li>
 	            </ul>
 	          </div>
@@ -259,7 +266,7 @@
 	                <input type="checkbox" class="w3-check"
 	                       th:field="*{nextToMachineTypes}"
 	                       th:value="${ntmt}" />
-	                <label th:for="${extId}" th:text="${ntmt}">Next to machine type</label>
+	                <label th:for="${extId}" th:text="${ntmt.nextToMachineType}">Next to machine type</label>
 	              </li>
 	              
 	            </ul>
@@ -272,7 +279,7 @@
 	                  <input type="checkbox" class="w3-check"
 	                    	 th:field="*{cupTypes}"
 	                	     th:value="${cupType}" />
-	                  <label th:for="${extId}" th:text="${cupType}">Cup types</label>
+	                  <label th:for="${extId}" th:text="${cupType.cupType}">Cup types</label>
 	               </li>
 	             </ul>
 	          </div>
@@ -292,7 +299,7 @@
     
     	  <div class="w3-bar w3-margin-top">
 	          <div class="w3-bar-item">
-	             <button type="submit" name="save" th:text="(${coffeeSite.extId} == 0) ? #{site.button.create} : #{site.button.update}" class="w3-button w3-blue w3-round">Save/Modify Coffee site</button>
+	             <button type="submit" name="save" th:text="(${coffeeSite.extId} == null) ? #{site.button.create} : #{site.button.update}" class="w3-button w3-blue w3-round">Save/Modify Coffee site</button>
 	          </div>
 	          
 	          <div class="w3-bar-item">
@@ -321,7 +328,7 @@
  </div> <!---container -->
     
     
-  <script type="text/javascript" src="/js/select_location_map_support.js"></script>
+  <script type="text/javascript" src="/js/select_location_map_support-new.js"></script>
      
   <!-- Script to handle visibility of map's div element --> 
   <script type="text/javascript">
@@ -338,8 +345,7 @@
          changeVisibility(mapDiv);
          
          if (mapDiv.style.display == "block") { // Reload the map after 'mapDiv' element has corret class/position assigned
-     	 	map.create(latInput, lonInput, cityName, true); 
-     	 	map.enable();
+     	 	map.create(latInput, lonInput, cityName, true);
       	 }
      });
   

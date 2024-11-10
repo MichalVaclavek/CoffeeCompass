@@ -69,8 +69,7 @@ createMap = function(lat1, lon1) {
     new LogoControl().addTo(mapa);
 
     var marker = L.marker(L.latLng(lat1, lon1),
-
-                           {title: 'Střed hledání, přesuň mě!', draggable: true })
+                          {title: 'Střed hledání, přesuň mě!', draggable: true })
                   .addTo(mapa);
 	marker.on('dragend', onStopDrag);
 }
@@ -228,9 +227,8 @@ async function geocode(query) {
         });
         const json = await response.json();
         processGeocodeResult(json.items);
-
       } catch (ex) {
-            console.log(ex);
+           console.log(ex);
       }
 }
 
@@ -246,9 +244,8 @@ function extractPositionsToLatLng(allSites) {
 }
 
 
-
 /*
- * Callback function for SMap.Geocoder() call looking for city/place geo coordinates
+ * Callback function for https://api.mapy.cz/v1/geocode`) SDK API call looking for city/place geo coordinates
  */
 function processGeocodeResult(results) { /* Odpověď */
 	
