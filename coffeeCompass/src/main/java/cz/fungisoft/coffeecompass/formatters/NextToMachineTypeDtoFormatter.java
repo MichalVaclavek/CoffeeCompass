@@ -27,7 +27,6 @@ public class NextToMachineTypeDtoFormatter implements Formatter<NextToMachineTyp
 
     @Override
     public String print(NextToMachineTypeDTO ntmt, Locale locale) {
-//        return ntmt.getExtId().toString();
         return ntmt.getNextToMachineType();
     }
 

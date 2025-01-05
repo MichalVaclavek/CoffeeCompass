@@ -2,6 +2,7 @@ package cz.fungisoft.coffeecompass.serviceimpl;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import cz.fungisoft.coffeecompass.dto.*;
 import cz.fungisoft.coffeecompass.mappers.CoffeeSiteMapper;
@@ -218,7 +219,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     @Cacheable(cacheNames = "coffeeSitesCache")
     @Override
     public List<CoffeeSiteDTO> findAllFromUser(User user) {
-        List<CoffeeSite> items = coffeeSiteRepo.findSitesFromUserID(user.getLongId());
+        List<CoffeeSite> items = coffeeSiteRepo.findSitesFromUserID(user.getId());
         log.info("All Coffee sites from user {} retrieved: {}",  user.getUserName(), items.size());
         return modifyToTransfer(items);
     }
@@ -249,13 +250,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
                           .orElse(0);
     }
     
-    @Override
-    public List<CoffeeSiteDTO> findAllFromUserName(String userName) {
-        return userService.findByUserName(userName)
-                          .map(this::findAllFromUser)
-                          .orElse(Collections.emptyList());
-    }
-
     @Cacheable(cacheNames = "coffeeSitesCache")
     @Override
     public List<CoffeeSiteDTO> findAllFromLoggedInUser() {
@@ -283,14 +277,19 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     }
 
 
-    @Cacheable(cacheNames = "coffeeSitesCache")
-    @Override
-    public Optional<CoffeeSiteDTO> findOneToTransfer(Long id) {
-        return findOneById(id).map(this::mapOneToTransfer);
-    }
+//    @Cacheable(cacheNames = "coffeeSitesCache")
+//    @Override
+//    public Optional<CoffeeSiteDTO> findOneToTransfer(Long id) {
+//        return findOneById(id).map(this::mapOneToTransfer);
+//    }
 
     @Override
     public Optional<CoffeeSiteDTO> findOneToTransfer(String externalId) {
+        return findOneByExternalId(externalId).map(this::mapOneToTransfer);
+    }
+
+    @Override
+    public Optional<CoffeeSiteDTO> findOneToTransfer(UUID externalId) {
         return findOneByExternalId(externalId).map(this::mapOneToTransfer);
     }
 
@@ -306,15 +305,14 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
 
     /**
      *
-     * @param id
+//    @Cacheable(cacheNames = "coffeeSitesCache")
+//    @Override
+//    public Optional<CoffeeSite> findOneById(Long id) {
+//        Optional<CoffeeSite> site = coffeeSiteRepo.getById(id);
+//        log.info("Coffee site with id {} retrieved.",  id);
+//        return site;
+//    }
      */
-    @Cacheable(cacheNames = "coffeeSitesCache")
-    @Override
-    public Optional<CoffeeSite> findOneById(Long id) {
-        Optional<CoffeeSite> site = coffeeSiteRepo.getById(id);
-        log.info("Coffee site with id {} retrieved.",  id);
-        return site;
-    }
 
     @Override
     public Optional<CoffeeSite> findOneByExternalId(String externalId) {
@@ -344,9 +342,9 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     @Override
     public CoffeeSite save(CoffeeSite coffeeSite) {
         Optional<User> currentLoggedInUser = userService.getCurrentLoggedInUser();
-        
+        AtomicReference<CoffeeSite> savedCoffeeSite = new AtomicReference<>();
         currentLoggedInUser.ifPresent(user -> {
-            if (coffeeSite.getLongId() == null) { // Zcela novy CoffeeSite
+            if (coffeeSite.getId() == null) { // Zcela novy CoffeeSite
                 coffeeSite.setId(UUID.randomUUID());
                 CoffeeSiteRecordStatus coffeeSiteRecordStatus = csRecordStatusService.findCSRecordStatus(CoffeeSiteRecordStatusEnum.CREATED);
                 coffeeSite.setRecordStatus(coffeeSiteRecordStatus);
@@ -357,22 +355,26 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
                 }
                 userService.saveUser(user);
             }
-        });
-            
-        // Zjisteni, jestli Company je nove nebo ne
-        if (coffeeSite.getDodavatelPodnik() != null) {
-            Company comp = companyService.findCompanyByName(coffeeSite.getDodavatelPodnik().toString());
-            
-            if (comp == null) { // Save new company
-                comp = companyService.saveCompany(coffeeSite.getDodavatelPodnik().toString());
+            // Zjisteni, jestli Company je nove nebo ne
+            if (coffeeSite.getDodavatelPodnik() != null) {
+                Company comp = companyService.findCompanyByName(coffeeSite.getDodavatelPodnik().toString());
+
+                if (comp == null) { // Save new company
+                    comp = companyService.saveCompany(coffeeSite.getDodavatelPodnik().toString());
+                }
+                coffeeSite.setDodavatelPodnik(comp);
             }
-            coffeeSite.setDodavatelPodnik(comp);
+
+            savedCoffeeSite.set(coffeeSiteRepo.save(coffeeSite));
+            log.info("CoffeeSite name {} saved into DB.", savedCoffeeSite.get().getSiteName());
+        });
+
+        // If currentLoggedInUser is not present, then return Exception
+        // This should not happen, as this method should be called only by logged-in user
+        if (currentLoggedInUser.isEmpty()) {
+            throw new EntityNotFoundException("User not found for saving CoffeeSite.");
         }
-        
-        CoffeeSite savedCoffeeSite = coffeeSiteRepo.save(coffeeSite);
-        log.info("CoffeeSite name {} saved into DB.", savedCoffeeSite.getSiteName());
-        
-        return savedCoffeeSite;
+        return savedCoffeeSite.get();
     }
 
     /**
@@ -556,18 +558,18 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * True, if there is already created a different CoffeeSite on 'zemSirka', 'zemDelka' location within meters range,
      * otherwise false.
      */
-    @Override
-    public boolean isLocationAlreadyOccupied(double zemSirka, double zemDelka, long meters, Long siteId) {
-        long numOfSites = coffeeSiteRepo.getNumberOfSitesWithinRange(zemSirka, zemDelka, meters);
-        // If only one site is found in the neighborhood, check if it is a new site or curently modified site
-        // if it is current modified site, then the location is considered to be available.
-        // Means only move of the CoffeeSite to correct new position with no other neighbors
-        if (numOfSites == 1 && siteId > 0) {
-            return findOneById(siteId).isEmpty();
-        }
-            
-        return numOfSites > 0;
-    }
+//    @Override
+//    public boolean isLocationAlreadyOccupied(double zemSirka, double zemDelka, long meters, String siteId) {
+//        long numOfSites = coffeeSiteRepo.getNumberOfSitesWithinRange(zemSirka, zemDelka, meters);
+//        // If only one site is found in the neighborhood, check if it is a new site or curently modified site
+//        // if it is current modified site, then the location is considered to be available.
+//        // Means only move of the CoffeeSite to correct new position with no other neighbors
+//        if (numOfSites == 1 && siteId != null) {
+//            return findOneByExternalId(siteId).isEmpty();
+//        }
+//
+//        return numOfSites > 0;
+//    }
     
     
     /**
@@ -575,15 +577,15 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * otherwise false.
      */
     @Override
-    public boolean isLocationAlreadyOccupiedByActiveSite(double zemSirka, double zemDelka, long meters, Long siteId) {
+    public boolean isLocationAlreadyOccupiedByActiveSite(double zemSirka, double zemDelka, long meters, UUID siteId) {
         CoffeeSiteRecordStatus activeRecordStatus = csRecordStatusService.findCSRecordStatus(CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum.ACTIVE);
         
-        long numOfSites = coffeeSiteRepo.getNumberOfSitesWithinRangeInGivenStatus(zemSirka, zemDelka, meters, activeRecordStatus.getLongId());
+        long numOfSites = coffeeSiteRepo.getNumberOfSitesWithinRangeInGivenStatus(zemSirka, zemDelka, meters, activeRecordStatus.getId());
         // If only one site is found in the neighborhood, check if it is a new site or currently modified site
         // if it is current modified site, then the location is considered to be available.
         // Means only move of the CoffeeSite to correct new position with no other ACTIVE neighbors
-        if (numOfSites == 1 && siteId > 0) { //TODO - check if this situation may ocure?
-            return findOneById(siteId).filter(neighborSite -> neighborSite.getRecordStatus().getRecordStatus() == CoffeeSiteRecordStatusEnum.ACTIVE).isEmpty();
+        if (numOfSites == 1 && siteId != null) { //TODO - check if this situation may ocure?
+            return findOneByExternalId(siteId).filter(neighborSite -> neighborSite.getRecordStatus().getRecordStatus() == CoffeeSiteRecordStatusEnum.ACTIVE).isEmpty();
         }
             
         return numOfSites > 0;
@@ -908,9 +910,9 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * Checks if the coffe site name is already used or not
      */
     @Override
-    public boolean isSiteNameUnique(Long id, String siteName) {
+    public boolean isSiteNameUnique(UUID id, String siteName) {
         CoffeeSite site = coffeeSiteRepo.searchByName(siteName);
-        return ( site == null || (site.getLongId().equals(id)));
+        return ( site == null || (site.getId().equals(id)));
     }
 
     @Override

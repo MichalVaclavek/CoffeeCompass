@@ -45,14 +45,14 @@ public class OtherOfferServiceImpl implements OtherOfferService {
         return offerRepo.findAll().stream().map(otherOfferMapper::otherOfferToOtherOfferDto).toList();
     }
 
-    @Override
-    @Cacheable(cacheNames = "otherOffersCache")
-    public OtherOffer findOfferById(Integer id) {
-        Optional<OtherOffer> otherOffer = offerRepo.findByLongId(id);
-        if (otherOffer.isEmpty())
-            throw new EntityNotFoundException("Other offer id " + id + " not found in DB.");
-        return otherOffer.get();
-    }
+//    @Override
+//    @Cacheable(cacheNames = "otherOffersCache")
+//    public OtherOffer findOfferById(Integer id) {
+//        Optional<OtherOffer> otherOffer = offerRepo.findByLongId(id);
+//        if (otherOffer.isEmpty())
+//            throw new EntityNotFoundException("Other offer id " + id + " not found in DB.");
+//        return otherOffer.get();
+//    }
 
     @Override
     @Cacheable(cacheNames = "otherOffersCache")

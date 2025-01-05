@@ -165,10 +165,10 @@ public class CoffeeSiteControllerPublicREST {
     @GetMapping("/allSitesPaginated/")
     @ResponseStatus(HttpStatus.OK)
     public Page<CoffeeSiteDTO> allSitesPaginated(@RequestParam(defaultValue = "createdOn") String orderBy,
-                                                                 @RequestParam(defaultValue = "desc") String direction,
-                                                                 @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
-        int currentPage = page.orElse(1);
-        int pageSize = size.orElse(10);
+                                                 @RequestParam(defaultValue = "desc") String direction,
+                                                 @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        int currentPage = page;
+        int pageSize = size;
         Page<CoffeeSiteDTO> coffeeSitePage;
         
         // Get 1 page of all ACTIVE CoffeeSites
@@ -185,7 +185,7 @@ public class CoffeeSiteControllerPublicREST {
      * @return found CoffeeSiteDTO with requested id
      */
     @GetMapping("/{id}") // napr. http://coffeecompass.cz/rest/site/2
-    public ResponseEntity<CoffeeSiteDTO> siteById(@PathVariable Long id) {
+    public ResponseEntity<CoffeeSiteDTO> siteById(@PathVariable String id) {
         return coffeeSiteService.findOneToTransfer(id).map(cs ->  new ResponseEntity<>(cs, HttpStatus.OK))
                                                       .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

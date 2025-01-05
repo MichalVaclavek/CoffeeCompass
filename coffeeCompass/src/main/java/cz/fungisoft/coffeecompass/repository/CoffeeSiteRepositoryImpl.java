@@ -119,8 +119,8 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
                             + "JOIN coffeecompass.druhy_kavy AS dk ON dk.id=?5 "
                             + "WHERE cs_dk.druhy_kavy_id=?5 "
                             + "AND cs.id=cs_dk.coffee_site_id "
-                            + "AND status_zarizeni_id=?4 "
-                            + "AND status_zaznamu_id=?6 "
+                            + "AND status_site_uuid=?4 "
+                            + "AND status_zaznamu_uuid=?6 "
                             + "AND (public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
                       
         Query sites = em.createNativeQuery(selectQuery, CoffeeSite.class);
@@ -129,9 +129,9 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
         sites.setParameter(2, delka);
         sites.setParameter(3, rangeMeters);
         
-        sites.setParameter(4, siteStatus.getLongId());
-        sites.setParameter(5, sort.getLongId());
-        sites.setParameter(6, csRecordStatus.getLongId());
+        sites.setParameter(4, siteStatus.getId());
+        sites.setParameter(5, sort.getId());
+        sites.setParameter(6, csRecordStatus.getId());
         
         return sites.getResultList();
     }
@@ -169,24 +169,24 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
         selectQuery.append("FROM coffeecompass.coffee_site AS cs WHERE ");
 
         if (csRecordStatus != null && !csRecordStatus.getStatus().isEmpty())
-            selectQuery.append("status_zaznamu_id=?1 ");
+            selectQuery.append("status_zaznamu_uuid=?1 ");
 
         if (cityName != null && cityName.length() > 1) {
             selectQuery.append("AND ( (public.distance(?2, ?3, poloha_gps_sirka, poloha_gps_delka) < ?4) OR (LOWER(cs.poloha_mesto) like LOWER(CONCAT(?5,'%')) ))");
             if (siteStatus != null && !siteStatus.getStatus().isEmpty()) {
-                selectQuery.append(" AND status_zarizeni_id=?6");
+                selectQuery.append(" AND status_site_uuid=?6");
             }
         } else {
             selectQuery.append("AND (public.distance(?2, ?3, poloha_gps_sirka, poloha_gps_delka) < ?4)");
             if (siteStatus != null && !siteStatus.getStatus().isEmpty()) {
-                selectQuery.append(" AND status_zarizeni_id=?5");
+                selectQuery.append(" AND status_site_uuid=?5");
             }
         }
 
         Query sites = em.createNativeQuery(selectQuery.toString(), CoffeeSite.class);
         
         if (csRecordStatus != null) {
-            sites.setParameter(1, csRecordStatus.getLongId());
+            sites.setParameter(1, csRecordStatus.getId());
         }
         
         sites.setParameter(2, sirka);
@@ -196,13 +196,14 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
         if (cityName != null && cityName.length() > 1) {
             sites.setParameter(5, cityName);
             if (siteStatus != null) {
-                sites.setParameter(6, siteStatus.getLongId());
+                sites.setParameter(6, siteStatus.getId());
             }
         } else if (siteStatus != null) {
-                sites.setParameter(5, siteStatus.getLongId());
+                sites.setParameter(5, siteStatus.getId());
         }
 
         
+
         return sites.getResultList();
     }
     
@@ -226,8 +227,8 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
         sites.setParameter(2, delka);
         sites.setParameter(3, rangeMeters);
         
-        sites.setParameter(4, sort.getLongId());
-        sites.setParameter(5, csRecordStatus.getLongId());
+        sites.setParameter(4, sort.getId());
+        sites.setParameter(5, csRecordStatus.getId());
         
         return sites.getResultList();
     }
@@ -241,8 +242,8 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
 
         String selectQuery = "SELECT *, poloha_gps_sirka AS gps_sirka, poloha_gps_delka AS gps_delka "
                           + "FROM coffeecompass.coffee_site AS cs "
-                          + "WHERE status_zarizeni_id=?4 "
-                          + "AND status_zaznamu_id=?5 "
+                          + "WHERE status_site_uuid=?4 "
+                          + "AND status_zaznamu_uuid=?5 "
                           + "AND (public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
                       
         Query sites = em.createNativeQuery(selectQuery, CoffeeSite.class);
@@ -251,8 +252,8 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
         sites.setParameter(2, delka);
         sites.setParameter(3, rangeMeters);
         
-        sites.setParameter(4, siteStatus.getLongId());
-        sites.setParameter(5, csRecordStatus.getLongId());
+        sites.setParameter(4, siteStatus.getId());
+        sites.setParameter(5, csRecordStatus.getId());
         
         return sites.getResultList();
     }
@@ -275,7 +276,7 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
         sites.setParameter(2, delka);
         sites.setParameter(3, rangeMeters);
         
-        sites.setParameter(4, csRecordStatus.getLongId());
+        sites.setParameter(4, csRecordStatus.getId());
         
         return sites.getResultList();
     }
@@ -300,7 +301,7 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
       
         Query sites = em.createNativeQuery(selectQuery, Long.class);
         
-        sites.setParameter(1, csRecordStatus.getLongId());
+        sites.setParameter(1, csRecordStatus.getId());
         
         return (long) sites.getFirstResult();
     }

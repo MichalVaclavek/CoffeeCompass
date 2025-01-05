@@ -5,13 +5,10 @@ package cz.fungisoft.coffeecompass.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -35,19 +32,19 @@ public class StarsQualityDescription extends BaseEntity {
         FOUR("Dobrá"),
         FIVE("Vynikající");
          
-        private final String starsQuality;
+        private final String quality;
          
         StarsQualityEnum(String starsQuality) {
-            this.starsQuality = starsQuality;
+            this.quality = starsQuality;
         }
          
-        public String getStarsQuality() {
-            return starsQuality;
+        public String getQuality() {
+            return quality;
         }
         
         public static StarsQualityEnum fromString(String text) {
             for (StarsQualityEnum b : StarsQualityEnum.values()) {
-                if (b.starsQuality.equalsIgnoreCase(text)) {
+                if (b.quality.equalsIgnoreCase(text)) {
                     return b;
                 }
             }
@@ -72,21 +69,21 @@ public class StarsQualityDescription extends BaseEntity {
         this.numOfStars = numOfStars;
 
         switch (numOfStars) {
-            case 1 -> this.quality = StarsQualityEnum.ONE.getStarsQuality();
-            case 2 -> this.quality = StarsQualityEnum.TWO.getStarsQuality();
-            case 3 -> this.quality = StarsQualityEnum.THREE.getStarsQuality();
-            case 4 -> this.quality = StarsQualityEnum.FOUR.getStarsQuality();
-            case 5 -> this.quality = StarsQualityEnum.FIVE.getStarsQuality();
-            default -> this.quality = StarsQualityEnum.THREE.getStarsQuality();
+            case 1 -> this.quality = StarsQualityEnum.ONE.getQuality();
+            case 2 -> this.quality = StarsQualityEnum.TWO.getQuality();
+            case 3 -> this.quality = StarsQualityEnum.THREE.getQuality();
+            case 4 -> this.quality = StarsQualityEnum.FOUR.getQuality();
+            case 5 -> this.quality = StarsQualityEnum.FIVE.getQuality();
+            default -> this.quality = StarsQualityEnum.THREE.getQuality();
         }
     }
     
     @NotNull // Validace vstupu, nesmi byt null
     @Column(name = "slovni_vyjadreni_hvezdicek", unique=true, length=45)
-    private String quality = StarsQualityEnum.THREE.getStarsQuality(); // Default value needed, atribute must not be null
+    private String quality = StarsQualityEnum.THREE.getQuality(); // Default value needed, atribute must not be null
     
     public void setQuality(StarsQualityEnum qual) {
-        this.quality = qual.starsQuality;
+        this.quality = qual.quality;
 
         switch (qual) {
             case ONE -> numOfStars = 1;

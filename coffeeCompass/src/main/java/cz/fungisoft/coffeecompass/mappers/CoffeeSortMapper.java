@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 public interface CoffeeSortMapper {
 
     @Mapping(target = "id", source="extId")
+//    @Mapping(target = "longId", ignore = true)
     CoffeeSort coffeeSortDtoToCoffeeSort(CoffeeSortDTO coffeeSortDTO);
 
     @Mapping(target = "extId", source="id")

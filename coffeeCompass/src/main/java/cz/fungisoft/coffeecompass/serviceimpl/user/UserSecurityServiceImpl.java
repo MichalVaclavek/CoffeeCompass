@@ -1,10 +1,11 @@
 package cz.fungisoft.coffeecompass.serviceimpl.user;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
@@ -12,11 +13,14 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Service;
 
 import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.exceptions.rest.BadAuthorizationRESTRequestException;
 import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
 import cz.fungisoft.coffeecompass.security.IAuthenticationFacade;
 import cz.fungisoft.coffeecompass.service.user.CustomRESTUserAuthenticationService;
@@ -42,17 +46,22 @@ public class UserSecurityServiceImpl implements UserSecurityService {
     private final CustomUserDetailsService userDetailsService;
     
     private final CustomRESTUserAuthenticationService restUserDetailsService;
+
+    private final SecurityContextRepository securityContextRepository;
     
     public UserSecurityServiceImpl(IAuthenticationFacade authenticationFacade,
                                    CustomUserDetailsService userDetailsService,
                                    @Lazy
                                    @Qualifier("jwtTokenUserAuthenticationService")
-                                   CustomRESTUserAuthenticationService restUserDetailsService
+                                   CustomRESTUserAuthenticationService restUserDetailsService,
+                                   @Lazy
+                                   SecurityContextRepository securityContextRepository
                                    ) {
         super();
         this.authenticationFacade = authenticationFacade;
         this.userDetailsService = userDetailsService;
         this.restUserDetailsService = restUserDetailsService;
+        this.securityContextRepository = securityContextRepository;
     }
 
     @Override
@@ -66,12 +75,22 @@ public class UserSecurityServiceImpl implements UserSecurityService {
     }
     
     @Override
-    public void authWithPassword(User user, String password) {
+    public void authWithPassword(User user, String password, HttpServletRequest request,
+                                 HttpServletResponse response) {
         Authentication auth = authenticationFacade.getContext().getAuthentication();
         if (auth == null || auth.getName().equalsIgnoreCase("anonymousUser")) {    
             Collection<SimpleGrantedAuthority> nowAuthorities = (Collection<SimpleGrantedAuthority>) userDetailsService.getGrantedAuthorities(user);
             UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(user.getUserName(), password, nowAuthorities);
-            authenticationFacade.getContext().setAuthentication(newAuthentication);                 
+//            authenticationFacade.getContext().setAuthentication(newAuthentication);
+
+            SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder
+                    .getContextHolderStrategy();
+
+            SecurityContext context = securityContextHolderStrategy.createEmptyContext();
+            context.setAuthentication(newAuthentication);
+            securityContextHolderStrategy.setContext(context);
+
+            securityContextRepository.saveContext(context, request, response);
         }
     }
     

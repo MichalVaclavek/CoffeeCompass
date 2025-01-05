@@ -15,14 +15,10 @@ import cz.fungisoft.coffeecompass.security.oauth2.user.OAuth2UserInfo;
  
 public interface UserService {
 
-//    Optional<UserDTO> findByIdToTransfer(Long id);
     Optional<UserDTO> findByExtIdToTransfer(UUID id);
     Optional<UserDTO> findByExtIdToTransfer(String id);
     Optional<UserDTO> findByUserNameToTransfer(String userName);
     
-//    @PreAuthorize("hasRole('ADMIN')")
-//    Optional<User> findById(Long id);
-
     @PreAuthorize("hasRole('ADMIN')")
     Optional<User> findByExtId(UUID id);
     @PreAuthorize("hasRole('ADMIN')")
@@ -70,9 +66,6 @@ public interface UserService {
     @PreAuthorize("hasRole('ADMIN')")
     void deleteUserBySSO(String sso);
     
-//    @PreAuthorize("hasRole('ADMIN')")
-//    void deleteUserById(Long id);
-
     @PreAuthorize("hasRole('ADMIN')")
     void deleteUserById(UUID id);
 
@@ -82,9 +75,7 @@ public interface UserService {
     @PreAuthorize("hasRole('ADMIN')")
     List<UserDTO> findAllUsers();
     
-    boolean isUserNameUnique(Long id, String sso);
     boolean isUserNameUnique(UUID id, String sso);
-//    boolean isEmailUnique(Long id, String email);
     boolean isEmailUnique(UUID id, String email);
     
     boolean hasADMINRole(User user);

@@ -74,7 +74,7 @@ import java.util.*;
     ),
     @NamedNativeQuery( // Counts number of already created CoffeeSites in given status on selected location within defined meters range from the location. 
             name = "numberOfSitesWithinRangeInGivenStatus",
-            query = "SELECT COUNT(*) AS cnt FROM (SELECT id, status_zaznamu_id, poloha_gps_sirka, poloha_gps_delka FROM coffeecompass.coffee_site WHERE public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3) AS items WHERE status_zaznamu_id=?4",
+            query = "SELECT COUNT(*) AS cnt FROM (SELECT id, status_zaznamu_id, poloha_gps_sirka, poloha_gps_delka FROM coffeecompass.coffee_site WHERE public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3) AS items WHERE external_id=?4",
             resultSetMapping = "LongResult"
     )
 })
@@ -84,8 +84,8 @@ import java.util.*;
 @Table(name="coffee_site", schema="coffeecompass")
 public class CoffeeSite extends BaseEntity implements Serializable {
 
-    @Column(name = "id")
-    private Long longId;
+//    @Column(name = "id")
+//    private Long longId;
 
     @NotNull
     @Size(min = 3, max = 50)
@@ -236,7 +236,7 @@ public class CoffeeSite extends BaseEntity implements Serializable {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         CoffeeSite that = (CoffeeSite) o;
-        return longId != null && Objects.equals(longId, that.longId);
+        return id != null && Objects.equals(id, that.id);
     }
 
     @Override

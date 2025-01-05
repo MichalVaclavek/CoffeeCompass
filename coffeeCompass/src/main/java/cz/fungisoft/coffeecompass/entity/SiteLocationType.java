@@ -22,9 +22,9 @@ import java.util.Objects;
 @Table(name="typ_lokality", schema="coffeecompass")
 public class SiteLocationType extends BaseEntity {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer longId;
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "id")
+//    private Integer longId;
     
     @NotNull // Validace vstupu, nesmi byt null
     @Column(name = "lokalita", unique=true, length=55)
@@ -40,7 +40,7 @@ public class SiteLocationType extends BaseEntity {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         SiteLocationType that = (SiteLocationType) o;
-        return longId != null && Objects.equals(longId, that.longId);
+        return id != null && Objects.equals(id, that.id);
     }
 
     @Override

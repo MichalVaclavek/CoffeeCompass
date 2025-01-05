@@ -1,7 +1,10 @@
 package cz.fungisoft.coffeecompass.serviceimpl.user;
 
 import java.util.List;
- 
+import java.util.UUID;
+
+import cz.fungisoft.coffeecompass.dto.UserProfileDTO;
+import cz.fungisoft.coffeecompass.mappers.UserProfileMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -18,19 +21,22 @@ import cz.fungisoft.coffeecompass.service.user.UserProfileService;
 public class UserProfileServiceImpl implements UserProfileService {
 
     private final UserProfileRepository userProfRepository;
+
+    private final UserProfileMapper userProfileMapper;
         
     @Autowired
-    public UserProfileServiceImpl(UserProfileRepository userProfRepository) {
+    public UserProfileServiceImpl(UserProfileRepository userProfRepository, UserProfileMapper userProfileMapper) {
         super();
         this.userProfRepository = userProfRepository;
+        this.userProfileMapper = userProfileMapper;
     }
 
     @Override
     @Cacheable(cacheNames = "userProfilesCache")
-    public UserProfile findById(Integer id) {
-        UserProfile userProfile = userProfRepository.findById(id).orElse(null);
+    public UserProfile findByExtId(String extId) {
+        UserProfile userProfile = userProfRepository.findById(UUID.fromString(extId)).orElse(null);
         if (userProfile == null)
-            throw new EntityNotFoundException("User profile id " + id + " not found in DB.");
+            throw new EntityNotFoundException("User profile id " + extId + " not found in DB.");
         return  userProfile;
     }
  
@@ -45,7 +51,7 @@ public class UserProfileServiceImpl implements UserProfileService {
  
     @Override
     @Cacheable(cacheNames = "userProfilesCache")
-    public List<UserProfile> findAll() {
-        return userProfRepository.findAll();
+    public List<UserProfileDTO> findAll() {
+        return userProfRepository.findAll().stream().map(userProfileMapper::userProfiletoUserProfileDTO).toList();
     }
 }

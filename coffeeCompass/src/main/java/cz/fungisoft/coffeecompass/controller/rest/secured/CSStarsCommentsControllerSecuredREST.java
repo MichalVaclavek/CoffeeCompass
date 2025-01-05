@@ -200,7 +200,7 @@ public class CSStarsCommentsControllerSecuredREST {
                 updatedComment = commentsService.updateComment(commentDTO);
                 
                 if (updatedComment != null) {
-                    commentToReturn = commentsService.getByExtIdToTransfer(updatedComment.getLongId().toString());
+                    commentToReturn = commentsService.getByExtIdToTransfer(updatedComment.getId().toString());
                     LOG.info("Comment updated for CoffeeSite id {}, from User id {}.", commentDTO.getCoffeeSiteId(), commentDTO.getUserId());
                 }
             } catch (Exception ex) {

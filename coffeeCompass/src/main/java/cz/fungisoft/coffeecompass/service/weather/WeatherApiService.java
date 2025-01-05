@@ -47,5 +47,5 @@ public interface WeatherApiService {
      * @param coffeeSiteId - id of the CoffeeSite who's geo coordinations are used as input data for obtaining current weather info from openweathermap.com
      * @return
      */
-    Optional<WeatherDTO> getWeatherDTO(Long coffeeSiteId);
+    Optional<WeatherDTO> getWeatherDTO(String coffeeSiteId);
 }

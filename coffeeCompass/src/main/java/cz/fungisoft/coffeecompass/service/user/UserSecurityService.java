@@ -1,5 +1,7 @@
 package cz.fungisoft.coffeecompass.service.user;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -25,7 +27,8 @@ public interface UserSecurityService {
      */
     Authentication authWithToken(String token);
 
-    void authWithPassword(User user, String password);
+    void authWithPassword(User user, String password, HttpServletRequest request,
+                          HttpServletResponse response);
     
     void authWithUserNameAndRole(String userName, String role);
     

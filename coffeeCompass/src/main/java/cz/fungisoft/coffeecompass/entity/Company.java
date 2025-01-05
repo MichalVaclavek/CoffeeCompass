@@ -23,9 +23,9 @@ import java.util.Objects;
 @Table(name="dodavatel_nebo_jmeno_podniku", schema="coffeecompass")
 public class Company extends BaseEntity {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer longId;
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "id")
+//    private Integer longId;
     
     @Size(max = 85) // Validace vstupu, pocet znaku
     @Column(name = "jmeno_podniku_dodavatele", unique = true)
@@ -45,7 +45,7 @@ public class Company extends BaseEntity {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Company company = (Company) o;
-        return longId != null && Objects.equals(longId, company.longId);
+        return id != null && Objects.equals(id, company.id);
     }
 
     @Override

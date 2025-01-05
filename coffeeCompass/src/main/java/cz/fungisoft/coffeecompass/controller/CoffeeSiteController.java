@@ -238,7 +238,7 @@ public class CoffeeSiteController {
             if (!model.containsAttribute("newImageFile")) { // otherwise, returned after validation error and model already contains newImage object
                 var newImage = new ImageDTO();
                 newImage.setImageType("main");
-                newImage.setExternalObjectId(coffeeSite.getLongId().toString());
+                newImage.setExternalObjectId(coffeeSite.getId().toString());
                 newImage.setDescription("novy obrazek");
 
                 mav.addObject("newImageFile", newImage);
@@ -249,11 +249,11 @@ public class CoffeeSiteController {
             mav.addObject("coffeeSite", coffeeSiteDto);
 
             // Add all images for this CoffeeSite
-            List<String> imageUrls = imagesService.getSmallImagesUrls(coffeeSite.getLongId().toString());
+            List<String> imageUrls = imagesService.getSmallImagesUrls(coffeeSite.getId().toString());
             mav.addObject("imageUrls", imageUrls);
 
-            mav.addObject("selectedImageUrl", getSelectedImageUrl(coffeeSite.getLongId().toString(), selectedImageExternalId).orElse(coffeeSiteDto.getMainImageURL()));
-            mav.addObject("selectedImageExternalId", getSelectedImageExternalId(coffeeSite.getLongId().toString(), selectedImageExternalId).orElse(""));
+            mav.addObject("selectedImageUrl", getSelectedImageUrl(coffeeSite.getId().toString(), selectedImageExternalId).orElse(coffeeSiteDto.getMainImageURL()));
+            mav.addObject("selectedImageExternalId", getSelectedImageExternalId(coffeeSite.getId().toString(), selectedImageExternalId).orElse(""));
 
             // Get Weather info for the geo location of the CofeeSite to be shown
             weatherService.getWeatherDTO(coffeeSite)
@@ -413,7 +413,7 @@ public class CoffeeSiteController {
             cs = coffeeSiteService.save(coffeeSite);
         }
 
-        returnView = (cs != null) ? returnView + cs.getLongId() + "/selectedImageExtId/" + selectedImageExtId + returnSuffix
+        returnView = (cs != null) ? returnView + cs.getId() + "/selectedImageExtId/" + selectedImageExtId + returnSuffix
                 : "404";
         return returnView;
     }
@@ -429,12 +429,12 @@ public class CoffeeSiteController {
 
         AtomicReference<String> returnPage = new AtomicReference<>("404");
         coffeeSiteService.findOneByExternalId(externalId).ifPresent(cs -> {
-            if (coffeeSiteService.isLocationAlreadyOccupiedByActiveSite(cs.getZemSirka(), cs.getZemDelka(), 5, cs.getLongId())) {
-                returnPage.set(REDIRECT_SHOW_SITE_VIEW + cs.getLongId() + "/selectedImageExtId/" + selectedImageExtId + "?anyOtherSiteActiveOnSamePosition");
+            if (coffeeSiteService.isLocationAlreadyOccupiedByActiveSite(cs.getZemSirka(), cs.getZemDelka(), 5, cs.getId())) {
+                returnPage.set(REDIRECT_SHOW_SITE_VIEW + cs.getId() + "/selectedImageExtId/" + selectedImageExtId + "?anyOtherSiteActiveOnSamePosition");
             } else {
                 cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, CoffeeSiteRecordStatusEnum.ACTIVE);
                 // After CoffeeSite activation, go to the same page and show confirmation message
-                returnPage.set(REDIRECT_SHOW_SITE_VIEW + cs.getLongId() + "/selectedImageExtId/" + selectedImageExtId + "?activationSuccess");
+                returnPage.set(REDIRECT_SHOW_SITE_VIEW + cs.getId() + "/selectedImageExtId/" + selectedImageExtId + "?activationSuccess");
             }
         });
         return returnPage.get();
@@ -474,7 +474,7 @@ public class CoffeeSiteController {
                                                  String imageExternalId) {
         return coffeeSiteService.findOneByExternalId(externalId).map(cs -> {
             cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, newStatus);
-            return REDIRECT_SHOW_SITE_VIEW + cs.getLongId() + "/selectedImageExtId/" + imageExternalId;
+            return REDIRECT_SHOW_SITE_VIEW + cs.getId() + "/selectedImageExtId/" + imageExternalId;
         }).orElse("404");
     }
 

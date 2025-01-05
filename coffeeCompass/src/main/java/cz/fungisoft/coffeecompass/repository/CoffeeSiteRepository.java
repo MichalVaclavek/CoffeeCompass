@@ -49,10 +49,8 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, UUID>, C
     @Query("select cs from CoffeeSite cs where id=?1")
     Optional<CoffeeSite> getById(@NotNull Long id);
 
-//    Optional<CoffeeSite> findByExtId(UUID externalId);
-
     @Query("select cs from CoffeeSite cs where originalUser.id=?1 order by cs.createdOn desc")
-    List<CoffeeSite> findSitesFromUserID(long userId);
+    List<CoffeeSite> findSitesFromUserID(UUID userId);
 
     @Query("select cs from CoffeeSite cs where originalUser.id=?1 and NOT cs.recordStatus.status='CANCELED' order by cs.createdOn desc")
     List<CoffeeSite> findSitesNotCanceledFromUserID(long userId);
@@ -155,7 +153,7 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, UUID>, C
      * @return pocet CoffeeSites v danem okruhu "rangeMeters" od zadanych souradnic.
      */
     @Query(nativeQuery = true, name = "numberOfSitesWithinRangeInGivenStatus") // varianta, kdy je Query, se jmenem "numberOfSitesWithinRange", nadefinovano v jine tride pomoci @NamedNativeQuery anotace, v tomto pripade v CoffeeSite tride
-    Long getNumberOfSitesWithinRangeInGivenStatus(double sirka, double delka, long rangeMeters, int recordStatusId);
+    Long getNumberOfSitesWithinRangeInGivenStatus(double sirka, double delka, long rangeMeters, UUID recordStatusId);
     
     /** 
      * Pomocna metoda pro otestovani, ze funguje volani Stored procedure v DB.
@@ -182,10 +180,6 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, UUID>, C
     @Modifying // required by Hibernate, otherwise there is an exception ' ... Illegal state ...'
     @Query("delete FROM CoffeeSite cs WHERE originalUser.id=?1")
     void deleteAllFromUser(Long userId);
-
-//    @Modifying
-//    @Query("delete FROM CoffeeSite cs WHERE id=?1")
-//    void deleteById(Long Id);
 
     @Modifying
     @Query("delete FROM CoffeeSite cs WHERE id=?1")

@@ -37,7 +37,6 @@ public interface CoffeeSiteService {
     Page<CoffeeSiteDTO> findAllPaginated(Pageable pageable);
     
     List<CoffeeSiteDTO> findAllFromUser(User user);
-    List<CoffeeSiteDTO> findAllFromUserName(String userName);
     List<CoffeeSiteDTO> findAllFromLoggedInUser();
     Page<CoffeeSiteDTO> findAllFromLoggedInUserPaginated(Pageable pageable);
 
@@ -55,16 +54,11 @@ public interface CoffeeSiteService {
     Integer getNumberOfSitesNotCanceledFromUserId(Long userId);
     Integer getNumberOfSitesNotCanceledFromLoggedInUser();
     
-    Optional<CoffeeSiteDTO> findOneToTransfer(Long siteId);
     Optional<CoffeeSiteDTO> findOneToTransfer(String externalId);
+    Optional<CoffeeSiteDTO> findOneToTransfer(UUID externalId);
 
     CoffeeSiteDTO mapOneToTransfer(CoffeeSite site);
 
-    /**
-     * @param id
-     * @return
-     */
-    Optional<CoffeeSite> findOneById(Long id);
     Optional<CoffeeSite> findOneByExternalId(String externalId);
     Optional<CoffeeSite> findOneByExternalId(UUID externalId);
     CoffeeSiteDTO findByName(String siteName);
@@ -181,7 +175,7 @@ public interface CoffeeSiteService {
      * @param siteName
      * @return
      */
-    boolean isSiteNameUnique(Long siteId, String siteName);
+    boolean isSiteNameUnique(UUID siteId, String siteName);
     
     /**
      * Method, which is called before every request for CoffeeSiteDTO object.
@@ -218,7 +212,7 @@ public interface CoffeeSiteService {
 
      * @return - true, if the location is already occupied by another CoffeeSite, otherwise false.
      */
-    boolean isLocationAlreadyOccupied(double zemSirka, double zemDelka, long rangeMeters, Long siteId);
+//    boolean isLocationAlreadyOccupied(double zemSirka, double zemDelka, long rangeMeters, Long siteId);
     
     /**
      * Checks if there is a CoffeeSites already created and in ACTIVE state within meters circle from 'zemSirka' and 'zemDelka'.<br>
@@ -227,11 +221,11 @@ public interface CoffeeSiteService {
      * @param zemSirka - zemepisna sirka bodu od ktereho se ma vyhledatvat (obvykle zem. sirka noveho/modifikovaneho CoffeeSite)
      * @param zemDelka - zemepisna delka bodu od ktereho se ma vyhledatvat (obvykle zem. delka noveho/modifikovaneho CoffeeSite)
      * @param rangeMeters - vzdalenost v metrech od vyhledavaciho bodu, kde se maji vyhledat CoffeeSites
-     * @param siteId - id of the CoffeeSites whose location is to be checked
+     * @param siteId - ext id of the CoffeeSites whose location is to be checked
 
      * @return - true, if the location is already occupied by another CoffeeSite, otherwise false.
      */
-    boolean isLocationAlreadyOccupiedByActiveSite(double zemSirka, double zemDelka, long rangeMeters, Long siteId);
+    boolean isLocationAlreadyOccupiedByActiveSite(double zemSirka, double zemDelka, long rangeMeters, UUID siteId);
      
     
     @PreAuthorize("isAuthenticated()")
@@ -277,8 +271,6 @@ public interface CoffeeSiteService {
      * 
      * @return URL of the CoffeeSite's image if available, otherwise empty String
      */
-//    String getMainImageURL(CoffeeSiteDTO cs);
-
     String getMainImageURL(CoffeeSite cs);
     
     @PreAuthorize("isAuthenticated()")

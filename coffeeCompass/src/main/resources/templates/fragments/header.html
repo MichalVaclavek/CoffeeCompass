@@ -77,12 +77,14 @@
                 <a sec:authorize="NOT isAuthenticated()" th:href="@{/user/register}" th:text="#{mainmenu.registeruser}" class="w3-bar-item w3-button w3-right">User register</a>
                 <a sec:authorize="NOT isAuthenticated()" th:href="@{/login}" th:text="#{mainmenu.userlogin}" class="w3-bar-item w3-button w3-right w3-green">User login</a>
                 
-                <div th:if="${authentication != null}" sec:authorize="hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_DBA')">
+<!--                <div th:if="${authentication != null}" sec:authorize="hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_DBA')">-->
+<!--			   <div th:if="${authentication != null}" sec:authorize="isAuthenticated()">-->
+				   <div sec:authorize="isAuthenticated()">
 	                <form action="#" th:action="@{/logout}" method="post" class="w3-right">
 	        	   		<input type="hidden" name="_method" value="post"/>
 	          			<button type="submit" id="submitLogoutButton" th:text="#{mainmenu.userlogout}" class="w3-button w3-white w3-border">X</button>
 	    	    	</form>
-	        		<a th:href="@{'/user/edit/?userName=' + ${authentication.name}}" th:text="${authentication.name}" class="w3-bar-item w3-button w3-blue w3-right">Edit user's account</a>
+	        		<a th:href="@{'/user/edit/?userId=' + ${loggedInUser.extId}}" th:text="${loggedInUser.userName}" class="w3-bar-item w3-button w3-blue w3-right">Edit user's account</a>
 	        	</div>
                 <!-- Swap between 2 languages  -->
 				<div th:if="${httpServletRequest != null}"

@@ -84,7 +84,7 @@ public class OAuth2LoginRegisterController {
                 if (!user.isEnabled()) { 
                     user.setEnabled(true);
                     userService.saveUser(user);
-                    return "redirect:/user/edit/?userName=" + encodedUserName + "&firstOAuth2Login=true";
+                    return "redirect:/user/edit/?userId=" + user.getId() + "&firstOAuth2Login=true";
                 }   
             }
             return ("redirect:/home");

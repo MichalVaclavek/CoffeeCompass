@@ -43,7 +43,6 @@ import lombok.extern.slf4j.Slf4j;
 public class CommentService implements ICommentService {
 
     @Autowired
-//    private CoffeeSiteRepository coffeeSiteRepo;
     private CoffeeSiteService coffeeSiteService;
     
     @Autowired
@@ -70,20 +69,6 @@ public class CommentService implements ICommentService {
 	    this.starsForCoffeeSiteAndUserService = starsForCoffeeSiteAndUserService;
 	}
 	
-	/**
-	 * Can return null, if the User or CoffeeSite are not found based on it's id
-	 */
-//	@Override
-//    public Comment saveTextAsComment(String commentText, Long userID, Long coffeeSiteID) {
-//	    Optional<User> user = userService.findById(userID);
-//        CoffeeSite cs = coffeeSiteRepo.findById(coffeeSiteID).orElse(null);
-//        if (user.isPresent() && cs != null) {
-//            return saveTextAsComment(commentText, user.get(), cs);
-//        } else {
-//            return null;
-//        }
-//    }
-
     @Override
     public Comment saveTextAsComment(String commentText, String userExtId, String coffeeSiteExtId) {
         Optional<User> user = userService.findByExtId(userExtId);
@@ -157,14 +142,6 @@ public class CommentService implements ICommentService {
         return null;
     }
 
-	/* (non-Javadoc)
-	 * @see cz.zutrasoft.base.services.CommentService#getAllCommentsFromUser(int)
-	 */
-//	@Override
-//	public List<CommentDTO> getAllCommentsFromUser(Long userID) {
-//	    return modifyToTransfer(commentsRepo.getAllCommentsFromUser(userID));
-//	}
-
     @Override
     public List<CommentDTO> getAllCommentsFromUser(String userExtID) {
         return getAllCommentsFromUser(UUID.fromString(userExtID));
@@ -182,11 +159,6 @@ public class CommentService implements ICommentService {
 	    return modifyToTransfer(commentsRepo.getAllCommentsFromUser(user.getId()));
 	}
 	
-//	@Override
-//    public List<CommentDTO> getAllCommentsForSiteId(Long coffeeSiteID) {
-//	    return modifyToTransfer(commentsRepo.getAllCommentsForSite(coffeeSiteID));
-//    }
-
     @Override
     public List<CommentDTO> getAllCommentsForSiteId(String siteExtId) {
         return getAllCommentsForSiteId(UUID.fromString(siteExtId));
@@ -205,11 +177,6 @@ public class CommentService implements ICommentService {
         return commentsPage.map(this::modifyToTransfer);
     }
 	
-//	@Override
-//    public Integer getNumberOfCommentsForSiteId(Long siteId) {
-//        return commentsRepo.getNumberOfCommentsForSite(siteId);
-//    }
-
     @Override
     public Integer getNumberOfCommentsForSiteId(UUID siteId) {
         return commentsRepo.getNumberOfCommentsForSite(siteId);
@@ -272,18 +239,6 @@ public class CommentService implements ICommentService {
 	    return deleteCommentByExtId(comment.getId());
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * Returns CoffeeSite the deleted Comment belonged to.
-	 */
-//	@Override
-//    public Long deleteCommentById(Long commentId) {
-//	    Long siteId = commentsRepo.getSiteIdForComment(commentId);
-//	    commentsRepo.deleteById(commentId);
-//	    log.info("Comment deleted. Id {}", commentId);
-//	    return siteId;
-//    }
-
     @Override
     public UUID deleteCommentByExtId(UUID commentId) {
         UUID siteId = commentsRepo.getSiteIdForComment(commentId);
@@ -296,15 +251,6 @@ public class CommentService implements ICommentService {
     public UUID deleteCommentByExtId(String commentId) {
         return deleteCommentByExtId(UUID.fromString(commentId));
     }
-
-//    @Override
-//    public Comment getById(Long id) {
-//        Comment comment = commentsRepo.findById(id).orElse(null);
-//        if (comment == null) {
-//            throw new EntityNotFoundException("Comment with id " + id + " not found.");
-//        }
-//        return comment;
-//    }
 
     @Override
     public Comment getByExtId(String id) {
@@ -320,11 +266,6 @@ public class CommentService implements ICommentService {
         return comment;
     }
     
-//    @Override
-//    public CommentDTO getByIdToTransfer(Long id) {
-//        return modifyToTransfer(getById(id));
-//    }
-
     @Override
     public CommentDTO getByExtIdToTransfer(String id) {
         return modifyToTransfer(getByExtId(id));
@@ -341,11 +282,5 @@ public class CommentService implements ICommentService {
         Optional<User> user = userService.findByExtId(userID);
         user.ifPresent(u -> commentsRepo.deleteAllFromUser(u.getId()));
     }
-
-//    @Override
-//    public void deleteAllCommentsForSite(Long coffeeSiteID) {
-//        log.info("All comments of the Coffee site id {} deleted.", coffeeSiteID);
-//        commentsRepo.deleteAllForSite(coffeeSiteID);
-//    }
 
 }

@@ -2,10 +2,8 @@ package cz.fungisoft.coffeecompass.mappers;
 
 import cz.fungisoft.coffeecompass.dto.*;
 import cz.fungisoft.coffeecompass.entity.*;
-import cz.fungisoft.coffeecompass.serviceimpl.PriceRangeServiceImpl;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-//import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Set;
 import java.util.UUID;
@@ -36,7 +34,6 @@ public interface CoffeeSiteMapper {
     Set<CupType> mapCupTypeDTOsToCupTypes(Set<CupTypeDTO> cupTypeDTOs);
 
     Set<CupTypeDTO> mapCupTypesToCupTypeDTOs(Set<CupType> cupTypes);
-
 
     Set<OtherOffer> mapOtherOfferDTOsToOtherOffers(Set<OtherOfferDTO> otherOfferDTOs);
 

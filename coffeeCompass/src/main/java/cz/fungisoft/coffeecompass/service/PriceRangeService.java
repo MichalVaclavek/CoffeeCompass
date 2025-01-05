@@ -8,5 +8,6 @@ import cz.fungisoft.coffeecompass.entity.PriceRange;
 public interface PriceRangeService {
 
     PriceRange findPriceRangeByString(String priceRange);
+    PriceRange findPriceRangeByExtId(String extId);
     List<PriceRangeDTO> getAllPriceRanges();
 }

@@ -24,9 +24,9 @@ public class PriceRange extends BaseEntity {
 
     /* ======= INSTANCES VARIABLES ======== */
     
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer longId;
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "id")
+//    private Integer longId;
     
     @NotNull // Validace vstupu, nesmi byt null
     @Column(name = "price_range", unique = true, length=45)
@@ -42,7 +42,7 @@ public class PriceRange extends BaseEntity {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         PriceRange that = (PriceRange) o;
-        return longId != null && Objects.equals(longId, that.longId);
+        return id != null && Objects.equals(id, that.id);
     }
 
     @Override

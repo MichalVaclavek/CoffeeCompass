@@ -18,4 +18,7 @@ public interface StarsQualityDescriptionRepository extends JpaRepository<StarsQu
 
     @Query("select sqd from StarsQualityDescription sqd where id=?1")
     Optional<StarsQualityDescription> searchById(Integer id);
+
+    @Query("select sqd from StarsQualityDescription sqd where numOfStars=?1")
+    Optional<StarsQualityDescription> searchByNumOfStars(Integer id);
 }

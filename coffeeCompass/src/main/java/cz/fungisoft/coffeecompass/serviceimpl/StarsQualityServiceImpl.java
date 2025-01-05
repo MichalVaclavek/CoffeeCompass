@@ -47,8 +47,8 @@ public class StarsQualityServiceImpl implements StarsQualityService {
     
     @Override
     @Cacheable(cacheNames = "starsQualityRatingsCache")
-    public StarsQualityDescription findStarsQualityById(Integer id) {
-        Optional<StarsQualityDescription> qualityDescr = starsQaulityRepo.searchById(id);
+    public StarsQualityDescription findStarsQualityByNumOfStars(Integer id) {
+        Optional<StarsQualityDescription> qualityDescr = starsQaulityRepo.searchByNumOfStars(id);
         if (qualityDescr.isEmpty())
             throw new EntityNotFoundException("Quality description id " + id + " not found in DB.");
         return qualityDescr.get();

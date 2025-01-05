@@ -19,6 +19,9 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 import cz.fungisoft.coffeecompass.controller.models.AuthProviders;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -28,6 +31,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  * 
  * @author Michal Vaclavek
  */
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Entity
 @Table(name="user", schema="coffeecompass")
 public class User extends BaseEntity implements Serializable {
@@ -35,11 +41,11 @@ public class User extends BaseEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = -9006499187256143209L;
     
-    public User() {
-        super();
-        this.registerEmailConfirmed = false;
-        this.banned = false;
-    }
+//    public User() {
+//        super();
+//        this.registerEmailConfirmed = false;
+//        this.banned = false;
+//    }
 
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id")
@@ -86,7 +92,7 @@ public class User extends BaseEntity implements Serializable {
     private Integer deletedSites;
     
     @Column(name = "registration_email_confirmed")
-    private boolean registerEmailConfirmed;
+    private boolean registerEmailConfirmed = false;
     
     @NotNull
     @Enumerated // V DB je cislovano od indexu 0, protoze i enum type se v defaultnim pripade cisluje od 0.
@@ -94,68 +100,11 @@ public class User extends BaseEntity implements Serializable {
     private AuthProviders authProvider = AuthProviders.LOCAL; // default value for new user
     
     @Column(name = "banned")
-    private boolean banned;
+    private boolean banned = false;
     
     @Column(name = "enabled")
     private boolean enabled = false;
-    
 
-    public Long getLongId() {
-        return longId;
-    }
- 
-    public void setLongId(Long longId) {
-        this.longId = longId;
-    }
- 
-    public String getUserName(){
-        return userName;
-    }
- 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
- 
-    public String getPassword() {
-        return password;
-    }
- 
-    public void setPassword(String password) {
-        this.password = password;
-    }
- 
-    public String getFirstName() {
-        return firstName;
-    }
- 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
- 
-    public String getLastName() {
-        return lastName;
-    }
- 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
- 
-    public String getEmail() {
-        return email;
-    }
- 
-    public void setEmail(String email) {
-        this.email = email;
-    }
- 
-    public Set<UserProfile> getUserProfiles() {
-        return userProfiles;
-    }
- 
-    public void setUserProfiles(Set<UserProfile> userProfiles) {
-        this.userProfiles = userProfiles;
-    }
- 
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -192,80 +141,9 @@ public class User extends BaseEntity implements Serializable {
                 + ", firstName=" + firstName + ", lastName=" + lastName
                 + ", email=" + email + "]";
     }
-    
-    public LocalDateTime getCreatedOn() {
-        return createdOn;
-    }
 
-    public void setCreatedOn(LocalDateTime createdOn) {
-        this.createdOn = createdOn;
-    }
-  
-    public LocalDateTime getUpdatedOn() {
-        return updatedOn;
-    }
-
-    public void setUpdatedOn(LocalDateTime updatedOn) {
-        this.updatedOn = updatedOn;
-    }
-    
-    public Integer getCreatedSites() {
-        return createdSites;
-    }
-
-    public void setCreatedSites(Integer createdSites) {
-        this.createdSites = createdSites;
-    }
-
-    public Integer getUpdatedSites() {
-        return updatedSites;
-    }
-
-    public void setUpdatedSites(Integer updatedSites) {
-        this.updatedSites = updatedSites;
-    }
-
-    public Integer getDeletedSites() {
-        return deletedSites;
-    }
-
-    public void setDeletedSites(Integer deletedSites) {
-        this.deletedSites = deletedSites;
-    }
-    
     public boolean isRegisterEmailConfirmed() {
-        return registerEmailConfirmed;
-    }
-
-    public void setRegisterEmailConfirmed(boolean registerEmailConfirmed) {
-        this.registerEmailConfirmed = registerEmailConfirmed;
-    }
-    
-    public boolean getRegisterEmailConfirmed() {
         return this.registerEmailConfirmed;
     }
 
-    public boolean isBanned() {
-        return banned;
-    }
-
-    public void setBanned(boolean banned) {
-        this.banned = banned;
-    }
-    
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-    
-    public AuthProviders getAuthProvider() {
-        return authProvider;
-    }
-
-    public void setAuthProvider(AuthProviders authProvider) {
-        this.authProvider = authProvider;
-    }
 }

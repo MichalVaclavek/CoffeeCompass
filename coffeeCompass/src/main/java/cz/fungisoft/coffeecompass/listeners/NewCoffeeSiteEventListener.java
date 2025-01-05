@@ -1,9 +1,6 @@
 package cz.fungisoft.coffeecompass.listeners;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -82,7 +79,7 @@ public class NewCoffeeSiteEventListener implements ApplicationListener<OnNewCoff
      * @param town
      * @param coffeeSiteId
      */
-    private synchronized void sendNotifications(String topic, String town, long coffeeSiteId) {
+    private synchronized void sendNotifications(String topic, String town, UUID coffeeSiteId) {
         // 2. Prepare data 
         Map<String, String> data = getCoffeeSiteNotificationData(coffeeSiteId, town, topic);
         // 3. Prepare request
@@ -122,7 +119,7 @@ public class NewCoffeeSiteEventListener implements ApplicationListener<OnNewCoff
      * @param topic
      * @return
      */
-    private Map<String, String> getCoffeeSiteNotificationData(long coffeeSiteId, String town, String topic) {
+    private Map<String, String> getCoffeeSiteNotificationData(UUID coffeeSiteId, String town, String topic) {
         Map<String, String> pushData = new HashMap<>();
         pushData.put("topic", topic);
         ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
@@ -152,7 +149,7 @@ public class NewCoffeeSiteEventListener implements ApplicationListener<OnNewCoff
                 // are there tokens subscribed for this specific town topic
                 if (!firebaseTopicService.getTokensSubscribed(firebaseTopic.getId()).isEmpty()) { 
                     String topic = mainTopic + "_" + firebaseTopic.getId();
-                    sendNotifications(topic, town, newCoffeeSite.getLongId());
+                    sendNotifications(topic, town, newCoffeeSite.getId());
                 }
         });
         // there can be also 'all_towns' subscriptions
@@ -160,7 +157,7 @@ public class NewCoffeeSiteEventListener implements ApplicationListener<OnNewCoff
                 .ifPresent(firebaseTopic -> { 
                     if (!firebaseTopicService.getTokensSubscribed(firebaseTopic.getId()).isEmpty()) { 
                         String topic = mainTopic + "_" + firebaseTopic.getId();
-                        sendNotifications(topic, town, newCoffeeSite.getLongId());
+                        sendNotifications(topic, town, newCoffeeSite.getId());
                     }
                 });
         

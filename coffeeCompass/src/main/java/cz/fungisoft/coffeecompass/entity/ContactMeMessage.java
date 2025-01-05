@@ -27,8 +27,8 @@ public class ContactMeMessage extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = -2996183922875213246L;
 
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Integer longId;
+//    @GeneratedValue(strategy=GenerationType.IDENTITY)
+//    private Integer longId;
 	
     @Column(name="author_name", length = 50, nullable = false)
     private String authorName;
@@ -48,7 +48,7 @@ public class ContactMeMessage extends BaseEntity implements Serializable {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         ContactMeMessage that = (ContactMeMessage) o;
-        return longId != null && Objects.equals(longId, that.longId);
+        return id != null && Objects.equals(id, that.id);
     }
 
     @Override

@@ -23,7 +23,7 @@ public class BaseEntity {
     @Id
     @Column(name="external_id", length = 36, updatable = false, nullable = false)
     @GeneratedValue
-    private UUID id;
+    protected UUID id;
 
 
     public boolean isNew() {

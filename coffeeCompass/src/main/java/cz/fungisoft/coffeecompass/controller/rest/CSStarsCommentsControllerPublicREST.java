@@ -147,7 +147,7 @@ public class CSStarsCommentsControllerPublicREST {
      */
     @GetMapping("/commentsPaginated/{siteId}/") // napr. https://localhost:8443/rest/public/starsAndComments/commentsPaginated/2/?size=5&page=1
     @ResponseStatus(HttpStatus.OK)
-    public Page<CommentDTO> commentsBySiteIdPaginated(@PathVariable("siteId") Long siteId,
+    public Page<CommentDTO> commentsBySiteIdPaginated(@PathVariable("siteId") String siteId,
                                                       @RequestParam(defaultValue = "created") String orderBy,
                                                       @RequestParam(defaultValue = "desc") String direction,
                                                       @RequestParam(name="page", defaultValue = "1") Integer page, @RequestParam(name="size", defaultValue = "10") Integer size) {
@@ -155,7 +155,7 @@ public class CSStarsCommentsControllerPublicREST {
         int currentPage = page;
         int pageSize = size;
 
-        return coffeeSiteService.findOneById(siteId).map(coffeeSite -> commentsService.findAllCommentsForSitePaginated(coffeeSite, PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.fromString(direction.toUpperCase()), orderBy))))
+        return coffeeSiteService.findOneByExternalId(siteId).map(coffeeSite -> commentsService.findAllCommentsForSitePaginated(coffeeSite, PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.fromString(direction.toUpperCase()), orderBy))))
                                                     .orElseThrow(() -> new ResourceNotFoundException("Comments", "coffeeSiteId", siteId));
     }
     

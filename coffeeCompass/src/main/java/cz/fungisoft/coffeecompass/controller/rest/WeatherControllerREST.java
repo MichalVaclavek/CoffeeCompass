@@ -31,9 +31,9 @@ public class WeatherControllerREST {
         this.weatherService = weatherService;
     }
     
-    @GetMapping("/site/{id}")
+    @GetMapping("/site/{extId}")
     @ResponseStatus(HttpStatus.OK)
-    public WeatherDTO getWeatherInfoForSiteId(@PathVariable(value="id") Long siteID) {
-        return weatherService.getWeatherDTO(siteID).orElseThrow(() -> new ResourceNotFoundException("Weather info", "coffeeSiteId", siteID));
+    public WeatherDTO getWeatherInfoForSiteId(@PathVariable(value="extId") String extId) {
+        return weatherService.getWeatherDTO(extId).orElseThrow(() -> new ResourceNotFoundException("Weather info", "coffeeSiteId", extId));
     }
 }

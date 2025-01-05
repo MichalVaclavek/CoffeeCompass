@@ -77,8 +77,8 @@ public class WeatherApiServiceImpl implements WeatherApiService {
     }
 
     @Override
-    public Optional<WeatherDTO> getWeatherDTO(Long coffeeSiteId) {
-        return coffeeSiteService.findOneById(coffeeSiteId)
+    public Optional<WeatherDTO> getWeatherDTO(String coffeeSiteId) {
+        return coffeeSiteService.findOneByExternalId(coffeeSiteId)
                                 .flatMap(coffeeSite -> getWeather(coffeeSite.getZemSirka(), coffeeSite.getZemDelka(), "cz", "metric"))
                                 .map(weatherMapper::weatherDataToWeatherDTO);
     }

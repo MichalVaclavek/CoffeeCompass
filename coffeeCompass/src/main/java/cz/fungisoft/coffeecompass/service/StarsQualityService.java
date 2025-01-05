@@ -9,6 +9,6 @@ public interface StarsQualityService {
 
     StarsQualityDescription findStarsQualityDescr(String starsQualityDescr);
     List<StarsQualityDescriptionDTO> getAllStarsQualityDescriptions();
-    StarsQualityDescription findStarsQualityById(Integer id);
+    StarsQualityDescription findStarsQualityByNumOfStars(Integer id);
     StarsQualityDescription findStarsQualityByExtId(String extId);
 }

@@ -494,8 +494,8 @@
                             <select class="w3-select" th:field="*{starsAndComment.stars}">
                                 <option th:each="star : ${allHodnoceniKavyStars}"
                                         class="w3-option"
-                                        th:value="${star.numOfStars}"
-                                        th:text="${star}">Hodnoceni kavy - stars
+                                        th:value="${star.extId}"
+                                        th:text="${star.quality}">Hodnoceni kavy - stars
                                 </option>
                             </select>
                         </div>
@@ -549,7 +549,7 @@
 
                             <div class="w3-right w3-cell" th:if="${comment.canBeDeleted}">
                                 <form id="deleteStarsAndCommentForm" action="#"
-                                      th:action="@{'/deleteComment/' + ${comment.id} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
+                                      th:action="@{'/deleteComment/' + ${comment.extId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
                                       th:method="DELETE">
                                     <input type="hidden" name="_method" value="delete"/>
                                     <button type="submit" id="submitButton" th:title="#{comment.delete}"

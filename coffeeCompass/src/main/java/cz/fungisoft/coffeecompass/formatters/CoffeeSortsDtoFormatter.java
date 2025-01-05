@@ -26,7 +26,6 @@ public class CoffeeSortsDtoFormatter implements Formatter<CoffeeSortDTO> {
 
     @Override
     public String print(CoffeeSortDTO coffeeSort, Locale locale) {
-//        return coffeeSort.getExtId().toString();
         return coffeeSort.getCoffeeSort();
     }
 

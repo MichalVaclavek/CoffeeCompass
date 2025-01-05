@@ -238,8 +238,8 @@
 	              <li th:each="otherOffer : ${allOffers}">
 	                <input type="checkbox" class="w3-check"
 	                       th:field="*{otherOffers}"
-	                       th:value="${otherOffer}" />
-	                <label th:for="${extId}" th:text="${otherOffer.otherOffer}">Other offers</label>
+	                       th:value="${otherOffer.otherOffer}" />
+	                <label th:for="${otherOffer.extId}" th:text="${otherOffer.otherOffer}">Other offers</label>
 	              </li>
 	            </ul>
 	            <p class="error-message"
@@ -253,8 +253,8 @@
 	              <li th:each="coffeeSort : ${allCoffeeSorts}">
 	                <input type="checkbox" class="w3-check"
 	                       th:field="*{coffeeSorts}"
-	                       th:value="${coffeeSort}" />
-	                <label th:for="${extId}" th:text="${coffeeSort.coffeeSort}">Coffee sorts</label>
+	                       th:value="${coffeeSort.coffeeSort}" />
+	                <label th:for="${coffeeSort.extId}" th:text="${coffeeSort.coffeeSort}">Coffee sorts</label>
 	              </li>
 	            </ul>
 	          </div>
@@ -265,8 +265,8 @@
 	              <li th:each="ntmt : ${allNextToMachineTypes}">
 	                <input type="checkbox" class="w3-check"
 	                       th:field="*{nextToMachineTypes}"
-	                       th:value="${ntmt}" />
-	                <label th:for="${extId}" th:text="${ntmt.nextToMachineType}">Next to machine type</label>
+	                       th:value="${ntmt.nextToMachineType}" />
+	                <label th:for="${ntmt.extId}" th:text="${ntmt.nextToMachineType}">Next to machine type</label>
 	              </li>
 	              
 	            </ul>
@@ -278,8 +278,8 @@
 	               <li th:each="cupType : ${allCupTypes}">
 	                  <input type="checkbox" class="w3-check"
 	                    	 th:field="*{cupTypes}"
-	                	     th:value="${cupType}" />
-	                  <label th:for="${extId}" th:text="${cupType.cupType}">Cup types</label>
+	                	     th:value="${cupType.cupType}" />
+	                  <label th:for="${cupType.extId}" th:text="${cupType.cupType}">Cup types</label>
 	               </li>
 	             </ul>
 	          </div>

@@ -13,6 +13,8 @@ import cz.fungisoft.coffeecompass.validators.PasswordMatches;
 import cz.fungisoft.coffeecompass.validators.ValidEmail;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Trida pro prenos vybranych informaci o objektu User na clienta. Tzv. DTO objekt.
@@ -20,7 +22,9 @@ import lombok.EqualsAndHashCode;
  * @author Michal Vaclavek
  */
 @EqualsAndHashCode(callSuper = true)
-@Data
+//@Data
+@Getter
+@Setter
 @PasswordMatches
 public class UserDTO extends BaseItem {
 
@@ -57,8 +61,8 @@ public class UserDTO extends BaseItem {
     @JsonIgnore
     private String confirmPassword;
     
-    private Set<UserProfile> userProfiles;
-    
+    private Set<UserProfileDTO> userProfiles;
+
     private String authProvider;
     
     @JsonFormat(pattern = "dd.MM. yyyy HH:mm", timezone="Europe/Prague")

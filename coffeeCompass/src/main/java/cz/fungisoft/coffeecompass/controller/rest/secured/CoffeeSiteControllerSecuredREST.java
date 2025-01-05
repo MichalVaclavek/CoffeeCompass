@@ -96,8 +96,8 @@ public class CoffeeSiteControllerSecuredREST  {
        if (cs != null) {
            log.info("New Coffee site created.");
            //TODO - why headers?
-           headers.setLocation(ucBuilder.path("/rest/site/{id}").buildAndExpand(cs.getLongId()).toUri());
-           return coffeeSiteService.findOneToTransfer(cs.getLongId()).map(csDTO ->  new ResponseEntity<>(csDTO, HttpStatus.CREATED))
+           headers.setLocation(ucBuilder.path("/rest/site/{id}").buildAndExpand(cs.getId()).toUri());
+           return coffeeSiteService.findOneToTransfer(cs.getId()).map(csDTO ->  new ResponseEntity<>(csDTO, HttpStatus.CREATED))
                                                                  .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
 
        } else {
@@ -164,7 +164,7 @@ public class CoffeeSiteControllerSecuredREST  {
         CoffeeSite cs = coffeeSiteService.updateSite(coffeeSite);
         if (cs != null) {
             log.info("Coffee site update successful.");
-            return coffeeSiteService.findOneToTransfer(cs.getLongId()).map(csDTO ->  new ResponseEntity<>(csDTO, HttpStatus.CREATED))
+            return coffeeSiteService.findOneToTransfer(cs.getId()).map(csDTO ->  new ResponseEntity<>(csDTO, HttpStatus.CREATED))
                                                                   .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
             
         } else {
@@ -178,7 +178,7 @@ public class CoffeeSiteControllerSecuredREST  {
         CoffeeSite cs = coffeeSiteService.updateSite(coffeeSite);
         if (cs != null) {
             log.info("Coffee site update successful.");
-            return coffeeSiteService.findOneToTransfer(cs.getLongId()).map(csDTO ->  new ResponseEntity<>(csDTO, HttpStatus.CREATED))
+            return coffeeSiteService.findOneToTransfer(cs.getId()).map(csDTO ->  new ResponseEntity<>(csDTO, HttpStatus.CREATED))
                     .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 
         } else {
@@ -207,9 +207,9 @@ public class CoffeeSiteControllerSecuredREST  {
      *  Pred zmenou do ACTIVE stavu je potreba zkontrolovat, jestli na dane pozici neni jiny jiz ACTIVE CoffeeSite
      */
     @PutMapping("/{id}/activate") 
-    public ResponseEntity<CoffeeSiteDTO> activateCoffeeSite(@PathVariable(name = "id") Long id, UriComponentsBuilder ucBuilder, Locale locale) {
-        coffeeSiteService.findOneById(id).ifPresent(cs -> {
-            if (coffeeSiteService.isLocationAlreadyOccupiedByActiveSite(cs.getZemSirka(), cs.getZemDelka(), 5, cs.getLongId())) {
+    public ResponseEntity<CoffeeSiteDTO> activateCoffeeSite(@PathVariable(name = "id") String id, UriComponentsBuilder ucBuilder, Locale locale) {
+        coffeeSiteService.findOneByExternalId(id).ifPresent(cs -> {
+            if (coffeeSiteService.isLocationAlreadyOccupiedByActiveSite(cs.getZemSirka(), cs.getZemDelka(), 5, cs.getId())) {
                 throw new InvalidParameterValueException("CoffeeSite", "latitude/longitude", cs.getZemSirka(), messages.getMessage("coffeesite.create.wrong.location.rest.error", null, locale));
             }
         });
@@ -220,7 +220,7 @@ public class CoffeeSiteControllerSecuredREST  {
      *  Zpracovani pozadavku na zmenu stavu CoffeeSite do stavu INACTIVE<br>
      */
     @PutMapping("/{id}/deactivate") 
-    public ResponseEntity<CoffeeSiteDTO> deactivateCoffeeSite(@PathVariable(name = "id") Long id, UriComponentsBuilder ucBuilder, Locale locale) {
+    public ResponseEntity<CoffeeSiteDTO> deactivateCoffeeSite(@PathVariable(name = "id") String id, UriComponentsBuilder ucBuilder, Locale locale) {
         return modifyStatus(id, CoffeeSiteRecordStatusEnum.INACTIVE, ucBuilder, locale);
     }
 
@@ -228,23 +228,22 @@ public class CoffeeSiteControllerSecuredREST  {
      *  Zpracovani pozadavku na zmenu stavu CoffeeSite do stavu CANCELED<br>
      */
     @PutMapping("/{id}/cancel") 
-    public ResponseEntity<CoffeeSiteDTO> cancelStatusSite(@PathVariable(name = "id") Long id, UriComponentsBuilder ucBuilder, Locale locale) {
+    public ResponseEntity<CoffeeSiteDTO> cancelStatusSite(@PathVariable(name = "id") String id, UriComponentsBuilder ucBuilder, Locale locale) {
         return modifyStatus(id, CoffeeSiteRecordStatusEnum.CANCELED, ucBuilder, locale);
     }
 
-    
     /**
      * Pomocna metoda zdruzujici Controller prikazy pro některé modifikace stavu CoffeeSitu
      */
-    private ResponseEntity<CoffeeSiteDTO> modifyStatus(Long csID, CoffeeSiteRecordStatusEnum newStatus, UriComponentsBuilder ucBuilder, Locale locale) {
-        return coffeeSiteService.findOneById(csID).map(cs -> {
+    private ResponseEntity<CoffeeSiteDTO> modifyStatus(String csID, CoffeeSiteRecordStatusEnum newStatus, UriComponentsBuilder ucBuilder, Locale locale) {
+        return coffeeSiteService.findOneByExternalId(csID).map(cs -> {
             cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, newStatus);
             if (cs == null) {
                 throw new BadRESTRequestException(messages.getMessage("coffeesite.status.change.rest.error", null, locale));
             }
             HttpHeaders headers = new HttpHeaders(); //TODO - why headers here?
             log.info("CoffeeSite's status modified. New status: {}", newStatus.getSiteRecordStatus());
-            headers.setLocation(ucBuilder.path("/rest/site/{id}").buildAndExpand(cs.getLongId()).toUri());
+            headers.setLocation(ucBuilder.path("/rest/site/{id}").buildAndExpand(cs.getId()).toUri());
             return new ResponseEntity<>(coffeeSiteService.findOneToTransfer(csID).orElseGet(null), HttpStatus.OK);
 
         }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));

@@ -16,6 +16,7 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = false)
 @RequiredArgsConstructor
 @Entity
 @Table(name="dalsi_automat_vedle_type", schema="coffeecompass")
@@ -40,43 +41,43 @@ public class NextToMachineType extends BaseEntity {
     }
     
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer longId;
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "id")
+//    private Integer longId;
     
     @NotNull
     @Column(name="druh_automatu", length=45, unique=true, nullable=false)
     private String type = NextToMachineTypeEnum.NAPOJE.getNexToMachineType();
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        
-        NextToMachineType other = (NextToMachineType) obj;
-        if (longId != other.longId)
-            return false;
-        
-        if (type == null)
-        {
-            return other.type == null;
-        } else return type.equals(other.type);
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + longId; // id ve vypoctu hashCode() ovlivnuje vyhodnoceni assertThat().equals pri testech
-        // repository. Prestoze id i type jsou shodne, tak pokud je jich vice v Set<NextToMachineType>
-        // AssertThat. .. equal() vyhodnoti 2 takove Sety jako false
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        return result;
-    }
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (this == obj)
+//            return true;
+//        if (obj == null)
+//            return false;
+//        if (getClass() != obj.getClass())
+//            return false;
+//
+//        NextToMachineType other = (NextToMachineType) obj;
+//        if (longId != other.longId)
+//            return false;
+//
+//        if (type == null)
+//        {
+//            return other.type == null;
+//        } else return type.equals(other.type);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        final int prime = 31;
+//        int result = 1;
+//        result = prime * result + longId; // id ve vypoctu hashCode() ovlivnuje vyhodnoceni assertThat().equals pri testech
+//        // repository. Prestoze id i type jsou shodne, tak pokud je jich vice v Set<NextToMachineType>
+//        // AssertThat. .. equal() vyhodnoti 2 takove Sety jako false
+//        result = prime * result + ((type == null) ? 0 : type.hashCode());
+//        return result;
+//    }
     
     @Override
     public String toString() {

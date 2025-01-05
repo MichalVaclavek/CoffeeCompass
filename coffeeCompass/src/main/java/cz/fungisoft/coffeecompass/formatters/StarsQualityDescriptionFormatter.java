@@ -28,6 +28,6 @@ public class StarsQualityDescriptionFormatter implements Formatter<StarsQualityD
 
     @Override
     public StarsQualityDescription parse(String text, Locale locale) throws ParseException {
-        return starsQualityService.findStarsQualityById(Integer.valueOf(text));
+        return starsQualityService.findStarsQualityByExtId(text);
     }
 }

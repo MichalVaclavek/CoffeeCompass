@@ -41,9 +41,9 @@ public class CoffeeSiteRecordStatus extends BaseEntity {
 
     /* ======= INSTANCE VARIABLES ======== */
     
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer longId;
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "id")
+//    private Integer longId;
     
     @NotNull
     @Column(name="status_zaznamu", length=15, unique=true, nullable=false)
@@ -58,7 +58,7 @@ public class CoffeeSiteRecordStatus extends BaseEntity {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         CoffeeSiteRecordStatus that = (CoffeeSiteRecordStatus) o;
-        return longId != null && Objects.equals(longId, that.longId);
+        return id != null && Objects.equals(id, that.id);
     }
 
     @Override

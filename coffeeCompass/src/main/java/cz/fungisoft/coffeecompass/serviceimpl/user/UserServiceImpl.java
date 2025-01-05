@@ -61,18 +61,6 @@ public class UserServiceImpl implements UserService {
     
     private final ConfigProperties config;
     
-     
-    /* Constructor created by lombok */
-    
-    // ** Findind User ** /
-
-//    @Override
-//    @Transactional
-//    @Cacheable(cacheNames = "usersCache")
-//    public Optional<UserDTO> findByIdToTransfer(Long id) {
-//        return addNonPersistentInfoToUser(findById(id).orElse(null));
-//    }
-
     @Override
     @Transactional
     @Cacheable(cacheNames = "usersCache")
@@ -87,20 +75,6 @@ public class UserServiceImpl implements UserService {
         return findByExtIdToTransfer(UUID.fromString(id));
     }
     
-//    @Override
-//    public Optional<User> findById(Long id) {
-//        Optional<User> user = usersRepository.findById(id);
-//
-//        if (user.isEmpty()) {
-//            log.warn("User with id {} not found.", id);
-//        }
-//        else {
-//            log.info("User with id {} found.", id);
-//        }
-//
-//        return user;
-//    }
-
     @Override
     public Optional<User> findByExtId(UUID id) {
         Optional<User> user = usersRepository.findById(id);
@@ -143,7 +117,7 @@ public class UserServiceImpl implements UserService {
     }
     
     /**
-     * Pomocna metoda k doplneni aktualnich dat o User uctu, ktery se prenasi na klienta. 
+     * Pomocna metoda k doplneni aktualnich dat o User uctu, ktery se prenasi na klienta.
      * 
      * @param user
      * @return
@@ -253,8 +227,8 @@ public class UserServiceImpl implements UserService {
                 entity.setLastName(user.getLastName());
             
             // Can be empty, e-mail is not mandatory
-            if (user.getEmail() != null) {
-                if (entity.getEmail().isEmpty()
+            if (user.getEmail() != null) { // email can be empty/deleted
+                if ((entity.getEmail().isEmpty() && !user.getEmail().isEmpty())
                     || !entity.getEmail().equalsIgnoreCase(user.getEmail())) { // novy, neprazdny email => zatim nepotvrzeny
                     entity.setRegisterEmailConfirmed(false);
                 } 
@@ -263,7 +237,7 @@ public class UserServiceImpl implements UserService {
             
             // can be edited by ADMIN user - overrides value calculated by other conditions
             if (hasADMINRole(entity) && !isLoggedInUserToManageItself(entity)) {
-                entity.setRegisterEmailConfirmed(user.getRegisterEmailConfirmed()); 
+                entity.setRegisterEmailConfirmed(user.isRegisterEmailConfirmed());
             }
             
             // User profiles can be empty during update - means remove all roles - this is not applicable for ADMIN user
@@ -308,7 +282,7 @@ public class UserServiceImpl implements UserService {
             if (isLoggedInUserToManageItself(entity)) { 
                 userSecurityService.updateCurrentAuthentication(entity, newUserName, newPasswd);
             }
-            // User name must be updated (saved) after Spring authentication object update, otherwise isLoggedInUserToManageItself(entity) resolves that 
+            // User name must be updated (saved) after Spring authentication object update, otherwise isLoggedInUserToManageItself(entity) resolves that
             // another user (ADMIN) is updating this 'user' as user name was already updated in DB.
             entity.setUserName(newUserName);
             entity.setUpdatedOn(LocalDateTime.now());
@@ -364,7 +338,7 @@ public class UserServiceImpl implements UserService {
             if (isLoggedInUserToManageItself(entity)) { 
                 userSecurityService.updateCurrentAuthentication(entity, newUserName, newPasswd);
             }
-            // User name must be updated (saved) after Spring authentication object update, otherwise isLoggedInUserToManageItself(entity) resolves that 
+            // User name must be updated (saved) after Spring authentication object update, otherwise isLoggedInUserToManageItself(entity) resolves that
             // another user (ADMIN) is updating this 'user' as user name was already updated in DB.
             entity.setUserName(newUserName);
             entity.setUpdatedOn(LocalDateTime.now());
@@ -383,7 +357,6 @@ public class UserServiceImpl implements UserService {
     public User save(UserDTO registration) {
         User user = new User();
 
-        user.setId(UUID.randomUUID());
         user.setUserName(registration.getUserName());
         user.setFirstName(registration.getFirstName());
         user.setLastName(registration.getLastName());
@@ -428,7 +401,7 @@ public class UserServiceImpl implements UserService {
         // User is set to enabled after first login when the registration form is shown
         // to enable user registration directly on coffeecompass.cz within respective controller
         
-        Set<UserProfile> userProfiles = new HashSet<UserProfile>();
+        Set<UserProfile> userProfiles = new HashSet<>();
         // Only basic USER role can be assigned to commom new user 
         userProfiles.add(userProfileRepository.searchByType("USER"));
         // If user's e-mail is confirmed, add a role according configuration
@@ -473,7 +446,7 @@ public class UserServiceImpl implements UserService {
     
     /**
      * Deletes user account. If there are any User related authentication tokens,
-     *  like password change token or e-mail verification token, deltes them
+     *  like password change token or e-mail verification token, deletes them
      *  first, as there is a DB releation and User db item would not be allowed
      *  to delete with relation to token tables.
      */
@@ -483,7 +456,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> userToDelete = findByUserName(ssoId);
         
         if (userToDelete.isPresent()) {
-            deleteTokensByUser(userToDelete);
+            deleteTokensByUser(userToDelete.get());
             usersRepository.deleteByUserName(ssoId);
             log.info("User name {} deleted.", ssoId);
         } else {
@@ -493,11 +466,10 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public void deleteUserById(UUID id) {
-        
         Optional<User> userToDelete = findByExtId(id);
         
         if (userToDelete.isPresent()) {
-            deleteTokensByUser(findByExtId(id));
+            deleteTokensByUser(userToDelete.get());
             usersRepository.deleteById(id);
             log.info("User id {} deleted.", id);
         } else {
@@ -514,19 +486,17 @@ public class UserServiceImpl implements UserService {
      * Deletes e-mail verification token and password reset token
      * related to given user
      */
-    private void deleteTokensByUser(@NonNull Optional<User> user) {
+    private void deleteTokensByUser(@NonNull User user) {
         // Delete any User related authentication tokens, like password change token
         // or e-mail verification token
-        if (user.isPresent()) {
-            UserEmailVerificationToken registrationToken = userEmailVerificationTokenRepository.findByUser(user.get());
-            if (registrationToken != null) {
-                userEmailVerificationTokenRepository.delete(registrationToken);
-            }
-            
-            PasswordResetToken passwdResetToken = passwordResetTokenRepository.findByUser(user.get());
-            if (passwdResetToken != null) {
-                passwordResetTokenRepository.delete(passwdResetToken);
-            }
+        UserEmailVerificationToken registrationToken = userEmailVerificationTokenRepository.findByUser(user);
+        if (registrationToken != null) {
+            userEmailVerificationTokenRepository.delete(registrationToken);
+        }
+
+        PasswordResetToken passwdResetToken = passwordResetTokenRepository.findByUser(user);
+        if (passwdResetToken != null) {
+            passwordResetTokenRepository.delete(passwdResetToken);
         }
     }
     
@@ -570,12 +540,6 @@ public class UserServiceImpl implements UserService {
     }
  
     @Override
-    public boolean isUserNameUnique(Long id, String sso) {
-        Optional<User> user = usersRepository.searchByUsername(sso);
-        return (user.isEmpty() || ((id != null) && (Objects.equals(user.get().getLongId(), id))));
-    }
-
-    @Override
     public boolean isUserNameUnique(UUID id, String sso) {
         Optional<User> user = usersRepository.searchByUsername(sso);
         return (user.isEmpty() || ((id != null) && (Objects.equals(user.get().getLongId(), id))));
@@ -590,12 +554,6 @@ public class UserServiceImpl implements UserService {
      * @param id - id of the user whos's e-mail is to be verified
      * @param email - address to be verified.
      */
-//    @Override
-//    public boolean isEmailUnique(Long id, String email) {
-//        Optional<User> user = usersRepository.searchByEmail(email);
-//        return (user.isEmpty() || ((id != null) && (user.get().getId().equals(id))));
-//    }
-
     @Override
     public boolean isEmailUnique(UUID id, String email) {
         Optional<User> user = usersRepository.searchByEmail(email);

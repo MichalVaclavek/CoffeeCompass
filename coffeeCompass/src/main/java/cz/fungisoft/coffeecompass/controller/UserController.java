@@ -5,7 +5,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 
+import cz.fungisoft.coffeecompass.dto.UserProfileDTO;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 import org.slf4j.Logger;
@@ -33,7 +35,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import cz.fungisoft.coffeecompass.controller.models.DeleteUserAccountModel;
 import cz.fungisoft.coffeecompass.dto.UserDTO;
 import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.exceptions.UserNotFoundException;
 import cz.fungisoft.coffeecompass.listeners.OnRegistrationCompleteEvent;
 import cz.fungisoft.coffeecompass.service.comment.ICommentService;
@@ -60,6 +61,7 @@ public class UserController {
     private static final String USER_REGISTRATION_VIEW = "user_registration";
     
     private static final String USER_NAME_ATTRIB_KEY = "userName";
+    private static final String USER_ID_ATTRIB_KEY = "userId";
     private static final String USER_DELETE_FAIL_ATTRIB_KEY = "userDeleteFailure";
     
     
@@ -142,8 +144,6 @@ public class UserController {
         
         ModelAndView mav = new ModelAndView();
         
-//        user.setId(0L); // set Id to 0 of type long
-//        user.setExtId(0L); // set Id to 0 of type long
         // we need to know, that this is a user managing its own profile
         user.setToManageItself(true);
         mav.addObject("user", user);
@@ -176,6 +176,7 @@ public class UserController {
                                                      BindingResult result,
                                                      ModelMap model,
                                                      HttpServletRequest request,
+                                                     HttpServletResponse response,
                                                      RedirectAttributes attr) {
 
         ModelAndView mav = new ModelAndView();
@@ -222,7 +223,7 @@ public class UserController {
             userCreateSuccess = true;
             
             // User can be logged-in now. Used userDto password as it is not encrypted yet
-            userSecurityService.authWithPassword(newUser, userDto.getPassword());
+            userSecurityService.authWithPassword(newUser, userDto.getPassword(), request, response);
             
             mav.setViewName("redirect:/home/?lang=" + request.getLocale().getLanguage());
             
@@ -249,19 +250,17 @@ public class UserController {
     // ------------------- Update a User -------------------------------------------------------- //
     
     /**
-     * //TODO change usage of userName in Controllers to userID!!! userName can be changed, threfore cannot be used fo identification
-     * 
      * This method will provide the page with Form to update an existing user.
      * 
-     * @param userName - user name of the User to be edited here.
+     * @param userId - user ext. Id of the User to be edited here.
      * @param firstOAuth2Login - indicates if this is the very first edit after social login of a new User.<br>
      *                           If true, then welcome message (and registration finish request) is shown to user on edit page.
      * @param model
      * @param locale
      * @return
      */
-    @GetMapping("/edit/") // napr. http://coffeecompass.cz/user/edit/?userName=Michal Vaclavek&firstOAuth2Login=true
-    public ModelAndView getEditUserForm(@RequestParam(value=USER_NAME_ATTRIB_KEY, defaultValue="") String userName,
+    @GetMapping("/edit/") // napr. http://coffeecompass.cz/user/edit/?userId=12-AB&firstOAuth2Login=true
+    public ModelAndView getEditUserForm(@RequestParam(value=USER_ID_ATTRIB_KEY, defaultValue="") String userId,
                                         @RequestParam(value="firstOAuth2Login", defaultValue="") String firstOAuth2Login,
                                         ModelMap model,
                                         Locale locale) {    
@@ -269,12 +268,12 @@ public class UserController {
         ModelAndView mav = new ModelAndView();
         mav.setViewName(USER_REGISTRATION_VIEW);
 
-        Optional<UserDTO> user = userService.findByUserNameToTransfer(userName);
+        Optional<UserDTO> user = userService.findByExtIdToTransfer(userId);
         if (user.isPresent()) {
             mav.addObject("user", user.get());
         } else {
-            logger.error("User name {} not found.", userName);
-            throw new UserNotFoundException("User name " + userName + " not found.");
+            logger.error("User id {} not found.", userId);
+            throw new UserNotFoundException("User id " + userId + " not found.");
         }
         
         if ("true".equals(firstOAuth2Login)) {
@@ -283,7 +282,8 @@ public class UserController {
             mav.addObject("socialLoginStillAvailableMessage", messages.getMessage("user.register.social.firstlogin.message.socialloginavailable", new Object[] {oAuth2ProviderName}, locale));
         }
         mav.addObject("firstOAuth2Login", "true".equals(firstOAuth2Login));
-        mav.addObject(USER_NAME_ATTRIB_KEY, userName);
+        mav.addObject(USER_NAME_ATTRIB_KEY, user.get().getUserName());
+        mav.addObject(USER_ID_ATTRIB_KEY, userId);
         
         return mav;
     }
@@ -369,7 +369,7 @@ public class UserController {
         
         if (updatedUser != null) {
             userModifySuccess = true;
-            if (loggedInUser.isPresent() && updatedUser.getLongId().equals(loggedInUser.get().getLongId())) { // If the user modifies it's own profile
+            if (loggedInUser.isPresent() && updatedUser.getId().equals(loggedInUser.get().getId())) { // If the user modifies it's own profile
                 // Check if the email address is confirmed
                 if (!updatedUser.isRegisterEmailConfirmed()
                      && !updatedUser.getEmail().isEmpty()) { // novy email nepotvrzen a neprazdny. Poslat confirm e-mail token
@@ -401,7 +401,7 @@ public class UserController {
     // ------------------- Delete a User -------------------------------------------------------- //
       
     /**
-     * Creates/prepares form to confirm user account deletition.
+     * Creates/prepares form to confirm user account delete.
      * 
      * @param id
      * @return
@@ -488,38 +488,36 @@ public class UserController {
                                                   RedirectAttributes attr) {
         ModelAndView mav = new ModelAndView();
 
-        Optional<UserDTO> userDto = userService.findByExtIdToTransfer(userDataToDelete.getUserId());
+        Optional<User> userToDelete = userService.findByExtId(userDataToDelete.getUserId());
         Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
         
         String userName = "";
        
-        if (userDto.isPresent() && loggedInUser.isPresent()) {
+        if (userToDelete.isPresent() && loggedInUser.isPresent()) {
             
-           userName = userDto.get().getUserName();
-           
            // Prihlaseny uzivatel maze svoje data?
            // Pokud jineho usera maze ADMIN, neodhlasovat z app
-           if (userDto.get().getExtId().equals(loggedInUser.get().getLongId())
+           if (userToDelete.get().getId().equals(loggedInUser.get().getId())
                    && !userService.isADMINloggedIn()) { 
                userSecurityService.logout();
            }
             
            // delete user's coffee sites if requested
            if (userDataToDelete.isDeleteUsersCoffeeSites()) {
-               coffeeSiteService.deleteCoffeeSitesFromUser(userDataToDelete.getUserId());
+               coffeeSiteService.deleteCoffeeSitesFromUser(userToDelete.get().getId());
            }
             
            // delete user's comments if requested
            if (userDataToDelete.isDeleteUsersComments()) {
-               commentsService.deleteAllCommentsFromUser(userDataToDelete.getUserId());
+               commentsService.deleteAllCommentsFromUser(userToDelete.get().getId());
            }
 
            // Delete user's email verification tokens
            userService.findByExtId(userDataToDelete.getUserId())
                       .ifPresent(tokenCreateAndSendEmailService::deleteRegistrationTokenByUser);
 
-           if (commentsService.getAllCommentsFromUser(userDto.get().getExtId()).isEmpty()
-                   && coffeeSiteService.findAllFromUserName(userName).isEmpty()) { // user's comments and CoffeeSites deleted, now User can be deleted too
+           if (commentsService.getAllCommentsFromUser(userToDelete.get()).isEmpty()
+                   && coffeeSiteService.findAllFromUser(userToDelete.get()).isEmpty()) { // user's comments and CoffeeSites deleted, now User can be deleted too
                try {
                    userService.deleteUserById(userDataToDelete.getUserId());
                } catch (Exception ex) {
@@ -583,7 +581,7 @@ public class UserController {
      * @return all ROLE names to Model.
      */
     @ModelAttribute("allUserProfiles")
-    public List<UserProfile> populateUserProfiles() {
+    public List<UserProfileDTO> populateUserProfiles() {
         return userProfileService.findAll();
     }
 }

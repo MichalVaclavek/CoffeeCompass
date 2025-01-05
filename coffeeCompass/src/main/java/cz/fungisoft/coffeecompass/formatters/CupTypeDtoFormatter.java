@@ -1,7 +1,6 @@
 package cz.fungisoft.coffeecompass.formatters;
 
 import cz.fungisoft.coffeecompass.dto.CupTypeDTO;
-import cz.fungisoft.coffeecompass.entity.CupType;
 import cz.fungisoft.coffeecompass.mappers.CupTypeMapper;
 import cz.fungisoft.coffeecompass.service.CupTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,6 @@ public class CupTypeDtoFormatter implements Formatter<CupTypeDTO> {
     @Override
     public String print(CupTypeDTO cupType, Locale locale) {
         return cupType.getExtId().toString();
-//        return cupType.getCupType();
     }
 
     @Override

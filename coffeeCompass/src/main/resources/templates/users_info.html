@@ -31,14 +31,15 @@
            <th th:text="#{user.created_sites}"></th>
         </tr>
         <tr th:each="user : ${allUsers}">
-	      <td th:text="${user.id}">Id</td>
+	      <td th:text="${user.extId}">Id</td>
 		  <td th:text="${user.userName}">User</td>
 		  <td th:text="${user.firstName}">FirstName</td>
 		  <td th:text="${user.lastName}">LastName</td>
 		  <td th:text="${user.email}">Email</td>
 		  <td th:text="${user.registerEmailConfirmed}">Email</td>
 		  <td th:text="${user.authProvider}">Email</td>
-		  <td th:text="${user.userProfiles}">Profiles</td>
+<!--		  <td th:text="${user.userProfiles}">Profiles</td>-->
+		  <td><span th:each="userProfile, iterStat : ${user.userProfiles}" th:text="!${iterStat.last} ? ${userProfile.type}+', ' : ${userProfile.type}">User Profiles</span></td>
 		  <td th:text="${user.enabled}">Profiles</td>
 		  <td th:text="${user.banned}">Profiles</td>
 		  <td th:text="${#temporals.format(user.createdOn, 'dd. MM. yyyy , HH:mm')}"></td>
@@ -46,23 +47,17 @@
 		  
 		  <td sec:authorize="hasRole('ROLE_ADMIN')">
 		  	<div class="w3-right w3-margin">
-	            <a th:href="@{'/user/edit/?userName=' + ${user.userName}}" th:text="#{user.edit}" class="w3-btn w3-blue w3-round w3-small">Edit user's account</a>
+	            <a th:href="@{'/user/edit/?userId=' + ${user.extId}}" th:text="#{user.edit}" class="w3-btn w3-blue w3-round w3-small">Edit user's account</a>
 	      	</div>
 	      </td>
 	      
 		  <td sec:authorize="hasRole('ROLE_ADMIN')" th:if="${!user.hasADMINRole}">
 		  	<div class="w3-right w3-margin"> <!-- Button to open user account delete page -->
-				 <a th:href="@{'/user/delete/?userID=' + ${user.id}}"
+				 <a th:href="@{'/user/delete/?userID=' + ${user.extId}}"
 				    th:text="#{user.delete.questionmark}"
 				    class="w3-btn w3-red w3-round w3-small">Delete user account</a>
 		    </div>
 		  
-		  		<!-- 
-	         <form action="#" th:action="@{'/user/delete/' + ${user.id}}" th:method="DELETE">
-	            <input type="hidden" name="_method" value="delete" />
-	            <button type="submit" id="submitButton" th:text="#{user.delete}" class="w3-btn w3-red w3-round w3-small" >X</button>
-	         </form>
-	          -->
 	      </td>
 		    		  
 	    </tr>	

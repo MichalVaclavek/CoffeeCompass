@@ -26,9 +26,9 @@ public class Comment extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = -4668072504757454270L;
 
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "id")
-	private Long longId;
+//    @GeneratedValue(strategy=GenerationType.IDENTITY)
+//    @Column(name = "id")
+//	private Long longId;
 	
     @NotNull
 	@Column(name="text", nullable=false)
@@ -55,7 +55,7 @@ public class Comment extends BaseEntity implements Serializable {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Comment comment = (Comment) o;
-        return longId != null && Objects.equals(longId, comment.longId);
+        return id != null && Objects.equals(id, comment.id);
     }
 
     @Override

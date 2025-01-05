@@ -27,9 +27,9 @@ public class Image extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 4976306313068414171L;
 
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Integer longId;
+//	@GeneratedValue(strategy=GenerationType.IDENTITY)
+//	@Column(name = "id")
+//	private Integer longId;
 
 //	public void setCoffeeSiteID(Long coffeeSiteId) {
 //	    this.coffeeSiteID = coffeeSiteId;
@@ -104,7 +104,7 @@ public class Image extends BaseEntity implements Serializable {
 		if (this == o) return true;
 		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
 		Image image = (Image) o;
-		return longId != null && Objects.equals(longId, image.longId);
+		return id != null && Objects.equals(id, image.id);
 	}
 
 	@Override

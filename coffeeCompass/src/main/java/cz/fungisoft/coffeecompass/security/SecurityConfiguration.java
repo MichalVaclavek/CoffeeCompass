@@ -12,8 +12,10 @@ import org.springframework.security.authentication.AuthenticationTrustResolverIm
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,15 +27,15 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProvider
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
-import org.springframework.security.oauth2.core.oidc.OidcIdToken;
-import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
-import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
-import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.context.DelegatingSecurityContextRepository;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -49,46 +51,52 @@ import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
 import cz.fungisoft.coffeecompass.serviceimpl.user.CustomOAuth2UserService;
 
 import jakarta.servlet.Filter;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import static org.springframework.security.config.Customizer.withDefaults;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 
 /**
  * Zakladni nastaveni zabezpeceni pristupu na stranky, pristup k datum uzivatelu apod.
- * 
- * @author Michal Vaclavek
  *
+ * @author Michal Vaclavek
  */
 @Configuration
 @EnableWebSecurity
 @Slf4j
 public class SecurityConfiguration {
 
-    /** REST endpoints security config **/
+    /**
+     * REST endpoints security config
+     **/
     private static final RequestMatcher PROTECTED_REST_URLS = new OrRequestMatcher(new AntPathRequestMatcher("/rest/secured/**"));
-    
+
     private static final String PUBLIC_REST_URLS = "/rest/public/**";
 
 //    private static final RequestMatcher PUBLIC_REST_URLS_MATCHERS = new OrRequestMatcher(new AntPathRequestMatcher(PUBLIC_REST_URLS));
 
 
     private final UserSecurityService userSecurityService;
-          
+
     private final UserDetailsService userDetailsService;
-    
+
     private final CustomOAuth2UserService customOAuth2UserService;
-    
+
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
-    
+
     private final AccessDeniedHandler accessDeniedHandler;
 
     private final AuthenticationConfiguration authenticationConfiguration;
+
+    private final SecurityContextRepository securityContextRepository;
 
 
     public SecurityConfiguration(@Qualifier("customUserDetailsService")
@@ -100,7 +108,10 @@ public class SecurityConfiguration {
                                  OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler,
                                  AccessDeniedHandler accessDeniedHandler,
                                  UserSecurityService userSecurityService,
-                                 AuthenticationConfiguration authenticationConfiguration) {
+                                 AuthenticationConfiguration authenticationConfiguration,
+                                 @Lazy
+                                 SecurityContextRepository securityContextRepository
+    ) {
         super();
         this.userDetailsService = userDetailsService;
         this.customOAuth2UserService = customOAuth2UserService;
@@ -109,6 +120,15 @@ public class SecurityConfiguration {
         this.accessDeniedHandler = accessDeniedHandler;
         this.userSecurityService = userSecurityService;
         this.authenticationConfiguration = authenticationConfiguration;
+        this.securityContextRepository = securityContextRepository;
+    }
+
+    @Bean
+    public SecurityContextRepository securityContextRepository() {
+        return new DelegatingSecurityContextRepository(
+                new RequestAttributeSecurityContextRepository(),
+                new HttpSessionSecurityContextRepository()
+        );
     }
 
     /**
@@ -118,49 +138,54 @@ public class SecurityConfiguration {
 //    public WebSecurityCustomizer webSecurityCustomizer() {
 //        return web -> web.ignoring().requestMatchers(PUBLIC_REST_URLS);
 //    }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // Swithes off CSRF protection for REST i.e. for URL path with /rest/ at the begining
         http.csrf(csrfConfigurer -> csrfConfigurer.requireCsrfProtectionMatcher(new AndRequestMatcher(CsrfFilter.DEFAULT_CSRF_MATCHER, new RegexRequestMatcher("^(?!/rest/)", null))));
 //            .requireCsrfProtectionMatcher(new AndRequestMatcher(CsrfFilter.DEFAULT_CSRF_MATCHER, new RegexRequestMatcher("^(?!/rest/)", null)));
-        
-        http.authorizeHttpRequests(authz -> authz
-            .requestMatchers("/**","/home", "/about").permitAll()
-            .requestMatchers("/oauth2/**").permitAll()
-            .requestMatchers(PUBLIC_REST_URLS).permitAll()
-            .requestMatchers("/createModifySite/**", "/createSite", "/modifySite/**").hasAnyRole("ADMIN", "DBA", "USER")
-            .requestMatchers("/cancelStatusSite/**", "/deactivateSite/**", "/activateSite/**").hasAnyRole("ADMIN", "DBA", "USER")
-            .requestMatchers("/saveStarsAndComment/**", "/mySites").hasAnyRole("ADMIN", "DBA", "USER")
-            .requestMatchers("/finalDeleteSite/**").hasRole("ADMIN") // real deletition of the CoffeeSite record
-            .requestMatchers("/user/all", "/user/show/**", "/rest/user/all").hasRole("ADMIN")
-            .requestMatchers("/allSites**").hasAnyRole("ADMIN", "DBA")
-            .requestMatchers("/user/delete/**").hasAnyRole("ADMIN", "DBA", "USER")
-            .requestMatchers("/user/edit-put", "/user/edit/**").hasAnyRole("ADMIN", "USER") // only USER itself or ADMIN can modify user account
-            .requestMatchers("/imageUpload", "/deleteImage/**").hasAnyRole("ADMIN", "DBA", "USER")
-            .requestMatchers("/user/updatePassword**", "/updatePassword**").hasAuthority("CHANGE_PASSWORD_PRIVILEGE")
 
-        );
+        http.authorizeHttpRequests(authorize ->
+                            authorize
+                                    .requestMatchers("/home", "/about").permitAll()
+                                    .requestMatchers("/oauth2/**").permitAll()
+                                    .requestMatchers("/allSites**", "/allSitesInMap**").permitAll()
+                                    .requestMatchers(PUBLIC_REST_URLS).permitAll()
+                                    .requestMatchers("/createModifySite/**", "/createSite", "/modifySite/**").hasAnyRole("ADMIN", "DBA", "USER")
+                                    .requestMatchers("/cancelStatusSite/**", "/deactivateSite/**", "/activateSite/**").hasAnyRole("ADMIN", "DBA", "USER")
+                                    .requestMatchers("/saveStarsAndComment/**", "/mySites").hasAnyRole("ADMIN", "DBA", "USER")
+                                    .requestMatchers("/finalDeleteSite/**").hasRole("ADMIN") // real deletition of the CoffeeSite record
+                                    .requestMatchers("/user/all", "/user/show/**", "/rest/user/all").hasRole("ADMIN")
+                                    .requestMatchers("/user/delete/**").hasAnyRole("ADMIN", "DBA", "USER")
+                                    .requestMatchers("/user/edit-put", "/user/edit/**").hasAnyRole("ADMIN", "USER") // only USER itself or ADMIN can modify user account
+                                    .requestMatchers("/imageUpload", "/deleteImage/**").hasAnyRole("ADMIN", "DBA", "USER")
+                                    .requestMatchers("/user/updatePassword**", "/updatePassword**").hasAuthority("CHANGE_PASSWORD_PRIVILEGE")
+                                    .requestMatchers(PROTECTED_REST_URLS).authenticated()
+                                    .requestMatchers("/**").permitAll()
+                                    .anyRequest().authenticated()
+
+                )
+                .formLogin(customizer -> customizer.loginPage("/login").permitAll()
+                        .defaultSuccessUrl("/home", false).permitAll())
+                .logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer.logoutUrl("/logout")
+                        .logoutSuccessUrl("/home").permitAll()
+                )
+                .securityContext(context -> context
+                        .securityContextRepository(securityContextRepository)
+                )
+                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS));
 
         http.authenticationManager(authenticationConfiguration.getAuthenticationManager())
-            .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer.accessDeniedHandler(accessDeniedHandler));
-
-        http.formLogin(customizer -> customizer.loginPage("/login")
-                                               .defaultSuccessUrl("/home", false)
-                                               .permitAll())
-            .logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer.logoutUrl("/logout")
-                                                                                .logoutSuccessUrl("/home").permitAll()
-            );
+                .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer.accessDeniedHandler(accessDeniedHandler));
 
         // REST security login params
         http.exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer.defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_REST_URLS))
-            .addFilterBefore(restAuthenticationFilter(), AnonymousAuthenticationFilter.class)
-            .authenticationManager(authenticationConfiguration.getAuthenticationManager())
+                .addFilterBefore(restAuthenticationFilter(), AnonymousAuthenticationFilter.class)
+                .authenticationManager(authenticationConfiguration.getAuthenticationManager());
 //            .authorizeRequests()
-            .authorizeHttpRequests(authz -> authz.requestMatchers(PROTECTED_REST_URLS).authenticated());
+//                .authorizeHttpRequests(authz -> authz.requestMatchers(PROTECTED_REST_URLS).authenticated());
 //            .securityMatcher(PROTECTED_REST_URLS);
 //            .authenticated();
-        
+
         // OAuth2 login parameters
 //        http.oauth2Login()
 //            .loginPage("/login")
@@ -180,22 +205,22 @@ public class SecurityConfiguration {
 
 //        http.oauth2Login(withDefaults());
         http.oauth2Login(httpSecurityOAuth2LoginConfigurer -> httpSecurityOAuth2LoginConfigurer
-                .loginPage("/login")
-                .defaultSuccessUrl("/oauth2/loginSuccess")
-                .authorizationEndpoint(authorization -> authorization.baseUri("/oauth2/authorize"))
-                .redirectionEndpoint(redirection -> redirection.baseUri("/oauth2/callback/**"))
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/oauth2/loginSuccess")
+                        .authorizationEndpoint(authorization -> authorization.baseUri("/oauth2/authorize"))
+                        .redirectionEndpoint(redirection -> redirection.baseUri("/oauth2/callback/**"))
 //                .tokenEndpoint(token -> token.accessTokenResponseClient()			    )
-                .successHandler(oAuth2AuthenticationSuccessHandler)
-                .failureHandler(oAuth2AuthenticationFailureHandler)
-                .userInfoEndpoint(userInfo -> userInfo
-                        .userService(customOAuth2UserService))
-                );
+                        .successHandler(oAuth2AuthenticationSuccessHandler)
+                        .failureHandler(oAuth2AuthenticationFailureHandler)
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService))
+        );
 
         http.oauth2Client(oauth2 -> oauth2
-                        .authorizationCodeGrant(codeGrant -> codeGrant
-                                .authorizationRequestRepository(cookieAuthorizationRequestRepository())
-                        )
-                );
+                .authorizationCodeGrant(codeGrant -> codeGrant
+                        .authorizationRequestRepository(cookieAuthorizationRequestRepository())
+                )
+        );
 
         return http.build();
     }
@@ -217,7 +242,8 @@ public class SecurityConfiguration {
 //                    // to one or more GrantedAuthority's and add it to mappedAuthorities
 //
 //                } else if (authority instanceof OAuth2UserAuthority oauth2UserAuthority) {
-////                    OAuth2UserAuthority oauth2UserAuthority = (OAuth2UserAuthority)authority;
+
+    /// /                    OAuth2UserAuthority oauth2UserAuthority = (OAuth2UserAuthority)authority;
 //
 //                    Map<String, Object> userAttributes = oauth2UserAuthority.getAttributes();
 //
@@ -230,7 +256,6 @@ public class SecurityConfiguration {
 //            return mappedAuthorities;
 //        };
 //    }
-
     @Bean
     public OAuth2AuthorizedClientManager authorizedClientManager(ClientRegistrationRepository clientRegistrationRepository,
                                                                  OAuth2AuthorizedClientRepository authorizedClientRepository) {
@@ -253,7 +278,7 @@ public class SecurityConfiguration {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(11);
     }
- 
+
 //    @Bean
 //    public DaoAuthenticationProvider authenticationProvider() {
 //        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
@@ -269,24 +294,25 @@ public class SecurityConfiguration {
         authenticationProvider.setPasswordEncoder(passwordEncoder);
         return new ProviderManager(authenticationProvider);
     }
- 
-//    @Bean
-//    public AuthenticationTrustResolver getAuthenticationTrustResolver() {
-//        return new AuthenticationTrustResolverImpl();
-//    }
-    
+
+    @Bean
+    public AuthenticationTrustResolver getAuthenticationTrustResolver() {
+        return new AuthenticationTrustResolverImpl();
+    }
+
     /**
      * By default, Spring OAuth2 uses HttpSessionOAuth2AuthorizationRequestRepository to save
      * the authorization request. But, since our service is stateless, we can't save it in
      * the session. We'll save the request in a Base64 encoded cookie instead.
-    */
+     */
     @Bean
     public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
         return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
-    
-    /** Mobile app. REST config. **/
-    
+
+    /**
+     * Mobile app. REST config.
+     **/
     @Bean
     TokenAuthenticationFilter restAuthenticationFilter() throws Exception {
         final TokenAuthenticationFilter filter = new TokenAuthenticationFilter(PROTECTED_REST_URLS, userSecurityService);

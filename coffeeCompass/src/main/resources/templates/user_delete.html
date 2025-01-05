@@ -38,7 +38,7 @@
 		          				<button type="submit" id="submitButton" th:text="#{user.delete}" class="w3-button w3-red w3-round w3-small" >Delete user account</button>
 		          			</div>
 		          			<div class="w3-bar-item">
-			          			<a th:href="@{'/user/edit/?userName=' + *{userName}}" th:text="#{user.edit.cancel}" class="w3-button w3-small">Cancel delete user account</a>
+			          			<a th:href="@{'/user/edit/?userId=' + *{userId}}" th:text="#{user.edit.cancel}" class="w3-button w3-small">Cancel delete user account</a>
 				    		</div>
 			    		</div>
 			    	</div>

@@ -19,11 +19,9 @@ import cz.fungisoft.coffeecompass.entity.User;
  */
 public interface ICommentService {
 
-//    Comment getById(Long id);
 	Comment getByExtId(String id);
 	Comment getByExtId(UUID id);
 
-//    CommentDTO getByIdToTransfer(Long id);
 	CommentDTO getByExtIdToTransfer(String id);
 	CommentDTO getByExtIdToTransfer(UUID id);
     
@@ -36,7 +34,6 @@ public interface ICommentService {
 	 * 
 	 * @return instance of the saved {@link Comment} object.
 	 */
-//	Comment saveTextAsComment(String commentText, Long userID, Long coffeeSiteID);
 	Comment saveTextAsComment(String commentText, String userExtId, String coffeeSiteExtId);
 	Comment saveTextAsComment(String commentText, User user, CoffeeSite coffeeSite);
 	Comment saveTextAsComment(String commentText, CoffeeSite coffeeSite);
@@ -73,15 +70,12 @@ public interface ICommentService {
 
 	Integer getNumberOfCommentsForSiteId(String siteExtId);
 
-//	Integer getNumberOfCommentsForSiteId(Long siteExtId);
-	
 	/**
 	 * Gets lis of all saved Comments from given {@code User}
 	 * 
-	 * @param userID id of the User the comments are required from.
-	 * @return all Comments of given userID i.e. User with this id. 
+	 * @param userExtID id of the User the comments are required from.
+	 * @return all Comments of given userID i.e. User with this id.
 	 */
-//	List<CommentDTO> getAllCommentsFromUser(Long userID);
 	List<CommentDTO> getAllCommentsFromUser(String userExtID);
 	List<CommentDTO> getAllCommentsFromUser(UUID userExtID);
 	List<CommentDTO> getAllCommentsFromUser(User user);
@@ -103,21 +97,12 @@ public interface ICommentService {
 	@PreAuthorize("hasRole('ADMIN') OR hasRole('DBA')")
 	UUID deleteComment(Comment comment);
 	
-//	@PreAuthorize("hasRole('ADMIN') OR hasRole('DBA')")
-//	Long deleteCommentById(Long commentId);
-
 	@PreAuthorize("hasRole('ADMIN') OR hasRole('DBA')")
 	UUID deleteCommentByExtId(UUID commentId);
 
 	@PreAuthorize("hasRole('ADMIN') OR hasRole('DBA')")
 	UUID deleteCommentByExtId(String commentId);
 	
-//	@PreAuthorize("hasRole('ADMIN') OR hasRole('DBA')")
-//	void deleteAllCommentsFromUser(Long userID);
-
 	@PreAuthorize("hasRole('ADMIN') OR hasRole('DBA')")
 	void deleteAllCommentsFromUser(UUID userExtID);
-	
-//	@PreAuthorize("hasRole('ADMIN') OR hasRole('DBA')")
-//	void deleteAllCommentsForSite(Long coffeeSiteID);
 }

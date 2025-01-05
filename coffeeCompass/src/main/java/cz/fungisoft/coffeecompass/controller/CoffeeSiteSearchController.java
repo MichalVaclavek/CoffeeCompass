@@ -135,10 +135,6 @@ public class CoffeeSiteSearchController {
             return mav;
         }
         
-//        if (!searchCriteria.getSortSelected()) { // CoffeeSort is not intended to be in filter now
-//            searchCriteria.setCoffeeSort("");
-//        }
-       
         // City name muze pochazet z mapy.cz a tedy obsahovat i oznaceni okresu a kraje.
         // pro vyhledavani v DB ale staci jen mesto , ktere je v tomto mapy.cz oznaceni pred prvni carkou
         int indexOfCarka = currentSearchCity.indexOf(",");
@@ -176,7 +172,6 @@ public class CoffeeSiteSearchController {
         }
         mav.addObject(FOUND_SITES_MODEL_KEY, foundSites);
         
-//        searchCriteria.setSortSelected(false); // set deault value before next searching
         searchCriteria.setCityName(currentSearchCity); // set city name used for searching
         
         mav.addObject(SEARCH_CRITERIA_MODEL_KEY, searchCriteria);

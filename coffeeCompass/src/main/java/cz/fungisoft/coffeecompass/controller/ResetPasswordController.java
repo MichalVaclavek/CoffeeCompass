@@ -4,6 +4,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 import org.springframework.context.MessageSource;
@@ -205,7 +206,9 @@ public class ResetPasswordController {
                                         @RequestParam(value = TOKEN_ATTRIB_KEY, required = true) String token,
                                         @Valid @ModelAttribute("resetedPassword") NewPasswordInputModel resetedPassword,
                                         BindingResult bindingResult,
-                                        RedirectAttributes attr) {
+                                        RedirectAttributes attr,
+                                        HttpServletRequest request,
+                                        HttpServletResponse response) {
         
         ModelAndView mav = new ModelAndView();
         
@@ -224,7 +227,7 @@ public class ResetPasswordController {
             passwordTokenService.deletePasswordResetToken(token);
             
             // User verified by email, password reseted, User can be logged-in now
-            userSecurityService.authWithPassword(user, resetedPassword.getNewPassword());
+            userSecurityService.authWithPassword(user, resetedPassword.getNewPassword(), request, response);
         } else {
             attr.addFlashAttribute("passwordResetSaveFailed", true);
         }

@@ -68,7 +68,7 @@ class CoffeeSiteControllerSecuredMvcTests extends MvcControllerUnitTestBaseSetup
         CoffeeSite cs = CoffeeSiteFactory.getCoffeeSite(COFFEE_SITE_NAME, "automat");
                 
         given(coffeeSiteService.save(Mockito.any(CoffeeSiteDTO.class))).willReturn(cs);
-        given(coffeeSiteService.findOneToTransfer(Mockito.eq(cs.getLongId()))).willReturn(Optional.of(coffeeSiteMapper.coffeeSiteToCoffeeSiteDTO(cs)));
+        given(coffeeSiteService.findOneToTransfer(Mockito.eq(cs.getId()))).willReturn(Optional.of(coffeeSiteMapper.coffeeSiteToCoffeeSiteDTO(cs)));
 
         mockMvc.perform(post("/api/v1/coffeesites/secured/site/create").contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(cs)))
                                        .andExpect(status().isCreated())
