@@ -140,8 +140,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         site.setCanBeCommented(canBeCommented(site));
         site.setCanBeRatedByStars(canBeRateByStars(site));
 
-//        site.setMainImageURL(getMainImageURL(site));
-        
         return site;
     }
     
@@ -278,12 +276,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     }
 
 
-//    @Cacheable(cacheNames = "coffeeSitesCache")
-//    @Override
-//    public Optional<CoffeeSiteDTO> findOneToTransfer(Long id) {
-//        return findOneById(id).map(this::mapOneToTransfer);
-//    }
-
     @Override
     public Optional<CoffeeSiteDTO> findOneToTransfer(String externalId) {
         return findOneByExternalId(externalId).map(this::mapOneToTransfer);
@@ -303,17 +295,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         }
         return siteDto;
     }
-
-    /**
-     *
-//    @Cacheable(cacheNames = "coffeeSitesCache")
-//    @Override
-//    public Optional<CoffeeSite> findOneById(Long id) {
-//        Optional<CoffeeSite> site = coffeeSiteRepo.getById(id);
-//        log.info("Coffee site with id {} retrieved.",  id);
-//        return site;
-//    }
-     */
 
     @Override
     public Optional<CoffeeSite> findOneByExternalId(String externalId) {
@@ -877,24 +858,12 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * 
      * @return URL of the CoffeeSite's image if available
      */
-//    @Override
-//    public String getMainImageURL(CoffeeSiteDTO cs) {
-//        return imagesService.getBasicObjectImageUrl(cs.getExtId().toString())
-//                            .orElseGet(() -> getLocalCoffeeSiteImageUrl(cs));
-//    }
 
     @Override
     public String getMainImageURL(CoffeeSite cs) {
         return imagesService.getBasicObjectImageUrl(cs.getId().toString())
                 .orElseGet(() -> getLocalCoffeeSiteImageUrl(cs));
     }
-
-//    private String getLocalCoffeeSiteImageUrl(CoffeeSiteDTO cs) {
-//        ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequest();
-//        UriComponentsBuilder extBuilder = builder.scheme("https").replacePath(imageService.getBaseImageURLPath()).replaceQuery("").port("8443");
-//        String imageURI = extBuilder.build().toUriString() + cs.getExtId();
-//        return imageService.isImageAvailableForSiteId(cs.getExtId()) ? imageURI : "";
-//    }
 
     private String getLocalCoffeeSiteImageUrl(CoffeeSite cs) {
         ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequest();

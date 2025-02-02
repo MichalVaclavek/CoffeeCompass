@@ -8,7 +8,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * Druh kavy. Obsahuje i výčet konstantních hodnot, které odpovídají hodnotám v DB.

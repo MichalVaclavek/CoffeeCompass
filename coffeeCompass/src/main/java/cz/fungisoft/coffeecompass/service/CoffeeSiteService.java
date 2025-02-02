@@ -48,12 +48,10 @@ public interface CoffeeSiteService {
      * @return
      */
     Page<CoffeeSiteDTO> findAllNotCancelledFromLoggedInUserPaginated(Pageable pageable);
-    
-//    Integer getNumberOfSitesFromUserId(Long userId);
+
     Integer getNumberOfSitesFromUserId(UUID userId);
     Integer getNumberOfSitesFromLoggedInUser();
     Integer getNumberOfSitesNotCanceledFromUserId(UUID userId);
-//    Integer getNumberOfSitesNotCanceledFromUserId(Long userId);
     Integer getNumberOfSitesNotCanceledFromLoggedInUser();
     
     Optional<CoffeeSiteDTO> findOneToTransfer(String externalId);

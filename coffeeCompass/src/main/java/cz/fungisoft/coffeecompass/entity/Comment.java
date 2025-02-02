@@ -26,10 +26,6 @@ public class Comment extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = -4668072504757454270L;
 
-//    @GeneratedValue(strategy=GenerationType.IDENTITY)
-//    @Column(name = "id")
-//	private Long longId;
-	
     @NotNull
 	@Column(name="text", nullable=false)
 	private String text;

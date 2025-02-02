@@ -20,7 +20,6 @@ import lombok.Setter;
  * @author Michal Vaclavek
  */
 @EqualsAndHashCode(callSuper = true)
-//@Data
 @Getter
 @Setter
 @PasswordMatches
