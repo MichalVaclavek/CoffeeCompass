@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.QueryHints;
 
 import jakarta.persistence.QueryHint;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -19,5 +20,5 @@ import java.util.UUID;
 public interface CoffeeSortRepository extends JpaRepository<CoffeeSort, UUID> {
 
     @Query("select csort from CoffeeSort csort where coffeeSort=?1")
-    CoffeeSort searchByName(String coffeeSort);
+    Optional<CoffeeSort> searchByName(String coffeeSort);
 }

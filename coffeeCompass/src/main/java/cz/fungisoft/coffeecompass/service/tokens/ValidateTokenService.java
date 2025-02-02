@@ -1,5 +1,7 @@
 package cz.fungisoft.coffeecompass.service.tokens;
 
+import java.util.UUID;
+
 /**
  * Used to validate user registration and reset password tokens
  * 
@@ -22,7 +24,7 @@ public interface ValidateTokenService {
      * 
      * @return empty string if token is valid, otherwise invalid token reason i.e. "expiredToken" or "invalidToken" or "invalidUser"
      */
-    String validatePasswordResetToken(long id, String token);
+    String validatePasswordResetToken(UUID id, String token);
     
     /**
      * Validates registration confirm e-mail token sent to user's email during registration process.

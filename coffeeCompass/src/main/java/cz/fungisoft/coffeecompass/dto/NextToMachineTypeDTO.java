@@ -1,7 +1,8 @@
 package cz.fungisoft.coffeecompass.dto;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+
+import java.util.Objects;
 
 /**
  * Status zaznamu o Coffee situ jako DTO
@@ -9,9 +10,21 @@ import lombok.EqualsAndHashCode;
  * @author Michal Václavek
  *
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
 public class NextToMachineTypeDTO extends BaseItem {
 
     private String nextToMachineType;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NextToMachineTypeDTO that = (NextToMachineTypeDTO) o;
+        return Objects.equals(getExtId(), that.getExtId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getExtId());
+    }
 }

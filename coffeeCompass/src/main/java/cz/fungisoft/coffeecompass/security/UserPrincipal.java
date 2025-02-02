@@ -63,7 +63,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     public static UserPrincipal create(User user) {
 
         return new UserPrincipal(
-                user.getLongId().toString(),
+                user.getId().toString(),
                 user.getUserName(),
                 user.getEmail(),
                 user.getPassword(),

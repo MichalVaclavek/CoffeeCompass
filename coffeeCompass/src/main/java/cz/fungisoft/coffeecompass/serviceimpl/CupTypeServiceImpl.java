@@ -1,6 +1,8 @@
 package cz.fungisoft.coffeecompass.serviceimpl;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import cz.fungisoft.coffeecompass.dto.CupTypeDTO;
 import cz.fungisoft.coffeecompass.mappers.CupTypeMapper;
@@ -31,11 +33,9 @@ public class CupTypeServiceImpl implements CupTypeService {
 
     @Override
     @Cacheable(cacheNames = "cupTypesCache")
-    public CupType findCupTypeByName(String cupTypeName) {
-        CupType cupType = cupTypeRepo.searchByName(cupTypeName);
-        if (cupType == null)
-            throw new EntityNotFoundException("Cup type name " + cupTypeName + " not found in DB.");
-        return cupType;
+    public CupType findCupTypeByExtId(String extId) {
+        Optional<CupType> cupType = cupTypeRepo.findById(UUID.fromString(extId));
+        return cupType.orElseThrow(() -> new EntityNotFoundException("Cup type with id " + extId + " not found in DB."));
     }
 
     @Override

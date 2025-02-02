@@ -10,7 +10,6 @@ public interface NextToMachineTypeMapper {
 
     @Mapping(target = "id", source="extId")
     @Mapping(source = "nextToMachineType", target = "type")
-//    @Mapping(target = "longId", ignore = true)
     NextToMachineType nextToMachineTypeDtoToNextToMachineType(NextToMachineTypeDTO nextToMachineTypeDTO);
 
     @Mapping(source = "type", target = "nextToMachineType")

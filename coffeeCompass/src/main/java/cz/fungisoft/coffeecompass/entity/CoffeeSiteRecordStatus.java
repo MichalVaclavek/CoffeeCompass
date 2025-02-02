@@ -41,10 +41,6 @@ public class CoffeeSiteRecordStatus extends BaseEntity {
 
     /* ======= INSTANCE VARIABLES ======== */
     
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "id")
-//    private Integer longId;
-    
     @NotNull
     @Column(name="status_zaznamu", length=15, unique=true, nullable=false)
     private String status = CoffeeSiteRecordStatusEnum.CREATED.getSiteRecordStatus(); // defaultni hodnota pri vytvoreni

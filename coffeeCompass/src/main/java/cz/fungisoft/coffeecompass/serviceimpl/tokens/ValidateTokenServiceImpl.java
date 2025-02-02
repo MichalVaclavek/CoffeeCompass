@@ -4,6 +4,7 @@
 package cz.fungisoft.coffeecompass.serviceimpl.tokens;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -41,10 +42,10 @@ public class ValidateTokenServiceImpl implements ValidateTokenService {
     }
 
     @Override
-    public String validatePasswordResetToken(long id, String token) {
+    public String validatePasswordResetToken(UUID id, String token) {
         
         PasswordResetToken passToken = passwordTokenRepository.findByToken(token);
-        if ((passToken == null) || (passToken.getUser().getLongId() != id)) {
+        if ((passToken == null) || (passToken.getUser().getId() != id)) {
             return TOKEN_INVALID;
         }
    
@@ -55,7 +56,7 @@ public class ValidateTokenServiceImpl implements ValidateTokenService {
    
         User user = passToken.getUser();
         
-        if (user.getLongId() != id) {
+        if (user.getId() != id) {
             return TOKEN_INVALID_USER; 
         }
         

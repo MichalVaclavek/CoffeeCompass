@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.QueryHints;
 
 import jakarta.persistence.QueryHint;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -19,5 +20,5 @@ import java.util.UUID;
 public interface CoffeeSiteStatusRepository extends JpaRepository<CoffeeSiteStatus, UUID> {
 
     @Query("select css from CoffeeSiteStatus css where status=?1")
-    CoffeeSiteStatus searchByName(String status);
+    Optional<CoffeeSiteStatus> searchByName(String status);
 }

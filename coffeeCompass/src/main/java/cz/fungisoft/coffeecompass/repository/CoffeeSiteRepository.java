@@ -45,21 +45,17 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, UUID>, C
     @NotNull
     List<CoffeeSite> findAll(@NotNull Sort sort);
 
-    @NotNull
-    @Query("select cs from CoffeeSite cs where id=?1")
-    Optional<CoffeeSite> getById(@NotNull Long id);
-
     @Query("select cs from CoffeeSite cs where originalUser.id=?1 order by cs.createdOn desc")
     List<CoffeeSite> findSitesFromUserID(UUID userId);
 
     @Query("select cs from CoffeeSite cs where originalUser.id=?1 and NOT cs.recordStatus.status='CANCELED' order by cs.createdOn desc")
-    List<CoffeeSite> findSitesNotCanceledFromUserID(long userId);
+    List<CoffeeSite> findSitesNotCanceledFromUserID(UUID userId);
     
     @Query("select count(id) from CoffeeSite cs where originalUser.id=?1")
-    Integer getNumberOfSitesFromUserID(long userId);
+    Integer getNumberOfSitesFromUserID(UUID userId);
     
     @Query("select count(id) from CoffeeSite cs where originalUser.id=?1 and NOT cs.recordStatus.status='CANCELED'")
-    Integer getNumberOfSitesNotCanceledFromUserID(long userId);
+    Integer getNumberOfSitesNotCanceledFromUserID(UUID userId);
 
     @Query("select cs from CoffeeSite cs where cs.recordStatus.status=?1 order by cs.createdOn desc")
     List<CoffeeSite> findSitesWithRecordStatus(String csRecordStatus);
@@ -179,7 +175,7 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, UUID>, C
      */
     @Modifying // required by Hibernate, otherwise there is an exception ' ... Illegal state ...'
     @Query("delete FROM CoffeeSite cs WHERE originalUser.id=?1")
-    void deleteAllFromUser(Long userId);
+    void deleteAllFromUser(UUID userId);
 
     @Modifying
     @Query("delete FROM CoffeeSite cs WHERE id=?1")

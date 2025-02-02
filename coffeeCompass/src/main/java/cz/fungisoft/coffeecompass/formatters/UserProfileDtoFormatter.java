@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.formatters;
 import cz.fungisoft.coffeecompass.dto.UserProfileDTO;
 import cz.fungisoft.coffeecompass.mappers.UserProfileMapper;
 import cz.fungisoft.coffeecompass.service.user.UserProfileService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.Formatter;
 import org.springframework.stereotype.Component;
@@ -26,16 +27,11 @@ public class UserProfileDtoFormatter implements Formatter<UserProfileDTO> {
 
     @Override
     public String print(UserProfileDTO userProfile, Locale locale) {
-        return userProfile.getType();
+        return userProfile.getExtId().toString();
     }
 
-//    @Override
-//    public UserProfileDTO parse(String extId, Locale locale) throws ParseException {
-//        return userProfileMapper.userProfiletoUserProfileDTO(userProfileService.findByExtId(extId));
-//    }
-
     @Override
-    public UserProfileDTO parse(String type, Locale locale) throws ParseException {
-        return userProfileMapper.userProfiletoUserProfileDTO(userProfileService.findByType(type));
+    public UserProfileDTO parse(@NotNull String extId, Locale locale) throws ParseException {
+        return userProfileMapper.userProfiletoUserProfileDTO(userProfileService.findByExtId(extId));
     }
 }

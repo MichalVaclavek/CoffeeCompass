@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.formatters;
 import cz.fungisoft.coffeecompass.dto.CupTypeDTO;
 import cz.fungisoft.coffeecompass.mappers.CupTypeMapper;
 import cz.fungisoft.coffeecompass.service.CupTypeService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.Formatter;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ public class CupTypeDtoFormatter implements Formatter<CupTypeDTO> {
     }
 
     @Override
-    public CupTypeDTO parse(String text, Locale locale) throws ParseException {
-        return cupTypeMapper.cupTypeToCupTypeDto(cupTypeService.findCupTypeByName(text));
+    public CupTypeDTO parse(@NotNull String text, Locale locale) throws ParseException {
+        return cupTypeMapper.cupTypeToCupTypeDto(cupTypeService.findCupTypeByExtId(text));
     }
 }

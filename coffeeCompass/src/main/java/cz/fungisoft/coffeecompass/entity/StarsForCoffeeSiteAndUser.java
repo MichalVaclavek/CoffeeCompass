@@ -22,10 +22,6 @@ import java.util.Objects;
 @Table(name="hodnoceni", schema="coffeecompass")
 public class StarsForCoffeeSiteAndUser extends BaseEntity {
 
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "id")
-//    private Integer longId;
-
     @NotNull
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @OneToOne

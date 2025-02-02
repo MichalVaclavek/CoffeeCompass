@@ -30,7 +30,7 @@ public class UsersRepositoryCustomImpl implements UsersRepositoryCustom {
     @Override
     public List<DBReturnPair> getTop5Users() {
        String selectQuery = "SELECT DISTINCT users.username, COUNT(*) as NumOfSites FROM coffeecompass.coffee_site AS cs"
-                          + " JOIN coffeecompass.user AS users ON cs.zadal_user_id=users.id"
+                          + " JOIN coffeecompass.user AS users ON cs.zadal_user_uuid = users.external_id"
                           + " WHERE cs.status_zaznamu_id=1"
                           + " GROUP BY username"
                           + " ORDER BY NumOfSites DESC LIMIT 5";

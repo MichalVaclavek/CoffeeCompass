@@ -10,7 +10,6 @@ public interface OtherOfferMapper {
 
     @Mapping(target = "id", source="extId")
     @Mapping(source = "otherOffer", target = "offer")
-//    @Mapping(target = "longId", ignore = true)
     OtherOffer otherOfferDtoToOtherOffer(OtherOfferDTO otherOfferDTO);
 
     @Mapping(source = "offer", target = "otherOffer")

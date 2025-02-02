@@ -328,7 +328,7 @@ public class UserController {
         if (loggedInUser.isPresent()) { // Jde o prihlaseneho uzivatele - muze pokracovat editace
             // Prihlaseny uzivatel meni svoje data - je potreba overit userName a e-mail, ktere se nesmi shodovat s jinym jiz vytvorenym.
             // Pokud jineho usera edituje ADMIN, neni potreba overovat, protoze ADMIn nemuze menit ve formulari ani userName ani e-mail
-            if (Objects.equals(userDto.getExtId(), loggedInUser.get().getLongId())) {
+            if (Objects.equals(userDto.getExtId(), loggedInUser.get().getId())) {
                 // Tento blok je spravny pouze pokud prihlaseny user meni svoje udaje (je jedno jaky ma Profile)
                 if (!loggedInUser.get().getUserName().equalsIgnoreCase(userDto.getUserName())) { // Prihlaseny uzivatel chce zmenit userName
                     // Je uzivatelske jmeno jiz pouzito
@@ -356,7 +356,7 @@ public class UserController {
         if (result.hasErrors()) { // In case of error, show the user edit page again with errors
             // Prihlaseny uzivatel edituje svuj profil - musi se nastavit prislusny flag, aby zustaly ve formulari vsechny plozky editovatelne
             // i v pripade predchozi chyby ve formulari
-           if (loggedInUser.isPresent() && Objects.equals(userDto.getExtId(), loggedInUser.get().getLongId())) {
+           if (loggedInUser.isPresent() && Objects.equals(userDto.getExtId(), loggedInUser.get().getId())) {
                userDto.setToManageItself(true);
            }
            return mav;
@@ -561,7 +561,7 @@ public class UserController {
         
         // Prihlaseny uzivatel maze svoje data?
         // Pokud jineho usera maze ADMIN, neodhlasovat z app
-        if (loggedInUser.isPresent() && extId.equals(loggedInUser.get().getLongId().toString())
+        if (loggedInUser.isPresent() && extId.equals(loggedInUser.get().getId().toString())
                 && !userService.isADMINloggedIn()) { 
             userSecurityService.logout();
         }

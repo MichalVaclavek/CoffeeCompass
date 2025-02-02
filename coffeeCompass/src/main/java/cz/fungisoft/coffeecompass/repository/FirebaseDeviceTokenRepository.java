@@ -2,6 +2,7 @@ package cz.fungisoft.coffeecompass.repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -24,7 +25,7 @@ public interface FirebaseDeviceTokenRepository extends JpaRepository<DeviceFireb
      * @return
      */
     @Query("SELECT dft FROM DeviceFirebaseToken dft WHERE user.id=?1")
-    List<DeviceFirebaseToken> getAllTokensForUser(Long userId);
+    List<DeviceFirebaseToken> getAllTokensForUser(UUID userId);
     
     /**
      * Get one DeviceFirebaseToken according token string
@@ -37,7 +38,7 @@ public interface FirebaseDeviceTokenRepository extends JpaRepository<DeviceFireb
     
     @Modifying // required by Hibernate, otherwise there is an exception ' ... Illegal state ...'
     @Query("delete FROM DeviceFirebaseToken dft where user.id=?1")
-    void deleteAllFromUser(Long userID);
+    void deleteAllFromUser(UUID userID);
     
     @Query("delete FROM DeviceFirebaseToken dft where firebaseToken=?1")
     void deleteToken(String tokenString);

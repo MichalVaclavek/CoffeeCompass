@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.formatters;
 import cz.fungisoft.coffeecompass.dto.CoffeeSortDTO;
 import cz.fungisoft.coffeecompass.mappers.CoffeeSortMapper;
 import cz.fungisoft.coffeecompass.service.CoffeeSortService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.Formatter;
 import org.springframework.stereotype.Component;
@@ -26,11 +27,11 @@ public class CoffeeSortsDtoFormatter implements Formatter<CoffeeSortDTO> {
 
     @Override
     public String print(CoffeeSortDTO coffeeSort, Locale locale) {
-        return coffeeSort.getCoffeeSort();
+        return coffeeSort.getExtId().toString();
     }
 
     @Override
-    public CoffeeSortDTO parse(String text, Locale locale) throws ParseException {
-        return coffeeSortMapper.coffeeSorToCoffeeSortDto(coffeeSortService.findCoffeeSortByName(text));
+    public CoffeeSortDTO parse(@NotNull String extId, Locale locale) throws ParseException {
+        return coffeeSortMapper.coffeeSorToCoffeeSortDto(coffeeSortService.findCoffeeSortById(extId));
     }
 }

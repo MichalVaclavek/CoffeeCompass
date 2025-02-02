@@ -69,12 +69,12 @@ import java.util.*;
     ),
     @NamedNativeQuery( // Counts number of already created CoffeeSites on selected location within defined meters range from the location  
             name = "numberOfSitesWithinRange",
-            query = "SELECT COUNT(*) AS cnt FROM (SELECT id, poloha_gps_sirka, poloha_gps_delka FROM coffeecompass.coffee_site WHERE public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3) AS items",
+            query = "SELECT COUNT(*) AS cnt FROM (SELECT external_id, poloha_gps_sirka, poloha_gps_delka FROM coffeecompass.coffee_site WHERE public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3) AS items",
             resultSetMapping = "LongResult"
     ),
     @NamedNativeQuery( // Counts number of already created CoffeeSites in given status on selected location within defined meters range from the location. 
             name = "numberOfSitesWithinRangeInGivenStatus",
-            query = "SELECT COUNT(*) AS cnt FROM (SELECT id, status_zaznamu_id, poloha_gps_sirka, poloha_gps_delka FROM coffeecompass.coffee_site WHERE public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3) AS items WHERE external_id=?4",
+            query = "SELECT COUNT(*) AS cnt FROM (SELECT external_id, status_zaznamu_id, poloha_gps_sirka, poloha_gps_delka FROM coffeecompass.coffee_site WHERE public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3) AS items WHERE external_id=?4",
             resultSetMapping = "LongResult"
     )
 })
@@ -83,9 +83,6 @@ import java.util.*;
 
 @Table(name="coffee_site", schema="coffeecompass")
 public class CoffeeSite extends BaseEntity implements Serializable {
-
-//    @Column(name = "id")
-//    private Long longId;
 
     @NotNull
     @Size(min = 3, max = 50)

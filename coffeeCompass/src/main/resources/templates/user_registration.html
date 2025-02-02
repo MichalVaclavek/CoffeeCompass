@@ -173,8 +173,8 @@
 											th:classappend="( (${userProfile.type} == 'ADMIN') AND *{hasADMINRole} AND *{!toManageItself}) ? 'w3-disabled'"
 											th:readonly="( (${userProfile.type} == 'ADMIN') AND *{hasADMINRole} AND *{!toManageItself})"
 			                	 		    th:field="*{userProfiles}"
-			                	  		    th:value="${userProfile.type}" />
-									  <label th:for="${extId}" th:text="${userProfile.type}">User profiles</label>
+			                	  		    th:value="${userProfile.extId}" />
+									  <label th:for="${userProfile.extId}" th:text="${userProfile.type}">User profiles</label>
 			               			  <p class="error-message"
 			                       		th:each="error : ${#fields.errors('userProfiles')}"
 			                       		th:text="${error}">Validation error</p>

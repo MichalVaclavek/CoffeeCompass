@@ -9,7 +9,6 @@ import org.mapstruct.Mapping;
 public interface CupTypeMapper {
 
     @Mapping(target = "id", source="extId")
-//    @Mapping(target = "longId", ignore = true)
     CupType cupTypeDtoToCupType(CupTypeDTO cupTypeDTO);
 
     @Mapping(target = "extId", source="id")

@@ -211,9 +211,10 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      */
     @Override
     public Map<String, Integer> findNumbersOfSitesInGivenDistances(double zemSirka, double zemDelka, List<Integer> distances, String siteStatus) {
-        CoffeeSiteStatus csS =  coffeeSiteStatusRepo.searchByName(siteStatus);
+        Optional<CoffeeSiteStatus> csS =  coffeeSiteStatusRepo.searchByName(siteStatus);
         // only ACTIVE sites are relevant for distance searching - all users (even non-registered, not loggedd-in) can search, so only ACTIVE are interesting
-        return  coffeeSiteRepo.findNumbersOfSitesInGivenDistances(zemSirka, zemDelka, distances, csS, csRecordStatusService.findCSRecordStatus(CoffeeSiteRecordStatusEnum.ACTIVE));
+        return csS.map(coffeeSiteStatus -> coffeeSiteRepo.findNumbersOfSitesInGivenDistances(zemSirka, zemDelka, distances, coffeeSiteStatus, csRecordStatusService.findCSRecordStatus(CoffeeSiteRecordStatusEnum.ACTIVE)))
+                  .orElse(Collections.emptyMap());
     }
 
     @Cacheable(cacheNames = "coffeeSitesCache")
@@ -225,7 +226,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     }
     
     @Override
-    public Integer getNumberOfSitesFromUserId(Long userId) {
+    public Integer getNumberOfSitesFromUserId(UUID userId) {
         Integer numberOfSitesFromUser = coffeeSiteRepo.getNumberOfSitesFromUserID(userId);
         return (numberOfSitesFromUser != null) ? numberOfSitesFromUser : 0;
     }
@@ -233,12 +234,12 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     @Override
     public Integer getNumberOfSitesFromLoggedInUser() {
         return userService.getCurrentLoggedInUser()
-                          .map(user -> getNumberOfSitesFromUserId(user.getLongId()))
+                          .map(user -> getNumberOfSitesFromUserId(user.getId()))
                           .orElse(0);
     }
     
     @Override
-    public Integer getNumberOfSitesNotCanceledFromUserId(Long userId) {
+    public Integer getNumberOfSitesNotCanceledFromUserId(UUID userId) {
         Integer numberOfSitesFromUser = coffeeSiteRepo.getNumberOfSitesNotCanceledFromUserID(userId);
         return (numberOfSitesFromUser != null) ? numberOfSitesFromUser : 0;
     }
@@ -246,7 +247,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     @Override
     public Integer getNumberOfSitesNotCanceledFromLoggedInUser() {
         return userService.getCurrentLoggedInUser()
-                          .map(user -> getNumberOfSitesNotCanceledFromUserId(user.getLongId()))
+                          .map(user -> getNumberOfSitesNotCanceledFromUserId(user.getId()))
                           .orElse(0);
     }
     
@@ -622,25 +623,21 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         }
         
         if (cSortAndcsStatusFilter) {
-            CoffeeSort cf = coffeeSortRepo.searchByName(cSort);
-            CoffeeSiteStatus csS =  coffeeSiteStatusRepo.searchByName(siteStatus);
-            if ((cf != null) && (csS != null)) {
-                coffeeSites = coffeeSiteRepo.findSitesWithCoffeeSortAndSiteStatus(zemSirka, zemDelka, meters, cf, csS, csRS);
-            }
+            Optional<CoffeeSort> cs = coffeeSortRepo.searchByName(cSort);
+            Optional<CoffeeSiteStatus> csS =  coffeeSiteStatusRepo.searchByName(siteStatus);
+            coffeeSites = cs.flatMap(coffeeSort ->
+                    csS.map(coffeeSiteStatus ->
+                            coffeeSiteRepo.findSitesWithCoffeeSortAndSiteStatus(zemSirka, zemDelka, meters, coffeeSort, coffeeSiteStatus, csRS))).orElse(List.of());
         }
         
         if (cSortFilterOnlyFilter) {
-            CoffeeSort cfSort = coffeeSortRepo.searchByName(cSort);
-            if (cfSort != null) {
-                coffeeSites = coffeeSiteRepo.findSitesWithCoffeeSort(zemSirka, zemDelka, meters, cfSort, csRS);
-            }
+            Optional<CoffeeSort> cfSort = coffeeSortRepo.searchByName(cSort);
+            coffeeSites = cfSort.map(coffeeSort -> coffeeSiteRepo.findSitesWithCoffeeSort(zemSirka, zemDelka, meters, coffeeSort, csRS)).orElse(List.of());
         }
         
         if (csStatusOnlyFilter) {
-            CoffeeSiteStatus csS =  coffeeSiteStatusRepo.searchByName(siteStatus);
-            if (csS != null) {
-                coffeeSites = coffeeSiteRepo.findSitesWithStatus(zemSirka, zemDelka, meters, csS, csRS);
-            }
+            Optional<CoffeeSiteStatus> csS =  coffeeSiteStatusRepo.searchByName(siteStatus);
+            coffeeSites = csS.map(coffeeSiteStatus -> coffeeSiteRepo.findSitesWithStatus(zemSirka, zemDelka, meters, coffeeSiteStatus, csRS)).orElse(List.of());
         }
         
         log.info("Coffee sites within circle (Latit.: {} , Long.: {}, range: {}) retrieved: {}", zemSirka, zemDelka, meters, coffeeSites.size());
@@ -661,11 +658,12 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     public List<CoffeeSiteDTO> findAllWithinCircleAndCityWithCSStatusAndCoffeeSort(double zemSirka, double zemDelka, long rangeMeters,
                                                                                    String siteStatus, String cityName) {
         CoffeeSiteRecordStatus csRS = csRecordStatusRepo.searchByName(CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum.ACTIVE.toString());
-        CoffeeSiteStatus csStatus =  siteStatus != null ? coffeeSiteStatusRepo.searchByName(siteStatus)
+        Optional<CoffeeSiteStatus> csStatus =  siteStatus != null ? coffeeSiteStatusRepo.searchByName(siteStatus)
                                                         : coffeeSiteStatusRepo.searchByName(CoffeeSiteStatus.CoffeeSiteStatusEnum.INSERVICE.getSiteStatus());
         
         List<CoffeeSite> coffeeSites;
-        coffeeSites = coffeeSiteRepo.findSitesWithSortAndSiteStatusAndRangeAndCity(zemSirka, zemDelka, rangeMeters, csStatus, csRS, cityName);
+        coffeeSites = csStatus.map(csS -> coffeeSiteRepo.findSitesWithSortAndSiteStatusAndRangeAndCity(zemSirka, zemDelka, rangeMeters, csS, csRS, cityName)).
+                                 orElse(List.of());
         
         log.info("Coffee sites within circle (Latit.: {} , Long.: {}, range: {}) and city {} retrieved: {}", zemSirka, zemDelka, rangeMeters, cityName, coffeeSites.size());
         return countDistancesAndSortByDist(modifyToTransfer(coffeeSites), zemSirka, zemDelka);
@@ -957,7 +955,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     @Override
     public void deleteCoffeeSitesFromUser(UUID userId) {
         Optional<User> user = userService.findByExtId(userId);
-        user.ifPresent(u -> coffeeSiteRepo.deleteAllFromUser(u.getLongId()));
+        user.ifPresent(u -> coffeeSiteRepo.deleteAllFromUser(u.getId()));
     }
 
     

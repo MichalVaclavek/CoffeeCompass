@@ -7,7 +7,6 @@ import cz.fungisoft.coffeecompass.entity.NextToMachineType;
 
 public interface NextToMachineTypeService {
 
-    NextToMachineType findNextToMachineTypeByName(String nextToMachineType);
-//    NextToMachineType findNextToMachineTypeByExtId(String extId);
+    NextToMachineType findNextToMachineTypeByExtId(String extId);
     List<NextToMachineTypeDTO> getAllNextToMachineTypes();
 }

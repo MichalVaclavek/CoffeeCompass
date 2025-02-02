@@ -8,6 +8,5 @@ import cz.fungisoft.coffeecompass.entity.UserProfile;
 public interface UserProfileService {
 
     UserProfile findByExtId(String extId);
-    UserProfile findByType(String type);
     List<UserProfileDTO> findAll();
 }

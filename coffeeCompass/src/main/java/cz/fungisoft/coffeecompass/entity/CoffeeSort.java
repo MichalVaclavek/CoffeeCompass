@@ -18,16 +18,12 @@ import java.util.Objects;
  */
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @RequiredArgsConstructor
 @Entity
 @Table(name="druhy_kavy", schema="coffeecompass")
 public class CoffeeSort extends BaseEntity {
 
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "id")
-//    private Integer longId;
-    
     @NotNull
     @Column(name = "druh_kavy", unique=true)
     private String coffeeSort;
@@ -51,36 +47,6 @@ public class CoffeeSort extends BaseEntity {
         }
     }
     
-    
-//    @Override
-//    public int hashCode() {
-//        final int prime = 31;
-//        int result = 1;
-//        result = prime * result + ((coffeeSort == null) ? 0 : coffeeSort.hashCode());
-//        return result;
-//    }
-
-
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (this == obj)
-//            return true;
-//        if (obj == null)
-//            return false;
-//        if (getClass() != obj.getClass())
-//            return false;
-//
-//        CoffeeSort other = (CoffeeSort) obj;
-//        if (coffeeSort == null)
-//        {
-//            if (other.coffeeSort != null)
-//                return false;
-//        } else if (!coffeeSort.equals(other.coffeeSort))
-//            return false;
-//
-//        return (Objects.equals(id, other.id));
-//    }
-
     @Override
     public String toString() {
         return coffeeSort;

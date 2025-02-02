@@ -7,7 +7,6 @@ import cz.fungisoft.coffeecompass.entity.OtherOffer;
 
 public interface OtherOfferService {
 
-    OtherOffer findOfferByName(String offer);
     OtherOffer findOfferByExtId(String extId);
     List<OtherOfferDTO> getAllOtherOffers();
 }

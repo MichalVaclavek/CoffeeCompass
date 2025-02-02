@@ -1,8 +1,11 @@
 package cz.fungisoft.coffeecompass.serviceimpl;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import cz.fungisoft.coffeecompass.dto.CoffeeSortDTO;
+import cz.fungisoft.coffeecompass.exceptions.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.mappers.CoffeeSortMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -28,10 +31,8 @@ public class CoffeeSortServiceImpl implements CoffeeSortService {
     }
 
     @Override
-    @Transactional
-    @Cacheable(cacheNames = "coffeeSortsCache")
-    public CoffeeSort findCoffeeSortByName(String coffeeSortName) {
-        return coffeeSortRepo.searchByName(coffeeSortName);
+    public CoffeeSort findCoffeeSortById(String uuid) {
+        return coffeeSortRepo.findById(UUID.fromString(uuid)).orElseThrow(() -> new EntityNotFoundException("Cup type with id " + uuid + " not found in DB."));
     }
 
     @Override

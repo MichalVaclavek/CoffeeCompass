@@ -32,7 +32,8 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    @Cacheable(cacheNames = "userProfilesCache")
+//    @Cacheable(cacheNames = "userProfilesCache")
+
     public UserProfile findByExtId(String extId) {
         UserProfile userProfile = userProfRepository.findById(UUID.fromString(extId)).orElse(null);
         if (userProfile == null)
@@ -40,17 +41,17 @@ public class UserProfileServiceImpl implements UserProfileService {
         return  userProfile;
     }
  
-    @Override
-    @Cacheable(cacheNames = "userProfilesCache")
-    public UserProfile findByType(String type) {
-        UserProfile userProfile = userProfRepository.searchByType(type);
-        if (userProfile == null)
-            throw new EntityNotFoundException("User profile " + type + " not found in DB.");
-        return userProfile;
-    }
+//    @Override
+//    @Cacheable(cacheNames = "userProfilesCache")
+//    public UserProfile findByType(String type) {
+//        UserProfile userProfile = userProfRepository.searchByType(type);
+//        if (userProfile == null)
+//            throw new EntityNotFoundException("User profile " + type + " not found in DB.");
+//        return userProfile;
+//    }
  
     @Override
-    @Cacheable(cacheNames = "userProfilesCache")
+//    @Cacheable(cacheNames = "userProfilesCache")
     public List<UserProfileDTO> findAll() {
         return userProfRepository.findAll().stream().map(userProfileMapper::userProfiletoUserProfileDTO).toList();
     }

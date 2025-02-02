@@ -238,7 +238,7 @@
 	              <li th:each="otherOffer : ${allOffers}">
 	                <input type="checkbox" class="w3-check"
 	                       th:field="*{otherOffers}"
-	                       th:value="${otherOffer.otherOffer}" />
+	                       th:value="${otherOffer.extId}" />
 	                <label th:for="${otherOffer.extId}" th:text="${otherOffer.otherOffer}">Other offers</label>
 	              </li>
 	            </ul>
@@ -253,70 +253,70 @@
 	              <li th:each="coffeeSort : ${allCoffeeSorts}">
 	                <input type="checkbox" class="w3-check"
 	                       th:field="*{coffeeSorts}"
-	                       th:value="${coffeeSort.coffeeSort}" />
+	                       th:value="${coffeeSort.extId}" />
 	                <label th:for="${coffeeSort.extId}" th:text="${coffeeSort.coffeeSort}">Coffee sorts</label>
 	              </li>
 	            </ul>
 	          </div>
-	
+
 	          <div  class="w3-container w3-cell w3-border w3-round">
 	            <label class="w3-center" th:text="#{site.nextToMachineTypes}" style="font-weight: bold">Next to machine type</label>
 	            <ul>
 	              <li th:each="ntmt : ${allNextToMachineTypes}">
 	                <input type="checkbox" class="w3-check"
 	                       th:field="*{nextToMachineTypes}"
-	                       th:value="${ntmt.nextToMachineType}" />
+	                       th:value="${ntmt.extId}" />
 	                <label th:for="${ntmt.extId}" th:text="${ntmt.nextToMachineType}">Next to machine type</label>
 	              </li>
-	              
+
 	            </ul>
 	          </div>
-	          
+
 	          <div class="w3-container w3-cell w3-border w3-round">
                  <label class="w3-center" th:text="#{site.cupTypes}" style="font-weight: bold">Cup types</label>
 	             <ul>
 	               <li th:each="cupType : ${allCupTypes}">
 	                  <input type="checkbox" class="w3-check"
 	                    	 th:field="*{cupTypes}"
-	                	     th:value="${cupType.cupType}" />
+	                	     th:value="${cupType.extId}" />
 	                  <label th:for="${cupType.extId}" th:text="${cupType.cupType}">Cup types</label>
 	               </li>
 	             </ul>
 	          </div>
-    		
+
     		</div>
-    		
+
     		<div class="w3-margin">
             	<label for="hodnoceni">
               		<span th:text="#{site.initialComment}">Initial comment</span>
             	</label>
-            	<input type="text" th:field="*{initialComment}" class="w3-input w3-border w3-round" th:errorclass="fieldError" 
+            	<input type="text" th:field="*{initialComment}" class="w3-input w3-border w3-round" th:errorclass="fieldError"
             			maxlength=248  th:placeholder="#{site.create.initialcomment.placeholder}"/>
             			<p class="error-message"
 	               		   th:each="error: ${#fields.errors('initialComment')}"
 	               		   th:text="${error}">Validation error</p>
           	</div>
-    
+
     	  <div class="w3-bar w3-margin-top">
 	          <div class="w3-bar-item">
 	             <button type="submit" name="save" th:text="(${coffeeSite.extId} == null) ? #{site.button.create} : #{site.button.update}" class="w3-button w3-blue w3-round">Save/Modify Coffee site</button>
 	          </div>
-	          
+
 	          <div class="w3-bar-item">
 	          	 <a  th:if="${coffeeSite.extId != null}" th:href="@{'/showSite/' + ${coffeeSite.extId}}" th:text="#{site.edit.cancel}" class="w3-button">Cancel update site</a>
 	          	 <a  th:if="${coffeeSite.extId == null}" th:href="@{'/home'}" th:text="#{site.edit.cancel}" class="w3-button">Cancel creation of the site</a>
 		      </div>
-		      
+
 		      <div class="w3-bar-item w3-text-gray w3-margin-top w3-right">
 		         <label th:text="#{app.items.obligatory}" class="w3-text-gray w3-margin-top w3-small w3-right">Announcement</label>
-		      </div>   
-		      
+		      </div>
+
           </div>
         </div>
-          
+
       </form>
     </div>
-    
+
 
    <div  id="mapDiv" class="w3-half" style="display:none;">
        <!-- Element to insert script for map -->

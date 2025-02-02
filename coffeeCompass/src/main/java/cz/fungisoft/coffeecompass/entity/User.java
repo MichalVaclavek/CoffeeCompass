@@ -10,8 +10,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -19,6 +17,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 import cz.fungisoft.coffeecompass.controller.models.AuthProviders;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -34,23 +33,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Getter
 @Setter
 @RequiredArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name="user", schema="coffeecompass")
 public class User extends BaseEntity implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -9006499187256143209L;
-    
-//    public User() {
-//        super();
-//        this.registerEmailConfirmed = false;
-//        this.banned = false;
-//    }
 
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="id")
-    private Long longId;
- 
     @NotNull
     @Column(name="username", unique=true, nullable=false)
     private String userName;
@@ -106,38 +96,8 @@ public class User extends BaseEntity implements Serializable {
     private boolean enabled = false;
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((longId == null) ? 0 : longId.hashCode());
-        result = prime * result + ((userName == null) ? 0 : userName.hashCode());
-        return result;
-    }
- 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (!(obj instanceof User))
-            return false;
-        
-        User other = (User) obj;
-        if (longId == null) {
-            if (other.longId != null)
-                return false;
-        } else if (!longId.equals(other.longId))
-            return false;
-        
-        if (userName == null) {
-            return other.userName == null;
-        } else return userName.equals(other.userName);
-    }
- 
-    @Override
     public String toString() {
-        return "User [id=" + longId + ", ssoId=" + userName
+        return "User [id=" + id + ", ssoId=" + userName
                 + ", firstName=" + firstName + ", lastName=" + lastName
                 + ", email=" + email + "]";
     }

@@ -4,6 +4,7 @@ import cz.fungisoft.coffeecompass.dto.NextToMachineTypeDTO;
 import cz.fungisoft.coffeecompass.entity.NextToMachineType;
 import cz.fungisoft.coffeecompass.mappers.NextToMachineTypeMapper;
 import cz.fungisoft.coffeecompass.service.NextToMachineTypeService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.Formatter;
 import org.springframework.stereotype.Component;
@@ -27,11 +28,11 @@ public class NextToMachineTypeDtoFormatter implements Formatter<NextToMachineTyp
 
     @Override
     public String print(NextToMachineTypeDTO ntmt, Locale locale) {
-        return ntmt.getNextToMachineType();
+        return ntmt.getExtId().toString();
     }
 
     @Override
-    public NextToMachineTypeDTO parse(String text, Locale locale) throws ParseException {
-        return ntmtMapper.nextToMachineTypeToNextToMachineTypeDto(ntmtService.findNextToMachineTypeByName(text));
+    public NextToMachineTypeDTO parse(@NotNull String extId, Locale locale) throws ParseException {
+        return ntmtMapper.nextToMachineTypeToNextToMachineTypeDto(ntmtService.findNextToMachineTypeByExtId(extId));
     }
 }

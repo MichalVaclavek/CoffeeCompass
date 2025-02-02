@@ -32,34 +32,15 @@ public class OtherOfferServiceImpl implements OtherOfferService {
     }
 
     @Override
-    public OtherOffer findOfferByName(String offerName) {
-        OtherOffer otherOffer = offerRepo.searchByName(offerName);
-        if (otherOffer == null)
-            throw new EntityNotFoundException("Other offer name " + offerName + " not found in DB.");
-        return otherOffer;
-    }
-
-    @Override
     @Cacheable(cacheNames = "otherOffersCache")
     public List<OtherOfferDTO> getAllOtherOffers() {
         return offerRepo.findAll().stream().map(otherOfferMapper::otherOfferToOtherOfferDto).toList();
     }
 
-//    @Override
-//    @Cacheable(cacheNames = "otherOffersCache")
-//    public OtherOffer findOfferById(Integer id) {
-//        Optional<OtherOffer> otherOffer = offerRepo.findByLongId(id);
-//        if (otherOffer.isEmpty())
-//            throw new EntityNotFoundException("Other offer id " + id + " not found in DB.");
-//        return otherOffer.get();
-//    }
-
     @Override
     @Cacheable(cacheNames = "otherOffersCache")
     public OtherOffer findOfferByExtId(String extId) {
         Optional<OtherOffer> otherOffer = offerRepo.findById(UUID.fromString(extId));
-        if (otherOffer.isEmpty())
-            throw new EntityNotFoundException("Other offer id " + extId + " not found in DB.");
-        return otherOffer.get();
+        return otherOffer.orElseThrow(() -> new EntityNotFoundException("Other offer id " + extId + " not found in DB."));
     }
 }

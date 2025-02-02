@@ -6,15 +6,6 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
-import cz.fungisoft.coffeecompass.entity.CoffeeSiteType;
-import cz.fungisoft.coffeecompass.entity.CoffeeSort;
-import cz.fungisoft.coffeecompass.entity.Company;
-import cz.fungisoft.coffeecompass.entity.CupType;
-import cz.fungisoft.coffeecompass.entity.NextToMachineType;
-import cz.fungisoft.coffeecompass.entity.OtherOffer;
-import cz.fungisoft.coffeecompass.entity.PriceRange;
-import cz.fungisoft.coffeecompass.entity.SiteLocationType;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;

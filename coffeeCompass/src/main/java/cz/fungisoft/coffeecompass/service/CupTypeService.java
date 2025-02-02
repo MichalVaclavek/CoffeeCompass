@@ -7,6 +7,6 @@ import cz.fungisoft.coffeecompass.entity.CupType;
 
 public interface CupTypeService {
 
-    CupType findCupTypeByName(String cupType);
+    CupType findCupTypeByExtId(String cupType);
     List<CupTypeDTO> getAllCupTypes();
 }

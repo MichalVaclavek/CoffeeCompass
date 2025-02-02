@@ -48,10 +48,6 @@ public class CoffeeSiteStatus extends BaseEntity {
 
     /* ======= INSTANCES VARIABLES ======== */
     
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "id")
-//    private Integer longId;
-    
     @NotNull
     @Column(name="status_podniku", unique=true, nullable=false)
     private String status = CoffeeSiteStatusEnum.INSERVICE.getSiteStatus(); 

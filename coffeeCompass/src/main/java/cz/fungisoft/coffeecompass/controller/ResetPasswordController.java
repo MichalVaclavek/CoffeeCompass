@@ -2,6 +2,7 @@ package cz.fungisoft.coffeecompass.controller;
 
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -146,14 +147,14 @@ public class ResetPasswordController {
      * @return
      */
     @GetMapping(value = "/user/changePassword")
-    public ModelAndView processChangePasswordLink(@RequestParam(value = "userId", required = true) long userId,
+    public ModelAndView processChangePasswordLink(@RequestParam(value = "userId", required = true) String userId,
                                                   @RequestParam(value = TOKEN_ATTRIB_KEY, required = true) String token,
                                                   Locale locale,
                                                   RedirectAttributes attr) {
 
         ModelAndView mav = new ModelAndView();
         // Validates token 
-        String validationResult = validateTokenService.validatePasswordResetToken(userId, token);
+        String validationResult = validateTokenService.validatePasswordResetToken(UUID.fromString(userId), token);
         
         if (validationResult.isEmpty()) { // token is valid
             // create temporary active principal with ROLE CHANGE_PASSWORD_PRIVILEGE

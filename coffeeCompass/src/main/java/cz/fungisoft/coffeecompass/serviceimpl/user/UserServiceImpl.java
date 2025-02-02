@@ -60,21 +60,21 @@ public class UserServiceImpl implements UserService {
     private final UserSecurityService userSecurityService;
     
     private final ConfigProperties config;
-    
-    @Override
-    @Transactional
-    @Cacheable(cacheNames = "usersCache")
-    public Optional<UserDTO> findByExtIdToTransfer(UUID id) {
-        return addNonPersistentInfoToUser(findByExtId(id).orElse(null));
-    }
 
     @Override
     @Transactional
-    @Cacheable(cacheNames = "usersCache")
+//    @Cacheable(cacheNames = "usersCache")
     public Optional<UserDTO> findByExtIdToTransfer(String id) {
         return findByExtIdToTransfer(UUID.fromString(id));
     }
     
+    @Override
+    @Transactional
+//    @Cacheable(cacheNames = "usersCache")
+    public Optional<UserDTO> findByExtIdToTransfer(UUID id) {
+        return addNonPersistentInfoToUser(findByExtId(id).orElse(null));
+    }
+
     @Override
     public Optional<User> findByExtId(UUID id) {
         Optional<User> user = usersRepository.findById(id);
@@ -95,14 +95,14 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    @Cacheable(cacheNames = "usersCache")
+//    @Cacheable(cacheNames = "usersCache")
     public Optional<UserDTO> findByUserNameToTransfer(String userName) {
         Optional<User> user = findByUserName(userName);
         return user.isPresent() ? addNonPersistentInfoToUser(user.get()) : Optional.empty();
     }
     
     @Override
-    @Cacheable(cacheNames = "usersCache")
+//    @Cacheable(cacheNames = "usersCache")
     public Optional<User> findByUserName(String userName) {
         Optional<User> user = usersRepository.searchByUsername(userName);
         
@@ -135,7 +135,7 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    @Cacheable(cacheNames = "usersCache")
+//    @Cacheable(cacheNames = "usersCache")
     public Optional<User> findByEmail(String email) {
         
         Optional<User> user = usersRepository.searchByEmail(email);
@@ -207,7 +207,6 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User updateUser(User user) {
-        
 
         User entity = usersRepository.findById(user.getId()).orElse(null);
         
@@ -286,6 +285,8 @@ public class UserServiceImpl implements UserService {
             // another user (ADMIN) is updating this 'user' as user name was already updated in DB.
             entity.setUserName(newUserName);
             entity.setUpdatedOn(LocalDateTime.now());
+
+            usersRepository.saveAndFlush(entity);
         }
         
         log.info("User name '{}' updated.", entity.getUserName());
@@ -542,7 +543,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isUserNameUnique(UUID id, String sso) {
         Optional<User> user = usersRepository.searchByUsername(sso);
-        return (user.isEmpty() || ((id != null) && (Objects.equals(user.get().getLongId(), id))));
+        return (user.isEmpty() || ((id != null) && (Objects.equals(user.get().getId(), id))));
     }
 
     /**
@@ -557,7 +558,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isEmailUnique(UUID id, String email) {
         Optional<User> user = usersRepository.searchByEmail(email);
-        return (user.isEmpty() || ((id != null) && (user.get().getLongId().equals(id))));
+        return (user.isEmpty() || ((id != null) && (user.get().getId().equals(id))));
     }
     
     @Override
@@ -581,7 +582,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isLoggedInUserToManageItself(User user) {
         Optional<User> loggedInUser = getCurrentLoggedInUser();
-        return loggedInUser.isPresent() && loggedInUser.get().getLongId().equals(user.getLongId());
+        return loggedInUser.isPresent() && loggedInUser.get().getId().equals(user.getId());
     }
 
     @Override

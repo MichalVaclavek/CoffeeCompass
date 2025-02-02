@@ -1,6 +1,7 @@
 package cz.fungisoft.coffeecompass.serviceimpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteStatusDTO;
 import cz.fungisoft.coffeecompass.mappers.CoffeeSiteStatusMapper;
@@ -32,10 +33,8 @@ public class CSStatusServiceImpl implements CSStatusService {
     @Override
     @Cacheable(cacheNames = "csStatusesCache")
     public CoffeeSiteStatus findCoffeeSiteStatusByName(String coffeeSiteStatus) {
-        CoffeeSiteStatus csStatus = csStatusRepo.searchByName(coffeeSiteStatus);
-        if (csStatus == null)
-            throw new EntityNotFoundException("Coffee site status " + coffeeSiteStatus + " not found in DB.");
-        return csStatus;
+        Optional<CoffeeSiteStatus> csStatus = csStatusRepo.searchByName(coffeeSiteStatus);
+        return csStatus.orElseThrow(() -> new EntityNotFoundException("Coffee site status " + coffeeSiteStatus + " not found in DB."));
     }
 
     @Override

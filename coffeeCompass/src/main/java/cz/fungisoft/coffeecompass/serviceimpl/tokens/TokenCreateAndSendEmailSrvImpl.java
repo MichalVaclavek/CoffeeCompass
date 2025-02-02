@@ -178,7 +178,7 @@ public class TokenCreateAndSendEmailSrvImpl implements TokenCreateAndSendEmailSe
             String fromEmail = messages.getMessage("resetPassword.email.from", null, locale);
             
             ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequest();
-            UriComponentsBuilder extBuilder = builder.replacePath("/user/changePassword").replaceQuery("userId=" + user.getLongId() + "&token=" + token);
+            UriComponentsBuilder extBuilder = builder.replacePath("/user/changePassword").replaceQuery("userId=" + user.getId() + "&token=" + token);
             String resetPasswordUrl = extBuilder.build().toUriString();
             
             this.sendEmailService.sendEmail(fromEmail, recipientAddress, subject, message + "\r\n\r\n" + resetPasswordUrl);

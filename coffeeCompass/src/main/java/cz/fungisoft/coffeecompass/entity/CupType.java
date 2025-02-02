@@ -15,7 +15,7 @@ import java.util.Objects;
  */
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @RequiredArgsConstructor
 @Entity
 @Table(name="typ_kelimku", schema="coffeecompass")
@@ -37,44 +37,10 @@ public class CupType extends BaseEntity {
         }         
     }
     
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "id")
-//    private Integer longId;
-    
     @NotNull
     @Column(name="typ_kelimku", length=45, unique=true, nullable=false)
     private String cupType = CupTypeEnum.PLASTIC.getCupType();       
 
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (this == obj)
-//            return true;
-//        if (obj == null)
-//            return false;
-//        if (getClass() != obj.getClass())
-//            return false;
-//
-//        CupType other = (CupType) obj;
-//        if (cupType == null)
-//        {
-//            if (other.cupType != null)
-//                return false;
-//        } else if (!cupType.equals(other.cupType))
-//            return false;
-//
-//        return Objects.equals(id, other.id);
-//    }
-//
-//
-//    @Override
-//    public int hashCode() {
-//        final int prime = 31;
-//        int result = 1;
-//        result = prime * result + ((cupType == null) ? 0 : cupType.hashCode());
-//        result = prime * result + id;
-//        return result;
-//    }
-    
     @Override
     public String toString() {
         return cupType;
