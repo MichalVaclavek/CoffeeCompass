@@ -9,7 +9,6 @@ import java.util.List;
 
 /**
  * For building JWT token in case of REST api for authenticated user.
- * Not needed for Thymeleaf?
  * 
  * @author Michal Vaclavek
  *

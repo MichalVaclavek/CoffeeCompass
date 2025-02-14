@@ -32,8 +32,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-//    @Cacheable(cacheNames = "userProfilesCache")
-
+    @Cacheable(cacheNames = "userProfilesCache")
     public UserProfile findByExtId(String extId) {
         UserProfile userProfile = userProfRepository.findById(UUID.fromString(extId)).orElse(null);
         if (userProfile == null)
@@ -51,7 +50,7 @@ public class UserProfileServiceImpl implements UserProfileService {
 //    }
  
     @Override
-//    @Cacheable(cacheNames = "userProfilesCache")
+    @Cacheable(cacheNames = "userProfilesCache")
     public List<UserProfileDTO> findAll() {
         return userProfRepository.findAll().stream().map(userProfileMapper::userProfiletoUserProfileDTO).toList();
     }

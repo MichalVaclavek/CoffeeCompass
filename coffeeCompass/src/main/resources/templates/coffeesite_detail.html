@@ -15,6 +15,13 @@
 
     </script>
 
+    <script> // Switch-off image loader after page is re-loaded
+        $(window).load(function() {
+            // Animate loader off screen
+            $(".se-pre-con").fadeOut("fast");;
+        });
+    </script>
+
     <div th:replace="~{fragments/header :: header-css}"/>
 </head>
 
@@ -323,10 +330,7 @@
 
                         </div>
 
-
-
-                    </td>    <!-- End of Coffee site detailes table -->
-
+                    </td>    <!-- End of Coffee site details table -->
 
 
                     <!-- Start of Coffee site picture half -->
@@ -447,7 +451,9 @@
                                                th:field="${newImageFile.imageType}" placeholder="hlavni"/>
 
                                         <div class="w3-right w3-margin-top">
-                                            <button type="submit" id="saveImage" th:text="#{image.upload}"
+                                            <button type="submit" id="saveImage"
+                                                    th:text="#{image.upload}"
+                                                    th:onclick="'javascript:imageUploadLoaderImage();'"
                                                     class="w3-button w3-light-blue w3-round w3-small w3-margin-bottom"
                                                     disabled>Upload image
                                             </button>
@@ -636,6 +642,13 @@
             	}
 			}
 
+</script>
+
+<!-- Image upload click with loader image -->
+<script>
+    function imageUploadLoaderImage() {
+       $(".se-pre-con").fadeIn("fast");
+    }
 </script>
 
 </html> 

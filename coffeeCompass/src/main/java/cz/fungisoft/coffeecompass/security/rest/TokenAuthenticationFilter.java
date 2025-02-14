@@ -22,8 +22,8 @@ import static com.google.common.net.HttpHeaders.AUTHORIZATION;
  * It takes the Authorization header value and attempts to extract the token from it.<br>
  * Authentication is then delegated to the AuthenticationManager. The filter is only enabled for a given set of urls.
  * <p>
- * see: https://octoperf.com/blog/2018/03/08/securing-rest-api-spring-security/
- * 
+ * see: <a href="https://octoperf.com/blog/2018/03/08/securing-rest-api-spring-security/">...</a>
+ *
  * @author Michal Vaclavek
  *
  */

@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSiteAndUserService {
 
-    private final StarsForCoffeeSiteAndUserRepository avgStarsRepo;
+    private final StarsForCoffeeSiteAndUserRepository siteStarsRepo;
 
     @Autowired
     private StarsQualityService starsQualService;
@@ -45,13 +45,13 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     /**
      * Constructor, basic.
      *
-     * @param avgStarsRepo
-     * @param avgStarsRepo
+     * @param siteStarsRepo
+     * @param siteStarsRepo
      */
     @Autowired
-    public StarsForCoffeeSiteAndUserServiceImpl(StarsForCoffeeSiteAndUserRepository avgStarsRepo) {
+    public StarsForCoffeeSiteAndUserServiceImpl(StarsForCoffeeSiteAndUserRepository siteStarsRepo) {
         super();
-        this.avgStarsRepo = avgStarsRepo;
+        this.siteStarsRepo = siteStarsRepo;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
         double starsAvg = 0;
 
         try {
-            starsAvg = avgStarsRepo.averageStarsForSiteExternalId(coffeeSiteExtId);
+            starsAvg = siteStarsRepo.averageStarsForSiteExternalId(coffeeSiteExtId);
             starsAvg = Math.round(starsAvg * 10.0) / 10.0; // one decimal place round
         } catch (Exception e) {
             log.info("Average stars could not be calculated: {}", e.getMessage());
@@ -71,16 +71,16 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     @Override
     public void saveStarsForCoffeeSiteAndUser(CoffeeSite coffeeSite, User user, int stars) {
         // Ziskat prislusny objekt StarsForCoffeeSiteAndUser z DB
-        var sfcsu = avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), user.getId());
+        var sfcsu = siteStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), user.getId());
         var starsQuality = starsQualService.findStarsQualityByNumOfStars(stars);
 
         sfcsu.ifPresent(starsForCoffeeSiteAndUser -> {
             starsForCoffeeSiteAndUser.setStars(starsQuality);
-            avgStarsRepo.save(starsForCoffeeSiteAndUser);
+            siteStarsRepo.save(starsForCoffeeSiteAndUser);
         });
         if (sfcsu.isEmpty()) {
             var newStarsForSiteAndUser = new StarsForCoffeeSiteAndUser(coffeeSite, user, starsQuality);
-            avgStarsRepo.save(newStarsForSiteAndUser);
+            siteStarsRepo.save(newStarsForSiteAndUser);
         }
 
         log.info("Stars for Coffee site name {} and User name {} saved. Stars: {}", coffeeSite.getSiteName(), user.getUserName(), stars);
@@ -98,12 +98,12 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
         Optional<User> user = userService.findByExtId(userExtId);
         if (logedInUser.isPresent() && coffeeSite.isPresent() && user.isPresent()
                 && logedInUser.get().getId().equals(user.get().getId())) {
-            Optional<StarsForCoffeeSiteAndUser> sfcsu = avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSiteExtId, userExtId);
+            Optional<StarsForCoffeeSiteAndUser> sfcsu = siteStarsRepo.getOneStarEvalForSiteAndUser(coffeeSiteExtId, userExtId);
 
             return sfcsu.map(starsForCoffeeSiteAndUser -> {
                 starsForCoffeeSiteAndUser.setStars(starsQualService.findStarsQualityByNumOfStars(stars));
                 // Updatovane hodnoceni ulozit do Repository
-                starsForCoffeeSiteAndUser = avgStarsRepo.save(starsForCoffeeSiteAndUser);
+                starsForCoffeeSiteAndUser = siteStarsRepo.save(starsForCoffeeSiteAndUser);
                 log.info("Stars for Coffee site id {} and User id {} updated. Stars: {}", coffeeSiteExtId, userExtId, stars);
                 return starsForCoffeeSiteAndUser;
             }).orElse(null);
@@ -145,7 +145,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
 
     @Override
     public void cancelStarsForCoffeeSite(CoffeeSite coffeeSite, User user) {
-        avgStarsRepo.deleteStarsForSiteAndUser(coffeeSite.getId(), user.getId());
+        siteStarsRepo.deleteStarsForSiteAndUser(coffeeSite.getId(), user.getId());
         log.info("Stars for Coffee site name {} and User name {} canceled.", coffeeSite.getSiteName(), user.getUserName());
     }
 
@@ -174,7 +174,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     public Integer getStarsForCoffeeSiteAndUser(UUID coffeeSiteExtId, UUID userExtId) {
         Optional<CoffeeSite> coffeeSite = coffeeSiteService.findOneByExternalId(coffeeSiteExtId);
         return coffeeSite.flatMap(cs -> userService.findByExtId(userExtId)
-                        .flatMap(user -> avgStarsRepo.getOneStarEvalForSiteAndUser(cs.getId(), user.getId())))
+                        .flatMap(user -> siteStarsRepo.getOneStarEvalForSiteAndUser(cs.getId(), user.getId())))
                 .map(stars -> stars.getStars().getNumOfStars())
                 .orElse(0);
     }
@@ -186,7 +186,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
         Optional<StarsForCoffeeSiteAndUser> userSiteStars = Optional.empty();
         if (logedInUser.isPresent()) {
             log.info("Retrieving Stars for Coffee site name {} and User name {}", coffeeSite.getSiteName(), logedInUser.get().getUserName());
-            userSiteStars = avgStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), logedInUser.get().getId());
+            userSiteStars = siteStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), logedInUser.get().getId());
         } else
             log.info("Stars for Coffee site name {} cannot be retrieved, no user logged-in.", coffeeSite.getSiteName());
         return userSiteStars.map(StarsForCoffeeSiteAndUser::getStars).orElse(null);
@@ -196,7 +196,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
     public AverageStarsForSiteDTO getStarsAndNumOfHodnoceniForSite(UUID coffeeSiteExtId) {
         AverageStarsForSiteDTO starsDto = new AverageStarsForSiteDTO();
 
-        int numOfHodnoceni = avgStarsRepo.getNumOfHodnoceniForSite(coffeeSiteExtId);
+        int numOfHodnoceni = siteStarsRepo.getNumOfHodnoceniForSite(coffeeSiteExtId);
         if (numOfHodnoceni > 0) {
             double stars = avgStarsForSite(coffeeSiteExtId);
             starsDto.setAvgStars(stars);

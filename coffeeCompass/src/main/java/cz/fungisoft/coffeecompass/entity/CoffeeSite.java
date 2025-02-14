@@ -62,9 +62,9 @@ import java.util.*;
 @NamedNativeQueries({
     @NamedNativeQuery(
             name = "getSitesWithinRange",
-            query = "SELECT *, poloha_gps_sirka, poloha_gps_delka" + 
-                              " FROM coffeecompass.coffee_site" +
-                              " WHERE public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3",
+            query = "SELECT *" +
+                    " FROM coffeecompass.coffee_site" +
+                    " WHERE public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3",
             resultClass = CoffeeSite.class
     ),
     @NamedNativeQuery( // Counts number of already created CoffeeSites on selected location within defined meters range from the location  

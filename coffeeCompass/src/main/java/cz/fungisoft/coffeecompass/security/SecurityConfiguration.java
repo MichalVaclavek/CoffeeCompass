@@ -2,6 +2,7 @@ package cz.fungisoft.coffeecompass.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -51,15 +53,8 @@ import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
 import cz.fungisoft.coffeecompass.serviceimpl.user.CustomOAuth2UserService;
 
 import jakarta.servlet.Filter;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 
 /**
@@ -75,9 +70,12 @@ public class SecurityConfiguration {
     /**
      * REST endpoints security config
      **/
-    private static final RequestMatcher PROTECTED_REST_URLS = new OrRequestMatcher(new AntPathRequestMatcher("/rest/secured/**"));
+    private static final RequestMatcher PROTECTED_REST_URLS = new OrRequestMatcher(new AntPathRequestMatcher("/api/v1/coffeesites/secured/**"));
 
-    private static final String PUBLIC_REST_URLS = "/rest/public/**";
+    @Value("${site.coffeesites.baseurlpath.rest}")
+    public static String baseRestUrlPath;
+
+    private static final String PUBLIC_REST_URLS = "/api/v1/coffeesites/**";
 
 //    private static final RequestMatcher PUBLIC_REST_URLS_MATCHERS = new OrRequestMatcher(new AntPathRequestMatcher(PUBLIC_REST_URLS));
 
@@ -138,18 +136,19 @@ public class SecurityConfiguration {
 //    public WebSecurityCustomizer webSecurityCustomizer() {
 //        return web -> web.ignoring().requestMatchers(PUBLIC_REST_URLS);
 //    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // Swithes off CSRF protection for REST i.e. for URL path with /rest/ at the begining
-        http.csrf(csrfConfigurer -> csrfConfigurer.requireCsrfProtectionMatcher(new AndRequestMatcher(CsrfFilter.DEFAULT_CSRF_MATCHER, new RegexRequestMatcher("^(?!/rest/)", null))));
+        // Swithes off CSRF protection for REST i.e. for URL path with /api/v1/ at the begining
+        http.csrf(csrfConfigurer -> csrfConfigurer.requireCsrfProtectionMatcher(new AndRequestMatcher(CsrfFilter.DEFAULT_CSRF_MATCHER, new RegexRequestMatcher("^(?!/api/v1/)", null))));
 //            .requireCsrfProtectionMatcher(new AndRequestMatcher(CsrfFilter.DEFAULT_CSRF_MATCHER, new RegexRequestMatcher("^(?!/rest/)", null)));
 
         http.authorizeHttpRequests(authorize ->
                             authorize
+                                    .requestMatchers(PROTECTED_REST_URLS).authenticated()
                                     .requestMatchers("/home", "/about").permitAll()
                                     .requestMatchers("/oauth2/**").permitAll()
                                     .requestMatchers("/allSites**", "/allSitesInMap**").permitAll()
-                                    .requestMatchers(PUBLIC_REST_URLS).permitAll()
                                     .requestMatchers("/createModifySite/**", "/createSite", "/modifySite/**").hasAnyRole("ADMIN", "DBA", "USER")
                                     .requestMatchers("/cancelStatusSite/**", "/deactivateSite/**", "/activateSite/**").hasAnyRole("ADMIN", "DBA", "USER")
                                     .requestMatchers("/saveStarsAndComment/**", "/mySites").hasAnyRole("ADMIN", "DBA", "USER")
@@ -159,7 +158,7 @@ public class SecurityConfiguration {
                                     .requestMatchers("/user/edit-put", "/user/edit/**").hasAnyRole("ADMIN", "USER") // only USER itself or ADMIN can modify user account
                                     .requestMatchers("/imageUpload", "/deleteImage/**").hasAnyRole("ADMIN", "DBA", "USER")
                                     .requestMatchers("/user/updatePassword**", "/updatePassword**").hasAuthority("CHANGE_PASSWORD_PRIVILEGE")
-                                    .requestMatchers(PROTECTED_REST_URLS).authenticated()
+                                    .requestMatchers(PUBLIC_REST_URLS).permitAll()
                                     .requestMatchers("/**").permitAll()
                                     .anyRequest().authenticated()
 

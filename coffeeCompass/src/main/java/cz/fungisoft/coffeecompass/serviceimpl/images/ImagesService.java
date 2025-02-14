@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,6 +31,7 @@ public class ImagesService implements ImagesServiceInterface {
         return imageObject.stream()
                 .filter(io -> Objects.nonNull(io.getObjectImages()))
                 .flatMap(io -> io.getObjectImages().stream())
+                .sorted(Comparator.comparing(ImageFile::getSavedOn).reversed())
                 .map(ImageFile::getBaseBytesImageUrl)
                 .map(url -> url + "&variant=small")
                 .toList();
@@ -45,7 +47,11 @@ public class ImagesService implements ImagesServiceInterface {
     public Optional<ImageFile> getDefaultSelectedImage(String imageObjectExtId) {
         return getImageFiles(imageObjectExtId)
                 .filter(img -> img.getImageType().equalsIgnoreCase("main"))
-                .findFirst();
+                .max(Comparator.comparing(ImageFile::getSavedOn));
+    }
+
+    public Optional<ImageFile> getLatestImage(String imageObjectExtId) {
+        return getImageFiles(imageObjectExtId).max(Comparator.comparing(ImageFile::getSavedOn));
     }
 
     public Optional<String> getBasicObjectImageUrl(String imageObjectExtId) {

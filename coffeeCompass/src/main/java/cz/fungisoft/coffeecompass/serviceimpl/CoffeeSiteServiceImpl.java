@@ -305,7 +305,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     @Override
     public Optional<CoffeeSite> findOneByExternalId(UUID externalId) {
         Optional<CoffeeSite> site = coffeeSiteRepo.findById(externalId);
-        log.info("Coffee site with id {} retrieved.", externalId);
+        site.ifPresent(cs -> log.info("Coffee site with id {} retrieved.", externalId));
         return site;
     }
 

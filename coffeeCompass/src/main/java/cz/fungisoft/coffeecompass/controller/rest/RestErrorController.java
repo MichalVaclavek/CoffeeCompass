@@ -22,7 +22,6 @@ import cz.fungisoft.coffeecompass.controller.ExceptionsControllerRESTAdvice;
  * {@link ExceptionsControllerRESTAdvice}
  * 
  * @author Michal Vaclavek
- *
  */
 @RestController
 @RequestMapping({RestErrorController.REST_ERROR_PATH})

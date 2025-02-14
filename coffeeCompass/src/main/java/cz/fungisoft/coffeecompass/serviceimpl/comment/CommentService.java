@@ -187,21 +187,17 @@ public class CommentService implements ICommentService {
         return getNumberOfCommentsForSiteId(UUID.fromString(siteId));
     }
 
-
 	@Override
 	public List<CommentDTO> getAllComments() {
 	    return modifyToTransfer(commentsRepo.findAll());
 	}
-	
-	 
+
 	@Override
     public Page<CommentDTO> findAllCommentsPaginated(Pageable pageable) {
 	    Page<Comment> commentsPage = commentsPageableRepo.findAll(pageable);
         return commentsPage.map(this::modifyToTransfer);
     }
 	    
-
-	
 	/**
      * Adds attributes to CoffeeSite to identify what operations can be done with Comment in UI
      * 

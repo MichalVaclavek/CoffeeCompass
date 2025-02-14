@@ -18,8 +18,8 @@ import cz.fungisoft.coffeecompass.entity.UserProfile;
  * <p>
  * Original description:<br>
  * The UserPrincipal class represents an authenticated Spring Security principal. It contains the details of the authenticated user.
- *  
- * @author https://www.callicoder.com/spring-boot-security-oauth2-social-login-part-2/
+ *
+ * @author <a href="https://www.callicoder.com/spring-boot-security-oauth2-social-login-part-2/">...</a>
  * @author Michal Václavek
  */
 public class UserPrincipal implements OAuth2User, UserDetails {

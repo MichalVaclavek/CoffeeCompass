@@ -68,9 +68,7 @@ public class UserControllerSecuredREST {
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserDTO>> listAllUsers() {
-        
         List<UserDTO> users = userService.findAllUsers();
-       
         logger.info("All users retrieved: {}", users.size());
         return ResponseEntity.ok(users);
     }
@@ -148,7 +146,7 @@ public class UserControllerSecuredREST {
     @DeleteMapping(("/delete/id/{userExtId}"))
     @PreAuthorize("hasRole('USER')")
     @ResponseStatus(HttpStatus.OK)
-    public String deleteUserById(@PathVariable("userId") String userExtId) {
+    public String deleteUserById(@PathVariable("userExtId") String userExtId) {
         logger.info("Fetching & Deleting User with userID {} via REST api.", userExtId);
   
         Optional<User> user = userService.findByExtId(userExtId);
@@ -167,16 +165,15 @@ public class UserControllerSecuredREST {
     @GetMapping("/current")
     @PreAuthorize("hasRole('USER')")
     @ResponseStatus(HttpStatus.OK)
-    public UserDTO getCurrent(@AuthenticationPrincipal final String userName) {
+    public UserDTO getCurrent(@AuthenticationPrincipal final String userName) { // userName is derived by Spring Boot from JWT token. Also performs new login, if the user called logout before.
         Optional<UserDTO> currentUser = userService.findByUserNameToTransfer(userName);
         return currentUser.orElseThrow(() -> new ResourceNotFoundException("User", "username", userName));
-        
     }
     
     /**
      * REST logout by username. Kept because of backward compatibility.
      * 
-     * @param userName
+     * @param userName, derived by Spring Boot from JWT token
      * @return
      */
     @GetMapping("/logout")

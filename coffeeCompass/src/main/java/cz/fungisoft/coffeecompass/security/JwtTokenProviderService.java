@@ -1,9 +1,8 @@
 package cz.fungisoft.coffeecompass.security;
 
 import io.jsonwebtoken.*;
-
 import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -15,13 +14,14 @@ import cz.fungisoft.coffeecompass.configuration.JwtAndOAuth2Properties;
 import cz.fungisoft.coffeecompass.service.tokens.TokenService;
 
 import javax.crypto.SecretKey;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
-import java.time.LocalDateTime;
 import java.util.function.Supplier;
+
 
 /**
  * This class contains code to generate and verify Json Web Tokens.
@@ -30,67 +30,58 @@ import java.util.function.Supplier;
  * secure redirect url after successfull social login. The token is added<br>
  * to the redirection uri to prove that successfuly logedin user is accessing<br>
  * redirected url (which maybe protected resource for logedin users only).
- * 
- * @author https://www.callicoder.com/spring-boot-security-oauth2-social-login-part-2/
- * 
+ * Upraveno 15.2. 2025 pro novou verzi knihovny Jjwt, podle <a href="https://www.appsdeveloperblog.com/add-and-validate-custom-claims-in-jwt/">...</a>
+ *
+ * @author <a href="https://www.callicoder.com/spring-boot-security-oauth2-social-login-part-2/">...</a>
  */
 @Service("jwtTokenProviderService")
-public class JwtTokenProviderService implements Clock, TokenService {
+public class JwtTokenProviderService implements TokenService {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenProviderService.class);
-    
+
     private static final String DOT = ".";
-//    private static final GzipCompressionCodec COMPRESSION_CODEC = new GzipCompressionCodec();
 
     private final String issuer;
     private final int expirationSec;
-//    private final int clockSkewSec;
     private final SecretKey secretKey;
-//    private final PublicKey publicKey;
-    
 
     private final JwtAndOAuth2Properties jwtPoperties;
 
     public JwtTokenProviderService(JwtAndOAuth2Properties appProperties) {
         this.jwtPoperties = appProperties;
-        
+
         this.issuer = requireNonNull(jwtPoperties.getJwtAuth().getIssuer());
         this.expirationSec = jwtPoperties.getJwtAuth().getTokenExpirationSec();
-//        this.clockSkewSec = jwtPoperties.getJwtAuth().getClockSkewSec();
         byte[] keyBytes = Decoders.BASE64.decode(jwtPoperties.getJwtAuth().getTokenSecret());
         this.secretKey = Keys.hmacShaKeyFor(keyBytes);
-
-//        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-//        byte[] publicKeyBytes = Decoders.BASE64.decode(jwtPoperties.getJwtAuth().getPublicKey());
-//        X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(publicKeyBytes);
-//        this.publicKey = keyFactory.generatePublic(x509EncodedKeySpec);
     }
 
     /**
      * Creates token from userID, current date and token expiry date.
-     * 
+     *
      * @param authentication - Spring security object holding current user which is being authenticating?
      * @return created token.
      */
     public String createToken(Authentication authentication) {
-        
+
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtPoperties.getJwtAuth().getTokenExpirationSec());
+        Instant now = Instant.now();
+        Instant expiration = now.plusSeconds(jwtPoperties.getJwtAuth().getTokenExpirationSec()); // expires in 1 hour
+        Date expiryDate = Date.from(expiration);
 
         return Jwts.builder()
                 .subject(userPrincipal.getId())
-                .issuedAt(new Date(System.currentTimeMillis()))
+                .issuedAt(Date.from(now))
                 .expiration(expiryDate)
-                .signWith(this.secretKey)
+                .signWith(secretKey)
                 .compact();
     }
 
     public String getUserIdFromToken(String token) {
         Claims claims = Jwts
                 .parser()
-//                .verifyWith(publicKey)
+                .verifyWith(secretKey)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
@@ -99,13 +90,13 @@ public class JwtTokenProviderService implements Clock, TokenService {
     }
 
     public boolean validateToken(String authToken) {
-        
+
         try {
             Jwts
-                    .parser()
-//                    .verifyWith(publicKey)
-                    .build()
-                    .parseSignedClaims(authToken);
+              .parser()
+              .verifyWith(secretKey)
+              .build()
+              .parseSignedClaims(authToken);
             return true;
         } catch (InvalidClaimException ex) {
             logger.error("Invalid JWT signature");
@@ -120,9 +111,10 @@ public class JwtTokenProviderService implements Clock, TokenService {
         }
         return false;
     }
-    
-    /** REST mobile app. **/
 
+    /**
+     * REST mobile app.
+     **/
     @Override
     public String permanent(final Map<String, String> attributes) {
         return newToken(attributes, 0);
@@ -134,25 +126,25 @@ public class JwtTokenProviderService implements Clock, TokenService {
     }
 
     private String newToken(final Map<String, String> attributes, final int expiresInSec) {
-        LocalDateTime now = LocalDateTime.now();
-        Date expiryDate = new Date(System.currentTimeMillis() + 1000 * 60 * 24);
+        Instant now = Instant.now();
+        Date expiryDate = Date.from(now.plusSeconds(6000L)); // 1 hour as default
         if (expiresInSec > 0) {
-            expiryDate = convertToDate(now.plusSeconds(jwtPoperties.getJwtAuth().getTokenExpirationSec()));
+            Instant expiration = now.plusSeconds(jwtPoperties.getJwtAuth().getTokenExpirationSec());
+            expiryDate = Date.from(expiration);
         }
 
         final Claims claims = Jwts.claims()
-                                  .issuer(issuer)
-                                  .issuedAt(convertToDate(now))
-                                  .expiration(expiryDate)
-                                  .build();
-
-        claims.putAll(attributes);
+                .issuer(issuer)
+                .issuedAt(Date.from(now))
+                .expiration(expiryDate)
+                .add(attributes)
+                .build();
 
         return Jwts.builder()
-                   .claims(claims)
-                   .signWith(secretKey)
-//                   .compressWith(COMPRESSION_CODEC)
-                   .compact();
+                .claims(claims)
+                .signWith(secretKey)
+                .compressWith(Jwts.ZIP.DEF)
+                .compact();
     }
 
     @Override
@@ -160,8 +152,7 @@ public class JwtTokenProviderService implements Clock, TokenService {
         final JwtParser parser = Jwts
                 .parser()
                 .requireIssuer(issuer)
-//                .verifyWith(publicKey)
-                .clock(this)
+                .verifyWith(secretKey)
                 .build();
 
         return parseClaims(() -> parser.parseSignedClaims(token).getPayload());
@@ -172,8 +163,7 @@ public class JwtTokenProviderService implements Clock, TokenService {
         final JwtParser parser = Jwts
                 .parser()
                 .requireIssuer(issuer)
-//                .verifyWith(publicKey)
-                .clock(this)
+                .verifyWith(secretKey)
                 .build();
 
         // See: https://github.com/jwtk/jjwt/issues/135
@@ -195,21 +185,6 @@ public class JwtTokenProviderService implements Clock, TokenService {
         }
     }
 
-    @Override
-    public Date now() {
-        return convertToDate(LocalDateTime.now());
-    }
-      
-    /**
-     * Pomocna metoda n prevod novych LocalDateTime instanci na stary Date, ktery
-     * je vyzadovan JWT knihovnou
-     * @param dateToConvert
-     * @return
-     */
-    private Date convertToDate(LocalDateTime dateToConvert) {
-        return java.sql.Timestamp.valueOf(dateToConvert);
-    }
-    
     /**
      * Pomocna metoda nahrazujici metodu z Apache common knihovny.
      *

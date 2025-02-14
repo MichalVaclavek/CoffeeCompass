@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -77,7 +78,7 @@ public class CSStarsCommentsControllerSecuredREST {
      *            },
      *   "comment": "Docela dobra kava"
      * }
-     * 
+     *
      * Returns list of comments belonging to this coffeeSite id
      * 
      * @param starsAndComment
@@ -85,11 +86,10 @@ public class CSStarsCommentsControllerSecuredREST {
      * 
      * @return list of comments belonging to this coffeeSitie id
      */
-    //@PostMapping(value="/saveStarsAndComment/{coffeeSiteId}", headers = {"content-type=application/json"}, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PostMapping(value="/saveStarsAndComment/{coffeeSiteExtId}")
+    @PostMapping(value="/saveStarsAndComment/{coffeeSiteExtId}", headers = {"content-type=application/json"}, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<CommentDTO>> saveCommentAndStarsForSite(@RequestBody @Valid StarsAndCommentModel starsAndComment,
-                                                                       @PathVariable("coffeeSiteId") String coffeeSiteExtId) {
+                                                                       @PathVariable("coffeeSiteExtId") String coffeeSiteExtId) {
         try {
             // Ulozit hodnoceni if not empty
             starsForCoffeeSiteService.saveStarsForCoffeeSiteAndLoggedInUser(coffeeSiteExtId, starsAndComment.getStars().getNumOfStars());
@@ -138,7 +138,8 @@ public class CSStarsCommentsControllerSecuredREST {
     //@PostMapping(value="/saveStarsAndComment/{coffeeSiteExtId}", headers = {"content-type=application/json"}, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PostMapping(value="/saveStarsAndComments")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Boolean> insertCommentsAndStarsForSites(@RequestBody @Valid List<StarAndCommentForSiteModel> starsAndComments, final BindingResult bindingResult) {
+    public ResponseEntity<Boolean> insertCommentsAndStarsForSites(@RequestBody @Valid List<StarAndCommentForSiteModel> starsAndComments,
+                                                                  final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new InvalidParameterValueException("Comments_stars_rating", bindingResult.getFieldErrors());
         }
@@ -169,7 +170,6 @@ public class CSStarsCommentsControllerSecuredREST {
      * <p>
      * Pro update jenom Stars lze take pouzit end pointy:<br>
      * /rest/secured/starsAndComments/updateStarsForCoffeeSiteAndUser/coffeeSite/{coffeeSiteId}/user/{userId}/stars/{numOfStars}
-     * 
      *   JSON CommentDTO to update example:
      *   {
      *       "id": 59,
@@ -223,7 +223,6 @@ public class CSStarsCommentsControllerSecuredREST {
      * <p>
      * 
      *   JSON  List<CommentDTO> to update example:
-     *   
      *   [
             {
                 "id": 189,
@@ -290,7 +289,7 @@ public class CSStarsCommentsControllerSecuredREST {
      * 
      * @return 
      */
-    @PutMapping("/updateStarsForCoffeeSiteAndUser/coffeeSite/{coffeeSiteId}/user/{userId}/stars/{numOfStars}")
+    @PutMapping("/updateStarsForCoffeeSiteAndUser/coffeeSite/{coffeeSiteExtId}/user/{userExtId}/stars/{numOfStars}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Integer> updateStarsForCoffeeSiteAndUser(@PathVariable(value="numOfStars") int numOfStars,
                                                                    @PathVariable(value="coffeeSiteExtId") String coffeeSiteExtId,
@@ -315,7 +314,7 @@ public class CSStarsCommentsControllerSecuredREST {
      * @param commentExtId id of the Comment to be deleted
      * @return number of Comments of the coffeeSite where the deleted comment belonged to
      */
-    @DeleteMapping("/deleteComment/{commentId}")
+    @DeleteMapping("/deleteComment/{commentExtId}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Integer> deleteCommentAndStarsForSite(@PathVariable("commentExtId") String commentExtId) {
         

@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import cz.fungisoft.coffeecompass.entity.*;
 import cz.fungisoft.coffeecompass.mappers.UserMapper;
+import cz.fungisoft.coffeecompass.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
@@ -18,15 +20,6 @@ import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
 import cz.fungisoft.coffeecompass.controller.models.AuthProviders;
 import cz.fungisoft.coffeecompass.controller.models.rest.SignUpAndLoginRESTDto;
 import cz.fungisoft.coffeecompass.dto.UserDTO;
-import cz.fungisoft.coffeecompass.entity.PasswordResetToken;
-import cz.fungisoft.coffeecompass.entity.User;
-import cz.fungisoft.coffeecompass.entity.UserProfile;
-import cz.fungisoft.coffeecompass.entity.UserProfileTypeEnum;
-import cz.fungisoft.coffeecompass.entity.UserEmailVerificationToken;
-import cz.fungisoft.coffeecompass.repository.PasswordResetTokenRepository;
-import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
-import cz.fungisoft.coffeecompass.repository.UserEmailVerificationTokenRepository;
-import cz.fungisoft.coffeecompass.repository.UsersRepository;
 import cz.fungisoft.coffeecompass.security.oauth2.user.OAuth2UserInfo;
 import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
 import cz.fungisoft.coffeecompass.service.user.UserService;
@@ -56,6 +49,8 @@ public class UserServiceImpl implements UserService {
     private final UserEmailVerificationTokenRepository userEmailVerificationTokenRepository;
     
     private final PasswordResetTokenRepository passwordResetTokenRepository;
+
+    private final RefreshTokenRepository refreshTokenRepository;
     
     private final UserSecurityService userSecurityService;
     
@@ -323,7 +318,7 @@ public class UserServiceImpl implements UserService {
             
             // Can be empty, e-mail is not mandatory
             if (restUpdateUserDTO.getEmail() != null) {
-                if (entity.getEmail().isEmpty()
+                if (entity.getEmail() == null || entity.getEmail().isEmpty()
                     || !entity.getEmail().equalsIgnoreCase(restUpdateUserDTO.getEmail())) { // novy, neprazdny email => zatim nepotvrzeny
                     entity.setRegisterEmailConfirmed(false);
                 } 
@@ -489,7 +484,7 @@ public class UserServiceImpl implements UserService {
      */
     private void deleteTokensByUser(@NonNull User user) {
         // Delete any User related authentication tokens, like password change token
-        // or e-mail verification token
+        // or e-mail verification token, or REST JWT refresh token
         UserEmailVerificationToken registrationToken = userEmailVerificationTokenRepository.findByUser(user);
         if (registrationToken != null) {
             userEmailVerificationTokenRepository.delete(registrationToken);
@@ -499,6 +494,11 @@ public class UserServiceImpl implements UserService {
         if (passwdResetToken != null) {
             passwordResetTokenRepository.delete(passwdResetToken);
         }
+        RefreshToken refreshToken = refreshTokenRepository.findByUser(user);
+        if (refreshToken != null) {
+            refreshTokenRepository.delete(refreshToken);
+        }
+//        refreshTokenRepository.deleteByUser(user);
     }
     
     @Override
@@ -528,10 +528,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDTO> findAllUsers() {
         List<User> users = usersRepository.findAll(Sort.by(Sort.Direction.fromString("DESC".toUpperCase()), "createdOn"));
-//        List<UserDTO> usersDTO = mapperFacade.mapAsList(usersRepository.findAll(Sort.by(Sort.Direction.fromString("DESC".toUpperCase()), "createdOn")), UserDTO.class);
         List<UserDTO> usersDTO = users.stream()
                                       .map(userMapper::usertoUserDTO)
-                                      .collect(Collectors.toList());
+                                      .toList();
         for (UserDTO userDTO : usersDTO) {
             userDTO.setHasADMINRole(hasADMINRole(userMapper.userDTOtoUser(userDTO)));
             userDTO.setToManageItself(isLoggedInUserToManageItself(userMapper.userDTOtoUser(userDTO)));
@@ -608,8 +607,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByRegistrationToken(String verificationToken) {
-        User user = userEmailVerificationTokenRepository.findByToken(verificationToken).getUser();
-        return user;
+        return userEmailVerificationTokenRepository.findByToken(verificationToken).getUser();
     }
 
     /**
@@ -632,8 +630,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByPasswordResetToken(String pswdResetToken) {
-        User user = passwordResetTokenRepository.findByToken(pswdResetToken).getUser();
-        return user;
+        return passwordResetTokenRepository.findByToken(pswdResetToken).getUser();
     }
     
     @Override

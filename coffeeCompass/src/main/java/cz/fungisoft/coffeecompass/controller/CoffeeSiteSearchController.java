@@ -93,7 +93,6 @@ public class CoffeeSiteSearchController {
     @GetMapping("/showSearch") // napr. http://localhost:8080/showSearch
     public String getSitesWithStatusAndCoffeeSort(Model model) {
         CoffeeSiteSearchCriteriaModel searchCriteria = new CoffeeSiteSearchCriteriaModel();
-            
         model.addAttribute(SEARCH_CRITERIA_MODEL_KEY, searchCriteria);
         return SEARCH_HTML_PAGE;
     }
@@ -313,7 +312,6 @@ public class CoffeeSiteSearchController {
     * @return changed {@code searchCriteria} based on {@code foundSites}
     */
    private CoffeeSiteSearchCriteriaModel addAverageLocationToSearchCriteriaForFoundCoffeeSites(CoffeeSiteSearchCriteriaModel searchCriteria, List<CoffeeSiteDTO> foundSites) {
-       
        if (foundSites != null) {
            if (foundSites.size() == 1) { // only one CoffeeSite found in city, define searchFrom point for this CoffeeSite
                 LatLong searchFromLoc = coffeeSiteService.getSearchFromLocation(foundSites.get(0), 200);

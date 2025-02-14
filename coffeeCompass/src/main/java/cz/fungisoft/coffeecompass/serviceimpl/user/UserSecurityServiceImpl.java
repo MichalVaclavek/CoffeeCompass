@@ -100,7 +100,6 @@ public class UserSecurityServiceImpl implements UserSecurityService {
      */
     @Override
     public Authentication authWithToken(String token) {
-
         Authentication auth;
         
         Optional<UserDetails> userDetails = restUserDetailsService.findByToken(token);

@@ -121,7 +121,6 @@ public class PushNotificationController {
      * 	"token":"c_w6FcZdT0WlDNKcGJ_BiM:APA91bGPPsD05OXPNF4G44_aUX96skkSBV9lK_4eaZtJcCn_4KOkbJsGCNvp_g1QQDWmt7vTMb73L8kZu97-RKRFrIqr-f6aSWdP2Q06WHa1tCOcVPIglu93YxH7RNS_BhXnmU2VCSbk"
      * }
      *
-     *
      * @param request
      * @return
      */

@@ -34,13 +34,6 @@ public interface CommentRepository extends JpaRepository<Comment, UUID> {
     Long getNumberOfAllComments();
 
     
-    /**
-     * Gets CoffeeSite id this Comment belongs to
-     * @param commentId
-     */
-//    @Query("select coffeeSite.id FROM Comment cl where longId=?1")
-//    Long getSiteIdForComment(Long commentId);
-
     @Query("select coffeeSite.id FROM Comment cl where id=?1")
     UUID getSiteIdForComment(UUID commentId);
     

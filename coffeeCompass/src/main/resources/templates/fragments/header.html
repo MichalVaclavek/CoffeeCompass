@@ -78,7 +78,6 @@
                 <a sec:authorize="NOT isAuthenticated()" th:href="@{/login}" th:text="#{mainmenu.userlogin}" class="w3-bar-item w3-button w3-right w3-green">User login</a>
                 
 <!--                <div th:if="${authentication != null}" sec:authorize="hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_DBA')">-->
-<!--			   <div th:if="${authentication != null}" sec:authorize="isAuthenticated()">-->
 				   <div sec:authorize="isAuthenticated()">
 	                <form action="#" th:action="@{/logout}" method="post" class="w3-right">
 	        	   		<input type="hidden" name="_method" value="post"/>
@@ -99,7 +98,6 @@
     <!-- Reference click with loader image --> 
 	<script>
        function referenceClickedWithLoaderImage(value) {
-    	   
           location.href = value;
           $(".se-pre-con").fadeIn("fast");
        }

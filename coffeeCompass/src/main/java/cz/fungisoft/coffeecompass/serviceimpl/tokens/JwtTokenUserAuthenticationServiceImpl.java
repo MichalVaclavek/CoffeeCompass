@@ -59,7 +59,7 @@ public class JwtTokenUserAuthenticationServiceImpl implements CustomRESTUserAuth
         
         Optional<User> user = usersService.findByUserName(userName);
         
-        if (!user.isPresent()) {
+        if (user.isEmpty()) {
             user = usersService.findByEmail(userName);
         }
         
@@ -70,17 +70,14 @@ public class JwtTokenUserAuthenticationServiceImpl implements CustomRESTUserAuth
     }
 
     /**
-     * Find UserDetails on user's token. Used during login.
+     * Find UserDetails on user's token. Used during REST login.
      */
     @Override
     @Transactional
     public Optional<UserDetails> findByToken(final String token) {
-        
         return Optional.of(tokens.verify(token))
                        .map(map -> map.get("userName"))
-                       .map(nameOrEmail -> usersService.findByUserName(nameOrEmail)
-                                                       .map(Optional::of)
-                                                       .orElseGet(() -> usersService.findByEmail(nameOrEmail))) // https://stackoverflow.com/questions/24599996/get-value-from-one-optional-or-another
+                       .map(nameOrEmail -> usersService.findByUserName(nameOrEmail).or(() -> usersService.findByEmail(nameOrEmail))) // https://stackoverflow.com/questions/24599996/get-value-from-one-optional-or-another
                        .map(user -> UserPrincipal.create(user.get()));
     }
 

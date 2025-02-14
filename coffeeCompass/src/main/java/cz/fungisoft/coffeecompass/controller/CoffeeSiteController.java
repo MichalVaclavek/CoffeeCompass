@@ -266,11 +266,12 @@ public class CoffeeSiteController {
     }
 
     private Optional<String> getSelectedImageUrl(String objectExtId, String currentSelectedImageExternalId) {
-        Optional<String> selectedImageExtId = Optional.ofNullable(currentSelectedImageExternalId);
-        return selectedImageExtId.flatMap(imgExtId -> imagesService.getImageFiles(objectExtId)
+        return Optional.ofNullable(currentSelectedImageExternalId)
+                .map(currentSelectedImageExtId -> imagesService.getImageFiles(objectExtId)
+                        .filter(img -> img.getExternalId().equals(currentSelectedImageExtId))
                         .findFirst()
                         .map(ImageFile::getBaseBytesImageUrl))
-                .or(() -> imagesService.getDefaultSelectedImage(objectExtId).map(ImageFile::getBaseBytesImageUrl));
+                .orElseGet(() -> imagesService.getDefaultSelectedImage(objectExtId).map(ImageFile::getBaseBytesImageUrl));
     }
 
     private Optional<String> getSelectedImageExternalId(String objectExtId, String currentSelectedImageExternalId) {
@@ -393,10 +394,10 @@ public class CoffeeSiteController {
      * @return
      */
     @PostMapping({"/createModifySite", "/createModifySite/selectedImageExtId/{selectedImageExtId}"})
-    // Mapovani http POST na DB SAVE/UPDATE
     public String createOrUpdateCoffeeSite(@ModelAttribute("coffeeSite") @Valid CoffeeSiteDTO coffeeSite,
-                                           @PathVariable(required = false) String selectedImageExtId,
-                                           final BindingResult bindingResult) {
+                                           final BindingResult bindingResult,
+                                           @PathVariable(required = false) String selectedImageExtId
+                                           ) {
         if (bindingResult.hasErrors()) {
             return "coffeesite_create";
         }

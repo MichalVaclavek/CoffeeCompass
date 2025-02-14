@@ -138,9 +138,12 @@
 		                   th:placeholder="#{site.create.longitude.placeholder}"
 		                   id="lon1"/>
 		         </div>
-		         <p class="error-message"
-		            th:each="error: ${#fields.errors('zemDelka')}"
-		            th:text="${error}">Validation error</p>
+<!--		         <p class="error-message"-->
+<!--		            th:each="error: ${#fields.errors('zemDelka')}"-->
+<!--		            th:text="${error}">Validation error</p>-->
+				  <p class="error-message"
+					 th:if="${#fields.hasErrors('zemDelka')}" th:errors="*{zemDelka}">
+				  </p>
 	          </div>
 	          
 	          

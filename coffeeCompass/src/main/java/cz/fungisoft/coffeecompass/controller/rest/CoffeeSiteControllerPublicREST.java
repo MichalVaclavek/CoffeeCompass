@@ -27,7 +27,6 @@ import cz.fungisoft.coffeecompass.service.OtherOfferService;
 import cz.fungisoft.coffeecompass.service.PriceRangeService;
 import cz.fungisoft.coffeecompass.service.SiteLocationTypeService;
 import cz.fungisoft.coffeecompass.service.StarsQualityService;
-//import io.swagger.annotations.Api;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -199,9 +198,7 @@ public class CoffeeSiteControllerPublicREST {
      */
     @GetMapping("/") // napr. http://coffeecompass.cz/rest/site/?name=test1
     public ResponseEntity<CoffeeSiteDTO> siteByName(@RequestParam(value="name") String name) {
-        
         CoffeeSiteDTO cs = coffeeSiteService.findByName(name);
-        
         return (cs == null) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
                             : new ResponseEntity<>(cs, HttpStatus.OK);
     }
@@ -235,7 +232,6 @@ public class CoffeeSiteControllerPublicREST {
     @GetMapping("/getSitesInRange/") 
     public ResponseEntity<List<CoffeeSiteDTO>> sitesWithinRange(@RequestParam(value="lat1") double lat1, @RequestParam(value="lon1") double lon1,
                                                                 @RequestParam(value="range") long rangeMeters) {
-        
         List<CoffeeSiteDTO> result = coffeeSiteService.findAllWithinCircle(lat1, lon1, rangeMeters);
         
         if (result == null || result.isEmpty()) {
@@ -345,7 +341,8 @@ public class CoffeeSiteControllerPublicREST {
      */
     @GetMapping("/stars/number/")
     @ResponseStatus(HttpStatus.OK)
-    public Integer getNumberOfStarsForSiteFromUser(@RequestParam(value="siteID") String siteExtId, @RequestParam(value="userID") String userExtId) {
+    public Integer getNumberOfStarsForSiteFromUser(@RequestParam(value="siteID") String siteExtId,
+                                                   @RequestParam(value="userID") String userExtId) {
         Integer numOfStars = starsForCoffeeSiteService.getStarsForCoffeeSiteAndUser(siteExtId, userExtId);
         if (numOfStars == null) {
             numOfStars = 0;

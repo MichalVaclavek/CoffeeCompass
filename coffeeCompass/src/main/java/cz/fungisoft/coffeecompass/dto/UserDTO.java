@@ -33,7 +33,7 @@ public class UserDTO extends BaseItem {
             this.userName = userName.trim();
         }
     }
-         
+
     @Size(max=30)
     private String firstName;
  

@@ -421,6 +421,7 @@ components:
         savedOn:
           description: date/time when the image was saved
           type: string
+          format: date-time
         description:
           type: string
           maxLength: 255

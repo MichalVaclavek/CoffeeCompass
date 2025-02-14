@@ -25,7 +25,6 @@ import cz.fungisoft.coffeecompass.service.user.UserService;
  * Allows login using both username and email.
  * 
  * @author Michal Vaclavek
- *
  */
 @Service("customUserDetailsService")
 public class CustomUserDetailsService implements UserDetailsService {

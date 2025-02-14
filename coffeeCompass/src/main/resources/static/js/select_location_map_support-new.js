@@ -36,13 +36,7 @@ map.create = function(aLatSearchInput, aLonSearchInput, aCityName, aIsMapVisible
 	if (aCityName.length > 1 && aIsMapVisible && latInit == 0 && lonInit == 0) {
 		map.findCoordinatesAndShowInMap(aCityName);
 	} else {
-	    if (latInit == 0 && lonInit == 0) {
-    	    latInit = 49.8250401;
-    	    lonInit = 15.4190817;
-    	}
-		if (mapa == null) {
-		    createMap(latInit, lonInit);
-		}
+		createMap(latInit, lonInit);
 	}
 }
 
@@ -51,48 +45,55 @@ map.create = function(aLatSearchInput, aLonSearchInput, aCityName, aIsMapVisible
  */
 createMap = function(lat1, lon1) {
 
-    mapa = L.map('map').setView(L.latLng(lat1, lon1), 8);
+    if (lat1 == 0 && lon1 == 0) {
+        lat1 = 49.8250401;
+        lon1 = 15.4190817;
+    }
 
-     L.tileLayer(`https://api.mapy.cz/v1/maptiles/basic/256/{z}/{x}/{y}?apikey=${API_KEY}`, {
-       minZoom: 0,
-       maxZoom: 19,
-       attribution: '<a href="https://api.mapy.cz/copyright" target="_blank">&copy; Seznam.cz a.s. a další</a>',
-     }).addTo(mapa);
+    if (mapa == null) {
 
-    const LogoControl = L.Control.extend({
-      options: {
-        position: 'bottomleft',
-      },
+        mapa = L.map('map').setView(L.latLng(lat1, lon1), 8);
 
-      onAdd: function (mapa) {
-        const container = L.DomUtil.create('div');
-        const link = L.DomUtil.create('a', '', container);
+         L.tileLayer(`https://api.mapy.cz/v1/maptiles/basic/256/{z}/{x}/{y}?apikey=${API_KEY}`, {
+           minZoom: 0,
+           maxZoom: 19,
+           attribution: '<a href="https://api.mapy.cz/copyright" target="_blank">&copy; Seznam.cz a.s. a další</a>',
+         }).addTo(mapa);
 
-        link.setAttribute('href', 'http://mapy.cz/');
-        link.setAttribute('target', '_blank');
-        link.innerHTML = '<img src="https://api.mapy.cz/img/api/logo.svg" />';
-        L.DomEvent.disableClickPropagation(link);
+        const LogoControl = L.Control.extend({
+          options: {
+            position: 'bottomleft',
+          },
 
-        return container;
-      },
-    });
+          onAdd: function (mapa) {
+            const container = L.DomUtil.create('div');
+            const link = L.DomUtil.create('a', '', container);
 
-    // finally we add our LogoControl to the map
-    new LogoControl().addTo(mapa);
+            link.setAttribute('href', 'http://mapy.cz/');
+            link.setAttribute('target', '_blank');
+            link.innerHTML = '<img src="https://api.mapy.cz/img/api/logo.svg" />';
+            L.DomEvent.disableClickPropagation(link);
 
-    marker = L.marker(L.latLng('49.8250401', '15.4190817'), {title: 'Vyber polohu, přesuň mě!', draggable: true })
-              .addTo(mapa);
-    marker.on('dragend', onStopDrag);
+            return container;
+          },
+        });
 
-     function onStopDrag(e) {
-        var marker = e.target;
-        var latLng = marker.getLatLng();
+        // finally we add our LogoControl to the map
+        new LogoControl().addTo(mapa);
 
-        coffeeSiteLatInput.value = latLng.lat;
-        coffeeSiteLonInput.value = latLng.lng;
-	 }
+        marker = L.marker(L.latLng('49.8250401', '15.4190817'), {title: 'Vyber polohu, přesuň mě!', draggable: true })
+                  .addTo(mapa);
+        marker.on('dragend', onStopDrag);
+
+         function onStopDrag(e) {
+            var marker = e.target;
+            var latLng = marker.getLatLng();
+
+            coffeeSiteLatInput.value = latLng.lat;
+            coffeeSiteLonInput.value = latLng.lng;
+         }
+    }
 }
-
 
 /* Finding coordinates of the City/town from api.mapy.cz */
 map.findCoordinatesAndShowInMap = function(city) {
@@ -154,10 +155,14 @@ function processGeocodeResult(results) { /* Odpověď */
         while (vysledky.length) { /* Zobrazit první souhlasný výsledek hledání */
             var item = vysledky.shift();
             if (cityNameInput == item.name) {
-                zoomToCity(item);
                 break;
             }
             i++;
+        }
+        if (i < vysledky.length) {
+            zoomToCity(item);
+        } else {
+            createMap(0, 0)
         }
     }
 
