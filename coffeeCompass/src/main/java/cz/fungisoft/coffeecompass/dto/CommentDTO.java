@@ -11,6 +11,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.annotation.Nullable;
+
 /**
  * Trida pro prenos informace o 1 Commentu k jednomu CoffeeSitu od jednomu uzivatele<br>
  * Pro mapovani na tuto tridu se pouziva zakladni trida/entita Comment<br>
@@ -37,11 +39,9 @@ public class CommentDTO extends BaseItem {
     private LocalDateTime created;
     
     private UUID coffeeSiteId;
-            
-    private String userName;
-    
+
     // to allow better mapping from Comment to CommentDTO, which included starsFromUser
-    // its easier to serach fro user by its id
+    // its easier to search for user by its id
     private UUID userId;
     
     private boolean canBeDeleted = false; // default value

@@ -8,7 +8,6 @@ import org.mapstruct.Mapping;
 @Mapper(uses = {DateMapper.class})
 public interface CommentMapper {
 
-    @Mapping(source = "user.userName", target = "userName")
     @Mapping(source ="coffeeSite.id", target = "coffeeSiteId")
     @Mapping(source = "user.id", target = "userId")
     @Mapping(target = "extId", source="id")

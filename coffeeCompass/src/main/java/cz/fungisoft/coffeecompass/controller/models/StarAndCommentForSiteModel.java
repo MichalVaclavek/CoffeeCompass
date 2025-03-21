@@ -25,7 +25,7 @@ public class StarAndCommentForSiteModel {
     private String comment;
     
     @NotNull
-    private String coffeeSiteExtId;
+    private String coffeeSiteId;
     
     
     public StarAndCommentForSiteModel() {

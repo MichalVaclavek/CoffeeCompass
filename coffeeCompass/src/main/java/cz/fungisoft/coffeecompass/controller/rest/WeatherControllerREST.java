@@ -14,8 +14,8 @@ import cz.fungisoft.coffeecompass.service.weather.WeatherApiService;
 
 /**
  * Helper Controller to provide data about current weather on the CoffeeSite's geo coordinates.
- * Uses https://api.openweathermap.org API. See {@link WeatherApiService} for more info.
- * 
+ * Uses <a href="https://api.openweathermap.org">...</a> API. See {@link WeatherApiService} for more info.
+ *
  * @author Michal Vaclavek
  *
  */

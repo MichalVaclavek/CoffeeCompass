@@ -138,7 +138,8 @@ public class CSStarsCommentsControllerSecuredREST {
     //@PostMapping(value="/saveStarsAndComment/{coffeeSiteExtId}", headers = {"content-type=application/json"}, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PostMapping(value="/saveStarsAndComments")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Boolean> insertCommentsAndStarsForSites(@RequestBody @Valid List<StarAndCommentForSiteModel> starsAndComments,
+    public ResponseEntity<Boolean> insertCommentsAndStarsForSites(@RequestBody @Valid
+                                                                  List<StarAndCommentForSiteModel> starsAndComments,
                                                                   final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new InvalidParameterValueException("Comments_stars_rating", bindingResult.getFieldErrors());
@@ -147,17 +148,17 @@ public class CSStarsCommentsControllerSecuredREST {
         AtomicInteger savedComments = new AtomicInteger();
         // Ulozit vsechna hodnoceni if not empty
         for (StarAndCommentForSiteModel starsAndComment : starsAndComments) {
-            String coffeeSiteExtId = starsAndComment.getCoffeeSiteExtId();
-                starsForCoffeeSiteService.saveStarsForCoffeeSiteAndLoggedInUser(coffeeSiteExtId, starsAndComment.getStars());
-            
-                coffeeSiteService.findOneByExternalId(coffeeSiteExtId).ifPresent(cs -> {
-                    // Ulozit Comment for the CoffeeSite, if not empty
-                    if ((starsAndComment.getComment() != null) && !starsAndComment.getComment().isEmpty()) {
-                        if (commentsService.saveTextAsComment(starsAndComment.getComment(), cs) != null) {
-                            savedComments.getAndIncrement();
-                        }
+            String coffeeSiteExtId = starsAndComment.getCoffeeSiteId();
+            starsForCoffeeSiteService.saveStarsForCoffeeSiteAndLoggedInUser(coffeeSiteExtId, starsAndComment.getStars());
+
+            coffeeSiteService.findOneByExternalId(coffeeSiteExtId).ifPresent(cs -> {
+                // Ulozit Comment for the CoffeeSite, if not empty
+                if ((starsAndComment.getComment() != null) && !starsAndComment.getComment().isEmpty()) {
+                    if (commentsService.saveTextAsComment(starsAndComment.getComment(), cs) != null) {
+                        savedComments.getAndIncrement();
                     }
-                });
+                }
+            });
         }
         
         LOG.debug("Number of comments saved: {}", savedComments.get());
@@ -172,13 +173,11 @@ public class CSStarsCommentsControllerSecuredREST {
      * /rest/secured/starsAndComments/updateStarsForCoffeeSiteAndUser/coffeeSite/{coffeeSiteId}/user/{userId}/stars/{numOfStars}
      *   JSON CommentDTO to update example:
      *   {
-     *       "id": 59,
-     *       "text": "sfsgsgsgsg",
-     *       "created": "30.05. 2020 23:28",
+     *       "id": "06897c72-d75a-4272-95a1-74cb53fb29fb",
+     *       "text": "sfsgsg sgsg",
+     *       "created": "30.03. 2025 23:28",
      *       "coffeeSiteID": 204,
-     *       "userName": "MichalV",
-     *       "userId": 1,
-     *       "canBeDeleted": false,
+     *       "userId": "93cc3e8f-7569-4a85-a04e-ee29f94b2bf5",
      *       "starsFromUser": 4
      *   }
      * 

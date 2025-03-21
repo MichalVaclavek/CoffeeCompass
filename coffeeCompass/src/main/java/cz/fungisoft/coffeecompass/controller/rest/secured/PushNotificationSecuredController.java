@@ -107,7 +107,9 @@ public class PushNotificationSecuredController {
      * @return
      */
     @PostMapping("/notification/subscribe")
-    public ResponseEntity<PushNotificationResponse> subscribeNotification(@RequestBody @Valid PushNotificationSubscriptionRequest request, final BindingResult bindingResult) {
+    public ResponseEntity<PushNotificationResponse> subscribeNotification(@RequestBody @Valid
+                                                                          PushNotificationSubscriptionRequest request,
+                                                                          final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new InvalidParameterValueException("PushNotificationSubscriptionRequest", bindingResult.getFieldErrors());
         }
