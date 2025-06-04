@@ -1,8 +1,10 @@
 package cz.fungisoft.coffeecompass.serviceimpl.image;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
+import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
 import cz.fungisoft.coffeecompass.serviceimpl.CoffeeSiteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,13 +28,11 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.ValidationException;
 
 /**
  * Sluzba pro praci s objekty Image, obrazek CoffeeSitu. Ukladani, mazani, konverze na Base64String apod.
  * 
  * @author Michal Vaclavek
- *
  */
 @Service("imageFileStorageService")
 @Slf4j
@@ -42,7 +42,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     
     private final ImageResizeAndRotateService imageResizer;
 
-    private CoffeeSiteService coffeeSiteService;
+    private CoffeeSiteRepository coffeeSiteRepository;
 
     /**
      * Base part of the CoffeeSite's image URL, loaded from ConfigProperties.<br>
@@ -51,7 +51,6 @@ public class ImageStorageServiceImpl implements ImageStorageService {
      */
     private String baseImageURLPath;
     
-
     /**
      * Constructor to insert some of the services, repositories and config properties required.
      * 
@@ -60,10 +59,11 @@ public class ImageStorageServiceImpl implements ImageStorageService {
      * @param imageResizer
      */
     @Autowired
-    public ImageStorageServiceImpl(ConfigProperties fileStorageProperties, ImageRepository imageRepo, ImageResizeAndRotateService imageResizer) {
+    public ImageStorageServiceImpl(ConfigProperties fileStorageProperties, ImageRepository imageRepo, ImageResizeAndRotateService imageResizer, CoffeeSiteRepository coffeeSiteRepository) {
         
         this.imageRepo = imageRepo;
         this.imageResizer = imageResizer;
+        this.coffeeSiteRepository = coffeeSiteRepository;
 
         // Currently not used in production (image files are stored in DB). Can be used for testing.
         Path fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
@@ -77,16 +77,6 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     }
     
     /**
-     * Used setter injection for {@code CoffeeSiteService} to avoid circular dependency
-     * 
-     * @param coffeeSiteService
-     */
-    @Autowired
-    public void setCoffeeSiteService(CoffeeSiteService coffeeSiteService) {
-        this.coffeeSiteService = coffeeSiteService;
-    }
-
-    /**
      * Setter for ConfigProperties attribute. If it was injected using @Autowired on attribute and
      * used within Constructor, then it was null.
      * 
@@ -99,68 +89,6 @@ public class ImageStorageServiceImpl implements ImageStorageService {
         }
     }
 
-    /*
-     * Stores uploaded image file into local file system file
-    @Override
-    public String storeFile(MultipartFile file) {
-        // Normalize file name
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        log.info("File saved: " + fileName);
-
-        try {
-            // Check if the file's name contains invalid characters
-            if (fileName.contains("..")) {
-                throw new StorageFileException("Sorry! Filename contains invalid path sequence " + fileName);
-            }
-
-            // Copy file to the target location (Replacing existing file with the same name)
-            Path targetLocation = this.fileStorageLocation.resolve(fileName);
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-
-            return fileName;
-        } catch (IOException ex) {
-            throw new StorageFileException("Could not store file " + fileName + ". Please try again!", ex);
-        }
-    }
-    */
-    
-    /**
-     * Saves the image file into DB and creates Image object for CoffeeSite with siteID
-     */
-    @Override
-    @Transactional
-    public UUID storeImageFile(Image image, MultipartFile file, UUID siteID, boolean resize) {
-        AtomicReference<Image> atomicImage = new AtomicReference<>(image);
-
-        coffeeSiteService.findOneByExternalId(siteID).ifPresent(cs -> {
-            try {
-                // Check if there is already image assigned to the CS. If yes, delete the old image first
-                Optional.ofNullable(imageRepo.getImageForSite(siteID))
-                        .ifPresent(imageRepo::delete);
-                atomicImage.get().setImageBytes(file.getBytes());
-                atomicImage.get().setFile(file);
-                atomicImage.get().setCoffeeSiteId(cs.getId());
-                atomicImage.get().setSavedOn(LocalDateTime.now());
-            } catch (IOException e) {
-                log.warn("Error during creating Image object. File name: {}. CoffeeSite name: {}. Exception: {}", atomicImage.get().getFileName(), cs.getSiteName(), e.getMessage());
-            }
-            if (resize) {
-                atomicImage.getAndUpdate(image2 -> {
-                    try {
-                        return imageResizer.resize(image2);
-                    } catch (IOException e) {
-                        log.warn("Error during resizing Image. File name: {}. CoffeeSite name: {}. Exception: {}", atomicImage.get().getFileName(), cs.getSiteName(), e.getMessage());
-                    }
-                    return null;
-                });
-            }
-            imageRepo.save(atomicImage.get());
-            log.info("Image saved. File name: {}. CoffeeSite name: {}", image.getFileName(), cs.getSiteName());
-        });
-
-        return atomicImage.get().getId();
-    }
-    
     /**
      * Saves the image file into DB and creates Image object for CoffeeSite with siteID
      */
@@ -168,7 +96,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     @Transactional
     public UUID storeImageFile(MultipartFile file, UUID siteID, boolean resize) {
         AtomicReference<Image> atomicImage = new AtomicReference<>(null);
-        coffeeSiteService.findOneByExternalId(siteID).ifPresent(cs -> {
+        coffeeSiteRepository.findById(siteID).ifPresent(cs -> {
             // Check if there is already image assigned to the CS. If yes, delete the old image first
             Optional.ofNullable(imageRepo.getImageForSite(siteID))
                     .ifPresent(imageRepo::delete);
@@ -198,21 +126,6 @@ public class ImageStorageServiceImpl implements ImageStorageService {
         return atomicImage.get().getId();
 }
     
-    /**
-     * Saves already created Image object.
-     * If there is already assigned Image to CoffeeSite, delete old image first
-     */
-    @Override
-    @Transactional
-    public void saveImageToDB(Image image) {
-        try {
-            image.setSavedOn(LocalDateTime.now());
-            imageRepo.save(image);
-         } catch (ValidationException ex) {
-            log.error("Failed to validate: {}", ex); 
-         }
-    }
-    
     @Override
     public String getImageAsBase64ForSiteId(String siteID) {
         return convertImageToBase64(imageRepo.getImageForSite(UUID.fromString(siteID)));
@@ -220,7 +133,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
 
     @Override
     public Optional<byte[]> getImageAsBytesForSiteExternalId(String siteExternalId) {
-        return coffeeSiteService.findOneByExternalId(siteExternalId).map(CoffeeSite::getId).map(this::getImageAsBytesForSiteId);
+        return coffeeSiteRepository.findById(UUID.fromString(siteExternalId)).map(CoffeeSite::getId).map(this::getImageAsBytesForSiteId);
     }
 
     @Override
@@ -281,23 +194,10 @@ public class ImageStorageServiceImpl implements ImageStorageService {
         return imageRepo.getImageForSite(siteId);
     }
 
-    @Transactional
-    @Override
-    public UUID getImageIdForSiteId(String siteID) {
-        return imageRepo.getImageIdForSiteId(UUID.fromString(siteID));
-    }
-
     @Override
     public boolean isImageAvailableForSiteId(UUID siteId) {
         return imageRepo.getNumOfImagesForSiteId(siteId) > 0;
     }
-
-//    @Override
-//    public boolean isImageAvailableForSiteId(UUID coffeeSiteExtId) {
-//        return coffeeSiteService.findOneByExternalId(coffeeSiteExtId)
-//                                .map(CoffeeSite::getLongId)
-//                                .map(csId -> imageRepo.getNumOfImagesForSiteId(csId) > 0).orElse(false);
-//    }
 
     @Override
     public String getBaseImageURLPath() {

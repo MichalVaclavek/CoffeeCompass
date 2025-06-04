@@ -14,9 +14,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * Trida pro prenos vybranych informaci o objektu CoffeeSite na clienta, tzv. DTO objekt.
- * A pro mapovani dat z Formulare. 
- * 
+ * Trida pro prenos vybranych informaci o objektu CoffeeSite na clienta.
+ *
  * @author Michal Vaclavek
  */
 @EqualsAndHashCode(callSuper = true)

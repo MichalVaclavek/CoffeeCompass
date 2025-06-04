@@ -13,6 +13,7 @@ import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.IStarsForCoffeeSiteAndUserService;
 import cz.fungisoft.coffeecompass.service.comment.ICommentService;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -90,7 +91,6 @@ public class CSStarsRatingAndCommentsController {
                                                      @PathVariable(required = false) String selectedImageExtId) {
         // Smazat komentar - need to have site Id to give it to /showSite Controller
         UUID siteId = commentsService.deleteCommentByExtId(commentExtId);
-//        String coffeeSiteExtId = coffeeSiteService.findOneByExternalId(siteId).map(cf -> cf.getLongId().toString()).orElse("");
         // Show same coffee site with updated Stars and comments
         return new ModelAndView(REDIRECT_SHOW_SITE_VIEW + siteId + ( (selectedImageExtId != null) ? "/selectedImageExtId/" + selectedImageExtId : ""));
     }

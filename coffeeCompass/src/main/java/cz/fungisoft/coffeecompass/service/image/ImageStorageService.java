@@ -17,20 +17,6 @@ public interface ImageStorageService {
 
     /**
      * Save Image and return db ID of the saved image.
-     * This is version used for saving Image inserted via web form in Thymeleaf
-     * 
-     * @param image to be saved
-     * @param file file containing image
-     * @param siteID - site ID to which the image belongs to
-     * @param resize - if the image should be resized to 'standard' size i.e. width 1024 and height 768 currently.
-     * Usualy true as it is expected that image is larger
-     *  
-     * @return id of the saved Image
-     */
-    UUID storeImageFile(Image image, MultipartFile file, UUID siteID, boolean resize);
-
-    /**
-     * Save Image and return db ID of the saved image.
      * This is version for savin image file uploaded via REST api.
      * 
      * @param file file containing image
@@ -42,10 +28,7 @@ public interface ImageStorageService {
      */
     UUID storeImageFile(MultipartFile file, UUID siteID, boolean resize);
     
-    void saveImageToDB(Image image);
-
     String getImageAsBase64ForSiteId(String siteID);
-    UUID getImageIdForSiteId(String siteID);
 
     String deleteSiteImageById(UUID imageId);
     String deleteSiteImageBySiteId(String coffeeSiteId);
@@ -57,8 +40,6 @@ public interface ImageStorageService {
     Optional<byte[]> getImageAsBytesForSiteExternalId(String siteExternalId);
 
     boolean isImageAvailableForSiteId(UUID siteId);
-
-//    boolean isImageAvailableForSiteId(UUID siteExtId);
 
     String getBaseImageURLPath();
 }

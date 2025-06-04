@@ -1,6 +1,7 @@
 package cz.fungisoft.coffeecompass.serviceimpl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import cz.fungisoft.coffeecompass.dto.PriceRangeDTO;
@@ -43,7 +44,7 @@ public class PriceRangeServiceImpl implements PriceRangeService {
     @Override
     @Cacheable(cacheNames = "priceRangesCache")
     public PriceRange findPriceRangeByExtId(String extId) {
-        PriceRange priceRange = priceRangeRepo.findById(UUID.fromString(extId)).orElse(null);
+        PriceRange priceRange = findPriceRangeById(UUID.fromString(extId)).orElse(null);
         if (priceRange == null) {
             throw new EntityNotFoundException("Price range extId " + extId + " not found in DB.");
         }
@@ -55,5 +56,10 @@ public class PriceRangeServiceImpl implements PriceRangeService {
     @Cacheable(cacheNames = "priceRangesCache")
     public List<PriceRangeDTO> getAllPriceRanges() {
         return priceRangeRepo.findAll().stream().map(priceRangeMapper::priceRangeToPriceRangeDto).toList();
+    }
+
+    @Override
+    public Optional<PriceRange> findPriceRangeById(UUID id) {
+        return priceRangeRepo.findById(id);
     }
 }

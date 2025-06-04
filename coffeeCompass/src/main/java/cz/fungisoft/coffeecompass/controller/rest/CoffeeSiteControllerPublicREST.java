@@ -337,12 +337,12 @@ public class CoffeeSiteControllerPublicREST {
     /**
      * REST endpoint for obtaining number of stars gived by userID to coffeeSiteID
      * If there was no rating for this site and user yet, then returns zero 0.
-     * URL example: https://localhost:8443/rest/site/stars/?siteID=2&userID=1
+     * URL example: https://localhost:8443/api/v1/sites/site/stars/number/?siteId=1fd1ea9f-f504-4331-ba91-04348f60948f&userId=242e2f72-e342-4482-ae1a-296681642a46
      */
     @GetMapping("/stars/number/")
     @ResponseStatus(HttpStatus.OK)
-    public Integer getNumberOfStarsForSiteFromUser(@RequestParam(value="siteID") String siteExtId,
-                                                   @RequestParam(value="userID") String userExtId) {
+    public Integer getNumberOfStarsForSiteFromUser(@RequestParam(value="siteId") String siteExtId,
+                                                   @RequestParam(value="userId") String userExtId) {
         Integer numOfStars = starsForCoffeeSiteService.getStarsForCoffeeSiteAndUser(siteExtId, userExtId);
         if (numOfStars == null) {
             numOfStars = 0;

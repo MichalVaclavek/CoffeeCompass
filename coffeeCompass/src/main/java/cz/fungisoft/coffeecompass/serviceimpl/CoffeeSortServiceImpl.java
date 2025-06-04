@@ -31,8 +31,8 @@ public class CoffeeSortServiceImpl implements CoffeeSortService {
     }
 
     @Override
-    public CoffeeSort findCoffeeSortById(String uuid) {
-        return coffeeSortRepo.findById(UUID.fromString(uuid)).orElseThrow(() -> new EntityNotFoundException("Cup type with id " + uuid + " not found in DB."));
+    public Optional<CoffeeSort> findCoffeeSortById(UUID uuid) {
+        return coffeeSortRepo.findById(uuid);
     }
 
     @Override
@@ -40,5 +40,10 @@ public class CoffeeSortServiceImpl implements CoffeeSortService {
     @Cacheable(cacheNames = "coffeeSortsCache")
     public List<CoffeeSortDTO> getAllCoffeeSorts() {
         return coffeeSortRepo.findAll().stream().map(coffeeSortMapper::coffeeSorToCoffeeSortDto).toList();
+    }
+
+    @Override
+    public Optional<CoffeeSort> searchByName(String cSort) {
+        return coffeeSortRepo.searchByName(cSort);
     }
 }

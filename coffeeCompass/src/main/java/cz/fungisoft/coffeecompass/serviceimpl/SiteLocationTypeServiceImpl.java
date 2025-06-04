@@ -1,6 +1,8 @@
 package cz.fungisoft.coffeecompass.serviceimpl;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import cz.fungisoft.coffeecompass.dto.SiteLocationTypeDTO;
 import cz.fungisoft.coffeecompass.mappers.SiteLocationTypeMapper;
@@ -37,6 +39,11 @@ public class SiteLocationTypeServiceImpl implements SiteLocationTypeService {
         if (locType == null)
             throw new EntityNotFoundException("Location type " + siteLocationTypeName + " not found in DB.");
         return locType;
+    }
+
+    @Override
+    public Optional<SiteLocationType> findSiteLocationTypeById(UUID id) {
+        return siteLocTypeRepo.findById(id);
     }
 
     @Override

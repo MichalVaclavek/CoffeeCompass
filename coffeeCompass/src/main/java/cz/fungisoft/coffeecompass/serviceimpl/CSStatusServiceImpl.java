@@ -2,6 +2,7 @@ package cz.fungisoft.coffeecompass.serviceimpl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteStatusDTO;
 import cz.fungisoft.coffeecompass.mappers.CoffeeSiteStatusMapper;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
-import cz.fungisoft.coffeecompass.exceptions.EntityNotFoundException;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteStatusRepository;
 import cz.fungisoft.coffeecompass.service.CSStatusService;
 
@@ -32,9 +32,15 @@ public class CSStatusServiceImpl implements CSStatusService {
 
     @Override
     @Cacheable(cacheNames = "csStatusesCache")
-    public CoffeeSiteStatus findCoffeeSiteStatusByName(String coffeeSiteStatus) {
+    public Optional<CoffeeSiteStatus> findCoffeeSiteStatusByName(String coffeeSiteStatus) {
         Optional<CoffeeSiteStatus> csStatus = csStatusRepo.searchByName(coffeeSiteStatus);
-        return csStatus.orElseThrow(() -> new EntityNotFoundException("Coffee site status " + coffeeSiteStatus + " not found in DB."));
+//        return csStatus.orElseThrow(() -> new EntityNotFoundException("Coffee site status " + coffeeSiteStatus + " not found in DB."));
+        return csStatus;
+    }
+
+    @Override
+    public Optional<CoffeeSiteStatus> findCoffeeSiteStatusById(UUID uuid) {
+        return csStatusRepo.findById(uuid);
     }
 
     @Override

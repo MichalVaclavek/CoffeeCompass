@@ -40,7 +40,12 @@ public class OtherOfferServiceImpl implements OtherOfferService {
     @Override
     @Cacheable(cacheNames = "otherOffersCache")
     public OtherOffer findOfferByExtId(String extId) {
-        Optional<OtherOffer> otherOffer = offerRepo.findById(UUID.fromString(extId));
+        Optional<OtherOffer> otherOffer = findOtherOfferById(UUID.fromString(extId));
         return otherOffer.orElseThrow(() -> new EntityNotFoundException("Other offer id " + extId + " not found in DB."));
+    }
+
+    @Override
+    public Optional<OtherOffer> findOtherOfferById(UUID id) {
+        return offerRepo.findById(id);
     }
 }

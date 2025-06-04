@@ -9,6 +9,9 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSort;
 
 public interface CoffeeSortService {
 
-    CoffeeSort findCoffeeSortById(String uuid);
+    Optional<CoffeeSort> findCoffeeSortById(UUID uuid);
     List<CoffeeSortDTO> getAllCoffeeSorts();
+
+    Optional<CoffeeSort> searchByName(String cSort);
+
 }

@@ -1,6 +1,8 @@
 package cz.fungisoft.coffeecompass.serviceimpl;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteTypeDTO;
 import cz.fungisoft.coffeecompass.mappers.CoffeeSiteTypeMapper;
@@ -32,6 +34,11 @@ public class CoffeeSiteTypeServiceImpl implements CoffeeSiteTypeService {
     @Transactional
     public CoffeeSiteType findCoffeeSiteTypeByName(String coffeeSiteType) {
         return coffeeSiteTypeRepo.searchByName(coffeeSiteType);
+    }
+
+    @Override
+    public Optional<CoffeeSiteType> findById(UUID uuid) {
+        return coffeeSiteTypeRepo.findById(uuid);
     }
 
     @Cacheable(cacheNames = "coffeeSiteTypesCache")

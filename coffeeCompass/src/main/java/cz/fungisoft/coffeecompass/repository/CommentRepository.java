@@ -1,6 +1,7 @@
 package cz.fungisoft.coffeecompass.repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,7 +36,7 @@ public interface CommentRepository extends JpaRepository<Comment, UUID> {
 
     
     @Query("select coffeeSite.id FROM Comment cl where id=?1")
-    UUID getSiteIdForComment(UUID commentId);
+    Optional<UUID> getSiteIdForComment(UUID commentId);
     
     @Modifying // required by Hibernate, otherwise there is an exception ' ... Illegal state ...'
     @Query("delete FROM Comment cl where user.id=?1")

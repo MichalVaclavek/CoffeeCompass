@@ -91,15 +91,13 @@ public class CoffeeSiteControllerSecuredREST  {
     
        CoffeeSite cs = coffeeSiteService.save(coffeeSite);
        
-       HttpHeaders
-               headers = new HttpHeaders();
+       HttpHeaders headers = new HttpHeaders();
        if (cs != null) {
            log.info("New Coffee site created.");
            //TODO - why headers?
            headers.setLocation(ucBuilder.path("/rest/site/{id}").buildAndExpand(cs.getId()).toUri());
            return coffeeSiteService.findOneToTransfer(cs.getId()).map(csDTO ->  new ResponseEntity<>(csDTO, HttpStatus.CREATED))
                                                                  .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
-
        } else {
            log.error("Coffee site creation failed");
            throw new BadRESTRequestException(messages.getMessage("coffeesite.create.rest.error.general", null, locale));

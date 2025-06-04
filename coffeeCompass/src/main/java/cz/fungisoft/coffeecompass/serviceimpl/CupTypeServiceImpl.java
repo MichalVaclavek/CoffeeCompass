@@ -34,7 +34,7 @@ public class CupTypeServiceImpl implements CupTypeService {
     @Override
     @Cacheable(cacheNames = "cupTypesCache")
     public CupType findCupTypeByExtId(String extId) {
-        Optional<CupType> cupType = cupTypeRepo.findById(UUID.fromString(extId));
+        Optional<CupType> cupType = findCupTypeById(UUID.fromString(extId));
         return cupType.orElseThrow(() -> new EntityNotFoundException("Cup type with id " + extId + " not found in DB."));
     }
 
@@ -42,5 +42,10 @@ public class CupTypeServiceImpl implements CupTypeService {
     @Cacheable(cacheNames = "cupTypesCache")
     public List<CupTypeDTO> getAllCupTypes() {
         return cupTypeRepo.findAll().stream().map(cupTypeMapper::cupTypeToCupTypeDto).toList();
+    }
+
+    @Override
+    public Optional<CupType> findCupTypeById(UUID id) {
+        return cupTypeRepo.findById(id);
     }
 }

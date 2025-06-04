@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import cz.fungisoft.coffeecompass.entity.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,14 +33,12 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
 
     private final StarsForCoffeeSiteAndUserRepository siteStarsRepo;
 
-    @Autowired
-    private StarsQualityService starsQualService;
+    private final StarsQualityService starsQualityService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private CoffeeSiteService coffeeSiteService;
+    @Lazy
+    private final CoffeeSiteService coffeeSiteService;
 
     /**
      * Constructor, basic.
@@ -48,31 +46,33 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
      * @param siteStarsRepo
      * @param siteStarsRepo
      */
-    @Autowired
-    public StarsForCoffeeSiteAndUserServiceImpl(StarsForCoffeeSiteAndUserRepository siteStarsRepo) {
+    public StarsForCoffeeSiteAndUserServiceImpl(StarsForCoffeeSiteAndUserRepository siteStarsRepo, StarsQualityService starsQualityService, UserService userService, CoffeeSiteService coffeeSiteService) {
         super();
         this.siteStarsRepo = siteStarsRepo;
+        this.starsQualityService = starsQualityService;
+        this.userService = userService;
+        this.coffeeSiteService = coffeeSiteService;
     }
 
-    @Override
-    public double avgStarsForSite(UUID coffeeSiteExtId) {
-        double starsAvg = 0;
-
-        try {
-            starsAvg = siteStarsRepo.averageStarsForSiteExternalId(coffeeSiteExtId);
-            starsAvg = Math.round(starsAvg * 10.0) / 10.0; // one decimal place round
-        } catch (Exception e) {
-            log.info("Average stars could not be calculated: {}", e.getMessage());
-        }
-
-        return starsAvg;
-    }
+//    @Override
+//    public double avgStarsForSite(UUID coffeeSiteExtId) {
+//        double starsAvg = 0;
+//
+//        try {
+//            starsAvg = siteStarsRepo.averageStarsForSiteExternalId(coffeeSiteExtId);
+//            starsAvg = Math.round(starsAvg * 10.0) / 10.0; // one decimal place round
+//        } catch (Exception e) {
+//            log.info("Average stars could not be calculated: {}", e.getMessage());
+//        }
+//
+//        return starsAvg;
+//    }
 
     @Override
     public void saveStarsForCoffeeSiteAndUser(CoffeeSite coffeeSite, User user, int stars) {
         // Ziskat prislusny objekt StarsForCoffeeSiteAndUser z DB
         var sfcsu = siteStarsRepo.getOneStarEvalForSiteAndUser(coffeeSite.getId(), user.getId());
-        var starsQuality = starsQualService.findStarsQualityByNumOfStars(stars);
+        var starsQuality = starsQualityService.findStarsQualityByNumOfStars(stars);
 
         sfcsu.ifPresent(starsForCoffeeSiteAndUser -> {
             starsForCoffeeSiteAndUser.setStars(starsQuality);
@@ -101,7 +101,7 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
             Optional<StarsForCoffeeSiteAndUser> sfcsu = siteStarsRepo.getOneStarEvalForSiteAndUser(coffeeSiteExtId, userExtId);
 
             return sfcsu.map(starsForCoffeeSiteAndUser -> {
-                starsForCoffeeSiteAndUser.setStars(starsQualService.findStarsQualityByNumOfStars(stars));
+                starsForCoffeeSiteAndUser.setStars(starsQualityService.findStarsQualityByNumOfStars(stars));
                 // Updatovane hodnoceni ulozit do Repository
                 starsForCoffeeSiteAndUser = siteStarsRepo.save(starsForCoffeeSiteAndUser);
                 log.info("Stars for Coffee site id {} and User id {} updated. Stars: {}", coffeeSiteExtId, userExtId, stars);
@@ -143,11 +143,11 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
         return null;
     }
 
-    @Override
-    public void cancelStarsForCoffeeSite(CoffeeSite coffeeSite, User user) {
-        siteStarsRepo.deleteStarsForSiteAndUser(coffeeSite.getId(), user.getId());
-        log.info("Stars for Coffee site name {} and User name {} canceled.", coffeeSite.getSiteName(), user.getUserName());
-    }
+//    @Override
+//    public void cancelStarsForCoffeeSite(CoffeeSite coffeeSite, User user) {
+//        siteStarsRepo.deleteStarsForSiteAndUser(coffeeSite.getId(), user.getId());
+//        log.info("Stars for Coffee site name {} and User name {} canceled.", coffeeSite.getSiteName(), user.getUserName());
+//    }
 
     /**
      * Ulozit/updatovat hodnoceni pro dany CoffeeSite pro aktualne prihlaseneho uzivatele.
@@ -192,17 +192,17 @@ public class StarsForCoffeeSiteAndUserServiceImpl implements IStarsForCoffeeSite
         return userSiteStars.map(StarsForCoffeeSiteAndUser::getStars).orElse(null);
     }
 
-    @Override
-    public AverageStarsForSiteDTO getStarsAndNumOfHodnoceniForSite(UUID coffeeSiteExtId) {
-        AverageStarsForSiteDTO starsDto = new AverageStarsForSiteDTO();
-
-        int numOfHodnoceni = siteStarsRepo.getNumOfHodnoceniForSite(coffeeSiteExtId);
-        if (numOfHodnoceni > 0) {
-            double stars = avgStarsForSite(coffeeSiteExtId);
-            starsDto.setAvgStars(stars);
-            starsDto.setNumOfHodnoceni(numOfHodnoceni);
-        }
-        log.info("Average Stars for Coffee site ext-id {} retrieved.", coffeeSiteExtId);
-        return starsDto;
-    }
+//    @Override
+//    public AverageStarsForSiteDTO getStarsAndNumOfHodnoceniForSite(UUID coffeeSiteExtId) {
+//        AverageStarsForSiteDTO starsDto = new AverageStarsForSiteDTO();
+//
+//        int numOfHodnoceni = siteStarsRepo.getNumOfHodnoceniForSite(coffeeSiteExtId);
+//        if (numOfHodnoceni > 0) {
+//            double stars = avgStarsForSite(coffeeSiteExtId);
+//            starsDto.setAvgStars(stars);
+//            starsDto.setNumOfHodnoceni(numOfHodnoceni);
+//        }
+//        log.info("Average Stars for Coffee site ext-id {} retrieved.", coffeeSiteExtId);
+//        return starsDto;
+//    }
 }

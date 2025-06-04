@@ -127,6 +127,7 @@ class CoffeeSiteServiceImplTest {
     private CoffeeSortRepository coffeeSortRepository;
 
     // Object to be tested
+    @Autowired
     private CoffeeSiteService coffeeSiteService;
 
 
@@ -170,15 +171,12 @@ class CoffeeSiteServiceImplTest {
 
     private User origUser = new User();
 
-
     /**
      * Setup of test. Creates CoffeeSite fixture prepared to be returned when mocking Service layer,
      * including User object as an author of the CoffeeSite.
      */
     @BeforeEach
     public void setUp() {
-        coffeeSiteService = new CoffeeSiteServiceImpl(coffeeSiteRepository, coffeeSortRepository, coffeeSiteStatusRepository, coffeeSiteMapper);
-
         // Priprava uzivatele, ktery CoffeeSite zalozil - origUser
         UserProfile userProfUser = new UserProfile();
         userProfUser.setType("USER");

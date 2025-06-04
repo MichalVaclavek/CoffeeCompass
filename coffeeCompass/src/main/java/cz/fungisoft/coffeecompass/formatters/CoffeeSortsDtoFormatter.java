@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.util.Locale;
+import java.util.UUID;
 
 @Component
 public class CoffeeSortsDtoFormatter implements Formatter<CoffeeSortDTO> {
@@ -32,6 +33,8 @@ public class CoffeeSortsDtoFormatter implements Formatter<CoffeeSortDTO> {
 
     @Override
     public CoffeeSortDTO parse(@NotNull String extId, Locale locale) throws ParseException {
-        return coffeeSortMapper.coffeeSorToCoffeeSortDto(coffeeSortService.findCoffeeSortById(extId));
+        return coffeeSortService.findCoffeeSortById(UUID.fromString(extId))
+                .map(coffeeSortMapper::coffeeSorToCoffeeSortDto)
+                .orElseThrow(() -> new ParseException("Coffee sort not found: " + extId, 0));
     }
 }

@@ -40,9 +40,9 @@ public interface IStarsForCoffeeSiteAndUserService {
      */
     StarsForCoffeeSiteAndUser updateStarsForCoffeeSiteAndUser(CommentDTO comment);
     
-    void cancelStarsForCoffeeSite(CoffeeSite coffeeSite, User user);
+//    void cancelStarsForCoffeeSite(CoffeeSite coffeeSite, User user);
     
-    double avgStarsForSite(UUID coffeeSiteExtId);
+//    double avgStarsForSite(UUID coffeeSiteExtId);
 
-    AverageStarsForSiteDTO getStarsAndNumOfHodnoceniForSite(UUID coffeeSiteExtId);
+//    AverageStarsForSiteDTO getStarsAndNumOfHodnoceniForSite(UUID coffeeSiteExtId);
 }

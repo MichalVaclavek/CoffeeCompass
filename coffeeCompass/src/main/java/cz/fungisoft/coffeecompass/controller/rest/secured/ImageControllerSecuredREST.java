@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ ImageControllerSecuredREST {
     private static final Logger log = LoggerFactory.getLogger(ImageControllerSecuredREST.class);
     
     private final ImageStorageService imageStorageService;
-    
+
     private final CoffeeSiteService coffeeSiteService;
     
     private final MessageSource messages;
@@ -50,8 +51,7 @@ ImageControllerSecuredREST {
     /**
      * Serves upload image request for CoffeeSite. Coffee site is identified by it's ID included
      * in the Image object to be uploaded/saved.<br>
-     * 
-     * 
+     *
      * @param file uploaded Image from View. Contains file to be uploaded
      * @param coffeeSiteId  ID of the coffeeSite the image belongs to
      * @param locale
@@ -73,7 +73,7 @@ ImageControllerSecuredREST {
        log.info("Image uploaded. CoffeeSite id: {}. Image id: {}", coffeeSiteId, imageId);
         return coffeeSiteService.findOneToTransfer(coffeeSiteId)
                 .map(cs ->  new ResponseEntity<>(cs.getMainImageURL(), HttpStatus.OK))
-                                                                .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+                                                                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
     
     /**

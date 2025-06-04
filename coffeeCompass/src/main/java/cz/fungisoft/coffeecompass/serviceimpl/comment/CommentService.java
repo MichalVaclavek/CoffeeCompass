@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import cz.fungisoft.coffeecompass.exceptions.UserNotFoundException;
+import cz.fungisoft.coffeecompass.exceptions.rest.ResourceNotFoundException;
 import cz.fungisoft.coffeecompass.mappers.CommentMapper;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,16 +70,16 @@ public class CommentService implements ICommentService {
 	    this.starsForCoffeeSiteAndUserService = starsForCoffeeSiteAndUserService;
 	}
 	
-    @Override
-    public Comment saveTextAsComment(String commentText, String userExtId, String coffeeSiteExtId) {
-        Optional<User> user = userService.findByExtId(userExtId);
-        Optional<CoffeeSite> cs = coffeeSiteService.findOneByExternalId(coffeeSiteExtId);
-        if (user.isPresent() && cs.isPresent()) {
-            return saveTextAsComment(commentText, user.get(), cs.get());
-        } else {
-            return null;
-        }
-    }
+//    @Override
+//    public Comment saveTextAsComment(String commentText, String userExtId, String coffeeSiteExtId) {
+//        Optional<User> user = userService.findByExtId(userExtId);
+//        Optional<CoffeeSite> cs = coffeeSiteService.findOneByExternalId(coffeeSiteExtId);
+//        if (user.isPresent() && cs.isPresent()) {
+//            return saveTextAsComment(commentText, user.get(), cs.get());
+//        } else {
+//            return null;
+//        }
+//    }
 
     @Override
     public Comment saveTextAsComment(String commentText, User user, CoffeeSite coffeeSite) {
@@ -227,17 +228,12 @@ public class CommentService implements ICommentService {
     
     private boolean isDeletable(CommentDTO comment) {
           return comment != null &&  userService.getCurrentLoggedInUser().isPresent()
-                  &&  (userService.isADMINloggedIn() || comment.getUserName().equals(userService.getCurrentLoggedInUser().get().getUserName()));
+                  &&  (userService.isADMINloggedIn() || comment.getUserId().equals(userService.getCurrentLoggedInUser().get().getId()));
     }
 
-	@Override
-	public UUID deleteComment(Comment comment) {
-	    return deleteCommentByExtId(comment.getId());
-	}
-	
     @Override
     public UUID deleteCommentByExtId(UUID commentId) {
-        UUID siteId = commentsRepo.getSiteIdForComment(commentId);
+        UUID siteId = commentsRepo.getSiteIdForComment(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment", "commentId", commentId));
         commentsRepo.deleteById(commentId);
         log.info("Comment deleted. Id {}", commentId);
         return siteId;
@@ -267,10 +263,10 @@ public class CommentService implements ICommentService {
         return modifyToTransfer(getByExtId(id));
     }
 
-    @Override
-    public CommentDTO getByExtIdToTransfer(UUID id) {
-        return modifyToTransfer(getByExtId(id));
-    }
+//    @Override
+//    public CommentDTO getByExtIdToTransfer(UUID id) {
+//        return modifyToTransfer(getByExtId(id));
+//    }
 
     @Override
     public void deleteAllCommentsFromUser(UUID userID) {

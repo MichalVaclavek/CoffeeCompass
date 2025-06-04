@@ -34,7 +34,7 @@ public class NextToMachineTypeServiceImpl implements NextToMachineTypeService {
     @Override
     @Cacheable(cacheNames = "csNextToMachineTypesCache")
     public NextToMachineType findNextToMachineTypeByExtId(String extId) {
-        Optional<NextToMachineType> ntmType = ntmTypeRepo.findById(UUID.fromString(extId));
+        Optional<NextToMachineType> ntmType = findById(UUID.fromString(extId));
         return ntmType.orElseThrow(() -> new EntityNotFoundException("Next to machine type Ext id " + extId + " not found in DB."));
     }
 
@@ -42,5 +42,10 @@ public class NextToMachineTypeServiceImpl implements NextToMachineTypeService {
     @Cacheable(cacheNames = "csNextToMachineTypesCache")
     public List<NextToMachineTypeDTO> getAllNextToMachineTypes() {
         return ntmTypeRepo.findAll().stream().map(ntmTypeMapper::nextToMachineTypeToNextToMachineTypeDto).toList();
+    }
+
+    @Override
+    public Optional<NextToMachineType> findById(UUID id) {
+        return ntmTypeRepo.findById(id);
     }
 }

@@ -288,11 +288,11 @@ public class CSStarsCommentsControllerSecuredREST {
      * 
      * @return 
      */
-    @PutMapping("/updateStarsForCoffeeSiteAndUser/coffeeSite/{coffeeSiteExtId}/user/{userExtId}/stars/{numOfStars}")
+    @PutMapping("/updateStarsForCoffeeSiteAndUser/coffeeSite/{siteExtId}/user/{userId}/stars/{numOfStars}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Integer> updateStarsForCoffeeSiteAndUser(@PathVariable(value="numOfStars") int numOfStars,
-                                                                   @PathVariable(value="coffeeSiteExtId") String coffeeSiteExtId,
-                                                                   @PathVariable(value="userExtId") String userExtId) {
+                                                                   @PathVariable(value="siteExtId") String coffeeSiteExtId,
+                                                                   @PathVariable(value="userId") String userExtId) {
         // Save updated Stars if not null
         if (numOfStars >= StarsQualityDescription.StarsQualityEnum.ONE.ordinal() + 1
                && numOfStars <= StarsQualityDescription.StarsQualityEnum.FIVE.ordinal() + 1) {
@@ -316,7 +316,6 @@ public class CSStarsCommentsControllerSecuredREST {
     @DeleteMapping("/deleteComment/{commentExtId}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Integer> deleteCommentAndStarsForSite(@PathVariable("commentExtId") String commentExtId) {
-        
         UUID siteId;
         siteId = commentsService.deleteCommentByExtId(commentExtId);
         

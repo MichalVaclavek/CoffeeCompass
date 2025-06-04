@@ -1,6 +1,7 @@
 package cz.fungisoft.coffeecompass.service.comment;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -23,18 +24,16 @@ public interface ICommentService {
 	Comment getByExtId(UUID id);
 
 	CommentDTO getByExtIdToTransfer(String id);
-	CommentDTO getByExtIdToTransfer(UUID id);
-    
+
     /**
 	 * Saves the text of comment into DB.
 	 * 
 	 * @param commentText text of {@link Comment} object to be saved.
-	 * @param userExtId userID of the logged-in user
-	 * @param coffeeSiteExtId id of the {@link CoffeeSite} the comment text belongs to
+	 * @param user logged-in user
+	 * @param coffeeSite {@link CoffeeSite} the comment text belongs to
 	 * 
 	 * @return instance of the saved {@link Comment} object.
 	 */
-	Comment saveTextAsComment(String commentText, String userExtId, String coffeeSiteExtId);
 	Comment saveTextAsComment(String commentText, User user, CoffeeSite coffeeSite);
 	Comment saveTextAsComment(String commentText, CoffeeSite coffeeSite);
 	
@@ -90,17 +89,13 @@ public interface ICommentService {
 	Page<CommentDTO> findAllCommentsPaginated(Pageable pageable);
 	
 	/**
-	 * Deletes persistent {@link Comment} object from DB	
-	 * @param comment {@link Comment} object to be deleted from repository/DB.
+	 * Deletes persistent {@link Comment} object from DB
 	 * @retutn id of the CoffeeSite the deleted Comment belongs to.
 	 */
-	@PreAuthorize("hasRole('ADMIN') OR hasRole('DBA')")
-	UUID deleteComment(Comment comment);
-	
-	@PreAuthorize("hasRole('ADMIN') OR hasRole('DBA')")
+	@PreAuthorize("hasRole('USER') OR hasRole('ADMIN') OR hasRole('DBA')")
 	UUID deleteCommentByExtId(UUID commentId);
 
-	@PreAuthorize("hasRole('ADMIN') OR hasRole('DBA')")
+	@PreAuthorize("hasRole('USER') OR hasRole('ADMIN') OR hasRole('DBA')")
 	UUID deleteCommentByExtId(String commentId);
 	
 	@PreAuthorize("hasRole('ADMIN') OR hasRole('DBA')")
