@@ -3,6 +3,7 @@ package cz.fungisoft.coffeecompass.controller.rest.secured;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 
 import jakarta.validation.Valid;
 
@@ -38,13 +39,10 @@ import cz.fungisoft.coffeecompass.exceptions.rest.InvalidParameterValueException
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 
 /**
- * Třída/kontroler, který lze použit v případě využití REST rozhraní
- * <p>
  * Základní Controller pro obsluhu požadavků, které se týkají práce s hlavním objektem CoffeeSite.<br>
  * Tj. pro základní CRUD operace a pro vyhledávání CoffeeSites.<br>
  * <br>
  * @author Michal Václavek
- *
  */
 @Tag(name = "CoffeeSiteCRUD", description = "Coffee site REST CRUD operations")
 @RestController
@@ -156,23 +154,9 @@ public class CoffeeSiteControllerSecuredREST  {
     }
     
 
-    @PutMapping("/update/{id}") // Mapovani http PUT na DB operaci UPDATE tj. zmena zaznamu c. id polozkou coffeeSite, napr. http://localhost:8080/rest/secured/site/update/2
-    public ResponseEntity<CoffeeSiteDTO> updateCoffeeSite(@PathVariable Long id, @Valid @RequestBody CoffeeSiteDTO coffeeSite, Locale locale) {
-        
-        CoffeeSite cs = coffeeSiteService.updateSite(coffeeSite);
-        if (cs != null) {
-            log.info("Coffee site update successful.");
-            return coffeeSiteService.findOneToTransfer(cs.getId()).map(csDTO ->  new ResponseEntity<>(csDTO, HttpStatus.CREATED))
-                                                                  .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-            
-        } else {
-            log.error("Coffee site update failed. Coffee site id {}", id);
-            throw new BadRESTRequestException(messages.getMessage("coffeesite.update.rest.error", null, locale));
-        }
-    }
-
     @PutMapping("/update/{externalId}") // Mapovani http PUT na DB operaci UPDATE tj. zmena zaznamu c. id polozkou coffeeSite, napr. http://localhost:8080/rest/secured/site/update/2
     public ResponseEntity<CoffeeSiteDTO> updateCoffeeSite(@PathVariable String externalId, @Valid @RequestBody CoffeeSiteDTO coffeeSite, Locale locale) {
+        coffeeSite.setExtId(UUID.fromString(externalId));
         CoffeeSite cs = coffeeSiteService.updateSite(coffeeSite);
         if (cs != null) {
             log.info("Coffee site update successful.");

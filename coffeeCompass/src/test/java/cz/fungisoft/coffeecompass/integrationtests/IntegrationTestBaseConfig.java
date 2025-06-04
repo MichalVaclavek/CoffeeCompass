@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -71,7 +72,6 @@ import cz.fungisoft.coffeecompass.testutils.JsonUtil;
  * methods in  @Before public void setUp() method.
  * 
  * @author Michal Vaclavek
- *
  */
 @ContextConfiguration(initializers = {IntegrationTestBaseConfig.Initializer.class})
 //if runnig without testContainer
@@ -177,8 +177,7 @@ public class IntegrationTestBaseConfig {
         Set<CoffeeSort> csorts = new HashSet<>();
         Set<CupType> cups = new HashSet<>();
         
-        //StarsQualityDescription stars = starsQualityDescriptionRepo.searchByName(StarsQualityEnum.TWO.toString());
-        Set<NextToMachineType> ntmtSet = new HashSet<>(); 
+        Set<NextToMachineType> ntmtSet = new HashSet<>();
         Set<OtherOffer> nabidka = new HashSet<>();
         
         CoffeeSiteType siteType = csTypeRepo.searchByName(coffeeSiteType);
@@ -187,8 +186,8 @@ public class IntegrationTestBaseConfig {
         
         PriceRange pr = priceRangeRepo.searchByName("15 - 25 Kč");
           
-        CoffeeSort cs = coffeeSortRepo.searchByName(CoffeeSort.CoffeeSortEnum.INSTANT.getCoffeeType());
-        csorts.add(cs);        
+        Optional<CoffeeSort> coffeeSort = coffeeSortRepo.searchByName(CoffeeSort.CoffeeSortEnum.INSTANT.getCoffeeType());
+        coffeeSort.ifPresent(csorts::add);
           
         CupType paper = cupTypeRepo.searchByName(CupTypeEnum.PAPER.getCupType());
         CupType plastic = cupTypeRepo.searchByName(CupTypeEnum.PLASTIC.getCupType());
@@ -210,13 +209,13 @@ public class IntegrationTestBaseConfig {
           
         SiteLocationType nadr = locationTypeRepo.searchByName("nádraží");
         
-        CoffeeSiteStatus siteStatus = coffeeSiteStatusRepo.searchByName(CoffeeSiteStatusEnum.INSERVICE.getSiteStatus());
+        Optional<CoffeeSiteStatus> siteStatus = coffeeSiteStatusRepo.searchByName(CoffeeSiteStatusEnum.INSERVICE.getSiteStatus());
         
         CoffeeSite coffeeS = new CoffeeSite();
 
         coffeeS.setId(UUID.randomUUID());
         coffeeS.setSiteName(siteName);
-        coffeeS.setStatusZarizeni(siteStatus);
+        siteStatus.ifPresent(coffeeS::setStatusZarizeni);
         coffeeS.setCena(pr);
         coffeeS.setCoffeeSorts(csorts);
         coffeeS.setCupTypes(cups);
