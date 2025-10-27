@@ -11,10 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
 
@@ -23,7 +20,6 @@ import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
  * REST version
  *  
  * @author Michal Vaclavek
- *
  */
 @Tag(name = "Images", description = "Images of the coffee sites")
 @RestController
@@ -34,7 +30,6 @@ public class ImageControllerPublicREST  {
     private final ImageStorageService imageStorageService;
 
     private final ImagesService imagesService;
-
 
     /**
      * Returns image of the CoffeeSite of id=siteId
@@ -71,5 +66,32 @@ public class ImageControllerPublicREST  {
         headers.setContentLength(pic.length);
 
         return new ResponseEntity<>(pic, headers, HttpStatus.OK);
+    }
+
+    /**
+     * Methods to return size and numbers of images of CoffeeSites objects
+     */
+    @GetMapping("/object/sizeKB/{siteExtId}")
+    public ResponseEntity<Long> getImageObjectSizeOfImages(@PathVariable String siteExtId) {
+        Long sizeKB = imagesService.getImageObjectSizeOfImages(siteExtId);
+        return ResponseEntity.ok(sizeKB);
+    }
+
+    @GetMapping("/object/number/{siteExtId}")
+    public ResponseEntity<Long> getImageObjectNumberOfImages(@PathVariable String siteExtId) {
+        Long numberOfImages = imagesService.getImageObjectNumberOfImages(siteExtId);
+        return ResponseEntity.ok(numberOfImages);
+    }
+
+    @GetMapping("/all/sizeKB")
+    public ResponseEntity<Long> getSizeOfAllImagesToDownload(@RequestParam(required = false) String imageSize) {
+        Long sizeKB = imagesService.getSizeOfAllImagesToDownload(imageSize);
+        return ResponseEntity.ok(sizeKB);
+    }
+
+    @GetMapping("/all/number")
+    public ResponseEntity<Long> getNumberOfAllImagesToDownload(@RequestParam(required = false) String imageSize) {
+        Long numberOfImages = imagesService.getNumberOfAllImagesToDownload(imageSize);
+        return ResponseEntity.ok(numberOfImages);
     }
 }

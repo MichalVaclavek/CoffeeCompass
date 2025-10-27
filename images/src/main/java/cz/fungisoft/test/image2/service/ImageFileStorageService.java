@@ -39,4 +39,12 @@ public interface ImageFileStorageService {
     byte[] getFirstImageOfTypeAsBytes(String objectExtId, String type, ImageSizes size);
 
     Optional<File> getImageFile(String imageExtId, ImageSizes size);
+
+    Long getKBytesOfAllImagesForObjectToDownload(String objectExtId);
+
+    Long getNumberOfAllImagesForObjectToDownload(String objectExtId);
+
+    Long getKBytesOfAllImagesToDownload(ImageSizes imageSize);
+
+    Long getNumberOfAllImagesToDownload(ImageSizes imageSize);
 }

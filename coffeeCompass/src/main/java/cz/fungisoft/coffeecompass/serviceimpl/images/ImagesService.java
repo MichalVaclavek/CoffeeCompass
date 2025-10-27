@@ -83,5 +83,23 @@ public class ImagesService implements ImagesServiceInterface {
     public void deleteAllImages(String imageObjectExtIdt) {
         imagesApi.deleteAllImages(imageObjectExtIdt);
     }
+
+    // Size and number of images methods
+
+    public Long getImageObjectSizeOfImages(String objectExtId) {
+        return imagesApi.getImageObjectSizeOfImages(objectExtId);
+    }
+
+    public Long getImageObjectNumberOfImages(String objectExtId) {
+        return imagesApi.getImageObjectNumberOfImages(objectExtId);
+    }
+
+    public Long getSizeOfAllImagesToDownload(String imageSize) {
+        return imagesApi.getSizeOfAllImagesToDownload(imageSize);
+    }
+
+    public Long getNumberOfAllImagesToDownload(String imageSize) {
+        return imagesApi.getNumberOfAllImagesToDownload(imageSize);
+    }
 }
 

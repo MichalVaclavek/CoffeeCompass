@@ -4,10 +4,6 @@ import cz.fungisoft.coffeecompass.serviceimpl.images.ImagesService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import cz.fungisoft.coffeecompass.service.image.ImageResizeAndRotateService;
-import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
 
 @Controller
 public class ImageRotationController {

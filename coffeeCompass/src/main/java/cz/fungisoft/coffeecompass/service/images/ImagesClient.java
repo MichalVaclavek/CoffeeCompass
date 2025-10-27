@@ -47,4 +47,16 @@ public interface ImagesClient {
 
     @DeleteMapping(value = "/object/{objectExtId}/all", consumes = "application/json")
     void deleteAllImages(@PathVariable("objectExtId") String objectExtId);
+
+    @GetMapping(value = "/object/sizeKB/{objectExtId}", consumes = "application/json")
+    Long getImageObjectSizeOfImages(@PathVariable("objectExtId") String objectExtId);
+
+    @GetMapping(value = "/object/number/{objectExtId}", consumes = "application/json")
+    Long getImageObjectNumberOfImages(@PathVariable("objectExtId") String objectExtId);
+
+    @GetMapping(value = "/all/sizeKB", consumes = "application/json")
+    Long getSizeOfAllImagesToDownload(@RequestParam(value = "imageSize", required = false) String imageSize);
+
+    @GetMapping(value = "/all/number", consumes = "application/json")
+    Long getNumberOfAllImagesToDownload(@RequestParam(value = "imageSize", required = false) String imageSize);
 }

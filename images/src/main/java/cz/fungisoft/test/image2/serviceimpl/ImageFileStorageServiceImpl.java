@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Sluzba pro ukladani objektu ImageFileSet
@@ -51,9 +52,9 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService {
     private static final byte[] EMPTY_IMAGE_BYTES = new byte[0];
 
     private static final Map<Double, String> THUMBNAIL_NAME_AND_RATIO = Map.of(
-                LARGE_RATIO, THUMBNAIL_LARGE,
-                MID_RATIO, THUMBNAIL_MID,
-                SMALL_RATIO, THUMBNAIL_SMALL);
+            LARGE_RATIO, THUMBNAIL_LARGE,
+            MID_RATIO, THUMBNAIL_MID,
+            SMALL_RATIO, THUMBNAIL_SMALL);
 
 
     private Map<Double, String> thumbnailFileNameAndRatio;
@@ -139,8 +140,8 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService {
         imageFileSet.setOriginalFileName(originalFileName);
 
         thumbnailFileNameAndRatio = THUMBNAIL_NAME_AND_RATIO.entrySet()
-                        .stream()
-                        .collect(Collectors.toMap(Map.Entry::getKey, entry -> createThumbnailFileName(entry.getValue())));
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> createThumbnailFileName(entry.getValue())));
 
         Path imageObjectFolder = this.fileStorageLocation.resolve(objectExtId);
         try {
@@ -181,7 +182,7 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService {
         imageFileSet.setThumbnailSmallName(thumbnailFileNameAndRatio.get(SMALL_RATIO));
 
         ImageObject imo = imageObjectService.getImageObjectByExtId(objectExtId)
-                                            .orElseGet(ImageObject::new);
+                .orElseGet(ImageObject::new);
 
         imo.setExternalObjectId(objectExtId);
         imo.getObjectImages().add(imageFileSet);
@@ -204,7 +205,7 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService {
                                 log.error("Could not store file.", ex);
                                 throw new StorageFileException("Could not store file.", ex);
                             }
-                }));
+                        }));
 
         executorService.shutdown();
         try {
@@ -227,9 +228,9 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService {
         if (lastDotIndex != -1) {
             // Remove the current suffix, add thumbnailName and add jpg suffix
             String nameWithoutSuffix = this.originalFileName.substring(0, lastDotIndex);
-            return thumbnailName + "-" + nameWithoutSuffix  + ".jpg";
+            return thumbnailName + "-" + nameWithoutSuffix + ".jpg";
         } else {
-            return thumbnailName + "-"  + this.originalFileName + ".jpg";
+            return thumbnailName + "-" + this.originalFileName + ".jpg";
         }
     }
 
@@ -254,13 +255,13 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService {
     public byte[] getImageAsBytes(String imageExtId, ImageSizes size) {
         Optional<ImageFileSet> image = getImageFileSetByExtId(imageExtId);
         return image.map(imgSet -> this.getImageBytes(imgSet, size))
-                    .orElse(EMPTY_IMAGE_BYTES);
+                .orElse(EMPTY_IMAGE_BYTES);
     }
 
     @Override
     public Optional<String> getFirstImageOfTypeAsBase64(String objectExtId, String type, ImageSizes size) {
         return this.getFirstImageOfType(objectExtId, type)
-                   .map(imgSet -> this.convertImageToBase64(imgSet, size));
+                .map(imgSet -> this.convertImageToBase64(imgSet, size));
     }
 
     @Override
@@ -268,7 +269,7 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService {
         Optional<ImageFileSet> image = getFirstImageOfType(objectExtId, type);
 
         return image.map(imgSet -> this.getImageBytes(imgSet, size))
-                    .orElse(EMPTY_IMAGE_BYTES);
+                .orElse(EMPTY_IMAGE_BYTES);
     }
 
     @Override
@@ -322,14 +323,104 @@ public class ImageFileStorageServiceImpl implements ImageFileStorageService {
                    .map(imgSet -> this.getImageFile(imgSet, size));
     }
 
+    @Override
+    public Long getKBytesOfAllImagesForObjectToDownload(String objectExtId) {
+        Optional<ImageObject> imageObject = imageObjectService.getImageObjectByExtId(objectExtId);
+        // convert to kBytes
+        return imageObject.map(object -> object.getObjectImages().stream()
+                .mapToLong(imageFileSet -> {
+                    long totalBytes = 0L;
+                    for (ImageSizes size : ImageSizes.values()) {
+                        File imageFile = getImageFile(imageFileSet, size);
+                        if (imageFile.exists()) {
+                            totalBytes += imageFile.length();
+                        }
+                    }
+                    return totalBytes;
+                })
+                .sum() / 1024).orElse(0L);
+
+    }
+
+    @Override
+    public Long getNumberOfAllImagesForObjectToDownload(String objectExtId) {
+        Optional<ImageObject> imageObject = imageObjectService.getImageObjectByExtId(objectExtId);
+        return imageObject.map(object -> object.getObjectImages().stream()
+                .mapToLong(imageFileSet -> {
+                    long count = 0L;
+                    for (ImageSizes size : ImageSizes.values()) {
+                        File imageFile = getImageFile(imageFileSet, size);
+                        if (imageFile.exists()) {
+                            count++;
+                        }
+                    }
+                    return count;
+                })
+                .sum()).orElse(0L);
+
+    }
+
+    /**
+     * Gets total size in kBytes of all images to download of given size.
+     * If size is not specified (null), size of HD images is returned.
+     * @param imageSize
+     * @return
+     */
+    @Override
+    public Long getKBytesOfAllImagesToDownload(ImageSizes imageSize) {
+        Iterable<ImageFileSet> allImages = imageFileRepo.findAll();
+        // convert to kBytes
+        return Stream.of(allImages)
+                .flatMap(images -> {
+                    Iterator<ImageFileSet> iterator = images.iterator();
+                    List<ImageFileSet> imageList = new ArrayList<>();
+                    while (iterator.hasNext()) {
+                        imageList.add(iterator.next());
+                    }
+                    return imageList.stream();
+                })
+                .mapToLong(imageFileSet -> {
+                    File imageFile = getImageFile(imageFileSet, imageSize);
+                    return imageFile.exists() ? imageFile.length() : 0L;
+                })
+                .sum() / 1024;
+    }
+
+    /**
+     * Gets total number of all images to download of given size.
+     * If size is not specified (null), number of HD images is returned.
+     * @param imageSize
+     * @return
+     */
+    @Override
+    public Long getNumberOfAllImagesToDownload(ImageSizes imageSize) {
+        Iterable<ImageFileSet> allImages = imageFileRepo.findAll();
+        return Stream.of(allImages)
+                .flatMap(images -> {
+                    Iterator<ImageFileSet> iterator = images.iterator();
+                    List<ImageFileSet> imageList = new ArrayList<>();
+                    while (iterator.hasNext()) {
+                        imageList.add(iterator.next());
+                    }
+                    return imageList.stream();
+                })
+                .mapToLong(imageFileSet -> {
+                    File imageFile = getImageFile(imageFileSet, imageSize);
+                    return imageFile.exists() ? 1L : 0L;
+                })
+                .sum();
+    }
+
     private File getImageFile(ImageFileSet image, ImageSizes size) {
-        String imageFileName =
+        String imageFileName = (size == null) ? image.getFileNameHd()
+                :
                 switch (size) {
                     case ORIGINAL -> image.getOriginalFileName();
                     case HD -> image.getFileNameHd();
                     case LARGE -> image.getThumbnailLargeName();
                     case MID -> image.getThumbnailMidName();
                     case SMALL -> image.getThumbnailSmallName();
+
                 };
         Path targetLocation = this.fileStorageLocation.resolve(image.getImageObject().getExternalObjectId()).resolve(imageFileName);
         return targetLocation.toFile();

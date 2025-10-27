@@ -7,6 +7,7 @@ import cz.fungisoft.test.image2.dto.ImageObjectDto;
 import cz.fungisoft.test.image2.service.ImageFileStorageService;
 import cz.fungisoft.test.image2.service.ImageObjectStorageService;
 import cz.fungisoft.test.image2.serviceimpl.ImageSizes;
+import jakarta.websocket.server.PathParam;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,10 +15,10 @@ import java.util.Optional;
 
 /**
  * Controller to handle operations concerning obtaining CoffeeSite's image file.<br>
+ * Also provides information about sizes of images.<br>
  * REST version
  *  
  * @author Michal Vaclavek
- *
  */
 @RestController
 @RequestMapping("${site.image.baseurlpath.rest}")
@@ -49,7 +50,6 @@ public class GetController {
 
     /**
      * Returns image as in byte64 coding.
-     *
      * Size means which a size of image i.e. "original", "hd", "large", "mid", "small"
      *
      * @return
@@ -63,7 +63,6 @@ public class GetController {
 
     /**
      * Returns image as byte array
-     *
      * Variant mean which size of image i.e. "original", "hd", "large", "mid", "small"
      *
      * @return
@@ -89,7 +88,6 @@ public class GetController {
 
     /**
      * Returns image as in base64 coding.
-     *
      * Variant mean which size of image i.e. "original", "hd", "large", "mid", "small"
      *
      * @return
@@ -103,7 +101,6 @@ public class GetController {
 
     /**
      * Returns image as byte array
-     *
      * Variant mean which size of image i.e. "original", "hd", "large", "mid", "small"
      *
      * @return
@@ -125,5 +122,43 @@ public class GetController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(pic, headers, HttpStatus.OK);
+    }
+
+    /**
+     * Returns size of all images for given ImageObjectExtId in kB
+     */
+    @GetMapping("/object/sizeKB/{objectExtId}") // napr.
+    public ResponseEntity<Long> getSizeOfAllImagesForObjectToDownload(@PathVariable String objectExtId) {
+        Long sizeKB = imageFileStorageService.getKBytesOfAllImagesForObjectToDownload(objectExtId);
+        return ResponseEntity.ok(sizeKB);
+    }
+
+    /**
+     * Returns number of all images for given ImageObjectExtId
+     */
+    @GetMapping("/object/number/{objectExtId}") // napr.
+    public ResponseEntity<Long> getNumberOfAllImagesForObjectToDownload(@PathVariable String objectExtId) {
+        Long numberOfImages = imageFileStorageService.getNumberOfAllImagesForObjectToDownload(objectExtId);
+        return ResponseEntity.ok(numberOfImages);
+    }
+
+    /**
+     * Returns size of all images for all ImageObjects in kB for given size or for HD sizes if size param is not given
+     */
+    @GetMapping("/all/sizeKB") // napr.
+    public ResponseEntity<Long> getSizeOfAllImagesToDownload(@RequestParam(required = false) String imageSize) {
+        Long sizeKB = imageFileStorageService.getKBytesOfAllImagesToDownload(
+                (imageSize != null) ? ImageSizes.get(imageSize).orElse(null) : null);
+        return ResponseEntity.ok(sizeKB);
+    }
+
+    /**
+     * Returns number of all images for all ImageObjects id given size or HD sizes if size param is not given
+     */
+    @GetMapping("/all/number") // napr.
+    public ResponseEntity<Long> getNumberOfAllImagesToDownload(@RequestParam(required = false) String imageSize) {
+        Long numberOfImages = imageFileStorageService.getNumberOfAllImagesToDownload(
+                (imageSize != null) ? ImageSizes.get(imageSize).orElse(null) : null);
+        return ResponseEntity.ok(numberOfImages);
     }
 }

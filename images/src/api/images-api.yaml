@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  version: '1.0.0'
+  version: '1.1.0'
 
   title: Images storage
 
@@ -27,6 +27,123 @@ servers:
 # Holds the relative paths to the individual endpoints. The path is appended to the
 # basePath in order to construct the full URL.
 paths:
+  # ############# GET Image sizes and numbers ###################
+
+  # ############# Sizes and numbers of all images of given ImageObject ###################
+
+  '/object/sizeKB/{objectExtId}':
+    get:
+      summary: get size of all images for given ImageObjectExtId in kB
+      description: |
+        Returns size of all images for given ImageObjectExtId in kB
+      operationId: getSizeOfAllImagesForObjectToDownload
+      parameters:
+        - in: path
+          name: objectExtId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: string Ext-ID of the image object
+      # security schemas applied to this operation
+      security:
+        - main_auth:
+            - 'bearerAuth'
+      responses: # list of responses
+        '200':
+          description: size in kB
+          content:
+            application/json:
+              schema:
+                type: integer
+        '403':
+          description: Forbidden
+
+  '/object/number/{objectExtId}':
+    get:
+      summary: get number of all images for given ImageObjectExtId
+      description: |
+        Returns number of all images for given ImageObjectExtId
+      operationId: getNumberOfAllImagesForObjectToDownload
+      parameters:
+        - in: path
+          name: objectExtId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: string Ext-ID of the image object
+      # security schemas applied to this operation
+      security:
+        - main_auth:
+            - 'bearerAuth'
+      responses: # list of responses
+        '200':
+          description: number of images
+          content:
+            application/json:
+              schema:
+                type: integer
+        '403':
+          description: Forbidden
+
+  # ############# Sizes and numbers of all images ###################
+
+  '/all/sizeKB?imageSize=hd':
+    get:
+      summary: get size of all images for all ImageObjects in kB for given size or for HD sizes if size param is not given
+      description: |
+        Returns size of all images for all ImageObjects in kB for given size or for HD sizes if size param is not given
+      operationId: getSizeOfAllImagesToDownload
+      parameters:
+        - in: query
+          name: imageSize
+          schema:
+            type: string
+          required: false
+          description: string of the image size, i.e. 'original', 'hd', 'large', 'mid', 'small'
+      # security schemas applied to this operation
+      security:
+        - main_auth:
+            - 'bearerAuth'
+      responses: # list of responses
+        '200':
+          description: size in kB
+          content:
+            application/json:
+              schema:
+                type: integer
+        '403':
+          description: Forbidden
+
+  '/all/number?imageSize=hd':
+    get:
+      summary: get number of all images for all ImageObjects id given size or HD sizes if size param is not given
+      description: |
+        Returns number of all images for all ImageObjects id given size or HD sizes if size param is not given
+      operationId: getNumberOfAllImagesToDownload
+      parameters:
+        - in: query
+          name: imageSize
+          schema:
+            type: string
+          required: false
+          description: string of the image size, i.e. 'original', 'hd', 'large', 'mid', 'small'
+      # security schemas applied to this operation
+      security:
+        - main_auth:
+            - 'bearerAuth'
+      responses: # list of responses
+        '200':
+          description: number of images
+          content:
+            application/json:
+              schema:
+                type: integer
+        '403':
+          description: Forbidden
+
+
   # ################# UPLOAD #################################
   '/upload':
     post:

@@ -28,12 +28,12 @@ public class DataDownloadSizeServiceImpl implements DataDownloadSizeService {
     }
 
     /**
-     * Estimated size of one CoffeeSite sent over JSON is 1.3 kB (according Postman)
+     * Estimated size of one CoffeeSite sent over JSON is 1.5 kB (according Postman)
      * @return
      */
     @Override
     public long getKBytesOfCoffeeSitesToDownload() {
-        return (long) (getNumberOfCoffeeSitesToDownload() * 1.3);
+        return (long) (getNumberOfCoffeeSitesToDownload() * 1.5);
     }
 
     @Override

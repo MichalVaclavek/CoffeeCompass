@@ -149,13 +149,11 @@ class CommentsRESTSecuredIntegrationTests extends IntegrationTestBaseConfig {
         // Create test JSON request with 2 Comments from 1 user to 2 CoffeeSites to be saved
         List<StarAndCommentForSiteModel> starsAndComments = new ArrayList<>();
         StarAndCommentForSiteModel commentStars1 = new StarAndCommentForSiteModel();
-        commentStars1.setCoffeeSiteId(cs1.getLongId().toString());
         commentStars1.setComment("Docela dobra kávička");
         commentStars1.setStars(4);
         starsAndComments.add(commentStars1);
         
         StarAndCommentForSiteModel commentStars2 = new StarAndCommentForSiteModel();
-        commentStars2.setCoffeeSiteId(cs2.getLongId().toString());
         commentStars2.setComment("Káva nic moc.");
         commentStars2.setStars(2);
         starsAndComments.add(commentStars2);

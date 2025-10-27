@@ -38,7 +38,6 @@ import jakarta.validation.constraints.Min;
  * Tj. pro základní CRUD operace a pro vyhledávání CoffeeSites.<br>
  * <br>
  * @author Michal Václavek
- *
  */
 @Tag(name = "CoffeeSite", description = "Coffee site operations")
 @RestController 
@@ -349,7 +348,7 @@ public class CoffeeSiteControllerPublicREST {
         }
         return numOfStars;
     }
-    
+
     /* *** Atributes needed for client creating/editing Coffee site **** */
     
     @GetMapping("/allOtherOffers")

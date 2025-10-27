@@ -276,7 +276,7 @@ public class CoffeeSiteController {
 
     private Optional<String> getSelectedImageExternalId(String objectExtId, String currentSelectedImageExternalId) {
         return Optional.ofNullable(currentSelectedImageExternalId)
-                .or(() -> imagesService.getDefaultSelectedImage(objectExtId).map(ImageFile::getExternalId));
+                       .or(() -> imagesService.getDefaultSelectedImage(objectExtId).map(ImageFile::getExternalId));
     }
 
     /**

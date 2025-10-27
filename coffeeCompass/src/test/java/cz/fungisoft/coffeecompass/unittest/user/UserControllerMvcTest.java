@@ -137,7 +137,6 @@ public class UserControllerMvcTest extends MvcControllerUnitTestBaseSetup {
         admin.setUserName("admin");
         admin.setPassword("adminpassword");
         admin.setEmail("admin@boss.com");
-        admin.setLongId(1L);
         admin.setCreatedOn(LocalDateTime.now());
         admin.setUserProfiles(userProfilesADMIN);
     }

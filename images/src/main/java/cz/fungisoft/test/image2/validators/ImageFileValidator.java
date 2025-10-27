@@ -9,21 +9,20 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * Validator to check if the file requested to upload:
  *  - is jpg, jpeg or png
- *  - has size lower then limit in FileStorageProperties resp. in configprops.properties or any definied config file.
+ *  - has size lower than limit in FileStorageProperties resp. in configprops.properties or any defined config file.
  * 
  * @author Michal Vaclavek
- *
  */
 public class ImageFileValidator implements ConstraintValidator<ImageFileValidatorConstraint, MultipartFile> {
 
     private Long maxFileSize = 5_242_880L; // 5 MB
-    
+
     private ConfigProperties properties;
-    
+
     /**
      * Default construktor needed for Hibernate? othervise Exception is thrown
      */
-    public ImageFileValidator() {};
+    public ImageFileValidator() {}
     
     /**
      * FileStorageProperties is injected by Spring as this class implements ConstraintValidator interface

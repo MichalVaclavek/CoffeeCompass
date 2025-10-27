@@ -55,7 +55,6 @@ public class WithMockCustomUserSecurityContextFactory implements WithSecurityCon
         admin.setUserName(customUser.userName());
         admin.setPassword(customUser.password());
         admin.setEmail(customUser.email());
-        admin.setLongId(1L);
         admin.setCreatedOn(LocalDateTime.now());
         admin.setUserProfiles(userProfilesADMIN);
         

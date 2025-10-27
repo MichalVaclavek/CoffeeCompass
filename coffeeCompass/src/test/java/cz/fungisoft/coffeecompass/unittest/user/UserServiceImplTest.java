@@ -4,10 +4,7 @@ import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
 import cz.fungisoft.coffeecompass.mappers.UserMapper;
-import cz.fungisoft.coffeecompass.repository.PasswordResetTokenRepository;
-import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
-import cz.fungisoft.coffeecompass.repository.UserEmailVerificationTokenRepository;
-import cz.fungisoft.coffeecompass.repository.UsersRepository;
+import cz.fungisoft.coffeecompass.repository.*;
 import cz.fungisoft.coffeecompass.security.CustomUserDetailsService;
 import cz.fungisoft.coffeecompass.security.IAuthenticationFacade;
 import cz.fungisoft.coffeecompass.security.SecurityConfiguration;
@@ -64,6 +61,9 @@ public class UserServiceImplTest {
     
     @MockBean
     private SecurityConfiguration securityConfig;
+
+    @MockBean
+    private static RefreshTokenRepository refreshTokenRepository;
     
     @TestConfiguration
     static class UserSiteServiceImplTestContextConfiguration {
@@ -75,10 +75,10 @@ public class UserServiceImplTest {
         
         @MockBean
         public static UsersRepository usersRepository;
-        
+
         @Bean
         public UserService userService() {
-            return new UserServiceImpl(usersRepository, passwordEncoder, userMapper, null, userEmailVerificationTokenRepository, passwordResetTokenRepository, userSecurityService, configProps);
+            return new UserServiceImpl(usersRepository, passwordEncoder, userMapper, null, userEmailVerificationTokenRepository, passwordResetTokenRepository,refreshTokenRepository, userSecurityService, configProps);
         }
     }
     

@@ -12,7 +12,7 @@
 
     <groupId>cz.fungisosft</groupId>
     <artifactId>apigw</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>api-gateway</name>
 
     <description>API gateway for Coffee Compass</description>
