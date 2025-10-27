@@ -124,9 +124,6 @@ public class CoffeeSite extends BaseEntity implements Serializable {
     @Column(name = "pocet_kavovych_automatu_vedle_sebe")
     private int numOfCoffeeAutomatyVedleSebe;
 
-    @Column(name = "number_of_images")
-    private int numOfImages;
-
     /**
      * To indicate, that push notification about this CoffeeSite first activation was already sent.
      * To avoid repeating notifications, when the CoffeeSite is deactivated and activated again. 
