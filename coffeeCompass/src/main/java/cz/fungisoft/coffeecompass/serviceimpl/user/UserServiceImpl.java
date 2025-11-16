@@ -353,6 +353,7 @@ public class UserServiceImpl implements UserService {
     public User save(UserDTO registration) {
         User user = new User();
 
+        user.setId(UUID.randomUUID());
         user.setUserName(registration.getUserName());
         user.setFirstName(registration.getFirstName());
         user.setLastName(registration.getLastName());

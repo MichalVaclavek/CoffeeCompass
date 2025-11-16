@@ -61,8 +61,8 @@ public class User extends BaseEntity implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_to_user_profile", schema = "coffeecompass",
-               joinColumns = { @JoinColumn(name = "user_id") }, 
-               inverseJoinColumns = { @JoinColumn(name = "user_profile_id") })
+               joinColumns = { @JoinColumn(name = "uuid_user") },
+               inverseJoinColumns = { @JoinColumn(name = "uuid_user_profile") })
     private Set<UserProfile> userProfiles = new HashSet<>();
  
     @NotNull

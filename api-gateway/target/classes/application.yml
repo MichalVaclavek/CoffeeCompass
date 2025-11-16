@@ -22,10 +22,12 @@ spring:
       routes:
         - id: images
           uri: http://localhost:12002
+#          uri: http://images:12002
           predicates:
             - Path=/api/v1/images/**
 
         - id: coffee_compass_sites
+#          uri: https://coffeecompass:12001
           uri: https://localhost:12001
           predicates:
             - Path=/api/v1/sites/**
@@ -34,6 +36,7 @@ spring:
 
         #Pozor, musi byt posledni
         - id: coffee_compass_main
+#          uri: https://coffeecompass:12001
           uri: https://localhost:12001
           predicates:
             - Path=/**

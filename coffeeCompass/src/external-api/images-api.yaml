@@ -22,7 +22,7 @@ info:
     in 25% size (called Thumbnail mid) and in 12.5% size (called Thumbnail small)
 
 servers:
-  - url: 'http://localhost:12002/api/v1/images'
+  - url: 'http://images:12002/api/v1/images'
 
 # Holds the relative paths to the individual endpoints. The path is appended to the
 # basePath in order to construct the full URL.

@@ -67,15 +67,8 @@ public class CoffeeSiteSearchController {
     private final String allowedCityNamePattern = "^([\\p{IsAlphabetic}]{2})[\\p{IsAlphabetic}\\s-.,]+$";
     
     
-    /**
-     * Dependency Injection pomoci konstruktoru, neni potreba uvadet @Autowired u atributu, Spring toto umi automaticky.
-     * Lze ale uvest u konstruktoru, aby bylo jasne, ze Injection provede Spring.
-     * 
-     * @param coffeeSiteService
-     */
     @Autowired
-    public CoffeeSiteSearchController(CoffeeSiteService coffeeSiteService
-            , CoffeeSortService coffeeSortService) {
+    public CoffeeSiteSearchController(CoffeeSiteService coffeeSiteService, CoffeeSortService coffeeSortService) {
         super();
         this.coffeeSiteService = coffeeSiteService;
         this.coffeeSortService = coffeeSortService;

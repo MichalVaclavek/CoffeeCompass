@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @FeignClient(name ="images",
              configuration = CustomFeignConfiguration.class,
-             url = "http://localhost:12002/api/v1/images")
+             url = "${images.url}")
 public interface ImagesClient {
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
