@@ -1,10 +1,11 @@
 /keystore.p12
-/application-dev.properties
+/application-dev_local.properties
+/application-dev_docker.properties
 /application-dev_remote_db.properties
 /application-https_dev.properties
 /application-https_prod.properties
 /application.properties
-/application-prod.properties
+/application-prod_docker.properties
 /configprops.properties
 /keystore_selfsigned.p12
 /application-dev_docker_db.properties
