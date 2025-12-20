@@ -20,6 +20,9 @@ import org.springframework.context.annotation.Profile;
 @Data
 public class ConfigProperties {
 
+    @Value("${images.host}")
+    private String imagesHost;
+
     /**
      * Base path part of the URL for requesting images for CoffeeSites
      * The othe parts of complete URL is the CoffeeSite id and the protocol and server at the begining

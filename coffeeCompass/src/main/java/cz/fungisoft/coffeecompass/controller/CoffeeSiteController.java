@@ -271,7 +271,8 @@ public class CoffeeSiteController {
                         .filter(img -> img.getExternalId().equals(currentSelectedImageExtId))
                         .findFirst()
                         .map(ImageFile::getBaseBytesImageUrl))
-                .orElseGet(() -> imagesService.getDefaultSelectedImage(objectExtId).map(ImageFile::getBaseBytesImageUrl));
+                        .orElseGet(() -> imagesService.getDefaultSelectedImage(objectExtId).map(ImageFile::getBaseBytesImageUrl))
+                        .flatMap( url -> imagesService.convertImageUrl(url));
     }
 
     private Optional<String> getSelectedImageExternalId(String objectExtId, String currentSelectedImageExternalId) {

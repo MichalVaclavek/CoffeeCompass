@@ -101,7 +101,7 @@ public interface CoffeeSiteRepository extends JpaRepository<CoffeeSite, UUID>, C
      * @param daysAgo - how many days ago from now is the latest day of CoffeeSite creation 
      * @return
      */
-    @Query(nativeQuery = true, value = "SELECT * FROM coffeecompass.coffee_site AS cs WHERE cs.status_zaznamu_id=1 AND cs.created_on BETWEEN LOCALTIMESTAMP - ?2 * INTERVAL '1 day' AND LOCALTIMESTAMP ORDER BY cs.created_on DESC LIMIT ?1")
+    @Query(nativeQuery = true, value = "SELECT * FROM coffeecompass.coffee_site AS cs WHERE cs.status_zaznamu_uuid=(SELECT external_id FROM coffeecompass.status_coffee_site_zaznamu WHERE status_zaznamu='ACTIVE') AND cs.created_on BETWEEN LOCALTIMESTAMP - ?2 * INTERVAL '1 day' AND LOCALTIMESTAMP ORDER BY cs.created_on DESC LIMIT ?1")
     List<CoffeeSite> getLatestSites(int maxNumOfLatestSites, int daysAgo);
     
     

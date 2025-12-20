@@ -11,9 +11,8 @@ import java.util.List;
  * For building JWT token in case of REST api for authenticated user.
  * 
  * @author Michal Vaclavek
- *
  */
-@Profile("default")
+//@Profile("default")
 @Configuration
 @ConfigurationProperties(prefix = "app")
 public class JwtAndOAuth2Properties {
