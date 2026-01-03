@@ -180,21 +180,21 @@ fillInListOfImages = function(site) {
     // first clear the list of images
     imagesList.innerHTML = '';
 
-    // call images API to get all imageFiles for given site and fill in the list of images using URLs of the images
+    // call coffeesites image API (basic API) to get all imageFiles for given site and fill in the list of images using URLs of the images
     var xhr = new XMLHttpRequest();
     var imagesApiUrl = window.location.href;
-    imagesApiUrl = imagesApiUrl.replace("allSitesInMap", 'api/v1/images/object/' + site.id);
+//    imagesApiUrl = imagesApiUrl.replace("allSitesInMap", 'api/v1/images/object/' + site.id);
+    imagesApiUrl = imagesApiUrl.replace("allSitesInMap", 'api/v1/coffeesites/image/allImageUrls/' + site.id);
 
     xhr.open('GET', imagesApiUrl, true);
     xhr.onload = function () {
         if (xhr.status >= 200 && xhr.status < 300) {
             var response = JSON.parse(xhr.responseText);
-            var objectImages = response.objectImages;
-            if (objectImages != null && objectImages.length > 0) {
+            if (response != null && response.length > 0) {
                 var img;
-                for (var i = 0; i < objectImages.length; i++) {
+                for (var i = 0; i < response.length; i++) {
                     img = document.createElement('img');
-                    img.src = objectImages[i].baseBytesImageUrl + "&variant=small";
+                    img.src = response[i];
                     img.style.height = "100px";
                     img.style.margin = "5px";
                     imagesList.appendChild(img);
@@ -218,8 +218,11 @@ addClickHandlerToImages = function() {
     images.forEach( function(image, index) {
         image.addEventListener('click', function() {
             // Copy the clicked image's source to the selectedImage element
-            let indexToRemoveFrom = image.src.indexOf("&");
-            selectedImage.src = image.src.substring(0, indexToRemoveFrom);
+            selectedImage.src = image.src;
+            let indexToRemoveFrom = image.src.indexOf("&"); // to remove &variant=small in the path
+            if (indexToRemoveFrom > 0) {
+                selectedImage.src = image.src.substring(0, indexToRemoveFrom)
+            };
         })
     });
 }

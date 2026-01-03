@@ -3,6 +3,8 @@
  */
 package cz.fungisoft.coffeecompass.controller.rest;
 
+import cz.fungisoft.coffeecompass.entity.CoffeeSite;
+import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.serviceimpl.images.ImagesService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Controller to handle operations concerning obtaining CoffeeSite's image file.<br>
@@ -30,6 +38,27 @@ public class ImageControllerPublicREST  {
     private final ImageStorageService imageStorageService;
 
     private final ImagesService imagesService;
+
+    private final CoffeeSiteService coffeeSiteService;
+
+    /**
+     * Metoda pro ziskani URL vsech obrazku daneho situ
+     *
+     * @return
+     */
+    @GetMapping("/allImageUrls/{externalId}")
+    public ResponseEntity<Set<String>> allImageUrls(@PathVariable String externalId) {
+        Optional<CoffeeSite> cs = coffeeSiteService.findOneByExternalId(externalId);
+        HashSet<String> imageUrls = new HashSet<>();
+
+        cs.ifPresent(coffeeSite -> {
+            // Add all images for this CoffeeSite
+            imageUrls.addAll(imagesService.getSmallImagesUrls(externalId));
+            // add also image saved in imageStorageService
+            imageUrls.add(coffeeSiteService.getLocalCoffeeSiteImageUrl(coffeeSite));
+        });
+        return ResponseEntity.ok(imageUrls);
+    }
 
     /**
      * Returns image of the CoffeeSite of id=siteId

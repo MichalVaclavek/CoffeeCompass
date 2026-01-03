@@ -23,7 +23,7 @@ import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
 import cz.fungisoft.coffeecompass.service.user.UserService;
 import cz.fungisoft.coffeecompass.service.weather.WeatherApiService;
 
-import cz.fungisoft.coffeecompass.serviceimpl.images.ImagesService;
+import cz.fungisoft.coffeecompass.serviceimpl.images.ImagesServiceInterface;
 import cz.fungisoft.images.api.ImageFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -41,6 +41,7 @@ import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
@@ -98,7 +99,7 @@ public class CoffeeSiteController {
     private ImageStorageService imageStorageService;
 
     @Autowired
-    private ImagesService imagesService;
+    private ImagesServiceInterface imagesService;
 
     @Autowired
     private WeatherApiService weatherService;
@@ -249,7 +250,9 @@ public class CoffeeSiteController {
             mav.addObject("coffeeSite", coffeeSiteDto);
 
             // Add all images for this CoffeeSite
-            List<String> imageUrls = imagesService.getSmallImagesUrls(coffeeSite.getId().toString());
+            Set<String> imageUrls = imagesService.getSmallImagesUrls(coffeeSite.getId().toString());
+            // add also image saved in imageStorageService
+            imageUrls.add(coffeeSiteService.getLocalCoffeeSiteImageUrl(coffeeSite));
             mav.addObject("imageUrls", imageUrls);
 
             mav.addObject("selectedImageUrl", getSelectedImageUrl(coffeeSite.getId().toString(), selectedImageExternalId).orElse(coffeeSiteDto.getMainImageURL()));

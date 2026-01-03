@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -881,20 +880,19 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      *
      * @return URL of the CoffeeSite's image if available
      */
-
     @Override
     public String getMainImageURL(CoffeeSite cs) {
         return imagesService.getBasicObjectImageUrl(cs.getId().toString())
                 .orElseGet(() -> getLocalCoffeeSiteImageUrl(cs));
     }
 
-    private String getLocalCoffeeSiteImageUrl(CoffeeSite cs) {
+    @Override
+    public String getLocalCoffeeSiteImageUrl(CoffeeSite cs) {
         ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequest();
         UriComponentsBuilder extBuilder = builder.scheme("https").replacePath(localImageService.getBaseImageURLPath()).replaceQuery("").port("8443");
         String imageURI = extBuilder.build().toUriString() + cs.getId();
         return localImageService.isImageAvailableForSiteId(cs.getId()) ? imageURI : "";
     }
-
 
     /**
      * Checks if the coffe site name is already used or not

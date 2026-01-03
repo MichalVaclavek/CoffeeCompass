@@ -167,7 +167,9 @@ public interface CoffeeSiteService {
      * @return
      */
     Page<CoffeeSiteDTO> getPageOfCoffeeSitesFromList(Pageable pageable, List<CoffeeSiteDTO> coffeeSitesList);
-    
+
+    String getLocalCoffeeSiteImageUrl(CoffeeSite cs);
+
     /**
      * Checks if the CoffeeSite name is already used or not
      * 

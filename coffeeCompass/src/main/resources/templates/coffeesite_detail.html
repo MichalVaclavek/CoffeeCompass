@@ -468,7 +468,8 @@
             </table>
 
             <!-- Element for displaying list of all images of this CoffeeSite -->
-            <div th:if="${imageUrls != null} AND ${!imageUrls.isEmpty()}" class="w3-container w3-margin-top w3-margin-bottom">
+<!--            <div th:if="${imageUrls != null} AND ${!imageUrls.isEmpty()}" class="w3-container w3-margin-top w3-margin-bottom">-->
+            <div th:if="${imageUrls != null} AND ${!imageUrls.isEmpty()}">
                 <div class="w3-cell-row w3-panel w3-border w3-light-grey w3-round"
                      id="imagesList">
                         <span th:each="imageUrl : ${imageUrls}" class="w3-cell-middle">
@@ -478,7 +479,6 @@
             </div>
 
         </div>
-
 
 
         <!-- A common container for entering new Stars and comments and to show other already entered comments -->
@@ -586,7 +586,6 @@
             var saveImageButton = document.getElementById("saveImage");
             saveImageButton.disabled = (chooseFile.files.length == 0) ? true : false;
         }
-
 </script>
 
 <!-- JavaScript to handle click on one of CoffeeSite's image from the 'imagesList'  -->
@@ -607,8 +606,11 @@
 			images.forEach( function(image, index) {
 				image.addEventListener('click', function() {
 					// Copy the clicked image's source to the selectedImage element
+					selectedImage.src = image.src;
 					let indexToRemoveFrom = image.src.indexOf("&");
-            		selectedImage.src = image.src.substring(0, indexToRemoveFrom);
+            		if (indexToRemoveFrom > 0) {
+            			selectedImage.src = image.src.substring(0, indexToRemoveFrom)
+            		};
 
 					// Modify URLs for form action rotating selected image
             		let imageExtIdIndex = selectedImage.src.indexOf("imageExtId") + "imageExtId".length + 1;

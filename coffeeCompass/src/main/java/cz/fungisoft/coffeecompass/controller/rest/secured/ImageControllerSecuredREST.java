@@ -23,7 +23,6 @@ import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
 * REST version
 *  
 * @author Michal Vaclavek
-*
 */
 @Tag(name = "CoffeeSiteImage", description = "Coffee site image REST operations")
 @RestController 

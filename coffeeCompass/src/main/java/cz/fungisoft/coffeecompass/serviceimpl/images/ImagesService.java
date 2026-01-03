@@ -9,10 +9,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -21,15 +19,18 @@ public class ImagesService implements ImagesServiceInterface {
 
     private final ImagesClient imagesApi;
 
+    @Override
     public String uploadImageFile(MultipartFile file, String objectExtId, String description, String imageType) {
         return imagesApi.uploadImageFile(file, objectExtId, description, imageType);
     }
 
+    @Override
     public Optional<ImageObject> getImageObject(String objectExtId) {
         return imagesApi.getImageObject(objectExtId);
     }
 
-    public List<String> getSmallImagesUrls(String imageObjectExtId) {
+    @Override
+    public Set<String> getSmallImagesUrls(String imageObjectExtId) {
         Optional<ImageObject> imageObject = getImageObject(imageObjectExtId);
         return imageObject.stream()
                 .filter(io -> Objects.nonNull(io.getObjectImages()))
@@ -39,9 +40,10 @@ public class ImagesService implements ImagesServiceInterface {
                 .map(this::convertImageUrl)
                 .<String>mapMulti(Optional::ifPresent)
                 .map(url -> url + "&variant=small")
-                .toList();
+                .collect(Collectors.toSet());
     }
 
+    @Override
     public Stream<ImageFile> getImageFiles(String imageObjectExtId) {
         Optional<ImageObject> imageObject = getImageObject(imageObjectExtId);
         return imageObject.stream()
@@ -49,6 +51,7 @@ public class ImagesService implements ImagesServiceInterface {
                 .flatMap(io -> io.getObjectImages().stream());
     }
 
+    @Override
     public Optional<ImageFile> getDefaultSelectedImage(String imageObjectExtId) {
         return getImageFiles(imageObjectExtId)
                 .filter(img -> img.getImageType().equalsIgnoreCase("main"))
@@ -75,6 +78,7 @@ public class ImagesService implements ImagesServiceInterface {
         return imageUrl.flatMap(this::convertImageUrl);
     }
 
+    @Override
     public Optional<String> convertImageUrl(String imageUrl) {
         return Optional.ofNullable(imageUrl).map(url -> {
             // Parse the "foreign" URL to extract just the path and query
