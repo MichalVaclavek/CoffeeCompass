@@ -4,7 +4,6 @@ import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.repository.CoffeeSiteRepository;
 import cz.fungisoft.coffeecompass.serviceimpl.CoffeeSiteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,7 +11,6 @@ import cz.fungisoft.coffeecompass.configuration.ConfigProperties;
 import cz.fungisoft.coffeecompass.entity.Image;
 import cz.fungisoft.coffeecompass.exceptions.StorageFileException;
 import cz.fungisoft.coffeecompass.repository.ImageRepository;
-import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
 import cz.fungisoft.coffeecompass.service.image.ImageResizeAndRotateService;
 import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
 import lombok.extern.slf4j.Slf4j;
