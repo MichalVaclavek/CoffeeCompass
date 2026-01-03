@@ -82,29 +82,25 @@ public class CommentService implements ICommentService {
 //    }
 
     @Override
+    public Comment saveTextAsComment(String commentText, CoffeeSite coffeeSite) {
+        Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
+        return loggedInUser.map(user -> saveTextAsComment(commentText, user, coffeeSite))
+                           .orElseThrow(() -> new UserNotFoundException("Comment not saved, user not logged in."));
+    }
+
+    @Override
     public Comment saveTextAsComment(String commentText, User user, CoffeeSite coffeeSite) {
-        if ( (commentText == null) || commentText.isEmpty()) {
-            throw new IllegalArgumentException("Empty comment text is not allowed!");
-        }
-        
         Comment comment = new Comment();
         comment.setCreated(LocalDateTime.now());
         comment.setText(commentText);
         comment.setUser(user);
         comment.setCoffeeSite(coffeeSite);
-       
+
         commentsRepo.save(comment);
-        
+
         log.info("Comment saved. User name: {}, Coffee site name: {}", user.getUserName(), coffeeSite.getSiteName());
-        
+
         return comment;
-     }
-    
-    @Override
-    public Comment saveTextAsComment(String commentText, CoffeeSite coffeeSite) {
-        Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
-        return loggedInUser.map(user -> saveTextAsComment(commentText, user, coffeeSite))
-                           .orElseThrow(() -> new UserNotFoundException("Comment not saved, user not logged in."));
     }
     
     /**

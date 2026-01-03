@@ -43,6 +43,8 @@ public class CommentDTO extends BaseItem {
     // to allow better mapping from Comment to CommentDTO, which included starsFromUser
     // its easier to search for user by its id
     private UUID userId;
+
+    private String userName;
     
     private boolean canBeDeleted = false; // default value
     

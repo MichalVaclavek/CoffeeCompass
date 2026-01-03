@@ -11,5 +11,6 @@ public interface CommentMapper {
     @Mapping(source ="coffeeSite.id", target = "coffeeSiteId")
     @Mapping(source = "user.id", target = "userId")
     @Mapping(target = "extId", source="id")
+    @Mapping(target = "userName", source="user.userName")
     CommentDTO commentToCommentDTO(Comment comment);
 }
