@@ -35,7 +35,6 @@ import cz.fungisoft.coffeecompass.service.user.UserSecurityService;
  * Returns current logged-in user, can perform logout of the user.
  * 
  * @author Michal Vaclavek
- *
  */
 @Service("userSecurityService")
 @Slf4j

@@ -153,6 +153,7 @@ public class SecurityConfiguration {
                                     .requestMatchers("/imageUpload", "/deleteImage/**").hasAnyRole("ADMIN", "DBA", "USER")
                                     .requestMatchers("/user/updatePassword**", "/updatePassword**").hasAuthority("CHANGE_PASSWORD_PRIVILEGE")
                                     .requestMatchers(PUBLIC_REST_URLS).permitAll()
+                                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                                     .requestMatchers("/**").permitAll()
                                     .anyRequest().authenticated()
 

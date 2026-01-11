@@ -1,0 +1,30 @@
+spring:
+  cloud:
+    gateway:
+      httpclient:
+        ssl:
+          useInsecureTrustManager: true
+        wiretap: true
+        httpserver:
+          wiretap: true
+#        ssl:
+#          trustedX509Certificates:
+#            - classpath:keystore_selfsigned.p12
+      routes:
+        - id: images
+          uri: http://localhost:12002
+          predicates:
+            - Path=/api/v1/images/**
+
+        - id: coffee_compass_sites
+          uri: https://localhost:12001
+          predicates:
+            - Path=/api/v1/sites/**
+          filters:
+            - RewritePath=/api/v1/sites/?(?<segment>.*), /api/v1/coffeesites/$\{segment}
+
+        # Pozor, musi byt posledni
+        - id: coffee_compass_main
+          uri: https://localhost:12001
+          predicates:
+            - Path=/**

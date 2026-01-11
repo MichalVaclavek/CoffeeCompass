@@ -1,46 +1,12 @@
 server.port: 8080
 
 spring.profiles.active: dev, dev_https
-#spring.profiles.active: prod, prod_https
+#spring.profiles.active: dev_docker, dev_https
+#spring.profiles.active: prod_docker, prod_https
 
 spring.messages.encoding: UTF-8
 server.servlet.encoding.charset: UTF-8
 server.servlet.encoding.enabled: true
-
-spring:
-  cloud:
-    gateway:
-      httpclient:
-        ssl:
-          useInsecureTrustManager: true
-        wiretap: true
-        httpserver:
-          wiretap: true
-#        ssl:
-#          trustedX509Certificates:
-#            - classpath:keystore_selfsigned.p12
-      routes:
-        - id: images
-          uri: http://localhost:12002
-#          uri: http://images:12002
-          predicates:
-            - Path=/api/v1/images/**
-
-        - id: coffee_compass_sites
-#          uri: https://coffeecompass:12001
-          uri: https://localhost:12001
-          predicates:
-            - Path=/api/v1/sites/**
-          filters:
-            - RewritePath=/api/v1/sites/?(?<segment>.*), /api/v1/coffeesites/$\{segment}
-
-        #Pozor, musi byt posledni
-        - id: coffee_compass_main
-#          uri: https://coffeecompass:12001
-          uri: https://localhost:12001
-          predicates:
-            - Path=/**
-
 
 management:
   endpoints:

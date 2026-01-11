@@ -1,416 +1,410 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>cz.fungisoft</groupId>
-	<artifactId>coffeecompass</artifactId>
-	<version>2.0.0</version>
-	<packaging>jar</packaging>
+    <groupId>cz.fungisoft</groupId>
+    <artifactId>coffeecompass</artifactId>
+    <version>2.0.0</version>
+    <packaging>jar</packaging>
 
-	<name>Coffee Compass</name>
-	
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.6</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
+    <name>Coffee Compass</name>
 
-	<properties>
-		<java.version>17</java.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-   		<jwt.version>0.12.6</jwt.version>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.1.6</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
 
-		<mapstruct.version>1.5.5.Final</mapstruct.version>
-		<org.lombok.version>1.18.30</org.lombok.version>
-		<spring-cloud.version>2022.0.4</spring-cloud.version>
+    <properties>
+        <java.version>17</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <jwt.version>0.12.6</jwt.version>
 
-		<!-- The main class to start by executing "java -jar" -->
-		<start-class>cz.fungisoft.coffeecompass.CoffeeCompassApplication</start-class>
-	</properties>
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <org.lombok.version>1.18.30</org.lombok.version>
+        <spring-cloud.version>2022.0.4</spring-cloud.version>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<!-- For integration testing with PostgreSQL DB in Docker -->
-				<groupId>org.testcontainers</groupId>
-				<artifactId>testcontainers-bom</artifactId>
-				<version>1.19.3</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
+        <!-- The main class to start by executing "java -jar" -->
+        <start-class>cz.fungisoft.coffeecompass.CoffeeCompassApplication</start-class>
+    </properties>
 
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>${spring-cloud.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <!-- For integration testing with PostgreSQL DB in Docker -->
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>1.19.3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 
-	<dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-		</dependency>
+    <dependencies>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-			<!-- Vyjmuti standardniho baliku pro logovani logback -->
-			<exclusions>
-    			<exclusion>
-      				<groupId>org.springframework.boot</groupId>
-      				<artifactId>spring-boot-starter-logging</artifactId>
-    			</exclusion>
-  			</exclusions>
-		</dependency>
-		
-		<dependency>
-  			<groupId>org.springframework.boot</groupId>
-  			<artifactId>spring-boot-starter</artifactId>
-  				<!-- Vyjmuti standardniho baliku pro logovani logback -->
-  				<exclusions>
-    				<exclusion>
-      					<groupId>org.springframework.boot</groupId>
-      					<artifactId>spring-boot-starter-logging</artifactId>
-    				</exclusion>
-  				</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-log4j2</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+        </dependency>
 
-		<!-- jakarta.validation -->
-		<dependency>
- 			<groupId>org.springframework.boot</groupId>
- 			<artifactId>spring-boot-starter-validation</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <!-- Vyjmuti standardniho baliku pro logovani logback -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
-		<!-- Thymeleaf support START -->
-		<dependency>
-    		<groupId>org.springframework.boot</groupId>
-    		<artifactId>spring-boot-starter-thymeleaf</artifactId>
-		</dependency> 
-		<dependency>
-    		<groupId>org.thymeleaf</groupId>
-    		<artifactId>thymeleaf-spring6</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.thymeleaf.extras</groupId>
-			<artifactId>thymeleaf-extras-java8time</artifactId>
-			<version>3.0.4.RELEASE</version>
-		</dependency>
-		<!-- optional, it brings userful tags to display spring security stuff -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <!-- Vyjmuti standardniho baliku pro logovani logback -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+
+        <!-- jakarta.validation -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- Thymeleaf support START -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.thymeleaf</groupId>
+            <artifactId>thymeleaf-spring6</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-java8time</artifactId>
+            <version>3.0.4.RELEASE</version>
+        </dependency>
+        <!-- optional, it brings userful tags to display spring security stuff -->
         <!-- https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-springsecurity5 -->
         <dependency>
-           <groupId>org.thymeleaf.extras</groupId>
-           <artifactId>thymeleaf-extras-springsecurity6</artifactId>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity6</artifactId>
         </dependency>
-		<!-- Thymeleaf support END -->
-		               
-        <dependency> <!-- sending email -->
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-mail</artifactId>
-		</dependency>
-		
-		<!-- OAuth2 Client -->
-		<dependency>
-		    <groupId>org.springframework.security</groupId>
-		    <artifactId>spring-security-oauth2-client</artifactId>
-		</dependency>
-		
-		<!-- Java Web Token (JWT) library -->
-		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt-api</artifactId>
-			<version>${jwt.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt-impl</artifactId>
-			<version>${jwt.version}</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt-jackson</artifactId>
-			<version>${jwt.version}</version>
-			<scope>runtime</scope>
-		</dependency>
-        
-		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
-		<dependency>
-    		<groupId>org.springframework.boot</groupId>
-    		<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>	
-				
-		<!-- Pro praci s DB resp. podpora JPA resp. Hibernate tj. ORM -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
+        <!-- Thymeleaf support END -->
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		
-		<!-- Pro testovani prace s DB, vyuziva Spring-boot-starter-test pomoci @DataJpaTest pro vytvoreni TestEntityManager. -->
-		<dependency>
+        <dependency> <!-- sending email -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <!-- OAuth2 Client -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-client</artifactId>
+        </dependency>
+
+        <!-- Java Web Token (JWT) library -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${jwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- Pro praci s DB resp. podpora JPA resp. Hibernate tj. ORM -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Pro testovani prace s DB, vyuziva Spring-boot-starter-test pomoci @DataJpaTest pro vytvoreni TestEntityManager. -->
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
-       
-		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>1.6.15</version>
-		</dependency>
 
-		<!-- http://localhost:8080/swagger-ui.html -->
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>2.7.0</version>
-			<scope>compile</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.2.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>${org.lombok.version}</version>
-			<optional>true</optional>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct</artifactId>
-			<version>${mapstruct.version}</version>
-		</dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${org.lombok.version}</version>
+            <optional>true</optional>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>io.swagger.core.v3</groupId>
-			<artifactId>swagger-annotations</artifactId>
-			<version>2.2.7</version>
-		</dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>2.2.7</version>
+        </dependency>
 
-		<dependency>
-			<groupId>io.swagger.core.v3</groupId>
-			<artifactId>swagger-models</artifactId>
-			<version>2.2.19</version>
-		</dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-models</artifactId>
+            <version>2.2.19</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.openapitools</groupId>
-			<artifactId>jackson-databind-nullable</artifactId>
-			<version>0.2.6</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-jsr310</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <version>0.2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
 
-		<!--		Feign Clients support-->
-		<dependency>
-			<groupId>io.github.openfeign</groupId>
-			<artifactId>feign-httpclient</artifactId>
-		</dependency>
+        <!--		Feign Clients support-->
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-httpclient</artifactId>
+        </dependency>
 
-		<!--	Test Dependencies	- for Integration tests using Postgre SQL DB within Docker container-->
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>testcontainers</artifactId>
-			<scope>test</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>postgresql</artifactId>
-			<scope>test</scope>
-		</dependency>
-		
-		<!--	Test Dependencies - for JUnit5 support of PostgreSQL DB within Docker container-->
-		<dependency>
-		    <groupId>org.testcontainers</groupId>
-		    <artifactId>junit-jupiter</artifactId>
-		    <scope>test</scope>
-		</dependency>
+        <!--	Test Dependencies	- for Integration tests using Postgre SQL DB within Docker container-->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-		<!--		For Open API created tests-->
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
 
- 		<!-- For development usage only -->
+        <!--	Test Dependencies - for JUnit5 support of PostgreSQL DB within Docker container-->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!--		For Open API created tests-->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- For development usage only -->
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools -->
 
-		<!-- For testing Collections (Sets) for equality -->
-		<dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-collections4</artifactId>
-		    <version>4.1</version>
-		</dependency>
-		
-		<!-- Google Firebase for push notifications to 'Kava s sebou' app.  -->
-		<dependency>
-			<groupId>com.google.firebase</groupId>
-			<artifactId>firebase-admin</artifactId>
-			<version>6.8.1</version>
-		</dependency>
-		
-		<!-- Google Maps Services client - used for Geocoding resolving town from coordinates  -->
-		<dependency>
-  			<groupId>com.google.maps</groupId>
-  			<artifactId>google-maps-services</artifactId>
-  			<version>0.17.0</version>
-		</dependency>
+        <!-- For testing Collections (Sets) for equality -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.1</version>
+        </dependency>
 
-		<!-- L2 caching  -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-cache</artifactId>
-			<version>3.1.5</version>
-		</dependency>
+        <!-- Google Firebase for push notifications to 'Kava s sebou' app.  -->
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>6.8.1</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.hibernate.orm</groupId>
-			<artifactId>hibernate-ehcache</artifactId>
-			<version>6.0.0.Alpha7</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate.orm</groupId>
-			<artifactId>hibernate-jcache</artifactId>
-			<version>6.2.0.CR2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ehcache</groupId>
-			<artifactId>ehcache</artifactId>
-			<version>3.10.8</version>
-		</dependency>
-		<!-- Hibernate's L2 caching  END -->
+        <!-- Google Maps Services client - used for Geocoding resolving town from coordinates  -->
+        <dependency>
+            <groupId>com.google.maps</groupId>
+            <artifactId>google-maps-services</artifactId>
+            <version>0.17.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<version>7.10.2</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-test</artifactId>
-		</dependency>
+        <!-- L2 caching  -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+            <version>3.1.5</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-openfeign</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-ehcache</artifactId>
+            <version>6.0.0.Alpha7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-jcache</artifactId>
+            <version>6.2.0.CR2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>3.10.8</version>
+        </dependency>
+        <!-- Hibernate's L2 caching  END -->
 
-	</dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>7.10.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+
+    </dependencies>
 
 
     <!-- Plugin, ktery umi, mimo jine, pracovat napr. s -->
-	<!-- knihovnou lombok, ktera generuje casti kodu jako -->
-	<!-- konstruktory a getters a setters -->
-	<build>
-		<finalName>${project.artifactId}</finalName>  <!-- Name of war/jar -->
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
+    <!-- knihovnou lombok, ktera generuje casti kodu jako -->
+    <!-- konstruktory a getters a setters -->
+    <build>
+        <finalName>${project.artifactId}</finalName>  <!-- Name of war/jar -->
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
-				<configuration>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.mapstruct</groupId>
-							<artifactId>mapstruct-processor</artifactId>
-							<version>${mapstruct.version}</version>
-						</path>
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-							<version>${org.lombok.version}</version>
-						</path>
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok-mapstruct-binding</artifactId>
-							<version>0.2.0</version>
-						</path>
-					</annotationProcessorPaths>
-					<compilerArgs>
-						<compilerArg>-Amapstruct.defaultComponentModel=spring</compilerArg>
-					</compilerArgs>
-				</configuration>
-			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${org.lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>0.2.0</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <compilerArgs>
+                        <compilerArg>-Amapstruct.defaultComponentModel=spring</compilerArg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
 
-			<plugin>
-				<groupId>org.openapitools</groupId>
-				<artifactId>openapi-generator-maven-plugin</artifactId>
-				<version>6.3.0</version>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>6.3.0</version>
 
-				<executions>
-					<execution>
-						<!-- prints (only, additionally) language specific(!) "config options help" -->
-						<id>api-generate-help</id>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<phase>generate-resources</phase>
-						<configuration>
-							<generatorName>spring</generatorName>
-							<inputSpec>${project.basedir}/src/external-api/images-api.yaml</inputSpec>
-							<configHelp>true</configHelp>
-						</configuration>
-					</execution>
-					<execution>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<inputSpec>${project.basedir}/src/external-api/images-api.yaml</inputSpec>
-							<generatorName>spring</generatorName>
-							<configOptions>
-								<basePackage>cz.fungisoft.images.api</basePackage>
-								<modelPackage>cz.fungisoft.images.api</modelPackage>
-								<apiPackage>cz.fungisoft.images.api</apiPackage>
-								<useJakartaEe>true</useJakartaEe>
-								<sourceFolder>src/gen/java/main</sourceFolder>
-							</configOptions>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+                <executions>
+                    <execution>
+                        <!-- prints (only, additionally) language specific(!) "config options help" -->
+                        <id>api-generate-help</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <generatorName>spring</generatorName>
+                            <inputSpec>${project.basedir}/src/external-api/images-api.yaml</inputSpec>
+                            <configHelp>true</configHelp>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/external-api/images-api.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <configOptions>
+                                <basePackage>cz.fungisoft.images.api</basePackage>
+                                <modelPackage>cz.fungisoft.images.api</modelPackage>
+                                <apiPackage>cz.fungisoft.images.api</apiPackage>
+                                <useJakartaEe>true</useJakartaEe>
+                                <sourceFolder>src/gen/java/main</sourceFolder>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
-		</plugins>
-	</build>
+        </plugins>
+    </build>
 
-	<description>Server pro ukládání a vyhledávání informací o místech, kde se dá koupit káva s sebou - zvláště automaty, ale i bistra, kavárny, benzinky apod.</description>
-	
-	<url>www.coffeecompass.cz</url>
+    <description>Server pro ukládání a vyhledávání informací o místech, kde se dá koupit káva s sebou - zvláště
+        automaty, ale i bistra, kavárny, benzinky apod.
+    </description>
+
+    <url>www.coffeecompass.cz</url>
 </project>
