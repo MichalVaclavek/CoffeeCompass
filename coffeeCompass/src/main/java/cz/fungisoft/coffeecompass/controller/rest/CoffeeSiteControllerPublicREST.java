@@ -323,7 +323,7 @@ public class CoffeeSiteControllerPublicREST {
      * @param distances - map containing one value name "distances" with list of search distances as value
      * @return
      */
-    @GetMapping("/getNumberOfSitesInGivenDistances/")
+    @PostMapping("/getNumberOfSitesInGivenDistances/")
     public ResponseEntity<Map<String, Integer>> getNumbersOfSitesWithStatus(@RequestParam(value="lat1") double lat1,
                                                                             @RequestParam(value="lon1") double lon1,
                                                                             @RequestParam(value="status", defaultValue="V provozu") String status,
