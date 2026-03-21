@@ -268,7 +268,7 @@ public class CoffeeSiteRepositoryImpl implements CoffeeSiteRepositoryCustom {
 
         String selectQuery = "SELECT *, poloha_gps_sirka AS gps_sirka, poloha_gps_delka AS gps_delka "
                           + "FROM coffeecompass.coffee_site AS cs "
-                          + "WHERE status_zaznamu_id=?4 AND (public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
+                          + "WHERE status_zaznamu_uuid=?4 AND (public.distance(?1, ?2, poloha_gps_sirka, poloha_gps_delka) < ?3)";
 
         Query sites = em.createNativeQuery(selectQuery, CoffeeSite.class);
         

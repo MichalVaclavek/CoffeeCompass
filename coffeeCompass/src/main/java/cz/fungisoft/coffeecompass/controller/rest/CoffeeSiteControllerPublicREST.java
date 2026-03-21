@@ -218,25 +218,34 @@ public class CoffeeSiteControllerPublicREST {
                            @RequestParam(value="lat2") double lat2, @RequestParam(value="lon2") double lon2) {
         return coffeeSiteService.getDistance(lat1, lon1, lat2, lon2);
     }
-    
+
     /**
      * Obsluha dotazu pro vyhledani CoffeeSites objektu, ktere splnuji podminku definovanou @RequestParam parametry
      * v tomto pripade pro hledani podle polohy:<br>
-     * 
+     *
      * @param lat1
      * @param lon1
      * @param rangeMeters
+     * @param recordStatus - hledani podle statusu zaznamu, ktery je definovan v enum CoffeeSiteRecordStatusEnum, napr. ACTIVE, INACTIVE, DELETED
      * @return
      */
-    @GetMapping("/getSitesInRange/") 
-    public ResponseEntity<List<CoffeeSiteDTO>> sitesWithinRange(@RequestParam(value="lat1") double lat1, @RequestParam(value="lon1") double lon1,
-                                                                @RequestParam(value="range") long rangeMeters) {
-        List<CoffeeSiteDTO> result = coffeeSiteService.findAllWithinCircle(lat1, lon1, rangeMeters);
-        
+    @GetMapping("/getSitesInRange/")
+    public ResponseEntity<List<CoffeeSiteDTO>> sitesWithinRangeWithRecordStatus(@RequestParam(value="lat1") double lat1,
+                                                                                @RequestParam(value="lon1") double lon1,
+                                                                                @RequestParam(value="range") long rangeMeters,
+                                                                                @RequestParam(value="recordStatus", defaultValue = "ACTIVE") CoffeeSiteRecordStatusEnum recordStatus) {
+        List<CoffeeSiteDTO> result = coffeeSiteService.findAllWithinRangeWithRecordStatus(
+                lat1,
+                lon1,
+                rangeMeters,
+                csRecordStatusService.findCSRecordStatus(recordStatus)
+        );
+
         if (result == null || result.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else
+        } else {
             return new ResponseEntity<>(result, HttpStatus.OK);
+        }
     }
 
     /**

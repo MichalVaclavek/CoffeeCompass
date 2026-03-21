@@ -170,7 +170,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * Used to get all CoffeeSites from search point with respective record status. Especially for non logged-in user
      * which can retrieve only ACTIVE sites.
      */
-    @Cacheable(cacheNames = COFFEE_SITES_CACHE)
     @Override
     public List<CoffeeSiteDTO> findAllWithinRangeWithRecordStatus(double zemSirka, double zemDelka, long meters, CoffeeSiteRecordStatus csRecordStatus) {
         List<CoffeeSite> items = coffeeSiteRepo.findSitesWithRecordStatus(zemSirka, zemDelka, meters, csRecordStatus);
@@ -565,8 +564,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      */
     @Override
     public List<CoffeeSiteDTO> findAllWithinCircle(double zemSirka, double zemDelka, long meters) {
-        CoffeeSiteRecordStatus activeRecordStatus = csRecordStatusService.findCSRecordStatus(CoffeeSiteRecordStatusEnum.ACTIVE);
-        List<CoffeeSite> coffeeSites = coffeeSiteRepo.findSitesWithRecordStatus(zemSirka, zemDelka, meters, activeRecordStatus);
+        List<CoffeeSite> coffeeSites = coffeeSiteRepo.findSitesWithinRange(zemSirka, zemDelka, meters);
         log.info("All Coffee sites within circle (Latit.: {} , Long.: {}, range: {}) retrieved: {}", zemSirka, zemDelka, meters, coffeeSites.size());
         return countDistancesAndSortByDist(modifyToTransfer(coffeeSites), zemSirka, zemDelka);
     }

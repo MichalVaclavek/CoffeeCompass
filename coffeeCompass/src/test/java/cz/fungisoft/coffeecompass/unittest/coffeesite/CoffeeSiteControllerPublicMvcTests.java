@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -46,6 +47,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import cz.fungisoft.coffeecompass.controller.rest.CoffeeSiteControllerPublicREST;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
+import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
 import cz.fungisoft.coffeecompass.testutils.CoffeeSiteFactory;
 
 /**
@@ -139,5 +141,31 @@ class CoffeeSiteControllerPublicMvcTests extends MvcControllerUnitTestBaseSetup 
                 .andExpect(jsonPath("$[0].siteName", is(cs1.getSiteName())));
 
         verify(coffeeSiteService, VerificationModeFactory.times(1)).findAll("id", "asc");
+    }
+
+    @Test
+    void givenCoffeeSites_whenGetSitesInRange_thenReturnOnlyActiveSites() throws Exception {
+        CoffeeSite cs1 = CoffeeSiteFactory.getCoffeeSite("ControllerRangeSite1", "automat");
+        CoffeeSiteDTO cs1Dto = coffeeSiteMapper.coffeeSiteToCoffeeSiteDTO(cs1);
+
+        CoffeeSiteRecordStatus activeRecordStatus = new CoffeeSiteRecordStatus();
+        activeRecordStatus.setStatus("ACTIVE");
+
+        given(csRecordStatusService.findCSRecordStatus(cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum.ACTIVE))
+                .willReturn(activeRecordStatus);
+        given(coffeeSiteService.findAllWithinRangeWithRecordStatus(Mockito.eq(50.0), Mockito.eq(14.0), Mockito.eq(100L), Mockito.eq(activeRecordStatus)))
+                .willReturn(List.of(cs1Dto));
+
+        mockMvc.perform(get("/api/v1/coffeesites/site/getSitesInRange/")
+                        .param("lat1", "50.0")
+                        .param("lon1", "14.0")
+                        .param("range", "100")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].siteName", is(cs1.getSiteName())));
+
+        verify(coffeeSiteService).findAllWithinRangeWithRecordStatus(Mockito.eq(50.0), Mockito.eq(14.0), Mockito.eq(100L), Mockito.eq(activeRecordStatus));
+        verify(coffeeSiteService, never()).findAllWithinCircle(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyLong());
     }
 }
