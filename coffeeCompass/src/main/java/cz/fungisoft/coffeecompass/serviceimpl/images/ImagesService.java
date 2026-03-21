@@ -74,7 +74,7 @@ public class ImagesService implements ImagesServiceInterface {
     public Optional<String> getBasicObjectImageUrl(String imageObjectExtId) {
         Optional<ImageObject> imageObject = imagesApi.getImageObject(imageObjectExtId);
         Optional<String> imageUrl = imageObject.filter(io -> io.getBaseBytesObjectUrl() != null)
-                .map(ImageObject::getBaseBytesObjectUrl);
+                                               .map(ImageObject::getBaseBytesObjectUrl);
         return imageUrl.flatMap(this::convertImageUrl);
     }
 

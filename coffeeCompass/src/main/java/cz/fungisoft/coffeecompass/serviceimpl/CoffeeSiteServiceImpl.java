@@ -13,6 +13,7 @@ import cz.fungisoft.coffeecompass.service.*;
 import cz.fungisoft.coffeecompass.serviceimpl.images.ImagesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -47,6 +48,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CoffeeSiteServiceImpl implements CoffeeSiteService {
 
     private static final String ERROR_SAVING_SITES = "Error saving list of CoffeeSites.";
+    private static final String COFFEE_SITES_CACHE = "coffeeSitesCache";
 
     private final CoffeeSiteRepository coffeeSiteRepo;
     private final CoffeeSitePageableRepository coffeeSitePaginatedRepo;
@@ -130,7 +132,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         return sites.stream().map(this::mapOneToTransfer).toList();
     }
 
-    @Cacheable(cacheNames = "coffeeSitesCache")
+    @Cacheable(cacheNames = COFFEE_SITES_CACHE)
     @Override
     public List<CoffeeSiteDTO> findAll(String orderBy, String direction) {
         List<CoffeeSite> items = coffeeSiteRepo.findAll(Sort.by(Sort.Direction.fromString(direction.toUpperCase()), orderBy));
@@ -146,7 +148,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         return coffeeSitesPage.map(this::mapOneToTransfer);
     }
 
-    @Cacheable(cacheNames = "coffeeSitesCache")
+    @Cacheable(cacheNames = COFFEE_SITES_CACHE)
     @Override
     public List<CoffeeSiteDTO> findAllWithRecordStatus(CoffeeSiteRecordStatusEnum csRecordStatus) {
         List<CoffeeSite> items = coffeeSiteRepo.findSitesWithRecordStatus(csRecordStatus.getSiteRecordStatus());
@@ -168,7 +170,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * Used to get all CoffeeSites from search point with respective record status. Especially for non logged-in user
      * which can retrieve only ACTIVE sites.
      */
-    @Cacheable(cacheNames = "coffeeSitesCache")
+    @Cacheable(cacheNames = COFFEE_SITES_CACHE)
     @Override
     public List<CoffeeSiteDTO> findAllWithinRangeWithRecordStatus(double zemSirka, double zemDelka, long meters, CoffeeSiteRecordStatus csRecordStatus) {
         List<CoffeeSite> items = coffeeSiteRepo.findSitesWithRecordStatus(zemSirka, zemDelka, meters, csRecordStatus);
@@ -187,7 +189,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
                 .orElse(Collections.emptyMap());
     }
 
-    @Cacheable(cacheNames = "coffeeSitesCache")
+    @Cacheable(cacheNames = COFFEE_SITES_CACHE)
     @Override
     public List<CoffeeSiteDTO> findAllFromUser(User user) {
         List<CoffeeSite> items = coffeeSiteRepo.findSitesFromUserID(user.getId());
@@ -221,7 +223,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
                 .orElse(0);
     }
 
-    @Cacheable(cacheNames = "coffeeSitesCache")
+    @Cacheable(cacheNames = COFFEE_SITES_CACHE)
     @Override
     public List<CoffeeSiteDTO> findAllFromLoggedInUser() {
         return userService.getCurrentLoggedInUser()
@@ -238,7 +240,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
                 .orElseGet(Page::empty);
     }
 
-    @Cacheable(cacheNames = "coffeeSitesCache")
+    @Cacheable(cacheNames = COFFEE_SITES_CACHE)
     @Override
     public Page<CoffeeSiteDTO> findAllNotCancelledFromLoggedInUserPaginated(Pageable pageable) {
         return userService.getCurrentLoggedInUser()
@@ -273,7 +275,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         return findOneByExternalId(UUID.fromString(externalId));
     }
 
-    @Cacheable(cacheNames = "coffeeSitesCache")
+    @Cacheable(cacheNames = COFFEE_SITES_CACHE)
     @Override
     public Optional<CoffeeSite> findOneByExternalId(UUID externalId) {
         Optional<CoffeeSite> site = coffeeSiteRepo.findById(externalId);
@@ -281,6 +283,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         return site;
     }
 
+    @CacheEvict(cacheNames = COFFEE_SITES_CACHE, allEntries = true)
     @Override
     public CoffeeSite save(CoffeeSiteDTO cs) {
         CoffeeSite csToSave = coffeeSiteMapper.coffeeSiteDtoToCoffeeSite(cs);
@@ -293,6 +296,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      *
      * @param - CoffeeSite k ulozeni. Melo by ukladat pouze novy CoffeeSite.
      */
+    @CacheEvict(cacheNames = COFFEE_SITES_CACHE, allEntries = true)
     @Override
     public CoffeeSite save(CoffeeSite coffeeSite) {
         Optional<User> currentLoggedInUser = userService.getCurrentLoggedInUser();
@@ -385,6 +389,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     /**
      * Ulozeni seznamu novych CoffeeSites
      */
+    @CacheEvict(cacheNames = COFFEE_SITES_CACHE, allEntries = true)
     @Override
     public boolean save(List<CoffeeSiteDTO> coffeeSites) {
         try {
@@ -399,6 +404,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     /**
      * Ulozeni seznamu novych nebo updatovanych CoffeeSites
      */
+    @CacheEvict(cacheNames = COFFEE_SITES_CACHE, allEntries = true)
     @Override
     public boolean saveOrUpdate(List<CoffeeSiteDTO> coffeeSites) {
         try {
@@ -424,6 +430,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      * @param coffeeSites CoffeeSites to be saved/updated
      * @return list of saved/updated CoffeeSites if successful, otherwise empty list
      */
+    @CacheEvict(cacheNames = COFFEE_SITES_CACHE, allEntries = true)
     public List<CoffeeSiteDTO> saveOrUpdateWithResult(List<CoffeeSiteDTO> coffeeSites) {
         List<CoffeeSiteDTO> retVal = new ArrayList<>();
         try {
@@ -445,6 +452,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      *
      * @param coffeeSite
      */
+    @CacheEvict(cacheNames = COFFEE_SITES_CACHE, allEntries = true)
     public CoffeeSite updateSite(CoffeeSiteDTO coffeeSite) {
         CoffeeSite entityFromDB = coffeeSiteRepo.findById(coffeeSite.getExtId()).orElse(null);
 
@@ -519,6 +527,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     /**
      * Zmena CoffeeSite record statusu
      */
+    @CacheEvict(cacheNames = COFFEE_SITES_CACHE, allEntries = true)
     @Override
     public CoffeeSite updateCSRecordStatusAndSave(CoffeeSite cs, CoffeeSiteRecordStatusEnum newStatus) {
         cs.setRecordStatus(csRecordStatusService.findCSRecordStatus(newStatus));
@@ -530,12 +539,14 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         return coffeeSiteRepo.save(cs);
     }
 
+    @CacheEvict(cacheNames = COFFEE_SITES_CACHE, allEntries = true)
     @Override
     public void delete(Long id) {
         coffeeSiteRepo.cancelById(id);
         log.info("CoffeeSite id {} deleted from DB.", id);
     }
 
+    @CacheEvict(cacheNames = COFFEE_SITES_CACHE, allEntries = true)
     @Override
     public void delete(String externalId) {
 //        coffeeSiteRepo.deleteByExternalId(UUID.fromString(externalId));
@@ -554,7 +565,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      */
     @Override
     public List<CoffeeSiteDTO> findAllWithinCircle(double zemSirka, double zemDelka, long meters) {
-        List<CoffeeSite> coffeeSites = coffeeSiteRepo.findSitesWithinRange(zemSirka, zemDelka, meters);
+        CoffeeSiteRecordStatus activeRecordStatus = csRecordStatusService.findCSRecordStatus(CoffeeSiteRecordStatusEnum.ACTIVE);
+        List<CoffeeSite> coffeeSites = coffeeSiteRepo.findSitesWithRecordStatus(zemSirka, zemDelka, meters, activeRecordStatus);
         log.info("All Coffee sites within circle (Latit.: {} , Long.: {}, range: {}) retrieved: {}", zemSirka, zemDelka, meters, coffeeSites.size());
         return countDistancesAndSortByDist(modifyToTransfer(coffeeSites), zemSirka, zemDelka);
     }
@@ -883,7 +895,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     @Override
     public String getMainImageURL(CoffeeSite cs) {
         return imagesService.getBasicObjectImageUrl(cs.getId().toString())
-                .orElseGet(() -> getLocalCoffeeSiteImageUrl(cs));
+                            .orElseGet(() -> getLocalCoffeeSiteImageUrl(cs));
     }
 
     @Override
@@ -942,6 +954,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         return new LatLong(searchPointLat, searchPointLong);
     }
 
+    @CacheEvict(cacheNames = COFFEE_SITES_CACHE, allEntries = true)
     @Override
     public void deleteCoffeeSitesFromUser(UUID userId) {
         Optional<User> user = userService.findByExtId(userId);
