@@ -56,13 +56,11 @@ public class DataDownloadSizeServiceImpl implements DataDownloadSizeService {
     }
 
     /**
-     * Currently all images were saved in 1280x960 resolution (with average size about 650 kB), from v. 1.4.1, June 2021,
-     * it was changed to 1024x768 with average size 500 kB.
-     * @return
+     * @return average size of one image sent over JSON is 250 kB (according Postman)
      */
     @Override
     public long getKBytesOfImagesToDownload() {
-        return getNumberOfImagesToDownload() * 550;
+        return getNumberOfImagesToDownload() * 250;
     }
 
     @Override
