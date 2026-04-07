@@ -73,6 +73,10 @@ public class ImagesService implements ImagesServiceInterface {
      */
     public Optional<String> getBasicObjectImageUrl(String imageObjectExtId) {
         Optional<ImageObject> imageObject = imagesApi.getImageObject(imageObjectExtId);
+        // if there is no image file for the imageObject, then return empty Optional
+        if (imageObject.isEmpty() || imageObject.get().getObjectImages() == null || imageObject.get().getObjectImages().isEmpty() || imageObject.get().getBaseBytesObjectUrl() == null) {
+            return Optional.empty();
+        }
         Optional<String> imageUrl = imageObject.filter(io -> io.getBaseBytesObjectUrl() != null)
                                                .map(ImageObject::getBaseBytesObjectUrl);
         return imageUrl.flatMap(this::convertImageUrl);
