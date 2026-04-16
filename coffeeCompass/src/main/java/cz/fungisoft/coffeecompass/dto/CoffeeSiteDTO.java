@@ -31,7 +31,7 @@ public class CoffeeSiteDTO extends BaseItem {
         }
     }
     
-    @JsonFormat(pattern = "dd. MM. yyyy HH:mm", timezone="Europe/Prague")
+    @JsonFormat(pattern = "dd.MM. yyyy HH:mm", timezone="Europe/Prague")
     private LocalDateTime createdOn;
     
     private Set<CoffeeSortDTO> coffeeSorts;
