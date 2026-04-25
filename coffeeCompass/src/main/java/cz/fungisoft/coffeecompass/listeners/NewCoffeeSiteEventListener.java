@@ -123,7 +123,7 @@ public class NewCoffeeSiteEventListener implements ApplicationListener<OnNewCoff
         Map<String, String> pushData = new HashMap<>();
         pushData.put("topic", topic);
         ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
-        UriComponentsBuilder extBuilder = builder.replacePath("/rest/site/" + coffeeSiteId);
+        UriComponentsBuilder extBuilder = builder.replacePath("/api/v1/sites/site/" + coffeeSiteId);
         String csURL = extBuilder.build().toUriString();
         pushData.put("coffeeSiteURL", csURL);
         pushData.put("town", town);

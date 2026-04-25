@@ -93,7 +93,7 @@ public class CoffeeSiteControllerSecuredREST  {
        if (cs != null) {
            log.info("New Coffee site created.");
            //TODO - why headers?
-           headers.setLocation(ucBuilder.path("/rest/site/{id}").buildAndExpand(cs.getId()).toUri());
+           headers.setLocation(ucBuilder.path("/api/v1/sites/site/{id}").buildAndExpand(cs.getId()).toUri());
            return coffeeSiteService.findOneToTransfer(cs.getId()).map(csDTO ->  new ResponseEntity<>(csDTO, HttpStatus.CREATED))
                                                                  .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
        } else {
@@ -225,7 +225,7 @@ public class CoffeeSiteControllerSecuredREST  {
             }
             HttpHeaders headers = new HttpHeaders(); //TODO - why headers here?
             log.info("CoffeeSite's status modified. New status: {}", newStatus.getSiteRecordStatus());
-            headers.setLocation(ucBuilder.path("/rest/site/{id}").buildAndExpand(cs.getId()).toUri());
+            headers.setLocation(ucBuilder.path("/api/v1/sites/site/{id}").buildAndExpand(cs.getId()).toUri());
             return new ResponseEntity<>(coffeeSiteService.findOneToTransfer(csID).orElseGet(null), HttpStatus.OK);
 
         }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
