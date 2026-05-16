@@ -44,7 +44,6 @@ public class PushNotificationController {
      * JSON body examples of the request:
      * 
      * 1) all towns:
-     * 
      * {
      *   "topic":"new_coffeeSite",
      *   "subTopics": [
@@ -52,7 +51,6 @@ public class PushNotificationController {
      *                ],
      *   "token":"long-token-string"
      *   }
-     * 
      * 2) selected, up to 5, towns:
      * {
      *   "topic":"new_coffeeSite",

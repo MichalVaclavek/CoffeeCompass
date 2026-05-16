@@ -23,7 +23,7 @@ import lombok.Setter;
 public class PushNotificationSubscriptionRequest {
     
     @NotBlank(message="Cannot be empty")
-    private String topic; // for example: 'new_coffeeSites'
+    private String topic; // for example: 'new_coffeeSite'
     
     @Size(min=1, max=5, message="Max. 5 subTopics/towns, minimum 1 subTopic/town")
     //@Size(min=1, max=5, message="{Size.pushNotificationSubscriptionRequest.subTopics}")
