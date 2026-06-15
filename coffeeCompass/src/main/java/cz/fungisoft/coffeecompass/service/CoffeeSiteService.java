@@ -15,6 +15,7 @@ import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
+import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus.CoffeeSiteStatusEnum;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.pojo.LatLong;
 
@@ -258,7 +259,14 @@ public interface CoffeeSiteService {
     
     @PreAuthorize("isAuthenticated()")
     CoffeeSite updateCSRecordStatusAndSave(CoffeeSite cs, CoffeeSiteRecordStatusEnum newStatus);
-    
+
+    /**
+     * Zmena provozniho statusu (statusZarizeni) CoffeeSitu, napr. z "V provozu" na "Zruseno".
+     * Na rozdil od record statusu jde o stav zarizeni/lokace.
+     */
+    @PreAuthorize("isAuthenticated()")
+    CoffeeSite updateCSStatusAndSave(CoffeeSite cs, CoffeeSiteStatusEnum newStatus);
+
     @PreAuthorize("hasRole('ADMIN')")
     void delete(Long id);
 

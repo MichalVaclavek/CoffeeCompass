@@ -142,6 +142,7 @@ public class CoffeeSiteDTO extends BaseItem {
      */
     private boolean isVisible;
     private boolean canBeModified;
+    private boolean canChangeOperationalStatus;
     private boolean canBeActivated;
     private boolean canBeDeactivated;
     private boolean canBeCanceled;

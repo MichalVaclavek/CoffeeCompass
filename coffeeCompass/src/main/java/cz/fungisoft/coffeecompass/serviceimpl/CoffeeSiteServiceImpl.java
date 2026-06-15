@@ -110,6 +110,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         site.setCanBeDeleted(canBeDeleted(site));
         site.setCanBeDeactivated(canBeDeactivated(site));
         site.setCanBeModified(canBeModified(site));
+        site.setCanChangeOperationalStatus(siteUserMatch(site));
         site.setVisible(isVisible(site));
         site.setCanBeCommented(canBeCommented(site));
         site.setCanBeRatedByStars(canBeRateByStars(site));
@@ -535,6 +536,17 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
         if (cs.getRecordStatus().getRecordStatus() == CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum.ACTIVE) {
             eventPublisher.publishEvent(new OnNewCoffeeSiteEvent(cs));
         }
+        return coffeeSiteRepo.save(cs);
+    }
+
+    /**
+     * Zmena provozniho statusu (statusZarizeni) CoffeeSitu, napr. z "V provozu" na "Zruseno".
+     */
+    @CacheEvict(cacheNames = COFFEE_SITES_CACHE, allEntries = true)
+    @Override
+    public CoffeeSite updateCSStatusAndSave(CoffeeSite cs, CoffeeSiteStatus.CoffeeSiteStatusEnum newStatus) {
+        coffeeSiteStatusService.findCoffeeSiteStatusByName(newStatus.getSiteStatus())
+                               .ifPresent(cs::setStatusZarizeni);
         return coffeeSiteRepo.save(cs);
     }
 

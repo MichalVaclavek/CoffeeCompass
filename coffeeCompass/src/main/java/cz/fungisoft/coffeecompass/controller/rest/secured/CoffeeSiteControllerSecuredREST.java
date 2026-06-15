@@ -34,6 +34,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import cz.fungisoft.coffeecompass.dto.CoffeeSiteDTO;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
+import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus.CoffeeSiteStatusEnum;
 import cz.fungisoft.coffeecompass.exceptions.rest.BadRESTRequestException;
 import cz.fungisoft.coffeecompass.exceptions.rest.InvalidParameterValueException;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
@@ -230,7 +231,30 @@ public class CoffeeSiteControllerSecuredREST  {
 
         }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-    
+
+    /**
+     *  Zpracovani pozadavku na zmenu provozniho statusu (statusZarizeni) CoffeeSitu,<br>
+     *  napr. na "V provozu" ("INSERVICE"), "Zruseno" ("CANCELED"), "Docasne zruseno" ("TEMP_CANCELED")<br>
+     *  nebo "Docasne otevreno" ("TEMP_OPENED").<br>
+     *  Na rozdil od record statusu (activate/deactivate/cancel) jde o provozni stav zarizeni/lokace.
+     *
+     * @param id externalId CoffeeSitu
+     * @param status nova hodnota provozniho statusu jako {@link CoffeeSiteStatusEnum}
+     */
+    @PutMapping("/{id}/status") // napr. http://localhost:8080/rest/secured/site/{id}/status?status=CANCELED
+    public ResponseEntity<CoffeeSiteDTO> updateCoffeeSiteStatus(@PathVariable(name = "id") String id,
+                                                               @RequestParam("status") CoffeeSiteStatusEnum status,
+                                                               Locale locale) {
+        return coffeeSiteService.findOneByExternalId(id).map(cs -> {
+            cs = coffeeSiteService.updateCSStatusAndSave(cs, status);
+            if (cs == null) {
+                throw new BadRESTRequestException(messages.getMessage("coffeesite.status.change.rest.error", null, locale));
+            }
+            log.info("CoffeeSite's operational status modified. New status: {}", status.getSiteStatus());
+            return new ResponseEntity<>(coffeeSiteService.findOneToTransfer(id).orElseGet(null), HttpStatus.OK);
+        }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
     /**
      * Method to handle request to get list of CoffeeSites created by logged in user.
      * 

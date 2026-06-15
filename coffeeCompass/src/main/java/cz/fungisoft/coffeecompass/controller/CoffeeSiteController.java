@@ -4,6 +4,7 @@ import cz.fungisoft.coffeecompass.controller.models.StarsAndCommentModel;
 import cz.fungisoft.coffeecompass.dto.*;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
+import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus.CoffeeSiteStatusEnum;
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.mappers.CoffeeSiteMapper;
@@ -451,6 +452,21 @@ public class CoffeeSiteController {
         return modifyStatusAndReturnSameView(externalId, CoffeeSiteRecordStatusEnum.INACTIVE, selectedImageExtId);
     }
 
+    /**
+     * Zpracovani pozadavku na zmenu provozniho statusu (statusZarizeni) CoffeeSitu, napr. na<br>
+     * "V provozu" nebo "Zruseno", primo ze stranky detailu lokace - bez nutnosti otevirat cely<br>
+     * editacni formular. Po zmene se zobrazi stejna stranka s potvrzovaci hlaskou.
+     */
+    @PutMapping({"/updateSiteOperationalStatus/{externalId}", "/updateSiteOperationalStatus/{externalId}/selectedImageExtId/{selectedImageExtId}"})
+    public String updateOperationalStatus(@PathVariable(name = "externalId") String externalId,
+                                          @RequestParam("operationalStatus") CoffeeSiteStatusEnum operationalStatus,
+                                          @PathVariable(required = false) String selectedImageExtId) {
+        return coffeeSiteService.findOneByExternalId(externalId).map(cs -> {
+            cs = coffeeSiteService.updateCSStatusAndSave(cs, operationalStatus);
+            return REDIRECT_SHOW_SITE_VIEW + cs.getId() + "/selectedImageExtId/" + selectedImageExtId + "?operationalStatusChangeSuccess";
+        }).orElse("404");
+    }
+
     @PutMapping({"/cancelStatusSite/{externalId}", "/cancelStatusSite/{externalId}/selectedImageExtId/{selectedImageExtId}"})
     public String cancelStatusSite(@PathVariable(name = "externalId") String externalId,
                                    @PathVariable(required = false) String selectedImageExtId,
@@ -516,6 +532,15 @@ public class CoffeeSiteController {
     @ModelAttribute("allSiteStatuses")
     public List<CoffeeSiteStatusDTO> populateSiteStatuses() {
         return csStatusService.getAllCoffeeSiteStatuses();
+    }
+
+    /**
+     * Hodnoty provozniho statusu (statusZarizeni) jako enum, pouzite pro rychlou zmenu statusu
+     * na strance detailu lokace. Hodnota option je nazev enumu, ktery se posle do controlleru.
+     */
+    @ModelAttribute("allOperationalStatuses")
+    public CoffeeSiteStatusEnum[] populateOperationalStatuses() {
+        return CoffeeSiteStatusEnum.values();
     }
 
     @ModelAttribute("allHodnoceniKavyStars")
