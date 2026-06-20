@@ -1,5 +1,6 @@
 package cz.fungisoft.coffeecompass.serviceimpl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -331,6 +332,10 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
             Optional<CoffeeSiteStatus> coffeeSiteStatus = coffeeSiteStatusService.findCoffeeSiteStatusById(coffeeSite.getStatusZarizeni().getId());
             coffeeSiteStatus.ifPresent(coffeeSite::setStatusZarizeni);
 
+            if (coffeeSite.getStatusZarizeniOd() == null) { // od kdy plati provozni status - default dnesni datum
+                coffeeSite.setStatusZarizeniOd(LocalDate.now());
+            }
+
             Optional<PriceRange> priceRange = priceRangeService.findPriceRangeById(coffeeSite.getCena().getId());
             priceRange.ifPresent(coffeeSite::setCena);
 
@@ -511,6 +516,7 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
             entityFromDB.setPristupnostHod(coffeeSiteUpdatedByUser.getPristupnostHod());
             entityFromDB.setSiteName(coffeeSiteUpdatedByUser.getSiteName());
             entityFromDB.setStatusZarizeni(coffeeSiteUpdatedByUser.getStatusZarizeni());
+            entityFromDB.setStatusZarizeniOd(coffeeSiteUpdatedByUser.getStatusZarizeniOd());
             entityFromDB.setTypPodniku(coffeeSiteUpdatedByUser.getTypPodniku());
             entityFromDB.setTypLokality(coffeeSiteUpdatedByUser.getTypLokality());
             entityFromDB.setUliceCP(coffeeSiteUpdatedByUser.getUliceCP());
@@ -540,13 +546,15 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     }
 
     /**
-     * Zmena provozniho statusu (statusZarizeni) CoffeeSitu, napr. z "V provozu" na "Zruseno".
+     * Zmena provozniho statusu (statusZarizeni) CoffeeSitu, napr. z "V provozu" na "Zruseno",
+     * vcetne data, od kdy novy status plati. Pokud datum neni zadano, pouzije se dnesni datum.
      */
     @CacheEvict(cacheNames = COFFEE_SITES_CACHE, allEntries = true)
     @Override
-    public CoffeeSite updateCSStatusAndSave(CoffeeSite cs, CoffeeSiteStatus.CoffeeSiteStatusEnum newStatus) {
+    public CoffeeSite updateCSStatusAndSave(CoffeeSite cs, CoffeeSiteStatus.CoffeeSiteStatusEnum newStatus, LocalDate statusValidFrom) {
         coffeeSiteStatusService.findCoffeeSiteStatusByName(newStatus.getSiteStatus())
                                .ifPresent(cs::setStatusZarizeni);
+        cs.setStatusZarizeniOd(statusValidFrom != null ? statusValidFrom : LocalDate.now());
         return coffeeSiteRepo.save(cs);
     }
 

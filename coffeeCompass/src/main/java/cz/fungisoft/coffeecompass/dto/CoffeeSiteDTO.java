@@ -1,11 +1,13 @@
 package cz.fungisoft.coffeecompass.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.format.annotation.DateTimeFormat;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
@@ -44,7 +46,14 @@ public class CoffeeSiteDTO extends BaseItem {
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private CoffeeSiteStatusDTO statusZarizeni;
-    
+
+    /**
+     * Datum, od kdy plati aktualni provozni status (statusZarizeni).
+     */
+    @JsonFormat(pattern = "dd.MM.yyyy", timezone = "Europe/Prague")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate statusZarizeniOd;
+
     // status zaznamu je potreba prenaset, protoze uzivatele budou moci tento status u "svych" CoffeeSite menit.
     private CoffeeSiteRecordStatusDTO recordStatus;
 

@@ -1,9 +1,12 @@
 package cz.fungisoft.coffeecompass.controller.rest.secured;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.validation.Valid;
 
@@ -236,17 +239,22 @@ public class CoffeeSiteControllerSecuredREST  {
      *  Zpracovani pozadavku na zmenu provozniho statusu (statusZarizeni) CoffeeSitu,<br>
      *  napr. na "V provozu" ("INSERVICE"), "Zruseno" ("CANCELED"), "Docasne zruseno" ("TEMP_CANCELED")<br>
      *  nebo "Docasne otevreno" ("TEMP_OPENED").<br>
-     *  Na rozdil od record statusu (activate/deactivate/cancel) jde o provozni stav zarizeni/lokace.
+     *  Na rozdil od record statusu (activate/deactivate/cancel) jde o provozni stav zarizeni/lokace.<br>
+     *  Volitelne lze zadat datum, od kdy novy status plati (validFrom ve formatu yyyy-MM-dd);<br>
+     *  pokud neni zadano, pouzije se dnesni datum.
      *
      * @param id externalId CoffeeSitu
      * @param status nova hodnota provozniho statusu jako {@link CoffeeSiteStatusEnum}
+     * @param validFrom nepovinne datum platnosti noveho statusu (yyyy-MM-dd)
      */
-    @PutMapping("/{id}/status") // napr. http://localhost:8080/rest/secured/site/{id}/status?status=CANCELED
+    @PutMapping("/{id}/status") // napr. http://localhost:8080/rest/secured/site/{id}/status?status=CANCELED&validFrom=2026-06-15
     public ResponseEntity<CoffeeSiteDTO> updateCoffeeSiteStatus(@PathVariable(name = "id") String id,
                                                                @RequestParam("status") CoffeeSiteStatusEnum status,
+                                                               @RequestParam(name = "validFrom", required = false)
+                                                               @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validFrom,
                                                                Locale locale) {
         return coffeeSiteService.findOneByExternalId(id).map(cs -> {
-            cs = coffeeSiteService.updateCSStatusAndSave(cs, status);
+            cs = coffeeSiteService.updateCSStatusAndSave(cs, status, validFrom);
             if (cs == null) {
                 throw new BadRESTRequestException(messages.getMessage("coffeesite.status.change.rest.error", null, locale));
             }

@@ -211,6 +211,11 @@
 	                    th:text="${status.status}">Site status</option>
 	            </select>
 	          </div>
+
+	          <div class="w3-container w3-cell w3-border w3-round">
+	            <label class="w3-center" for="statusZarizeniOd" th:text="#{site.operationalStatus.validFrom.label}" style="font-weight: bold">Status valid from</label>
+	            <input type="date" th:field="*{statusZarizeniOd}" class="w3-input"/>
+	          </div>
 	          
 	          <div class="w3-container w3-cell w3-border w3-round">
 	            <label class="w3-center" for="cena" th:text="#{site.pricerange}" style="font-weight: bold">Price range</label>

@@ -94,6 +94,14 @@
                                 </td>
                             </tr>
 
+                            <tr th:if="${coffeeSite.statusZarizeniOd != null}">
+                                <td th:text="#{site.operationalStatus.validFrom.label}">Status valid from</td>
+                                <td class="w3-right-align w3-sand"
+                                    th:text="${#temporals.format(coffeeSite.statusZarizeniOd, 'dd.MM.yyyy')}"
+                                    style="font-weight: bold">Status valid from
+                                </td>
+                            </tr>
+
                             <tr th:if="${coffeeSite.typPodniku != null}">
                                 <td th:text="#{site.type}">TypPodniku</td>
                                 <td class="w3-right-align w3-sand" th:text="${coffeeSite.typPodniku.coffeeSiteType}"
@@ -332,34 +340,40 @@
 
                         <!-- Rychla zmena provozniho statusu (statusZarizeni), napr. "V provozu"/"Zruseno". -->
                         <!-- Dostupne jen pro uzivatele, ktery site vytvoril, nebo pro ROLE_DBA a ROLE_ADMIN. -->
-                        <div class="w3-container w3-margin-top w3-margin-bottom"
+                        <div class="w3-margin-top w3-margin-bottom"
                              th:if="${coffeeSite.canChangeOperationalStatus}">
-                            <div class="w3-row">
+                            <label th:text="#{site.operationalStatus.change.label}" style="font-weight: bold">Change operational status</label>
+                            <div class="w3-padding-small w3-round" style="border:2px solid brown;">
                                 <form id="operationalStatusForm"
                                       action="#"
                                       th:action="@{'/updateSiteOperationalStatus/' + ${coffeeSite.extId} + ${NOT #strings.isEmpty(selectedImageExternalId) ? ('/selectedImageExtId/' + selectedImageExternalId) : ''} }"
                                       th:method="PUT">
                                     <input type="hidden" name="_method" value="put"/>
-                                    <label th:text="#{site.operationalStatus.change.label}" class="w3-cell w3-cell-middle">Change operational status:</label>
-                                    <div class="w3-cell w3-cell-middle">
-                                        <select name="operationalStatus" class="w3-select w3-border w3-round">
+                                    <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                                        <label th:text="#{site.operationalStatus.newStatus.label}" style="font-weight: bold">New status:</label>
+                                        <select name="operationalStatus" class="w3-select w3-border w3-round" style="width:auto;">
                                             <option th:each="opStatus : ${allOperationalStatuses}"
                                                     th:value="${opStatus.name()}"
                                                     th:text="${opStatus.siteStatus}"
                                                     th:selected="${opStatus.siteStatus == coffeeSite.statusZarizeni.status}">Status</option>
                                         </select>
+                                        <label th:text="#{site.operationalStatus.validFrom.short}" style="font-weight: bold">valid from:</label>
+                                        <input type="date" name="statusValidFrom"
+                                               th:value="${#temporals.format(#temporals.createToday(), 'yyyy-MM-dd')}"
+                                               class="w3-input w3-border w3-round" style="width:auto;"/>
                                     </div>
-                                    <div class="w3-cell w3-cell-middle">
+                                    <div class="w3-margin-top" style="text-align:right;">
                                         <button type="submit" id="submitButton"
                                                 th:text="#{site.operationalStatus.change.button}"
                                                 class="w3-btn w3-light-blue w3-border w3-round w3-small">Change</button>
                                     </div>
                                 </form>
+
                             </div>
-                            <div th:if="${param.operationalStatusChangeSuccess}" class="w3-margin-top">
-                                <span class="w3-text-green"
-                                      th:text="#{site.operationalStatus.change.success}">Operational status changed.</span>
-                            </div>
+                        </div>
+                        <div th:if="${param.operationalStatusChangeSuccess}" class="w3-margin-top">
+                                    <span class="w3-text-green"
+                                          th:text="#{site.operationalStatus.change.success}">Operational status changed.</span>
                         </div>
 
                     </td>    <!-- End of Coffee site details table -->

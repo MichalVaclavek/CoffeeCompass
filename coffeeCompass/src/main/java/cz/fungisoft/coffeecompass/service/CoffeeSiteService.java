@@ -1,5 +1,6 @@
 package cz.fungisoft.coffeecompass.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -263,9 +264,12 @@ public interface CoffeeSiteService {
     /**
      * Zmena provozniho statusu (statusZarizeni) CoffeeSitu, napr. z "V provozu" na "Zruseno".
      * Na rozdil od record statusu jde o stav zarizeni/lokace.
+     *
+     * @param newStatus novy provozni status
+     * @param statusValidFrom datum, od kdy novy status plati; pokud je {@code null}, pouzije se dnesni datum
      */
     @PreAuthorize("isAuthenticated()")
-    CoffeeSite updateCSStatusAndSave(CoffeeSite cs, CoffeeSiteStatusEnum newStatus);
+    CoffeeSite updateCSStatusAndSave(CoffeeSite cs, CoffeeSiteStatusEnum newStatus, LocalDate statusValidFrom);
 
     @PreAuthorize("hasRole('ADMIN')")
     void delete(Long id);

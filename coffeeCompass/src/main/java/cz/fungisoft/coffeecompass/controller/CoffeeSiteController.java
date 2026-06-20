@@ -28,6 +28,7 @@ import cz.fungisoft.coffeecompass.serviceimpl.images.ImagesServiceInterface;
 import cz.fungisoft.images.api.ImageFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -39,6 +40,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -460,9 +462,11 @@ public class CoffeeSiteController {
     @PutMapping({"/updateSiteOperationalStatus/{externalId}", "/updateSiteOperationalStatus/{externalId}/selectedImageExtId/{selectedImageExtId}"})
     public String updateOperationalStatus(@PathVariable(name = "externalId") String externalId,
                                           @RequestParam("operationalStatus") CoffeeSiteStatusEnum operationalStatus,
+                                          @RequestParam(name = "statusValidFrom", required = false)
+                                          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate statusValidFrom,
                                           @PathVariable(required = false) String selectedImageExtId) {
         return coffeeSiteService.findOneByExternalId(externalId).map(cs -> {
-            cs = coffeeSiteService.updateCSStatusAndSave(cs, operationalStatus);
+            cs = coffeeSiteService.updateCSStatusAndSave(cs, operationalStatus, statusValidFrom);
             return REDIRECT_SHOW_SITE_VIEW + cs.getId() + "/selectedImageExtId/" + selectedImageExtId + "?operationalStatusChangeSuccess";
         }).orElse("404");
     }

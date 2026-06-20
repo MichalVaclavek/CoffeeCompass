@@ -397,6 +397,7 @@ CREATE TABLE IF NOT EXISTS coffeecompass.coffee_site (
     smazal_user_id bigint,
     typ_podniku_id bigint,
     status_zarizeni_id bigint,
+    status_zarizeni_od date,
     dodavatel_jmeno_podniku_id bigint,
     hodnoceni_kavy_stars bigint DEFAULT 3,
     cena_id bigint,

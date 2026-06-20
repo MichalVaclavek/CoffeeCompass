@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -163,6 +164,12 @@ public class CoffeeSite extends BaseEntity implements Serializable {
     @JoinColumn(name = "status_site_uuid")
     @ToString.Exclude
     private CoffeeSiteStatus statusZarizeni;
+
+    /**
+     * Datum, od kdy plati aktualni provozni status (statusZarizeni), napr. od kdy je lokace "Zrusena".
+     */
+    @Column(name = "status_zarizeni_od")
+    private LocalDate statusZarizeniOd;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dodavatel_jmeno_podniku_uuid")
