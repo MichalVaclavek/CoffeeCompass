@@ -30,19 +30,25 @@ public class CoffeeSiteStatus extends BaseEntity {
 
     /* INNER STATIC CLASS */
     public enum CoffeeSiteStatusEnum implements Serializable {
-        INSERVICE("V provozu"),
-        CANCELED("Zrušeno"),
-        TEMP_CANCELED("Dočasně zrušeno"),
-        TEMP_OPENED("Dočasně otevřeno");
-        
-        String siteStatus;
-         
-        CoffeeSiteStatusEnum(String siteStatus) {
+        INSERVICE("V provozu", "In service"),
+        CANCELED("Zrušeno", "Cancelled"),
+        TEMP_CANCELED("Dočasně zrušeno", "Temporarily cancelled"),
+        TEMP_OPENED("Dočasně otevřeno", "Temporarily opened");
+
+        final String siteStatus;
+        final String siteStatusEn;
+
+        CoffeeSiteStatusEnum(String siteStatus, String siteStatusEn) {
             this.siteStatus = siteStatus;
+            this.siteStatusEn = siteStatusEn;
         }
-         
+
         public String getSiteStatus() {
             return siteStatus;
+        }
+
+        public String getSiteStatusEn() {
+            return siteStatusEn;
         }
     }
 

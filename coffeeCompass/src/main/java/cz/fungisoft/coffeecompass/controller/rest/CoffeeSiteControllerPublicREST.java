@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
+import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus.CoffeeSiteStatusEnum;
 import cz.fungisoft.coffeecompass.service.CSRecordStatusService;
 import cz.fungisoft.coffeecompass.service.CSStatusService;
 import cz.fungisoft.coffeecompass.service.CoffeeSiteService;
@@ -368,6 +369,23 @@ public class CoffeeSiteControllerPublicREST {
     @GetMapping("/allSiteStatuses")
     public List<CoffeeSiteStatusDTO> populateSiteStatuses() {
         return csStatusService.getAllCoffeeSiteStatuses();
+    }
+
+    /**
+     * Vrati seznam vsech moznych hodnot provozniho statusu CoffeeSitu (statusZarizeni), ktere lze
+     * u CoffeeSitu nastavit. U kazde hodnoty vraci nazev enum hodnoty (pouzitelny jako hodnota
+     * parametru 'status' pri volani endpointu pro zmenu statusu) a lokalizovane popisky v cestine
+     * a anglictine.<br>
+     * Urceno napr. pro mobilni klienty, kteri uzivateli nabidnou zmenu statusu jen na hodnoty
+     * odpovidajici serveru.<br>
+     * napr. https://coffeecompass.cz/rest/site/allSiteStatusValues
+     */
+    @GetMapping("/allSiteStatusValues")
+    public ResponseEntity<List<CoffeeSiteStatusValueDTO>> populateSiteStatusValues() {
+        List<CoffeeSiteStatusValueDTO> statusValues = Arrays.stream(CoffeeSiteStatusEnum.values())
+                .map(s -> new CoffeeSiteStatusValueDTO(s.name(), s.getSiteStatus(), s.getSiteStatusEn()))
+                .toList();
+        return new ResponseEntity<>(statusValues, HttpStatus.OK);
     }
     
     @GetMapping("/allSiteRecordStatuses")
