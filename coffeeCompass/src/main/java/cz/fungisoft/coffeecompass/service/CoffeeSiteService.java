@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import cz.fungisoft.coffeecompass.dto.CoffeeSiteStatusDTO;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -269,7 +270,7 @@ public interface CoffeeSiteService {
      * @param statusValidFrom datum, od kdy novy status plati; pokud je {@code null}, pouzije se dnesni datum
      */
     @PreAuthorize("isAuthenticated()")
-    CoffeeSite updateCSStatusAndSave(CoffeeSite cs, CoffeeSiteStatusEnum newStatus, LocalDate statusValidFrom);
+    CoffeeSite updateCSStatusAndSave(CoffeeSite cs, CoffeeSiteStatusDTO newStatus, LocalDate statusValidFrom);
 
     @PreAuthorize("hasRole('ADMIN')")
     void delete(Long id);

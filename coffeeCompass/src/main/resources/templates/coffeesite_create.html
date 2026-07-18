@@ -208,7 +208,7 @@
 	            <select th:field="*{statusZarizeni.extId}" class="w3-select">
 	            <option th:each="status : ${allSiteStatuses}" 
 	                    th:value="${status.extId}"
-	                    th:text="${status.status}">Site status</option>
+	                    th:text="${status.statusCz}">Site status</option>
 	            </select>
 	          </div>
 

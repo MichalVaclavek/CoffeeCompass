@@ -12,5 +12,6 @@ public interface CoffeeSiteStatusMapper {
     CoffeeSiteStatus csStatusDtoToCsStatus(CoffeeSiteStatusDTO cStatusDTO);
 
     @Mapping(target = "extId", source="id")
-    CoffeeSiteStatusDTO csStatusToCsStatusDto(CoffeeSiteStatus csRecordStatus);
+    @Mapping(target = "statusCz", expression = "java(csStatus.getCoffeeSiteStatus().getSiteStatus())")
+    CoffeeSiteStatusDTO csStatusToCsStatusDto(CoffeeSiteStatus csStatus);
 }

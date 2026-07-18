@@ -34,7 +34,6 @@ public class CSStatusServiceImpl implements CSStatusService {
     @Cacheable(cacheNames = "csStatusesCache")
     public Optional<CoffeeSiteStatus> findCoffeeSiteStatusByName(String coffeeSiteStatus) {
         Optional<CoffeeSiteStatus> csStatus = csStatusRepo.searchByName(coffeeSiteStatus);
-//        return csStatus.orElseThrow(() -> new EntityNotFoundException("Coffee site status " + coffeeSiteStatus + " not found in DB."));
         return csStatus;
     }
 

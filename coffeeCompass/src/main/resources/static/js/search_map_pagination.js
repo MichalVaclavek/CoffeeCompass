@@ -79,7 +79,7 @@ insertTableRow = function(site) {
 	insertTableRowCell(newRow, createStringFromList(site.otherOffers, 'otherOffer'));
 	insertTableRowCell(newRow, createStringFromList(site.coffeeSorts, 'coffeeSort'));
 	insertTableRowCell(newRow, site.typPodniku.coffeeSiteType);
-	insertTableRowCell(newRow, site.statusZarizeni.status);
+	insertTableRowCell(newRow, site.statusZarizeni.statusCz);
 	insertTableRowCell(newRow, site.mesto);
 	insertTableRowCell(newRow, site.siteName);
 }

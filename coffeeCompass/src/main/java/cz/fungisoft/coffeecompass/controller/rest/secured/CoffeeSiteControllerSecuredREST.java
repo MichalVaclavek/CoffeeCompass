@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
+import cz.fungisoft.coffeecompass.dto.CoffeeSiteStatusDTO;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.validation.Valid;
@@ -249,7 +250,7 @@ public class CoffeeSiteControllerSecuredREST  {
      */
     @PutMapping("/{id}/status") // napr. http://localhost:8080/rest/secured/site/{id}/status?status=CANCELED&validFrom=2026-06-15
     public ResponseEntity<CoffeeSiteDTO> updateCoffeeSiteStatus(@PathVariable(name = "id") String id,
-                                                               @RequestParam("status") CoffeeSiteStatusEnum status,
+                                                               @RequestParam("status") CoffeeSiteStatusDTO status,
                                                                @RequestParam(name = "validFrom", required = false)
                                                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validFrom,
                                                                Locale locale) {
@@ -258,7 +259,7 @@ public class CoffeeSiteControllerSecuredREST  {
             if (cs == null) {
                 throw new BadRESTRequestException(messages.getMessage("coffeesite.status.change.rest.error", null, locale));
             }
-            log.info("CoffeeSite's operational status modified. New status: {}", status.getSiteStatus());
+            log.info("CoffeeSite's operational status modified. New status: {}", status.getStatus());
             return new ResponseEntity<>(coffeeSiteService.findOneToTransfer(id).orElseGet(null), HttpStatus.OK);
         }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

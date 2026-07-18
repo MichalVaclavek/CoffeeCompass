@@ -551,8 +551,8 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
      */
     @CacheEvict(cacheNames = COFFEE_SITES_CACHE, allEntries = true)
     @Override
-    public CoffeeSite updateCSStatusAndSave(CoffeeSite cs, CoffeeSiteStatus.CoffeeSiteStatusEnum newStatus, LocalDate statusValidFrom) {
-        coffeeSiteStatusService.findCoffeeSiteStatusByName(newStatus.getSiteStatus())
+    public CoffeeSite updateCSStatusAndSave(CoffeeSite cs, CoffeeSiteStatusDTO newStatus, LocalDate statusValidFrom) {
+        coffeeSiteStatusService.findCoffeeSiteStatusByName(newStatus.getStatus())
                                .ifPresent(cs::setStatusZarizeni);
         cs.setStatusZarizeniOd(statusValidFrom != null ? statusValidFrom : LocalDate.now());
         return coffeeSiteRepo.save(cs);
@@ -568,7 +568,6 @@ public class CoffeeSiteServiceImpl implements CoffeeSiteService {
     @CacheEvict(cacheNames = COFFEE_SITES_CACHE, allEntries = true)
     @Override
     public void delete(String externalId) {
-//        coffeeSiteRepo.deleteByExternalId(UUID.fromString(externalId));
         coffeeSiteRepo.deleteById(UUID.fromString(externalId));
         log.info("CoffeeSite external id {} deleted from DB.", externalId);
     }

@@ -56,7 +56,11 @@ public class CoffeeSiteStatus extends BaseEntity {
     
     @NotNull
     @Column(name="status_podniku", unique=true, nullable=false)
-    private String status = CoffeeSiteStatusEnum.INSERVICE.getSiteStatus(); 
+    private String status = CoffeeSiteStatusEnum.INSERVICE.name();
+
+    public CoffeeSiteStatusEnum getCoffeeSiteStatus() {
+        return CoffeeSiteStatusEnum.valueOf(status);
+    }
     
     @Override
     public String toString() {

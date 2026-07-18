@@ -4,6 +4,7 @@ import cz.fungisoft.coffeecompass.controller.models.StarsAndCommentModel;
 import cz.fungisoft.coffeecompass.dto.*;
 import cz.fungisoft.coffeecompass.entity.CoffeeSite;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
+import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus;
 import cz.fungisoft.coffeecompass.entity.CoffeeSiteStatus.CoffeeSiteStatusEnum;
 import cz.fungisoft.coffeecompass.entity.StarsQualityDescription;
 import cz.fungisoft.coffeecompass.entity.User;
@@ -451,7 +452,7 @@ public class CoffeeSiteController {
     @PutMapping({"/deactivateSite/{externalId}", "/deactivateSite/{externalId}/selectedImageExtId/{selectedImageExtId}"})
     public String deactivateCoffeeSite(@PathVariable(name = "externalId") String externalId,
                                        @PathVariable(required = false) String selectedImageExtId) {
-        return modifyStatusAndReturnSameView(externalId, CoffeeSiteRecordStatusEnum.INACTIVE, selectedImageExtId);
+        return modifyRecordStatusAndReturnSameView(externalId, CoffeeSiteRecordStatusEnum.INACTIVE, selectedImageExtId);
     }
 
     /**
@@ -461,7 +462,7 @@ public class CoffeeSiteController {
      */
     @PutMapping({"/updateSiteOperationalStatus/{externalId}", "/updateSiteOperationalStatus/{externalId}/selectedImageExtId/{selectedImageExtId}"})
     public String updateOperationalStatus(@PathVariable(name = "externalId") String externalId,
-                                          @RequestParam("operationalStatus") CoffeeSiteStatusEnum operationalStatus,
+                                          @RequestParam("operationalStatus") CoffeeSiteStatusDTO operationalStatus,
                                           @RequestParam(name = "statusValidFrom", required = false)
                                           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate statusValidFrom,
                                           @PathVariable(required = false) String selectedImageExtId) {
@@ -479,7 +480,7 @@ public class CoffeeSiteController {
         Optional<User> loggedInUser = userService.getCurrentLoggedInUser();
 
         if (loggedInUser.isPresent() && userService.hasADMINorDBARole(loggedInUser.get())) {
-            return modifyStatusAndReturnSameView(externalId, CoffeeSiteRecordStatusEnum.CANCELED, selectedImageExtId);
+            return modifyRecordStatusAndReturnSameView(externalId, CoffeeSiteRecordStatusEnum.CANCELED, selectedImageExtId);
         } else { // Normal USER is redirected to list of his/her sites after cancelling site
             return coffeeSiteService.findOneByExternalId(externalId).map(cs -> {
                 cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, CoffeeSiteRecordStatusEnum.CANCELED);
@@ -495,8 +496,8 @@ public class CoffeeSiteController {
      * Pouzito ale jen pro CoffeeSiteRecordStatusEnum.INACTIVE a CoffeeSiteRecordStatusEnum.CANCELED
      * ostatni maji specialni redirect
      */
-    private String modifyStatusAndReturnSameView(String externalId, CoffeeSiteRecordStatusEnum newStatus,
-                                                 String imageExternalId) {
+    private String modifyRecordStatusAndReturnSameView(String externalId, CoffeeSiteRecordStatusEnum newStatus,
+                                                       String imageExternalId) {
         return coffeeSiteService.findOneByExternalId(externalId).map(cs -> {
             cs = coffeeSiteService.updateCSRecordStatusAndSave(cs, newStatus);
             return REDIRECT_SHOW_SITE_VIEW + cs.getId() + "/selectedImageExtId/" + imageExternalId;

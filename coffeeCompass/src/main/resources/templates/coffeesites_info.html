@@ -62,7 +62,7 @@
 		        	th:onclick="rowClicked([[${site.extId}]]);"> <!-- Reference na /showSite/{site.extId} viz nize -->
 	
 				  <td th:text="${site.siteName}">SiteName</td>
-				  <td th:text="${site.statusZarizeni.status}">SiteStatus</td>
+				  <td th:text="${site.statusZarizeni.statusCz}">SiteStatus</td>
 				  <td th:text="${#temporals.format(site.createdOn, 'dd. MM. yyyy , HH:mm')}"></td>
 				   
 				  <td th:text="!${site.typPodniku == null} ? ${site.typPodniku.coffeeSiteType} : ''">TypPodniku</td>
