@@ -43,7 +43,6 @@ import cz.fungisoft.coffeecompass.service.comment.ICommentService;
  * Obsluhuje operace souvisejici s vkladanim/mazanim/modifikaci hodnoceni a komentare ke CoffeeSitu.  
  * 
  * @author Michal Vaclavek
- *
  */
 @Tag(name = "RatingAndComments", description = "Coffee site's rating and comments")
 @RestController 
@@ -176,7 +175,7 @@ public class CSStarsCommentsControllerSecuredREST {
      *       "id": "06897c72-d75a-4272-95a1-74cb53fb29fb",
      *       "text": "sfsgsg sgsg",
      *       "created": "30.03. 2025 23:28",
-     *       "coffeeSiteID": 204,
+     *       "coffeeSiteId": "694c7803-2af0-4867-955c-bf8e3286452d",
      *       "userId": "93cc3e8f-7569-4a85-a04e-ee29f94b2bf5",
      *       "starsFromUser": 4
      *   }

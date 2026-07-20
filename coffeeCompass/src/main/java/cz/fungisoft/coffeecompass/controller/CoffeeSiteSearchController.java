@@ -5,6 +5,7 @@ package cz.fungisoft.coffeecompass.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,18 +142,14 @@ public class CoffeeSiteSearchController {
             && searchCriteria.getRange() != null
             && currentSearchCity.isEmpty()) {
             
-            foundSites = coffeeSiteService.findAllWithinCircleAndCityWithCSStatusAndCoffeeSort(searchCriteria.getLat1(),
-                                                                                               searchCriteria.getLon1(),
-                                                                                               searchCriteria.getRange(),
-                                                                                               searchCriteria.getCoffeeSiteStatus(),
-                                                                                               currentSearchCity);
+            foundSites = coffeeSiteService.findAllWithinCircleWithCSStatusAndCoffeeSort(searchCriteria.getLat1(),
+                                                                                        searchCriteria.getLon1(),
+                                                                                        searchCriteria.getRange(),
+                                                                                        "",
+                                                                                        searchCriteria.getCoffeeSiteStatus());
         } else {
             String encodedCityName = "";
-            try {
-                encodedCityName = URLEncoder.encode(currentSearchCity, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                log.warn("City name URL encoding error. City name '{}'.", currentSearchCity);
-            }
+            encodedCityName = URLEncoder.encode(currentSearchCity, StandardCharsets.UTF_8);
             ModelAndView mavRedirect = new ModelAndView(new RedirectView("/searchSitesInCityForm/?cityName=" + encodedCityName + "&searchCityNameExactly=" + searchCriteria.isSearchCityNameExactly(), true));
            
             mavRedirect.addObject(SEARCH_CRITERIA_MODEL_KEY, searchCriteria);
