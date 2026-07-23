@@ -288,7 +288,7 @@ public class CoffeeSiteControllerPublicREST {
     @GetMapping("/searchSites") 
     public ResponseEntity<List<CoffeeSiteDTO>> searchSitesWithStatusAndCoffeeSort(@RequestParam(value="lat1") double lat1, @RequestParam(value="lon1") double lon1,
                                                                                   @RequestParam(value="range") long rangeMeters,
-                                                                                  @RequestParam(value="status", defaultValue="V provozu") String status,
+                                                                                  @RequestParam(value="status", defaultValue="INSERVICE") String status,
                                                                                   @RequestParam(value="sort", defaultValue="espresso") String coffeeSort) {
         // CoffeeSort is not intended as a filter criteria id sort=?
         if ("?".equals(coffeeSort)) {
@@ -317,7 +317,7 @@ public class CoffeeSiteControllerPublicREST {
     public ResponseEntity<Integer> getNumberOfSitesWithStatus(@RequestParam(value="lat1") double lat1,
                                                               @RequestParam(value="lon1") double lon1,
                                                               @RequestParam(value="range") int rangeMeters,
-                                                              @RequestParam(value="status", defaultValue="V provozu") String status) {
+                                                              @RequestParam(value="status", defaultValue="INSERVICE") String status) {
         List<Integer> distances = Collections.singletonList(rangeMeters);
         Map<String, Integer> result = coffeeSiteService.findNumbersOfSitesInGivenDistances(lat1, lon1, distances, status);
         return (result == null) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
@@ -336,7 +336,7 @@ public class CoffeeSiteControllerPublicREST {
     @PostMapping("/getNumberOfSitesInGivenDistances/")
     public ResponseEntity<Map<String, Integer>> getNumbersOfSitesWithStatus(@RequestParam(value="lat1") double lat1,
                                                                             @RequestParam(value="lon1") double lon1,
-                                                                            @RequestParam(value="status", defaultValue="V provozu") String status,
+                                                                            @RequestParam(value="status", defaultValue="INSERVICE") String status,
                                                                             @RequestBody Map<String, List<Integer>> distances) {
         Map<String, Integer> result = coffeeSiteService.findNumbersOfSitesInGivenDistances(lat1, lon1, distances.get("distances"), status);
         return (result == null) ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
