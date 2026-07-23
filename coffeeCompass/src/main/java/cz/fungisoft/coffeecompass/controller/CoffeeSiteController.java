@@ -256,7 +256,10 @@ public class CoffeeSiteController {
             // Add all images for this CoffeeSite
             Set<String> imageUrls = imagesService.getSmallImagesUrls(coffeeSite.getId().toString());
             // add also image saved in imageStorageService
-            imageUrls.add(coffeeSiteService.getLocalCoffeeSiteImageUrl(coffeeSite));
+            String localCoffeeSiteImageUrl = coffeeSiteService.getLocalCoffeeSiteImageUrl(coffeeSite);
+            if (!localCoffeeSiteImageUrl.isBlank()) {
+                imageUrls.add(localCoffeeSiteImageUrl);
+            }
             mav.addObject("imageUrls", imageUrls);
 
             mav.addObject("selectedImageUrl", getSelectedImageUrl(coffeeSite.getId().toString(), selectedImageExternalId).orElse(coffeeSiteDto.getMainImageURL()));

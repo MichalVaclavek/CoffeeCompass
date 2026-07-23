@@ -27,7 +27,7 @@ public interface ImagesServiceInterface {
 
         byte[] getBasicObjectImage(String imageObjectExtId);
 
-        byte[] getBasicImageFile(String imageFileExtId, String variant);
+        byte[] getBasicImageFile(String imageFileExtId, String size);
 
         void rotateImageLeft(String imageObjectExtId);
 

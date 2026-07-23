@@ -99,7 +99,7 @@ public class CoffeeSiteDTO extends BaseItem {
 
     /**
      * To indicate if the Image is saved for this CoffeeSite.
-     * Used especialy for REST services.
+     * Used especially for REST services.
      */
     private String mainImageURL = ""; // default value for image URL. Means, no image available if empty, otherwise URL of the image inserted by CoffeeSite service evaluateOperationalAttributes() method
 

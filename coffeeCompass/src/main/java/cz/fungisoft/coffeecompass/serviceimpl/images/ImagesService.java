@@ -39,8 +39,8 @@ public class ImagesService implements ImagesServiceInterface {
                 .map(ImageFile::getBaseBytesImageUrl)
                 .map(this::convertImageUrl)
                 .<String>mapMulti(Optional::ifPresent)
-                .map(url -> url + "&variant=small")
-                .collect(Collectors.toSet());
+                .map(url -> url + "&size=small")
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     @Override
@@ -53,9 +53,11 @@ public class ImagesService implements ImagesServiceInterface {
 
     @Override
     public Optional<ImageFile> getDefaultSelectedImage(String imageObjectExtId) {
-        return getImageFiles(imageObjectExtId)
-                .filter(img -> img.getImageType().equalsIgnoreCase("main"))
-                .max(Comparator.comparing(ImageFile::getSavedOn));
+        List<ImageFile> imageFiles = getImageFiles(imageObjectExtId).toList();
+        return imageFiles.stream()
+                .filter(img -> "main".equalsIgnoreCase(img.getImageType()))
+                .max(Comparator.comparing(ImageFile::getSavedOn))
+                .or(() -> imageFiles.stream().max(Comparator.comparing(ImageFile::getSavedOn)));
     }
 
     public Optional<ImageFile> getLatestImage(String imageObjectExtId) {
@@ -72,14 +74,9 @@ public class ImagesService implements ImagesServiceInterface {
      * @return
      */
     public Optional<String> getBasicObjectImageUrl(String imageObjectExtId) {
-        Optional<ImageObject> imageObject = imagesApi.getImageObject(imageObjectExtId);
-        // if there is no image file for the imageObject, then return empty Optional
-        if (imageObject.isEmpty() || imageObject.get().getObjectImages() == null || imageObject.get().getObjectImages().isEmpty() || imageObject.get().getBaseBytesObjectUrl() == null) {
-            return Optional.empty();
-        }
-        Optional<String> imageUrl = imageObject.filter(io -> io.getBaseBytesObjectUrl() != null)
-                                               .map(ImageObject::getBaseBytesObjectUrl);
-        return imageUrl.flatMap(this::convertImageUrl);
+        return getDefaultSelectedImage(imageObjectExtId)
+                .map(ImageFile::getBaseBytesImageUrl)
+                .flatMap(this::convertImageUrl);
     }
 
     @Override
@@ -103,8 +100,8 @@ public class ImagesService implements ImagesServiceInterface {
         return (byte[]) imagesApi.getObjectBasicImageBytes(imageObjectExtId, "main", "mid");
     }
 
-    public byte[] getBasicImageFile(String imageFileExtId, String variant) {
-        return (byte[]) imagesApi.getImageBytes(imageFileExtId, variant);
+    public byte[] getBasicImageFile(String imageFileExtId, String size) {
+        return (byte[]) imagesApi.getImageBytes(imageFileExtId, size);
     }
 
     public void rotateImageLeft(String imageObjectExtId) {

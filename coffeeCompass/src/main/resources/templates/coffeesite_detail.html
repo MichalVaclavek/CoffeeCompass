@@ -659,9 +659,11 @@
             			selectedImage.src = image.src.substring(0, indexToRemoveFrom)
             		};
 
-					// Modify URLs for form action rotating selected image
-            		let imageExtIdIndex = selectedImage.src.indexOf("imageExtId") + "imageExtId".length + 1;
-            		let imageExtId = selectedImage.src.substring(imageExtIdIndex);
+					// Legacy DB images do not contain imageExtId in the URL.
+					let imageExtIdIndex = selectedImage.src.indexOf("imageExtId");
+            		let imageExtId = imageExtIdIndex >= 0
+            				? selectedImage.src.substring(imageExtIdIndex + "imageExtId".length + 1)
+            				: "";
 
             		updateFormUrlWithImage(rotateLeftActionForm, imageExtId);
             		updateFormUrlWithImage(rotateRightActionForm, imageExtId);

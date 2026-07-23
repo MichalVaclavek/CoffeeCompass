@@ -53,7 +53,10 @@ public class ImageControllerPublicREST  {
             // Add all images for this CoffeeSite
             imageUrls.addAll(imagesService.getSmallImagesUrls(externalId));
             // add also image saved in imageStorageService
-            imageUrls.add(coffeeSiteService.getLocalCoffeeSiteImageUrl(coffeeSite));
+            String localCoffeeSiteImageUrl = coffeeSiteService.getLocalCoffeeSiteImageUrl(coffeeSite);
+            if (!localCoffeeSiteImageUrl.isBlank()) {
+                imageUrls.add(localCoffeeSiteImageUrl);
+            }
         });
         return ResponseEntity.ok(imageUrls);
     }

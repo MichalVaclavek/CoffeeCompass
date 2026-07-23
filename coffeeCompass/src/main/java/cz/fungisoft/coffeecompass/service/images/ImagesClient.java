@@ -32,10 +32,10 @@ public interface ImagesClient {
     Optional<ImageObject> getImageObject(@PathVariable("imageObjectExtId") String imageObjectExtId);
 
     @GetMapping(value = "/bytes/object/", consumes = "image/png")
-    Object getObjectBasicImageBytes(@RequestParam("objectExtId") String objectExtId, @RequestParam("type") String type, @RequestParam("variant") String variant);
+    Object getObjectBasicImageBytes(@RequestParam("objectExtId") String objectExtId, @RequestParam("type") String type, @RequestParam("size") String size);
 
     @GetMapping(value = "/bytes/", consumes = "image/png")
-    Object getImageBytes(@RequestParam("imageExtId") String imageExtId, @RequestParam("variant") String variant);
+    Object getImageBytes(@RequestParam("imageExtId") String imageExtId, @RequestParam("size") String size);
 
     @PutMapping(value = "/rotate/{imageExtId}/direction/{rotationDirection}", consumes = "image/png")
     void rotateImage(@PathVariable("imageExtId") String imageExtId,

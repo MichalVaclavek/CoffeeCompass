@@ -4,22 +4,18 @@
 package cz.fungisoft.coffeecompass.controller;
 
 import cz.fungisoft.coffeecompass.dto.ImageDTO;
+import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
 import cz.fungisoft.coffeecompass.serviceimpl.images.ImagesService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import cz.fungisoft.coffeecompass.entity.Image;
-import cz.fungisoft.coffeecompass.service.image.ImageStorageService;
 
 /**
  * Controller to handle operations concerning upload or delete CoffeeSite's image file.
@@ -34,6 +30,8 @@ public class ImageUploadController {
     private static final String REDIRECT_SHOW_SITE_VIEW = "redirect:/showSite/";
     
     private final ImagesService imagesService;
+
+    private final ImageStorageService imageStorageService;
 
     /**
      * Serves upload image request for CoffeeSite. Coffee site is identified by it's External ID included
@@ -71,11 +69,15 @@ public class ImageUploadController {
      * @param selectedImageExtId of the Image to delete
      * @return
      */
-    @DeleteMapping("/deleteImage/{coffeeSiteExternalId}/selectedImageExtId/{selectedImageExtId}")
+    @DeleteMapping({"/deleteImage/{coffeeSiteExternalId}", "/deleteImage/{coffeeSiteExternalId}/selectedImageExtId/{selectedImageExtId}"})
     public ModelAndView deleteImage(@PathVariable String coffeeSiteExternalId,
-                                    @PathVariable String selectedImageExtId) {
-        // Smazat Image daneho coffeeSite - need to have site Id to give it to /showSite Controller
-        imagesService.deleteImage(coffeeSiteExternalId, selectedImageExtId);
+                                    @PathVariable(required = false) String selectedImageExtId) {
+        // Legacy DB images do not have an Images API file id in the page URL.
+        if (selectedImageExtId == null || selectedImageExtId.isBlank() || selectedImageExtId.equalsIgnoreCase("null")) {
+            imageStorageService.deleteSiteImageBySiteId(coffeeSiteExternalId);
+        } else {
+            imagesService.deleteImage(coffeeSiteExternalId, selectedImageExtId);
+        }
         // Show coffee site
         return new ModelAndView(REDIRECT_SHOW_SITE_VIEW + coffeeSiteExternalId);
     }

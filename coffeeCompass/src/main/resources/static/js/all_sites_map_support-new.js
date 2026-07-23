@@ -219,7 +219,7 @@ addClickHandlerToImages = function() {
         image.addEventListener('click', function() {
             // Copy the clicked image's source to the selectedImage element
             selectedImage.src = image.src;
-            let indexToRemoveFrom = image.src.indexOf("&"); // to remove &variant=small in the path
+            let indexToRemoveFrom = image.src.indexOf("&"); // to remove &size=small in the path
             if (indexToRemoveFrom > 0) {
                 selectedImage.src = image.src.substring(0, indexToRemoveFrom)
             };
