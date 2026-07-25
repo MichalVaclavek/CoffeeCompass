@@ -30,7 +30,7 @@ public class ImagesService implements ImagesServiceInterface {
     }
 
     @Override
-    public Set<String> getSmallImagesUrls(String imageObjectExtId) {
+    public Set<String> getImagesUrls(String imageObjectExtId, String size) {
         Optional<ImageObject> imageObject = getImageObject(imageObjectExtId);
         return imageObject.stream()
                 .filter(io -> Objects.nonNull(io.getObjectImages()))
@@ -39,7 +39,7 @@ public class ImagesService implements ImagesServiceInterface {
                 .map(ImageFile::getBaseBytesImageUrl)
                 .map(this::convertImageUrl)
                 .<String>mapMulti(Optional::ifPresent)
-                .map(url -> url + "&size=small")
+                .map(url -> url + "&size=" + size)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
@@ -97,7 +97,7 @@ public class ImagesService implements ImagesServiceInterface {
     }
 
     public byte[] getBasicObjectImage(String imageObjectExtId) {
-        return (byte[]) imagesApi.getObjectBasicImageBytes(imageObjectExtId, "main", "mid");
+        return (byte[]) imagesApi.getObjectBasicImageBytes(imageObjectExtId, "main", "hd");
     }
 
     public byte[] getBasicImageFile(String imageFileExtId, String size) {

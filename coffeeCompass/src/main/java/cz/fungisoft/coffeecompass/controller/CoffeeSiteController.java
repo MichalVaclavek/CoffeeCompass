@@ -254,7 +254,7 @@ public class CoffeeSiteController {
             mav.addObject("coffeeSite", coffeeSiteDto);
 
             // Add all images for this CoffeeSite
-            Set<String> imageUrls = imagesService.getSmallImagesUrls(coffeeSite.getId().toString());
+            Set<String> imageUrls = imagesService.getImagesUrls(coffeeSite.getId().toString(), "small");
             // add also image saved in imageStorageService
             String localCoffeeSiteImageUrl = coffeeSiteService.getLocalCoffeeSiteImageUrl(coffeeSite);
             if (!localCoffeeSiteImageUrl.isBlank()) {
@@ -267,7 +267,7 @@ public class CoffeeSiteController {
 
             // Get Weather info for the geo location of the CofeeSite to be shown
             weatherService.getWeatherDTO(coffeeSite)
-                    .ifPresent(w -> mav.addObject("weatherData", w));
+                          .ifPresent(w -> mav.addObject("weatherData", w));
 
             mav.setViewName("coffeesite_detail");
         });

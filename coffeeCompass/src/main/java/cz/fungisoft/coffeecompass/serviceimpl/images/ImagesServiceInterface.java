@@ -15,7 +15,7 @@ public interface ImagesServiceInterface {
 
         Optional<ImageObject> getImageObject(String objectExtId);
 
-        Set<String> getSmallImagesUrls(String imageObjectExtId);
+        Set<String> getImagesUrls(String imageObjectExtId, String size);
 
         Stream<ImageFile> getImageFiles(String imageObjectExtId);
 

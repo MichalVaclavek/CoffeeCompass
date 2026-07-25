@@ -51,7 +51,7 @@ public class ImageControllerPublicREST  {
 
         cs.ifPresent(coffeeSite -> {
             // Add all images for this CoffeeSite
-            imageUrls.addAll(imagesService.getSmallImagesUrls(externalId));
+            imageUrls.addAll(imagesService.getImagesUrls(externalId, "hd"));
             // add also image saved in imageStorageService
             String localCoffeeSiteImageUrl = coffeeSiteService.getLocalCoffeeSiteImageUrl(coffeeSite);
             if (!localCoffeeSiteImageUrl.isBlank()) {
