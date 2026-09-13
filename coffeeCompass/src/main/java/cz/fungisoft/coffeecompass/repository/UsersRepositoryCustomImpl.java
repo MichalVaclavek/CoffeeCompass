@@ -1,17 +1,15 @@
 package cz.fungisoft.coffeecompass.repository;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
+import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum;
 import cz.fungisoft.coffeecompass.entity.StatisticsToShow.DBReturnPair;
 
 /**
@@ -29,19 +27,20 @@ public class UsersRepositoryCustomImpl implements UsersRepositoryCustom {
     
     @Override
     public List<DBReturnPair> getTop5Users() {
-       String selectQuery = "SELECT DISTINCT users.username, COUNT(*) as NumOfSites FROM coffeecompass.coffee_site AS cs"
-                          + " JOIN coffeecompass.user AS users ON cs.zadal_user_uuid = users.external_id"
-                          + " WHERE cs.status_zaznamu_id=1"
-                          + " GROUP BY username"
-                          + " ORDER BY NumOfSites DESC LIMIT 5";
+       String selectQuery = "SELECT new cz.fungisoft.coffeecompass.entity.StatisticsToShow$DBReturnPair(u.userName, COUNT(cs))"
+                          + " FROM CoffeeSite cs"
+                          + " JOIN cs.originalUser u"
+                          + " WHERE cs.recordStatus.status = :activeStatus"
+                          + " GROUP BY u.userName"
+                          + " ORDER BY COUNT(cs) DESC";
 
-       Query users = em.createNativeQuery(selectQuery);
+       TypedQuery<DBReturnPair> users = em.createQuery(selectQuery, DBReturnPair.class);
+       users.setParameter("activeStatus", CoffeeSiteRecordStatusEnum.ACTIVE.getSiteRecordStatus());
+       users.setMaxResults(5);
 
-       List<Object[]> results = users.getResultList();
-      
-       return results.stream().filter(rec -> !((String)rec[0]).isEmpty())
-                     .map(rec -> new DBReturnPair((String)rec[0], (Long)rec[1]))
-                     .toList();
+       return users.getResultList().stream()
+                   .filter(rec -> !rec.getStrVal().isEmpty())
+                   .toList();
 
     }
 }

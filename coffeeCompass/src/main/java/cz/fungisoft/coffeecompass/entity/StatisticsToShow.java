@@ -71,7 +71,7 @@ public class StatisticsToShow {
     private List<DBReturnPair> top5CitiesMostCoffeeSites;
     
     /**
-     * List of 5 Users who created the most of Coffee sites and the number of sites created
+     * List of 5 Users who created the most ACTIVE Coffee sites and the number of active sites created.
      */
-    private List<DBReturnPair> top5UserNamesMostCreatedSites; 
+    private List<DBReturnPair> top5UserNamesMostCreatedSites;
 }

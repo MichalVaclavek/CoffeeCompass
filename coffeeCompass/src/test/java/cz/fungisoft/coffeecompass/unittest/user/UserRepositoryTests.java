@@ -2,6 +2,9 @@ package cz.fungisoft.coffeecompass.unittest.user;
 
 import cz.fungisoft.coffeecompass.entity.User;
 import cz.fungisoft.coffeecompass.entity.UserProfile;
+import cz.fungisoft.coffeecompass.entity.CoffeeSite;
+import cz.fungisoft.coffeecompass.entity.CoffeeSiteRecordStatus;
+import cz.fungisoft.coffeecompass.entity.StatisticsToShow.DBReturnPair;
 import cz.fungisoft.coffeecompass.repository.UserProfileRepository;
 import cz.fungisoft.coffeecompass.repository.UsersRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,8 +17,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -61,7 +64,7 @@ class UserRepositoryTests {
     
     
     @Test
-    public void whenFindByName_thenReturnUser() {              
+    public void whenFindByName_thenReturnUser() {
         User newUser = new User();
         
         newUser.setUserName("pauld");
@@ -93,5 +96,58 @@ class UserRepositoryTests {
             assertThat(found.get().getPassword())
                .isEqualTo(newUser.getPassword());
         }
+    }
+
+    @Test
+    public void whenGetTop5Users_thenCountOnlyActiveSitesCreatedByUser() {
+        CoffeeSiteRecordStatus activeStatus = new CoffeeSiteRecordStatus();
+        activeStatus.setStatus(CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum.ACTIVE.getSiteRecordStatus());
+        entityManager.persist(activeStatus);
+
+        CoffeeSiteRecordStatus inactiveStatus = new CoffeeSiteRecordStatus();
+        inactiveStatus.setStatus(CoffeeSiteRecordStatus.CoffeeSiteRecordStatusEnum.INACTIVE.getSiteRecordStatus());
+        entityManager.persist(inactiveStatus);
+
+        User firstUser = createUser("firstUser");
+        User secondUser = createUser("secondUser");
+        entityManager.persist(firstUser);
+        entityManager.persist(secondUser);
+
+        entityManager.persist(createCoffeeSite("first active 1", firstUser, activeStatus));
+        entityManager.persist(createCoffeeSite("first active 2", firstUser, activeStatus));
+        entityManager.persist(createCoffeeSite("first inactive", firstUser, inactiveStatus));
+        entityManager.persist(createCoffeeSite("second active", secondUser, activeStatus));
+
+        entityManager.flush();
+
+        List<DBReturnPair> topUsers = usersRepository.getTop5Users();
+
+        assertThat(topUsers).hasSize(2);
+        assertThat(topUsers.get(0).getStrVal()).isEqualTo("firstUser");
+        assertThat(topUsers.get(0).getIntVal()).isEqualTo(2L);
+        assertThat(topUsers.get(1).getStrVal()).isEqualTo("secondUser");
+        assertThat(topUsers.get(1).getIntVal()).isEqualTo(1L);
+    }
+
+    private User createUser(String userName) {
+        User user = new User();
+        user.setUserName(userName);
+        user.setFirstName(userName);
+        user.setLastName("test");
+        user.setEmail(userName + "@example.com");
+        user.setPassword("password");
+        user.setCreatedOn(LocalDateTime.now());
+        user.setUserProfiles(Set.of(userProfUser));
+        user.setEnabled(true);
+        return user;
+    }
+
+    private CoffeeSite createCoffeeSite(String siteName, User user, CoffeeSiteRecordStatus recordStatus) {
+        CoffeeSite coffeeSite = new CoffeeSite();
+        coffeeSite.setSiteName(siteName);
+        coffeeSite.setCreatedOn(LocalDateTime.now());
+        coffeeSite.setOriginalUser(user);
+        coffeeSite.setRecordStatus(recordStatus);
+        return coffeeSite;
     }
 }
